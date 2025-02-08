@@ -5,8 +5,22 @@ import { ListingCard } from "@/components/ListingCard";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+interface Listing {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  rating: number;
+  image: string;
+  dates: string;
+  host: {
+    name: string;
+    image: string;
+  };
+}
+
 // Mock API function - in a real app, this would fetch from your backend
-const fetchListings = async () => {
+const fetchListings = async (): Promise<Listing[]> => {
   // Simulating an API call
   return [
     {
@@ -39,7 +53,7 @@ const fetchListings = async () => {
 };
 
 const Index = () => {
-  const { data: listings = [], isLoading, error } = useQuery({
+  const { data: listings = [], isLoading, error } = useQuery<Listing[], Error>({
     queryKey: ['listings'],
     queryFn: fetchListings,
   });
@@ -65,8 +79,18 @@ const Index = () => {
           </div>
         ) : listings && listings.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {listings.map((listing) => (
-              <ListingCard key={listing.id} {...listing} />
+            {listings.map((listing: Listing) => (
+              <ListingCard 
+                key={listing.id} 
+                id={listing.id}
+                title={listing.title}
+                location={listing.location}
+                price={listing.price}
+                rating={listing.rating}
+                image={listing.image}
+                dates={listing.dates}
+                host={listing.host}
+              />
             ))}
           </div>
         ) : (
