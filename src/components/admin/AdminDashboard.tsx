@@ -7,11 +7,11 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 export function AdminDashboard() {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50">
+      <div className="min-h-screen flex bg-gray-50">
         <AdminSidebar />
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col w-0">
           <AdminTopbar />
-          <main className="p-6">
+          <main className="flex-1 overflow-y-auto p-6">
             <h1 className="text-2xl font-semibold mb-6">Tableau de bord</h1>
             
             {/* Conteneur des statistiques */}
