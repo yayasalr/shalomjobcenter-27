@@ -39,7 +39,7 @@ const fetchListings = async () => {
 };
 
 const Index = () => {
-  const { data: listings, isLoading, error } = useQuery({
+  const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ['listings'],
     queryFn: fetchListings,
   });
@@ -63,11 +63,15 @@ const Index = () => {
               </div>
             ))}
           </div>
-        ) : (
+        ) : listings && listings.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {listings?.map((listing) => (
+            {listings.map((listing) => (
               <ListingCard key={listing.id} {...listing} />
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-gray-500">Aucun logement disponible</p>
           </div>
         )}
       </main>
