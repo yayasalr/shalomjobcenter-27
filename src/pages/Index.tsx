@@ -5,7 +5,7 @@ import { ListingCard } from "@/components/ListingCard";
 
 const listings = [
   {
-    id: 1,
+    id: "1",
     title: "Superbe villa avec vue",
     location: "Sant Miquel de Balansat, Espagne",
     price: 67,
@@ -18,7 +18,7 @@ const listings = [
     },
   },
   {
-    id: 2,
+    id: "2",
     title: "Appartement moderne",
     location: "San Miguel, Pérou",
     price: 94,
@@ -30,7 +30,6 @@ const listings = [
       image: "/placeholder.svg",
     },
   },
-  // Add more listings as needed
 ];
 
 const Index = () => {

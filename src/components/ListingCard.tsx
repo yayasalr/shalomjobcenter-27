@@ -1,8 +1,10 @@
 
 import { Heart } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface ListingCardProps {
+  id: string;
   title: string;
   location: string;
   price: number;
@@ -16,6 +18,7 @@ interface ListingCardProps {
 }
 
 export const ListingCard = ({
+  id,
   title,
   location,
   price,
@@ -27,7 +30,7 @@ export const ListingCard = ({
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <div className="group relative">
+    <Link to={`/logement/${id}`} className="group relative">
       <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-200">
         <img
           src={image}
@@ -35,7 +38,10 @@ export const ListingCard = ({
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <button
-          onClick={() => setIsFavorite(!isFavorite)}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsFavorite(!isFavorite);
+          }}
           className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100/90"
         >
           <Heart
@@ -73,6 +79,6 @@ export const ListingCard = ({
           <span className="text-gray-500"> par nuit</span>
         </p>
       </div>
-    </div>
+    </Link>
   );
 };
