@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   Home,
@@ -60,7 +61,7 @@ const menuItems = [
 
 export function AdminSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="border-r">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Administration</SidebarGroupLabel>
@@ -69,10 +70,10 @@ export function AdminSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="flex items-center gap-3">
+                    <Link to={item.url} className="flex items-center gap-3 w-full">
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
