@@ -46,3 +46,20 @@
     scrollbar-width: none;
   }
 }
+
+/* Couleurs Airbnb */
+.bg-airbnb-red {
+  background-color: #FF385C;
+}
+
+.text-airbnb-red {
+  color: #FF385C;
+}
+
+.hover\:bg-airbnb-red:hover {
+  background-color: #E31C5F;
+}
+
+.border-airbnb-red {
+  border-color: #FF385C;
+}
