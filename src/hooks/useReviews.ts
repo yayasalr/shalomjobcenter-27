@@ -18,8 +18,8 @@ export const useReviews = () => {
   const { data: reviews = [], isLoading, error } = useQuery({
     queryKey: ['admin-reviews'],
     queryFn: async (): Promise<Review[]> => {
-      // Mock data with proper typing
-      return [
+      // Mock data avec le bon typage
+      const mockReviews: Review[] = [
         {
           id: "1",
           listingId: "1",
@@ -39,11 +39,12 @@ export const useReviews = () => {
           status: "approved" as const
         },
       ];
+      return mockReviews;
     },
   });
 
   const updateReviewStatus = useMutation({
-    mutationFn: async ({ reviewId, status }: { reviewId: string; status: 'approved' | 'rejected' }) => {
+    mutationFn: async ({ reviewId, status }: { reviewId: string; status: Review['status'] }) => {
       // Simulation de l'API
       console.log(`Updating review ${reviewId} to ${status}`);
       return { reviewId, status };
