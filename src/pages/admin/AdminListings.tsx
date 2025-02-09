@@ -3,68 +3,42 @@ import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { ListingFormDialog } from '@/components/admin/listings/ListingFormDialog';
 import { ListingsTable } from '@/components/admin/listings/ListingsTable';
 import { Listing } from '@/types/listing';
+import { useListings } from '@/hooks/useListings';
 
 const AdminListings = () => {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const { data: listings = [], isLoading, error } = useQuery<Listing[], Error>({
-    queryKey: ['admin-listings'],
-    queryFn: async () => {
-      return [
-        {
-          id: "1",
-          title: "Superbe villa avec vue",
-          location: "Sant Miquel de Balansat, Espagne",
-          price: 67,
-          rating: 5.0,
-          image: "/lovable-uploads/00196f15-e8ff-48fb-bf68-e133fa5e4064.png",
-          dates: "15-20 févr.",
-          description: "Une magnifique villa avec vue sur la mer...",
-          images: ["/lovable-uploads/00196f15-e8ff-48fb-bf68-e133fa5e4064.png"],
-          host: {
-            name: "Bas",
-            image: "/placeholder.svg",
-          },
-        },
-        {
-          id: "2",
-          title: "Appartement moderne",
-          location: "San Miguel, Pérou",
-          price: 94,
-          rating: 4.94,
-          image: "https://a0.muscache.com/im/pictures/miso/Hosting-51809333/original/0da70267-d9da-4efb-9123-2714b651c9fd.jpeg",
-          dates: "17-22 févr.",
-          description: "Un appartement moderne au cœur de la ville...",
-          images: ["https://a0.muscache.com/im/pictures/miso/Hosting-51809333/original/0da70267-d9da-4efb-9123-2714b651c9fd.jpeg"],
-          host: {
-            name: "Enrique",
-            image: "/placeholder.svg",
-          },
-        },
-      ];
-    },
-  });
+  const {
+    listings,
+    isLoading,
+    error,
+    addListing,
+    updateListing,
+    deleteListing
+  } = useListings();
 
   const handleEditListing = (listing: Listing) => {
     setSelectedListing(listing);
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    toast.success("Modifications enregistrées");
+  const handleSave = async (formData: Omit<Listing, "id">) => {
+    if (isEditing && selectedListing) {
+      await updateListing.mutateAsync({ ...formData, id: selectedListing.id });
+    } else {
+      await addListing.mutateAsync(formData);
+    }
     setIsEditing(false);
     setSelectedListing(null);
   };
 
-  if (error) {
-    toast.error("Erreur lors du chargement des logements");
-  }
+  const handleDelete = async (listingId: string) => {
+    await deleteListing.mutateAsync(listingId);
+  };
 
   return (
     <SidebarProvider>
@@ -99,6 +73,7 @@ const AdminListings = () => {
               <ListingsTable
                 listings={listings}
                 onEdit={handleEditListing}
+                onDelete={handleDelete}
               />
             ) : (
               <div className="text-center py-10">

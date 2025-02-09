@@ -7,11 +7,13 @@ import { Listing } from '@/types/listing';
 interface ListingsTableProps {
   listings: Listing[];
   onEdit: (listing: Listing) => void;
+  onDelete: (listingId: string) => void;
 }
 
 export const ListingsTable: React.FC<ListingsTableProps> = ({
   listings,
   onEdit,
+  onDelete,
 }) => {
   return (
     <div className="bg-white rounded-lg shadow">
@@ -65,6 +67,7 @@ export const ListingsTable: React.FC<ListingsTableProps> = ({
                     <Button
                       variant="destructive"
                       size="sm"
+                      onClick={() => onDelete(listing.id)}
                       className="gap-2"
                     >
                       <Trash className="h-4 w-4" />
