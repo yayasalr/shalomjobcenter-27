@@ -3,52 +3,27 @@ import React from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, PenSquare } from "lucide-react";
-
-interface Review {
-  id: string;
-  listingId: string;
-  author: string;
-  rating: number;
-  comment: string;
-  date: string;
-  status: 'pending' | 'approved' | 'rejected';
-}
+import { CheckCircle, XCircle } from "lucide-react";
+import { ReviewEditDialog } from '@/components/admin/reviews/ReviewEditDialog';
+import { useReviews } from '@/hooks/useReviews';
 
 const AdminReviews = () => {
-  const { data: reviews = [], isLoading, error } = useQuery<Review[], Error>({
-    queryKey: ['admin-reviews'],
-    queryFn: async () => {
-      // Using mock data for now
-      return [
-        {
-          id: "1",
-          listingId: "1",
-          author: "John Doe",
-          rating: 4,
-          comment: "Très bon séjour, appartement propre et bien situé",
-          date: "2024-02-15",
-          status: "pending"
-        },
-        {
-          id: "2",
-          listingId: "2",
-          author: "Jane Smith",
-          rating: 5,
-          comment: "Excellent accueil, je recommande vivement",
-          date: "2024-02-16",
-          status: "approved"
-        },
-      ];
-    },
-  });
+  const {
+    reviews,
+    isLoading,
+    error,
+    updateReviewStatus,
+    updateReviewContent
+  } = useReviews();
 
-  if (error) {
-    toast.error("Erreur lors du chargement des avis");
-  }
+  const handleApprove = async (reviewId: string) => {
+    await updateReviewStatus.mutateAsync({ reviewId, status: 'approved' });
+  };
+
+  const handleReject = async (reviewId: string) => {
+    await updateReviewStatus.mutateAsync({ reviewId, status: 'rejected' });
+  };
 
   return (
     <SidebarProvider>
@@ -107,6 +82,7 @@ const AdminReviews = () => {
                             variant="default"
                             size="sm"
                             className="inline-flex items-center"
+                            onClick={() => handleApprove(review.id)}
                           >
                             <CheckCircle className="h-4 w-4 mr-2" />
                             Approuver
@@ -115,20 +91,17 @@ const AdminReviews = () => {
                             variant="destructive"
                             size="sm"
                             className="inline-flex items-center"
+                            onClick={() => handleReject(review.id)}
                           >
                             <XCircle className="h-4 w-4 mr-2" />
                             Rejeter
                           </Button>
                         </>
                       )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="inline-flex items-center"
-                      >
-                        <PenSquare className="h-4 w-4 mr-2" />
-                        Modifier
-                      </Button>
+                      <ReviewEditDialog
+                        review={review}
+                        onSave={updateReviewContent.mutateAsync}
+                      />
                     </div>
                   </div>
                 ))}
