@@ -17,8 +17,8 @@ export const useReviews = () => {
 
   const { data: reviews = [], isLoading, error } = useQuery({
     queryKey: ['admin-reviews'],
-    queryFn: async () => {
-      // Mock data for now
+    queryFn: async (): Promise<Review[]> => {
+      // Mock data with proper typing
       return [
         {
           id: "1",
@@ -27,7 +27,7 @@ export const useReviews = () => {
           rating: 4,
           comment: "Très bon séjour, appartement propre et bien situé",
           date: "2024-02-15",
-          status: "pending"
+          status: "pending" as const
         },
         {
           id: "2",
@@ -36,7 +36,7 @@ export const useReviews = () => {
           rating: 5,
           comment: "Excellent accueil, je recommande vivement",
           date: "2024-02-16",
-          status: "approved"
+          status: "approved" as const
         },
       ];
     },
