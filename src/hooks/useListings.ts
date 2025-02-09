@@ -3,7 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 
-const MOCK_LISTINGS: Listing[] = [
+// Simulation d'une base de données en mémoire
+let MOCK_LISTINGS: Listing[] = [
   {
     id: "1",
     title: "Superbe villa avec vue",
@@ -46,15 +47,16 @@ export const useListings = () => {
 
   const addListing = useMutation({
     mutationFn: async (newListing: Omit<Listing, "id">) => {
-      // Simuler l'ajout d'un listing
       const listing = {
         ...newListing,
         id: Math.random().toString(36).substr(2, 9),
       };
+      // Simuler l'ajout à la base de données
+      MOCK_LISTINGS = [...MOCK_LISTINGS, listing];
       return listing;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
+    onSuccess: (newListing) => {
+      queryClient.setQueryData(["listings"], (old: Listing[] = []) => [...old, newListing]);
       toast.success("Logement ajouté avec succès");
     },
     onError: () => {
@@ -64,11 +66,18 @@ export const useListings = () => {
 
   const updateListing = useMutation({
     mutationFn: async (updatedListing: Listing) => {
-      // Simuler la mise à jour d'un listing
+      // Simuler la mise à jour dans la base de données
+      MOCK_LISTINGS = MOCK_LISTINGS.map((listing) =>
+        listing.id === updatedListing.id ? updatedListing : listing
+      );
       return updatedListing;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
+    onSuccess: (updatedListing) => {
+      queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
+        old.map((listing) =>
+          listing.id === updatedListing.id ? updatedListing : listing
+        )
+      );
       toast.success("Logement mis à jour avec succès");
     },
     onError: () => {
@@ -78,11 +87,14 @@ export const useListings = () => {
 
   const deleteListing = useMutation({
     mutationFn: async (listingId: string) => {
-      // Simuler la suppression d'un listing
+      // Simuler la suppression dans la base de données
+      MOCK_LISTINGS = MOCK_LISTINGS.filter((listing) => listing.id !== listingId);
       return listingId;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listings"] });
+    onSuccess: (deletedId) => {
+      queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
+        old.filter((listing) => listing.id !== deletedId)
+      );
       toast.success("Logement supprimé avec succès");
     },
     onError: () => {
