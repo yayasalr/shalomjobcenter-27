@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Home,
@@ -60,6 +60,8 @@ const menuItems = [
 ];
 
 export function AdminSidebar() {
+  const location = useLocation();
+
   return (
     <Sidebar className="border-r">
       <SidebarContent>
@@ -69,8 +71,18 @@ export function AdminSidebar() {
             <SidebarMenu>
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link to={item.url} className="flex items-center gap-3 w-full">
+                  <SidebarMenuButton 
+                    asChild
+                    active={location.pathname === item.url}
+                  >
+                    <Link 
+                      to={item.url} 
+                      className={`flex items-center gap-3 w-full ${
+                        location.pathname === item.url 
+                          ? 'text-primary font-medium' 
+                          : 'text-muted-foreground'
+                      }`}
+                    >
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
                     </Link>
