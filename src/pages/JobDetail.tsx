@@ -31,7 +31,6 @@ const JobDetail = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ApplicationForm>();
 
   const onSubmit = (data: ApplicationForm) => {
-    // In a real app, this would make an API call
     const application: Partial<JobApplication> = {
       ...data,
       jobId: id!,
