@@ -13,14 +13,14 @@ import { Briefcase, MapPin, Clock } from 'lucide-react';
 const Jobs = () => {
   const { jobs, isLoading } = useJobs();
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [selectedDomain, setSelectedDomain] = React.useState<string>('');
+  const [selectedDomain, setSelectedDomain] = React.useState<string>('all');
   const navigate = useNavigate();
 
   const filteredJobs = React.useMemo(() => {
     return jobs.filter(job => {
       const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           job.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesDomain = selectedDomain ? job.domain === selectedDomain : true;
+      const matchesDomain = selectedDomain === 'all' ? true : job.domain === selectedDomain;
       return matchesSearch && matchesDomain && job.status === 'active';
     });
   }, [jobs, searchTerm, selectedDomain]);
@@ -53,7 +53,7 @@ const Jobs = () => {
             <SelectValue placeholder="Filtrer par domaine" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Tous les domaines</SelectItem>
+            <SelectItem value="all">Tous les domaines</SelectItem>
             <SelectItem value="residential_security">Sécurité résidentielle</SelectItem>
             <SelectItem value="industrial_security">Sécurité industrielle</SelectItem>
             <SelectItem value="construction_security">Sécurité de chantier</SelectItem>
