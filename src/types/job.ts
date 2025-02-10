@@ -9,6 +9,20 @@ export type JobDomain =
 
 export type JobContract = "full_time" | "part_time" | "contract";
 
+export type ApplicationStatus = "pending" | "approved" | "rejected";
+
+export interface JobApplication {
+  id: string;
+  jobId: string;
+  applicantName: string;
+  email: string;
+  phone: string;
+  resume?: string;
+  coverLetter?: string;
+  status: ApplicationStatus;
+  submittedAt: string;
+}
+
 export interface Job {
   id: string;
   title: string;
@@ -26,4 +40,6 @@ export interface Job {
   deadline: string;
   status: "active" | "closed";
   images?: string[];
+  applications?: JobApplication[];
 }
+

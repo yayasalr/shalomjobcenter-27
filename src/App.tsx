@@ -15,6 +15,8 @@ import AdminReviews from "./pages/admin/AdminReviews";
 import AdminSupport from "./pages/admin/AdminSupport";
 import AdminJobs from "./pages/admin/AdminJobs";
 import ListingDetail from "./pages/ListingDetail";
+import Jobs from "./pages/Jobs";
+import JobDetail from "./pages/JobDetail";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +44,8 @@ const App = () => (
           <Route path="/admin/support" element={<AdminSupport />} />
           <Route path="/admin/emplois" element={<AdminJobs />} />
           <Route path="/logement/:id" element={<ListingDetail />} />
+          <Route path="/emplois" element={<Jobs />} />
+          <Route path="/emploi/:id" element={<JobDetail />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
