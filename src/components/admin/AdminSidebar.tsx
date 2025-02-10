@@ -9,6 +9,7 @@ import {
   CreditCard,
   MessageSquare,
   LifeBuoy,
+  Briefcase,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -51,6 +52,11 @@ const menuItems = [
     title: "Avis & Commentaires",
     url: "/admin/avis",
     icon: MessageSquare,
+  },
+  {
+    title: "Emplois",
+    url: "/admin/emplois",
+    icon: Briefcase,
   },
   {
     title: "Support & Assistance",
