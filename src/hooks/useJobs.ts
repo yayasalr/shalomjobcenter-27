@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Job } from "@/types/job";
 import { toast } from "sonner";
@@ -20,6 +19,40 @@ let MOCK_JOBS: Job[] = [
     positions: 2,
     publishDate: "2024-02-10",
     deadline: "2024-03-10",
+    status: "active"
+  },
+  {
+    id: "2",
+    title: "Agent de sécurité événementiel",
+    domain: "event_security",
+    description: "Sécurisation d'événements culturels et sportifs",
+    requirements: "- Carte professionnelle obligatoire\n- Expérience en gestion de foule",
+    contract: "part_time",
+    location: "Lyon",
+    salary: {
+      amount: 1800,
+      currency: "EUR"
+    },
+    positions: 5,
+    publishDate: "2024-02-12",
+    deadline: "2024-03-15",
+    status: "active"
+  },
+  {
+    id: "3",
+    title: "Maître-chien",
+    domain: "k9_security",
+    description: "Patrouille de sécurité avec chien",
+    requirements: "- Carte professionnelle\n- Certification cynophile\n- Expérience avec les chiens de sécurité",
+    contract: "full_time",
+    location: "Marseille",
+    salary: {
+      amount: 2200,
+      currency: "EUR"
+    },
+    positions: 1,
+    publishDate: "2024-02-15",
+    deadline: "2024-03-20",
     status: "active"
   }
 ];
