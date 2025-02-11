@@ -25,7 +25,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   onSave,
   onCancel,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState(selectedJob?.title || '');
   const [domain, setDomain] = useState(selectedJob?.domain || 'residential_security');
   const [description, setDescription] = useState(selectedJob?.description || '');
@@ -38,6 +38,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
 
   useEffect(() => {
     if (selectedJob) {
+      setIsOpen(true);
       setTitle(selectedJob.title);
       setDomain(selectedJob.domain);
       setDescription(selectedJob.description);
@@ -49,6 +50,26 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
       setDeadline(selectedJob.deadline);
     }
   }, [selectedJob]);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      onCancel();
+      resetForm();
+    }
+  };
+
+  const resetForm = () => {
+    setTitle('');
+    setDomain('residential_security');
+    setDescription('');
+    setRequirements('');
+    setContract('full_time');
+    setLocation('');
+    setSalary(0);
+    setPositions(1);
+    setDeadline('');
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,26 +92,19 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     };
 
     onSave(formData);
-    setOpen(false);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setDomain('residential_security');
-    setDescription('');
-    setRequirements('');
-    setContract('full_time');
-    setLocation('');
-    setSalary(0);
-    setPositions(1);
-    setDeadline('');
+    handleOpenChange(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={isOpen || isEditing} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button 
+          onClick={() => {
+            resetForm();
+            setIsOpen(true);
+          }} 
+          className="gap-2"
+        >
           <Plus className="h-4 w-4" />
           {isEditing ? "Modifier l'offre" : "Ajouter une offre"}
         </Button>
@@ -124,14 +138,15 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
           />
 
           <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => {
-              setOpen(false);
-              onCancel();
-              resetForm();
-            }}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => handleOpenChange(false)}
+              className="px-6"
+            >
               Annuler
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="px-6">
               {isEditing ? "Mettre à jour" : "Ajouter"}
             </Button>
           </div>
@@ -140,4 +155,3 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     </Dialog>
   );
 };
-
