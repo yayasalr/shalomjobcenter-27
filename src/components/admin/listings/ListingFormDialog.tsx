@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, Save } from "lucide-react";
 import { Listing } from '@/types/listing';
 
 interface ListingFormDialogProps {
@@ -123,8 +124,8 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
           Ajouter un logement
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[725px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[725px] h-[90vh] flex flex-col p-0">
+        <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle>
             {isEditing ? "Modifier le logement" : "Ajouter un nouveau logement"}
           </DialogTitle>
@@ -134,82 +135,105 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
               : "Remplissez les informations pour ajouter un nouveau logement."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-2">
-            <label htmlFor="title">Titre <span className="text-red-500">*</span></label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titre du logement"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="location">Localisation <span className="text-red-500">*</span></label>
-            <Input
-              id="location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Adresse du logement"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="description">Description <span className="text-red-500">*</span></label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description détaillée..."
-              className="min-h-[200px]"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="price">Prix par nuit <span className="text-red-500">*</span></label>
-            <Input
-              id="price"
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              placeholder="Prix en €"
-              min="0"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <label htmlFor="images">Images (max 10)</label>
-            <Input
-              id="images"
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="flex-1"
-            />
-            {images.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                {images.map((image, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={image}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setImages(images.filter((_, i) => i !== index))}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-          <DialogFooter className="flex justify-end gap-2 pt-4">
+
+        <ScrollArea className="flex-1 px-6 py-4">
+          <form id="listing-form" onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid gap-2">
+              <label htmlFor="title" className="font-medium">
+                Titre <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Titre du logement"
+                required
+                className="border-2"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label htmlFor="location" className="font-medium">
+                Localisation <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Adresse du logement"
+                required
+                className="border-2"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label htmlFor="description" className="font-medium">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description détaillée..."
+                className="min-h-[200px] border-2"
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label htmlFor="price" className="font-medium">
+                Prix par nuit <span className="text-red-500">*</span>
+              </label>
+              <Input
+                id="price"
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                placeholder="Prix en €"
+                min="0"
+                required
+                className="border-2"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <label htmlFor="images" className="font-medium">
+                Images (max 10)
+              </label>
+              <Input
+                id="images"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="border-2"
+              />
+              {images.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                  {images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={image}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border-2"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setImages(images.filter((_, i) => i !== index))}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </form>
+        </ScrollArea>
+
+        <DialogFooter className="px-6 py-4 border-t">
+          <div className="flex justify-between w-full">
             <Button 
               type="button" 
               variant="outline" 
@@ -219,25 +243,30 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
                 resetForm();
               }}
               disabled={isSubmitting}
+              className="px-6"
             >
               Annuler
             </Button>
             <Button 
               type="submit"
+              form="listing-form"
               disabled={isSubmitting}
-              className="min-w-[120px]"
+              className="px-6 gap-2"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                   Traitement...
                 </>
               ) : (
-                isEditing ? "Mettre à jour" : "Ajouter"
+                <>
+                  <Save className="h-4 w-4" />
+                  {isEditing ? "Appliquer les modifications" : "Publier le logement"}
+                </>
               )}
             </Button>
-          </DialogFooter>
-        </form>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
