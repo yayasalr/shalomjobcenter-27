@@ -10,6 +10,7 @@ import { useListings } from '@/hooks/useListings';
 
 const AdminListings = () => {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const {
@@ -24,20 +25,30 @@ const AdminListings = () => {
   const handleEditListing = (listing: Listing) => {
     setSelectedListing(listing);
     setIsEditing(true);
+    setIsDialogOpen(true);
   };
 
   const handleSave = async (formData: Omit<Listing, "id">) => {
-    if (isEditing && selectedListing) {
-      await updateListing.mutateAsync({ ...formData, id: selectedListing.id });
-    } else {
-      await addListing.mutateAsync(formData);
+    try {
+      if (isEditing && selectedListing) {
+        await updateListing.mutateAsync({ ...formData, id: selectedListing.id });
+      } else {
+        await addListing.mutateAsync(formData);
+      }
+      setIsEditing(false);
+      setSelectedListing(null);
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Error saving listing:', error);
     }
-    setIsEditing(false);
-    setSelectedListing(null);
   };
 
   const handleDelete = async (listingId: string) => {
-    await deleteListing.mutateAsync(listingId);
+    try {
+      await deleteListing.mutateAsync(listingId);
+    } catch (error) {
+      console.error('Error deleting listing:', error);
+    }
   };
 
   return (
@@ -54,6 +65,7 @@ const AdminListings = () => {
                 isEditing={isEditing}
                 onSave={handleSave}
                 onCancel={() => {
+                  setIsDialogOpen(false);
                   setIsEditing(false);
                   setSelectedListing(null);
                 }}
