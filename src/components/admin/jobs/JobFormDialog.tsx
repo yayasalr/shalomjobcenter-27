@@ -7,9 +7,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Plus, Loader2, Save } from "lucide-react";
 import { FormFields } from './FormFields';
 
 interface JobFormDialogProps {
@@ -26,6 +28,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   onCancel,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState(selectedJob?.title || '');
   const [domain, setDomain] = useState(selectedJob?.domain || 'residential_security');
   const [description, setDescription] = useState(selectedJob?.description || '');
@@ -71,8 +74,9 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     setDeadline('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     const formData = {
       title,
@@ -91,8 +95,14 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
       status: "active" as const
     };
 
-    onSave(formData);
-    handleOpenChange(false);
+    try {
+      await onSave(formData);
+      handleOpenChange(false);
+    } catch (error) {
+      console.error('Error submitting job:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -109,48 +119,74 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
           {isEditing ? "Modifier l'offre" : "Ajouter une offre"}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[725px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[725px] h-[90vh] flex flex-col p-0">
+        <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle>
             {isEditing ? "Modifier l'offre d'emploi" : "Ajouter une nouvelle offre d'emploi"}
           </DialogTitle>
+          <DialogDescription>
+            {isEditing 
+              ? "Modifiez les informations de l'offre d'emploi ci-dessous."
+              : "Remplissez les informations pour publier une nouvelle offre d'emploi."}
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <FormFields
-            title={title}
-            setTitle={setTitle}
-            domain={domain}
-            setDomain={setDomain}
-            description={description}
-            setDescription={setDescription}
-            requirements={requirements}
-            setRequirements={setRequirements}
-            contract={contract}
-            setContract={setContract}
-            location={location}
-            setLocation={setLocation}
-            salary={salary}
-            setSalary={setSalary}
-            positions={positions}
-            setPositions={setPositions}
-            deadline={deadline}
-            setDeadline={setDeadline}
-          />
 
-          <div className="flex justify-end gap-2 pt-4">
+        <ScrollArea className="flex-1 px-6 py-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <FormFields
+              title={title}
+              setTitle={setTitle}
+              domain={domain}
+              setDomain={setDomain}
+              description={description}
+              setDescription={setDescription}
+              requirements={requirements}
+              setRequirements={setRequirements}
+              contract={contract}
+              setContract={setContract}
+              location={location}
+              setLocation={setLocation}
+              salary={salary}
+              setSalary={setSalary}
+              positions={positions}
+              setPositions={setPositions}
+              deadline={deadline}
+              setDeadline={setDeadline}
+            />
+          </form>
+        </ScrollArea>
+
+        <div className="px-6 py-4 border-t">
+          <div className="flex justify-between w-full">
             <Button 
               type="button" 
               variant="outline" 
               onClick={() => handleOpenChange(false)}
+              disabled={isSubmitting}
               className="px-6"
             >
               Annuler
             </Button>
-            <Button type="submit" className="px-6">
-              {isEditing ? "Mettre à jour" : "Ajouter"}
+            <Button 
+              type="submit"
+              form="job-form"
+              disabled={isSubmitting}
+              className="px-6 gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Traitement...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  {isEditing ? "Mettre à jour" : "Publier l'offre"}
+                </>
+              )}
             </Button>
           </div>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
