@@ -3,8 +3,13 @@ import React from 'react';
 import { AdminSidebar } from './AdminSidebar';
 import { AdminTopbar } from './AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 export function AdminDashboard() {
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -16,40 +21,40 @@ export function AdminDashboard() {
             
             {/* Conteneur des statistiques */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {/* Carte statistique - Logements */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+              {/* Logements */}
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/logements')}>
                 <h3 className="text-sm font-medium text-gray-500">Logements actifs</h3>
                 <p className="text-3xl font-semibold mt-2">124</p>
                 <span className="text-sm text-green-500">+12% ce mois</span>
-              </div>
+              </Card>
 
-              {/* Carte statistique - Réservations */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+              {/* Réservations */}
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/reservations')}>
                 <h3 className="text-sm font-medium text-gray-500">Réservations en cours</h3>
                 <p className="text-3xl font-semibold mt-2">89</p>
                 <span className="text-sm text-green-500">+5% ce mois</span>
-              </div>
+              </Card>
 
-              {/* Carte statistique - Revenus */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+              {/* Revenus */}
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/paiements')}>
                 <h3 className="text-sm font-medium text-gray-500">Revenus du mois</h3>
                 <p className="text-3xl font-semibold mt-2">45,239€</p>
                 <span className="text-sm text-green-500">+8% ce mois</span>
-              </div>
+              </Card>
 
-              {/* Carte statistique - Taux d'occupation */}
-              <div className="bg-white p-6 rounded-lg shadow-sm">
+              {/* Taux d'occupation */}
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/admin/statistiques')}>
                 <h3 className="text-sm font-medium text-gray-500">Taux d'occupation</h3>
                 <p className="text-3xl font-semibold mt-2">78%</p>
                 <span className="text-sm text-red-500">-2% ce mois</span>
-              </div>
+              </Card>
             </div>
 
             {/* Section des dernières actions */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <Card className="p-6">
               <h2 className="text-lg font-semibold mb-4">Dernières actions</h2>
               <div className="space-y-4">
-                {/* Action item */}
+                {/* Action items */}
                 <div className="flex items-center justify-between py-3 border-b">
                   <div>
                     <p className="font-medium">Nouveau logement ajouté</p>
@@ -74,7 +79,15 @@ export function AdminDashboard() {
                   <span className="text-sm text-gray-500">Il y a 5 heures</span>
                 </div>
               </div>
-            </div>
+
+              <Button 
+                className="w-full mt-6" 
+                variant="outline"
+                onClick={() => navigate('/admin/activites')}
+              >
+                Voir toutes les activités
+              </Button>
+            </Card>
           </main>
         </div>
       </div>
