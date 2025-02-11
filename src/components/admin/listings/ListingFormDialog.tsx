@@ -30,7 +30,6 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
   onSave,
   onCancel,
 }) => {
-  const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: selectedListing?.title || '',
@@ -63,7 +62,6 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    if (!e || !e.preventDefault) return;
     e.preventDefault();
     
     const { title, description, price, location, images } = formData;
@@ -92,8 +90,6 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
       };
 
       await onSave(submitData);
-      toast.success(isEditing ? "Logement modifié avec succès" : "Logement ajouté avec succès");
-      setOpen(false);
       resetForm();
     } catch (error) {
       toast.error("Une erreur est survenue");
@@ -127,20 +123,9 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
   };
 
   return (
-    <Dialog 
-      open={open || isEditing} 
-      onOpenChange={(newOpen) => {
-        if (!isSubmitting) {
-          setOpen(newOpen);
-          if (!newOpen) {
-            onCancel();
-            resetForm();
-          }
-        }
-      }}
-    >
+    <Dialog>
       <DialogTrigger asChild>
-        <Button className="gap-2">
+        <Button onClick={() => resetForm()} className="gap-2">
           <Plus className="h-4 w-4" />
           Ajouter un logement
         </Button>
@@ -258,11 +243,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
             <Button 
               type="button" 
               variant="outline" 
-              onClick={() => {
-                setOpen(false);
-                onCancel();
-                resetForm();
-              }}
+              onClick={onCancel}
               disabled={isSubmitting}
               className="px-6"
             >
