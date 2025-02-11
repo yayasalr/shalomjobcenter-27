@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Job } from '@/types/job';
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -76,6 +77,12 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!title || !description || !location || !deadline) {
+      toast.error("Veuillez remplir tous les champs obligatoires");
+      return;
+    }
+
     setIsSubmitting(true);
     
     const formData = {
@@ -97,9 +104,11 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
 
     try {
       await onSave(formData);
+      toast.success(isEditing ? "Offre mise à jour avec succès" : "Offre publiée avec succès");
       handleOpenChange(false);
     } catch (error) {
       console.error('Error submitting job:', error);
+      toast.error("Une erreur est survenue lors de la publication");
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +141,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
         </DialogHeader>
 
         <ScrollArea className="flex-1 px-6 py-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form id="job-form" onSubmit={handleSubmit} className="space-y-4">
             <FormFields
               title={title}
               setTitle={setTitle}

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -10,20 +10,41 @@ import { Job } from '@/types/job';
 
 const AdminJobs = () => {
   const { jobs, isLoading, addJob, updateJob, deleteJob } = useJobs();
-  const [selectedJob, setSelectedJob] = React.useState<Job | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleSave = (formData: Omit<Job, "id">) => {
-    addJob.mutate(formData);
+  const handleSave = async (formData: Omit<Job, "id">) => {
+    try {
+      await addJob.mutateAsync(formData);
+    } catch (error) {
+      throw error;
+    }
   };
 
-  const handleUpdate = (formData: Job) => {
-    updateJob.mutate(formData);
-    setSelectedJob(null);
+  const handleEdit = (job: Job) => {
+    setSelectedJob(job);
+    setIsEditing(true);
   };
 
-  const handleDelete = (jobId: string) => {
+  const handleUpdate = async (formData: Omit<Job, "id">) => {
+    if (selectedJob) {
+      try {
+        await updateJob.mutateAsync({ ...formData, id: selectedJob.id });
+        setSelectedJob(null);
+        setIsEditing(false);
+      } catch (error) {
+        throw error;
+      }
+    }
+  };
+
+  const handleDelete = async (jobId: string) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette offre d'emploi ?")) {
-      deleteJob.mutate(jobId);
+      try {
+        await deleteJob.mutateAsync(jobId);
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
     }
   };
 
@@ -37,10 +58,13 @@ const AdminJobs = () => {
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold">Gestion des offres d'emploi</h1>
               <JobFormDialog
-                onSave={handleSave}
+                onSave={isEditing ? handleUpdate : handleSave}
                 selectedJob={selectedJob}
-                isEditing={false}
-                onCancel={() => setSelectedJob(null)}
+                isEditing={isEditing}
+                onCancel={() => {
+                  setSelectedJob(null);
+                  setIsEditing(false);
+                }}
               />
             </div>
             
@@ -56,7 +80,7 @@ const AdminJobs = () => {
             ) : (
               <JobsTable
                 jobs={jobs}
-                onEdit={(job) => setSelectedJob(job)}
+                onEdit={handleEdit}
                 onDelete={handleDelete}
               />
             )}
