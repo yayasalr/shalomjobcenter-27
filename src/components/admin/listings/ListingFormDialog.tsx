@@ -30,6 +30,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
   onSave,
   onCancel,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: selectedListing?.title || '',
@@ -41,6 +42,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
 
   useEffect(() => {
     if (selectedListing) {
+      setIsOpen(true);
       setFormData({
         title: selectedListing.title,
         description: selectedListing.description || '',
@@ -59,6 +61,14 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
       location: '',
       images: []
     });
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      onCancel();
+      resetForm();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -90,7 +100,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
       };
 
       await onSave(submitData);
-      resetForm();
+      handleOpenChange(false);
     } catch (error) {
       toast.error("Une erreur est survenue");
       console.error(error);
@@ -123,9 +133,15 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen || isEditing} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button onClick={() => resetForm()} className="gap-2">
+        <Button 
+          onClick={() => {
+            resetForm();
+            setIsOpen(true);
+          }} 
+          className="gap-2"
+        >
           <Plus className="h-4 w-4" />
           Ajouter un logement
         </Button>
@@ -243,7 +259,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
             <Button 
               type="button" 
               variant="outline" 
-              onClick={onCancel}
+              onClick={() => handleOpenChange(false)}
               disabled={isSubmitting}
               className="px-6"
             >
