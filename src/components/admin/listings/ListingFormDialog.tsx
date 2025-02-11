@@ -32,25 +32,41 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [title, setTitle] = useState(selectedListing?.title || '');
-  const [description, setDescription] = useState(selectedListing?.description || '');
-  const [price, setPrice] = useState(selectedListing?.price || 0);
-  const [location, setLocation] = useState(selectedListing?.location || '');
-  const [images, setImages] = useState<string[]>(selectedListing?.images || []);
+  const [formData, setFormData] = useState({
+    title: selectedListing?.title || '',
+    description: selectedListing?.description || '',
+    price: selectedListing?.price || 0,
+    location: selectedListing?.location || '',
+    images: selectedListing?.images || []
+  });
 
-  // Mettre à jour le formulaire quand selectedListing change
   useEffect(() => {
     if (selectedListing) {
-      setTitle(selectedListing.title);
-      setDescription(selectedListing.description || '');
-      setPrice(selectedListing.price);
-      setLocation(selectedListing.location);
-      setImages(selectedListing.images || []);
+      setFormData({
+        title: selectedListing.title,
+        description: selectedListing.description || '',
+        price: selectedListing.price,
+        location: selectedListing.location,
+        images: selectedListing.images || []
+      });
     }
   }, [selectedListing]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      price: 0,
+      location: '',
+      images: []
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (!e || !e.preventDefault) return;
     e.preventDefault();
+    
+    const { title, description, price, location, images } = formData;
     
     if (!title || !description || !price || !location) {
       toast.error("Veuillez remplir tous les champs obligatoires");
@@ -60,7 +76,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
     setIsSubmitting(true);
 
     try {
-      const formData: Omit<Listing, "id"> = {
+      const submitData: Omit<Listing, "id"> = {
         title,
         description,
         price,
@@ -75,7 +91,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
         }
       };
 
-      await onSave(formData);
+      await onSave(submitData);
       toast.success(isEditing ? "Logement modifié avec succès" : "Logement ajouté avec succès");
       setOpen(false);
       resetForm();
@@ -87,14 +103,6 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
     }
   };
 
-  const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setPrice(0);
-    setLocation('');
-    setImages([]);
-  };
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -104,20 +112,33 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
       }
       
       const newImages = Array.from(files).map(file => URL.createObjectURL(file));
-      setImages([...images, ...newImages]);
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...newImages]
+      }));
     }
   };
 
+  const handleRemoveImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
   return (
-    <Dialog open={open || isEditing} onOpenChange={(newOpen) => {
-      if (!isSubmitting) {
-        setOpen(newOpen);
-        if (!newOpen) {
-          onCancel();
-          resetForm();
+    <Dialog 
+      open={open || isEditing} 
+      onOpenChange={(newOpen) => {
+        if (!isSubmitting) {
+          setOpen(newOpen);
+          if (!newOpen) {
+            onCancel();
+            resetForm();
+          }
         }
-      }
-    }}>
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
@@ -144,8 +165,8 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
               </label>
               <Input
                 id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Titre du logement"
                 required
                 className="border-2"
@@ -158,8 +179,8 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
               </label>
               <Input
                 id="location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                value={formData.location}
+                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                 placeholder="Adresse du logement"
                 required
                 className="border-2"
@@ -172,8 +193,8 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
               </label>
               <Textarea
                 id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Description détaillée..."
                 className="min-h-[200px] border-2"
                 required
@@ -187,8 +208,8 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
               <Input
                 id="price"
                 type="number"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
+                value={formData.price}
+                onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
                 placeholder="Prix en €"
                 min="0"
                 required
@@ -208,9 +229,9 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
                 onChange={handleImageUpload}
                 className="border-2"
               />
-              {images.length > 0 && (
+              {formData.images.length > 0 && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                  {images.map((image, index) => (
+                  {formData.images.map((image, index) => (
                     <div key={index} className="relative group">
                       <img
                         src={image}
@@ -219,7 +240,7 @@ export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
                       />
                       <button
                         type="button"
-                        onClick={() => setImages(images.filter((_, i) => i !== index))}
+                        onClick={() => handleRemoveImage(index)}
                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         ×
