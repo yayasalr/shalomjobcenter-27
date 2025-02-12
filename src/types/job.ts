@@ -1,11 +1,21 @@
 
 export type JobDomain = 
-  | "residential_security"
-  | "industrial_security" 
-  | "construction_security"
-  | "event_security"
-  | "k9_security"
-  | "security_consulting";
+  | "residential_security" // Sécurité résidentielle
+  | "bodyguard" // Garde du corps
+  | "private_property" // Surveillance propriétés privées
+  | "industrial_security" // Sécurité industrielle
+  | "office_security" // Sécurité de bureau
+  | "security_patrol" // Patrouilleur
+  | "access_control" // Contrôle d'accès
+  | "security_systems" // Opérateur systèmes
+  | "construction_security" // Sécurité chantier
+  | "site_supervisor" // Surveillant travaux
+  | "security_coordinator" // Coordinateur sécurité
+  | "event_security" // Sécurité événementielle
+  | "k9_security" // Sécurité cynophile
+  | "security_manager" // Responsable sécurité
+  | "security_consultant" // Consultant sécurité
+  | "security_trainer"; // Formateur sécurité
 
 export type JobContract = "full_time" | "part_time" | "contract";
 
@@ -43,3 +53,12 @@ export interface Job {
   applications?: JobApplication[];
 }
 
+export interface JobFilters {
+  search: string;
+  domain: JobDomain | 'all';
+  contract: JobContract | 'all';
+  location: string | 'all';
+  salaryRange: [number, number];
+  showExpired: boolean;
+  sortBy: 'newest' | 'salary';
+}
