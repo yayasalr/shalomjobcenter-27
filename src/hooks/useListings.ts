@@ -1,40 +1,8 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
-
-// Simulation d'une base de données en mémoire
-let MOCK_LISTINGS: Listing[] = [
-  {
-    id: "1",
-    title: "Superbe villa avec vue",
-    location: "Sant Miquel de Balansat, Espagne",
-    price: 67,
-    rating: 5.0,
-    image: "/lovable-uploads/00196f15-e8ff-48fb-bf68-e133fa5e4064.png",
-    dates: "15-20 févr.",
-    description: "Une magnifique villa avec vue sur la mer...",
-    images: ["/lovable-uploads/00196f15-e8ff-48fb-bf68-e133fa5e4064.png"],
-    host: {
-      name: "Bas",
-      image: "/placeholder.svg",
-    },
-  },
-  {
-    id: "2",
-    title: "Appartement moderne",
-    location: "San Miguel, Pérou",
-    price: 94,
-    rating: 4.94,
-    image: "https://a0.muscache.com/im/pictures/miso/Hosting-51809333/original/0da70267-d9da-4efb-9123-2714b651c9fd.jpeg",
-    dates: "17-22 févr.",
-    description: "Un appartement moderne au cœur de la ville...",
-    images: ["https://a0.muscache.com/im/pictures/miso/Hosting-51809333/original/0da70267-d9da-4efb-9123-2714b651c9fd.jpeg"],
-    host: {
-      name: "Enrique",
-      image: "/placeholder.svg",
-    },
-  },
-];
+import { MOCK_LISTINGS } from "@/data/mockData";
 
 export const useListings = () => {
   const queryClient = useQueryClient();
@@ -54,7 +22,7 @@ export const useListings = () => {
         ...newListing,
         id: Math.random().toString(36).substr(2, 9),
       };
-      MOCK_LISTINGS = [...MOCK_LISTINGS, listing];
+      MOCK_LISTINGS.push(listing);
       return listing;
     },
     onSuccess: (newListing) => {
@@ -69,9 +37,10 @@ export const useListings = () => {
 
   const updateListing = useMutation({
     mutationFn: async (updatedListing: Listing) => {
-      MOCK_LISTINGS = MOCK_LISTINGS.map((listing) =>
-        listing.id === updatedListing.id ? updatedListing : listing
-      );
+      const index = MOCK_LISTINGS.findIndex(listing => listing.id === updatedListing.id);
+      if (index !== -1) {
+        MOCK_LISTINGS[index] = updatedListing;
+      }
       return updatedListing;
     },
     onSuccess: (updatedListing) => {
@@ -90,7 +59,10 @@ export const useListings = () => {
 
   const deleteListing = useMutation({
     mutationFn: async (listingId: string) => {
-      MOCK_LISTINGS = MOCK_LISTINGS.filter((listing) => listing.id !== listingId);
+      const index = MOCK_LISTINGS.findIndex(listing => listing.id === listingId);
+      if (index !== -1) {
+        MOCK_LISTINGS.splice(index, 1);
+      }
       return listingId;
     },
     onSuccess: (deletedId) => {
