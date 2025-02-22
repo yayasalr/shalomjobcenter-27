@@ -9,11 +9,16 @@ export const useListings = () => {
 
   const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ["listings"],
-    queryFn: async () => MOCK_LISTINGS,
+    queryFn: async () => {
+      // Ajout d'un log pour debug
+      console.log("Chargement des listings depuis MOCK_LISTINGS:", MOCK_LISTINGS);
+      return MOCK_LISTINGS;
+    },
     staleTime: 0,
     gcTime: 0,
     refetchOnMount: true,
-    refetchOnWindowFocus: true
+    refetchOnWindowFocus: true,
+    refetchInterval: 1000 // Rafraîchissement toutes les secondes
   });
 
   const addListing = useMutation({
@@ -23,6 +28,7 @@ export const useListings = () => {
         id: Math.random().toString(36).substr(2, 9),
       };
       MOCK_LISTINGS.push(listing);
+      console.log("Nouveau listing ajouté:", listing); // Log pour debug
       return listing;
     },
     onSuccess: (newListing) => {
@@ -40,6 +46,7 @@ export const useListings = () => {
       const index = MOCK_LISTINGS.findIndex(listing => listing.id === updatedListing.id);
       if (index !== -1) {
         MOCK_LISTINGS[index] = updatedListing;
+        console.log("Listing mis à jour:", updatedListing); // Log pour debug
       }
       return updatedListing;
     },
@@ -62,6 +69,7 @@ export const useListings = () => {
       const index = MOCK_LISTINGS.findIndex(listing => listing.id === listingId);
       if (index !== -1) {
         MOCK_LISTINGS.splice(index, 1);
+        console.log("Listing supprimé:", listingId); // Log pour debug
       }
       return listingId;
     },

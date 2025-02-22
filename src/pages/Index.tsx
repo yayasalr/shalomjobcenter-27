@@ -9,6 +9,8 @@ import { MapPin, Calendar, Users } from "lucide-react";
 const Index = () => {
   const { listings, isLoading, error } = useListings();
 
+  console.log("Listings sur la page d'accueil:", listings); // Ajout d'un log pour debug
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
