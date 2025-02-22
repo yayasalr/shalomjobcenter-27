@@ -4,31 +4,49 @@ import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 import { MOCK_LISTINGS } from "@/data/mockData";
 
+// Fonction pour charger les listings depuis le localStorage ou utiliser les données mock par défaut
+const loadListings = (): Listing[] => {
+  const savedListings = localStorage.getItem('listings');
+  if (savedListings) {
+    return JSON.parse(savedListings);
+  }
+  // Si aucune donnée n'existe dans le localStorage, utiliser les données mock et les sauvegarder
+  localStorage.setItem('listings', JSON.stringify(MOCK_LISTINGS));
+  return MOCK_LISTINGS;
+};
+
+// Fonction pour sauvegarder les listings dans le localStorage
+const saveListings = (listings: Listing[]) => {
+  localStorage.setItem('listings', JSON.stringify(listings));
+};
+
 export const useListings = () => {
   const queryClient = useQueryClient();
 
   const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ["listings"],
     queryFn: async () => {
-      // Ajout d'un log pour debug
-      console.log("Chargement des listings depuis MOCK_LISTINGS:", MOCK_LISTINGS);
-      return MOCK_LISTINGS;
+      const currentListings = loadListings();
+      console.log("Chargement des listings:", currentListings);
+      return currentListings;
     },
     staleTime: 0,
     gcTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    refetchInterval: 1000 // Rafraîchissement toutes les secondes
+    refetchInterval: 1000
   });
 
   const addListing = useMutation({
     mutationFn: async (newListing: Omit<Listing, "id">) => {
+      const currentListings = loadListings();
       const listing = {
         ...newListing,
         id: Math.random().toString(36).substr(2, 9),
       };
-      MOCK_LISTINGS.push(listing);
-      console.log("Nouveau listing ajouté:", listing); // Log pour debug
+      currentListings.push(listing);
+      saveListings(currentListings);
+      console.log("Nouveau listing ajouté:", listing);
       return listing;
     },
     onSuccess: (newListing) => {
@@ -43,10 +61,12 @@ export const useListings = () => {
 
   const updateListing = useMutation({
     mutationFn: async (updatedListing: Listing) => {
-      const index = MOCK_LISTINGS.findIndex(listing => listing.id === updatedListing.id);
+      const currentListings = loadListings();
+      const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
       if (index !== -1) {
-        MOCK_LISTINGS[index] = updatedListing;
-        console.log("Listing mis à jour:", updatedListing); // Log pour debug
+        currentListings[index] = updatedListing;
+        saveListings(currentListings);
+        console.log("Listing mis à jour:", updatedListing);
       }
       return updatedListing;
     },
@@ -66,10 +86,12 @@ export const useListings = () => {
 
   const deleteListing = useMutation({
     mutationFn: async (listingId: string) => {
-      const index = MOCK_LISTINGS.findIndex(listing => listing.id === listingId);
+      const currentListings = loadListings();
+      const index = currentListings.findIndex(listing => listing.id === listingId);
       if (index !== -1) {
-        MOCK_LISTINGS.splice(index, 1);
-        console.log("Listing supprimé:", listingId); // Log pour debug
+        currentListings.splice(index, 1);
+        saveListings(currentListings);
+        console.log("Listing supprimé:", listingId);
       }
       return listingId;
     },
