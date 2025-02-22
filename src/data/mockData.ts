@@ -44,7 +44,7 @@ export const MOCK_JOBS: Job[] = [
 export const MOCK_LISTINGS: Listing[] = [
   {
     id: "1",
-    title: "Superbe villa avec vue",
+    title: "Superbe villa avec vue 90",
     location: "Sant Miquel de Balansat, Espagne",
     price: 67,
     rating: 5.0,
