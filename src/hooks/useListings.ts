@@ -43,6 +43,9 @@ export const useListings = () => {
   const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ["listings"],
     queryFn: async () => MOCK_LISTINGS,
+    // Ajout de la configuration pour actualiser les données
+    staleTime: 0, // Les données sont considérées comme périmées immédiatement
+    cacheTime: 0, // Pas de mise en cache
   });
 
   const addListing = useMutation({
@@ -51,12 +54,13 @@ export const useListings = () => {
         ...newListing,
         id: Math.random().toString(36).substr(2, 9),
       };
-      // Simuler l'ajout à la base de données
       MOCK_LISTINGS = [...MOCK_LISTINGS, listing];
       return listing;
     },
     onSuccess: (newListing) => {
       queryClient.setQueryData(["listings"], (old: Listing[] = []) => [...old, newListing]);
+      // Force le rafraîchissement des données
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement ajouté avec succès");
     },
     onError: () => {
@@ -66,7 +70,6 @@ export const useListings = () => {
 
   const updateListing = useMutation({
     mutationFn: async (updatedListing: Listing) => {
-      // Simuler la mise à jour dans la base de données
       MOCK_LISTINGS = MOCK_LISTINGS.map((listing) =>
         listing.id === updatedListing.id ? updatedListing : listing
       );
@@ -78,6 +81,8 @@ export const useListings = () => {
           listing.id === updatedListing.id ? updatedListing : listing
         )
       );
+      // Force le rafraîchissement des données
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement mis à jour avec succès");
     },
     onError: () => {
@@ -87,7 +92,6 @@ export const useListings = () => {
 
   const deleteListing = useMutation({
     mutationFn: async (listingId: string) => {
-      // Simuler la suppression dans la base de données
       MOCK_LISTINGS = MOCK_LISTINGS.filter((listing) => listing.id !== listingId);
       return listingId;
     },
@@ -95,6 +99,8 @@ export const useListings = () => {
       queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
         old.filter((listing) => listing.id !== deletedId)
       );
+      // Force le rafraîchissement des données
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement supprimé avec succès");
     },
     onError: () => {
