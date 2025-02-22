@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
@@ -43,9 +42,10 @@ export const useListings = () => {
   const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ["listings"],
     queryFn: async () => MOCK_LISTINGS,
-    // Ajout de la configuration pour actualiser les données
-    staleTime: 0, // Les données sont considérées comme périmées immédiatement
-    cacheTime: 0, // Pas de mise en cache
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   const addListing = useMutation({
@@ -59,7 +59,6 @@ export const useListings = () => {
     },
     onSuccess: (newListing) => {
       queryClient.setQueryData(["listings"], (old: Listing[] = []) => [...old, newListing]);
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement ajouté avec succès");
     },
@@ -81,7 +80,6 @@ export const useListings = () => {
           listing.id === updatedListing.id ? updatedListing : listing
         )
       );
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement mis à jour avec succès");
     },
@@ -99,7 +97,6 @@ export const useListings = () => {
       queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
         old.filter((listing) => listing.id !== deletedId)
       );
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement supprimé avec succès");
     },

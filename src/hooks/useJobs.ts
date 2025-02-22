@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Job } from "@/types/job";
 import { toast } from "sonner";
@@ -98,9 +97,10 @@ export const useJobs = () => {
   const { data: jobs = [], isLoading, error } = useQuery({
     queryKey: ["jobs"],
     queryFn: async () => MOCK_JOBS,
-    // Ajout de la configuration pour actualiser les données
-    staleTime: 0, // Les données sont considérées comme périmées immédiatement
-    cacheTime: 0, // Pas de mise en cache
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 
   const addJob = useMutation({
@@ -114,7 +114,6 @@ export const useJobs = () => {
     },
     onSuccess: (newJob) => {
       queryClient.setQueryData(["jobs"], (old: Job[] = []) => [...old, newJob]);
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Offre d'emploi ajoutée avec succès");
     },
@@ -134,7 +133,6 @@ export const useJobs = () => {
       queryClient.setQueryData(["jobs"], (old: Job[] = []) =>
         old.map((job) => (job.id === updatedJob.id ? updatedJob : job))
       );
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Offre d'emploi mise à jour avec succès");
     },
@@ -152,7 +150,6 @@ export const useJobs = () => {
       queryClient.setQueryData(["jobs"], (old: Job[] = []) =>
         old.filter((job) => job.id !== deletedId)
       );
-      // Force le rafraîchissement des données
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Offre d'emploi supprimée avec succès");
     },
