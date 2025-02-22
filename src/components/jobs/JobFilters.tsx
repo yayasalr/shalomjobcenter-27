@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { JobDomain, JobContract, JobFilters } from '@/types/job';
+import type { JobDomain, JobContract } from '@/types/job';
 import {
   Select,
   SelectContent,
@@ -20,9 +20,19 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Search, Filter } from "lucide-react";
 
+interface FiltersState {
+  search: string;
+  domain: JobDomain | 'all';
+  contract: JobContract | 'all';
+  location: string | 'all';
+  salaryRange: [number, number];
+  showExpired: boolean;
+  sortBy: 'newest' | 'salary';
+}
+
 interface JobFiltersProps {
-  filters: JobFilters;
-  onFiltersChange: (filters: JobFilters) => void;
+  filters: FiltersState;
+  onFiltersChange: (filters: FiltersState) => void;
   locations: string[];
 }
 
@@ -64,6 +74,7 @@ export const JobFilters: React.FC<JobFiltersProps> = ({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <Input
+            type="text"
             placeholder="Rechercher des offres..."
             value={filters.search}
             onChange={(e) => onFiltersChange({ ...filters, search: e.target.value })}
@@ -89,7 +100,7 @@ export const JobFilters: React.FC<JobFiltersProps> = ({
 
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" type="button">
               <Filter className="h-4 w-4" />
               Filtres avancés
             </Button>
