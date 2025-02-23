@@ -3,13 +3,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Job } from "@/types/job";
 import { toast } from "sonner";
 import { MOCK_JOBS } from "@/data/mockData";
+import useLocalStorage from "./useLocalStorage";
 
 export const useJobs = () => {
+  const { loadData, saveData } = useLocalStorage();
   const queryClient = useQueryClient();
 
   const { data: jobs = [], isLoading, error } = useQuery({
     queryKey: ["jobs"],
-    queryFn: async () => MOCK_JOBS,
+    queryFn: async () => loadData('jobs', MOCK_JOBS),
     staleTime: 0,
     gcTime: 0,
     refetchOnMount: true,
@@ -18,11 +20,13 @@ export const useJobs = () => {
 
   const addJob = useMutation({
     mutationFn: async (newJob: Omit<Job, "id">) => {
+      const currentJobs = loadData('jobs', MOCK_JOBS);
       const job = {
         ...newJob,
         id: Math.random().toString(36).substr(2, 9),
       };
-      MOCK_JOBS.push(job);
+      currentJobs.push(job);
+      saveData('jobs', currentJobs);
       return job;
     },
     onSuccess: (newJob) => {
@@ -37,10 +41,11 @@ export const useJobs = () => {
 
   const updateJob = useMutation({
     mutationFn: async (updatedJob: Job) => {
-      const index = MOCK_JOBS.findIndex(job => job.id === updatedJob.id);
-      if (index !== -1) {
-        MOCK_JOBS[index] = updatedJob;
-      }
+      const currentJobs = loadData('jobs', MOCK_JOBS);
+      const updatedJobs = currentJobs.map(job =>
+        job.id === updatedJob.id ? updatedJob : job
+      );
+      saveData('jobs', updatedJobs);
       return updatedJob;
     },
     onSuccess: (updatedJob) => {
@@ -57,10 +62,9 @@ export const useJobs = () => {
 
   const deleteJob = useMutation({
     mutationFn: async (jobId: string) => {
-      const index = MOCK_JOBS.findIndex(job => job.id === jobId);
-      if (index !== -1) {
-        MOCK_JOBS.splice(index, 1);
-      }
+      const currentJobs = loadData('jobs', MOCK_JOBS);
+      const updatedJobs = currentJobs.filter(job => job.id !== jobId);
+      saveData('jobs', updatedJobs);
       return jobId;
     },
     onSuccess: (deletedId) => {
