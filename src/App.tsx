@@ -17,6 +17,8 @@ import AdminJobs from "./pages/admin/AdminJobs";
 import ListingDetail from "./pages/ListingDetail";
 import Jobs from "./pages/Jobs";
 import JobDetail from "./pages/JobDetail";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,6 +37,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/logements" element={<AdminListings />} />
           <Route path="/admin/utilisateurs" element={<AdminUsers />} />
