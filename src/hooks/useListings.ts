@@ -32,9 +32,6 @@ export const useListings = () => {
     },
     staleTime: 0,
     gcTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchInterval: 1000
   });
 
   const addListing = useMutation({
@@ -43,7 +40,15 @@ export const useListings = () => {
       const listing = {
         ...newListing,
         id: Math.random().toString(36).substr(2, 9),
+        rating: 0,
+        dates: new Date().toLocaleDateString(),
       };
+      
+      // Assurez-vous que l'image principale est définie
+      if (listing.images && listing.images.length > 0 && !listing.image) {
+        listing.image = listing.images[0];
+      }
+      
       currentListings.push(listing);
       saveListings(currentListings);
       console.log("Nouveau listing ajouté:", listing);
@@ -63,7 +68,13 @@ export const useListings = () => {
     mutationFn: async (updatedListing: Listing) => {
       const currentListings = loadListings();
       const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
+      
       if (index !== -1) {
+        // Assurez-vous que l'image principale est définie
+        if (updatedListing.images && updatedListing.images.length > 0 && !updatedListing.image) {
+          updatedListing.image = updatedListing.images[0];
+        }
+        
         currentListings[index] = updatedListing;
         saveListings(currentListings);
         console.log("Listing mis à jour:", updatedListing);

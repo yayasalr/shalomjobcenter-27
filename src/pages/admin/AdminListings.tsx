@@ -7,11 +7,17 @@ import { ListingFormDialog } from '@/components/admin/listings/ListingFormDialog
 import { ListingsTable } from '@/components/admin/listings/ListingsTable';
 import { Listing } from '@/types/listing';
 import { useListings } from '@/hooks/useListings';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 const AdminListings = () => {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceFilter, setPriceFilter] = useState<{ min: number; max: number }>({ min: 0, max: 1000 });
+  const [showFilters, setShowFilters] = useState(false);
 
   const {
     listings,
@@ -51,6 +57,13 @@ const AdminListings = () => {
     }
   };
 
+  const filteredListings = listings?.filter(listing => {
+    const matchesSearch = listing.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         listing.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPrice = listing.price >= priceFilter.min && listing.price <= priceFilter.max;
+    return matchesSearch && matchesPrice;
+  });
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -71,6 +84,53 @@ const AdminListings = () => {
                 }}
               />
             </div>
+
+            <div className="mb-6 space-y-4">
+              <div className="flex gap-4 items-center">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Rechercher par titre ou localisation..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowFilters(!showFilters)}
+                >
+                  <SlidersHorizontal className="mr-2 h-4 w-4" />
+                  Filtres
+                </Button>
+              </div>
+
+              {showFilters && (
+                <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm">
+                  <div className="grid grid-cols-2 gap-4 flex-1">
+                    <div>
+                      <label className="text-sm text-gray-600">Prix minimum</label>
+                      <Input
+                        type="number"
+                        value={priceFilter.min}
+                        onChange={(e) => setPriceFilter({ ...priceFilter, min: Number(e.target.value) })}
+                        min={0}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-600">Prix maximum</label>
+                      <Input
+                        type="number"
+                        value={priceFilter.max}
+                        onChange={(e) => setPriceFilter({ ...priceFilter, max: Number(e.target.value) })}
+                        min={0}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             
             {isLoading ? (
               <div className="grid grid-cols-1 gap-4">
@@ -81,9 +141,9 @@ const AdminListings = () => {
                   </div>
                 ))}
               </div>
-            ) : listings && listings.length > 0 ? (
+            ) : filteredListings && filteredListings.length > 0 ? (
               <ListingsTable
-                listings={listings}
+                listings={filteredListings}
                 onEdit={handleEditListing}
                 onDelete={handleDelete}
               />
