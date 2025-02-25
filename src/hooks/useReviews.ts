@@ -75,4 +75,62 @@ export const useReviews = () => {
         review.id === updatedReview.id ? updatedReview : review
       );
       saveData('reviews', updatedReviews);
-      return up
+      return updatedReview;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      toast.success("Avis mis à jour avec succès");
+    },
+    onError: () => {
+      toast.error("Erreur lors de la mise à jour de l'avis");
+    },
+  });
+
+  const addReview = useMutation({
+    mutationFn: async (newReview: Omit<Review, "id" | "status" | "date">) => {
+      const currentReviews = loadData('reviews', INITIAL_REVIEWS);
+      const review = {
+        ...newReview,
+        id: Math.random().toString(36).substring(7),
+        date: new Date().toISOString().split('T')[0],
+        status: 'pending' as const
+      };
+      const updatedReviews = [...currentReviews, review];
+      saveData('reviews', updatedReviews);
+      return review;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      toast.success("Avis ajouté avec succès");
+    },
+    onError: () => {
+      toast.error("Erreur lors de l'ajout de l'avis");
+    },
+  });
+
+  const deleteReview = useMutation({
+    mutationFn: async (reviewId: string) => {
+      const currentReviews = loadData('reviews', INITIAL_REVIEWS);
+      const updatedReviews = currentReviews.filter(review => review.id !== reviewId);
+      saveData('reviews', updatedReviews);
+      return reviewId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      toast.success("Avis supprimé avec succès");
+    },
+    onError: () => {
+      toast.error("Erreur lors de la suppression de l'avis");
+    },
+  });
+
+  return {
+    reviews,
+    isLoading,
+    error,
+    updateReviewStatus,
+    updateReviewContent,
+    addReview,
+    deleteReview,
+  };
+};
