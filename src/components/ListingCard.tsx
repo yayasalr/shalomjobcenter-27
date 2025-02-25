@@ -2,32 +2,15 @@
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Listing } from "@/types/listing";
 
 interface ListingCardProps {
-  id: string;
-  title: string;
-  location: string;
-  price: number;
-  rating: number;
-  image: string;
-  dates: string;
-  host: {
-    name: string;
-    image: string;
-  };
+  listing: Listing;
 }
 
-export const ListingCard = ({
-  id,
-  title,
-  location,
-  price,
-  rating,
-  image,
-  dates,
-  host,
-}: ListingCardProps) => {
+export const ListingCard = ({ listing }: ListingCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const { id, title, location, price, rating, image, dates, host } = listing;
 
   return (
     <Link to={`/logement/${id}`} className="group relative">
