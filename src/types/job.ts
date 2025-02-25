@@ -15,7 +15,8 @@ export type JobDomain =
   | "k9_security" // Sécurité cynophile
   | "security_manager" // Responsable sécurité
   | "security_consultant" // Consultant sécurité
-  | "security_trainer"; // Formateur sécurité
+  | "security_trainer" // Formateur sécurité
+  | "housing_offer"; // Offre de logement
 
 export type JobContract = "full_time" | "part_time" | "contract";
 
@@ -51,6 +52,11 @@ export interface Job {
   status: "active" | "closed";
   images?: string[];
   applications?: JobApplication[];
+  // Propriétés spécifiques aux logements
+  price?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  isHousingOffer?: boolean;
 }
 
 export interface JobFilters {
@@ -61,4 +67,5 @@ export interface JobFilters {
   salaryRange: [number, number];
   showExpired: boolean;
   sortBy: 'newest' | 'salary';
+  showHousingOnly?: boolean;
 }

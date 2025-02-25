@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Menu, User } from "lucide-react";
+import { Search, Menu, User, Briefcase, Home } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -69,6 +68,12 @@ export const Navbar = () => {
             </Button>
             <Button variant="ghost" size="icon">
               <User className="h-6 w-6" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Briefcase className="h-6 w-6" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <Home className="h-6 w-6" />
             </Button>
           </nav>
         </div>

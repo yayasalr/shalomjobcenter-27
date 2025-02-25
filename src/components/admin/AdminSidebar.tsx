@@ -4,11 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   Home,
-  Users,
-  CalendarDays,
-  CreditCard,
-  MessageSquare,
-  LifeBuoy,
   Briefcase,
 } from 'lucide-react';
 import {
@@ -29,40 +24,15 @@ const menuItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Logements",
-    url: "/admin/logements",
-    icon: Home,
-  },
-  {
-    title: "Utilisateurs",
-    url: "/admin/utilisateurs",
-    icon: Users,
-  },
-  {
-    title: "Réservations",
-    url: "/admin/reservations",
-    icon: CalendarDays,
-  },
-  {
-    title: "Paiements",
-    url: "/admin/paiements",
-    icon: CreditCard,
-  },
-  {
-    title: "Avis & Commentaires",
-    url: "/admin/avis",
-    icon: MessageSquare,
-  },
-  {
-    title: "Emplois",
+    title: "Offres Emploi & Logement",
     url: "/admin/emplois",
     icon: Briefcase,
   },
   {
-    title: "Support & Assistance",
-    url: "/admin/support",
-    icon: LifeBuoy,
-  },
+    title: "Logements",
+    url: "/admin/logements",
+    icon: Home,
+  }
 ];
 
 export function AdminSidebar() {
