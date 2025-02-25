@@ -180,23 +180,4 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               type="submit"
               form="job-form"
               disabled={isSubmitting}
-              className="px-6 gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Traitement...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  {isEditing ? "Mettre à jour" : "Publier l'offre"}
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
+              className="px-6 gap
