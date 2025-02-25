@@ -75,22 +75,4 @@ export const useReviews = () => {
         review.id === updatedReview.id ? updatedReview : review
       );
       saveData('reviews', updatedReviews);
-      return updatedReview;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
-      toast.success("Avis mis à jour avec succès");
-    },
-    onError: () => {
-      toast.error("Erreur lors de la mise à jour de l'avis");
-    },
-  });
-
-  return {
-    reviews,
-    isLoading,
-    error,
-    updateReviewStatus,
-    updateReviewContent,
-  };
-};
+      return up
