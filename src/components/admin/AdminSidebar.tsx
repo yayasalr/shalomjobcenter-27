@@ -64,6 +64,11 @@ const menuItems = [
     url: "/admin/support",
     icon: MessageSquare,
   },
+  {
+    title: "Paramètres",
+    url: "/admin/parametres",
+    icon: Settings,
+  },
 ];
 
 export function AdminSidebar() {

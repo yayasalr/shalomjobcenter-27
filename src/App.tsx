@@ -14,6 +14,7 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminSupport from "./pages/admin/AdminSupport";
 import AdminJobs from "./pages/admin/AdminJobs";
+import { AdminSettings } from "./pages/admin/AdminSettings";
 import ListingDetail from "./pages/ListingDetail";
 import Jobs from "./pages/Jobs";
 import JobDetail from "./pages/JobDetail";
@@ -47,15 +48,7 @@ const App = () => (
           <Route path="/admin/avis" element={<AdminReviews />} />
           <Route path="/admin/support" element={<AdminSupport />} />
           <Route path="/admin/emplois" element={<AdminJobs />} />
+          <Route path="/admin/parametres" element={<AdminSettings />} />
           <Route path="/logement/:id" element={<ListingDetail />} />
           <Route path="/emplois" element={<Jobs />} />
-          <Route path="/emploi/:id" element={<JobDetail />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+          <Route path="/emploi/:
