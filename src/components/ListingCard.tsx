@@ -42,7 +42,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           <div>
             <h3 className="text-lg font-medium text-gray-900">{location}</h3>
             <p className="text-sm text-gray-500">
-              Séjournez chez {host.name}
+              Séjournez chez {host?.name || "l'hôte"}
             </p>
             <p className="text-sm text-gray-500">{dates}</p>
           </div>

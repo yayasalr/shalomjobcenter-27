@@ -8,7 +8,12 @@ import { MOCK_LISTINGS } from "@/data/mockData";
 const loadListings = (): Listing[] => {
   const savedListings = localStorage.getItem('listings');
   if (savedListings) {
-    return JSON.parse(savedListings);
+    const parsedListings = JSON.parse(savedListings);
+    // S'assurer que chaque listing a une propriété host
+    return parsedListings.map((listing: Listing) => ({
+      ...listing,
+      host: listing.host || { name: "Hôte", image: "/placeholder.svg" }
+    }));
   }
   // Si aucune donnée n'existe dans le localStorage, utiliser les données mock et les sauvegarder
   localStorage.setItem('listings', JSON.stringify(MOCK_LISTINGS));
@@ -42,6 +47,8 @@ export const useListings = () => {
         id: Math.random().toString(36).substr(2, 9),
         rating: 0,
         dates: new Date().toLocaleDateString(),
+        // S'assurer que chaque nouveau listing a un hôte
+        host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
       };
       
       // Assurez-vous que l'image principale est définie
@@ -74,6 +81,9 @@ export const useListings = () => {
         if (updatedListing.images && updatedListing.images.length > 0 && !updatedListing.image) {
           updatedListing.image = updatedListing.images[0];
         }
+        
+        // S'assurer que le listing mis à jour a un hôte
+        updatedListing.host = updatedListing.host || { name: "Hôte", image: "/placeholder.svg" };
         
         currentListings[index] = updatedListing;
         saveListings(currentListings);
