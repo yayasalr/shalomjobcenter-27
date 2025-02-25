@@ -36,7 +36,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   const [requirements, setRequirements] = useState(selectedJob?.requirements || '');
   const [contract, setContract] = useState(selectedJob?.contract || 'full_time');
   const [location, setLocation] = useState(selectedJob?.location || '');
-  const [salary, setSalary] = useState(selectedJob?.salary.amount || 0);
+  const [salary, setSalary] = useState(selectedJob?.salary?.amount || 0);
   const [positions, setPositions] = useState(selectedJob?.positions || 1);
   const [deadline, setDeadline] = useState(selectedJob?.deadline || '');
 
@@ -180,4 +180,23 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               type="submit"
               form="job-form"
               disabled={isSubmitting}
-              className="px-6 gap
+              className="px-6 gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  En cours...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  {isEditing ? "Mettre à jour" : "Publier l'offre"}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
