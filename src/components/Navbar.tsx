@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Menu, User, Briefcase, Home } from "lucide-react";
@@ -22,6 +23,18 @@ export const Navbar = () => {
             Location+
           </Link>
 
+          {/* Navigation principale - Seulement Emplois et Logements */}
+          <div className="hidden md:flex items-center space-x-6">
+            <Link to="/emplois" className="text-gray-700 hover:text-gray-900 flex items-center gap-2">
+              <Briefcase className="h-5 w-5" />
+              <span>Offres d'emploi</span>
+            </Link>
+            <Link to="/" className="text-gray-700 hover:text-gray-900 flex items-center gap-2">
+              <Home className="h-5 w-5" />
+              <span>Logements</span>
+            </Link>
+          </div>
+
           {/* Search */}
           <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
             <div className="relative w-full">
@@ -34,7 +47,7 @@ export const Navbar = () => {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation utilisateur */}
           <nav className="flex items-center space-x-4">
             {user ? (
               <>
@@ -48,6 +61,13 @@ export const Navbar = () => {
                 >
                   Déconnexion
                 </Button>
+                {user.role === 'admin' && (
+                  <Link to="/admin">
+                    <Button variant="outline" className="text-gray-700">
+                      Administration
+                    </Button>
+                  </Link>
+                )}
               </>
             ) : (
               <>
@@ -68,12 +88,6 @@ export const Navbar = () => {
             </Button>
             <Button variant="ghost" size="icon">
               <User className="h-6 w-6" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <Briefcase className="h-6 w-6" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <Home className="h-6 w-6" />
             </Button>
           </nav>
         </div>

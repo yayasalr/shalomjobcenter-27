@@ -5,6 +5,12 @@ import {
   LayoutDashboard,
   Home,
   Briefcase,
+  Users,
+  CalendarClock,
+  CreditCard,
+  Star,
+  MessageSquare,
+  Settings,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -32,7 +38,32 @@ const menuItems = [
     title: "Logements",
     url: "/admin/logements",
     icon: Home,
-  }
+  },
+  {
+    title: "Utilisateurs",
+    url: "/admin/utilisateurs",
+    icon: Users,
+  },
+  {
+    title: "Réservations",
+    url: "/admin/reservations",
+    icon: CalendarClock,
+  },
+  {
+    title: "Paiements",
+    url: "/admin/paiements",
+    icon: CreditCard,
+  },
+  {
+    title: "Avis",
+    url: "/admin/avis",
+    icon: Star,
+  },
+  {
+    title: "Support",
+    url: "/admin/support",
+    icon: MessageSquare,
+  },
 ];
 
 export function AdminSidebar() {
