@@ -249,4 +249,153 @@ const AdminReservations = () => {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <Dropdown
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setSelectedReservation(reservation);
+                                    setIsDialogOpen(true);
+                                  }}
+                                >
+                                  Voir les détails
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleUpdateStatus(reservation.id, 'confirmed')}
+                                  disabled={reservation.status === 'confirmed'}
+                                >
+                                  Confirmer
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleUpdateStatus(reservation.id, 'pending')}
+                                  disabled={reservation.status === 'pending'}
+                                >
+                                  Mettre en attente
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleUpdateStatus(reservation.id, 'cancelled')}
+                                  disabled={reservation.status === 'cancelled'}
+                                  className="text-red-600"
+                                >
+                                  Annuler
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white p-8 rounded-lg shadow text-center">
+                <div className="mb-4 text-gray-400">
+                  <ClockIcon className="h-12 w-12 mx-auto" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune réservation trouvée</h3>
+                <p className="text-gray-500">Il n'y a pas de réservations correspondant à vos critères.</p>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
+      
+      {/* Dialogue de détails de réservation */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Détails de la réservation</DialogTitle>
+            <DialogDescription>
+              Informations complètes sur la réservation
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedReservation && (
+            <div className="space-y-4 my-4">
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 flex-shrink-0 rounded-md overflow-hidden">
+                  <img
+                    src={selectedReservation.listingImage || "/placeholder.svg"}
+                    alt={selectedReservation.listingTitle}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">{selectedReservation.listingTitle}</h3>
+                  <p className="text-gray-500">{selectedReservation.listingLocation}</p>
+                </div>
+              </div>
+              
+              <Separator />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Client</Label>
+                  <p className="text-sm mt-1">{selectedReservation.guestName}</p>
+                </div>
+                <div>
+                  <Label>Email</Label>
+                  <p className="text-sm mt-1">{selectedReservation.guestEmail}</p>
+                </div>
+                <div>
+                  <Label>Arrivée</Label>
+                  <p className="text-sm mt-1">{formatDate(selectedReservation.checkIn)}</p>
+                </div>
+                <div>
+                  <Label>Départ</Label>
+                  <p className="text-sm mt-1">{formatDate(selectedReservation.checkOut)}</p>
+                </div>
+                <div>
+                  <Label>Voyageurs</Label>
+                  <p className="text-sm mt-1">{selectedReservation.guests} personne(s)</p>
+                </div>
+                <div>
+                  <Label>Prix total</Label>
+                  <p className="text-sm mt-1 font-semibold">
+                    {Math.round(selectedReservation.totalPrice * 655.957).toLocaleString('fr-FR')} FCFA
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <Label>Statut actuel</Label>
+                  <div className="mt-2">
+                    <Badge
+                      className={`${
+                        selectedReservation.status === 'confirmed'
+                          ? 'bg-green-100 text-green-800'
+                          : selectedReservation.status === 'pending'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {selectedReservation.status === 'confirmed'
+                        ? 'Confirmée'
+                        : selectedReservation.status === 'pending'
+                        ? 'En attente'
+                        : 'Annulée'}
+                    </Badge>
+                  </div>
+                </div>
+                {selectedReservation.notes && (
+                  <div className="col-span-2">
+                    <Label>Notes</Label>
+                    <p className="text-sm mt-1">{selectedReservation.notes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-500">
+                Réservation créée le {selectedReservation && formatDate(selectedReservation.createdAt)}
+              </p>
+            </div>
+            <Button onClick={() => setIsDialogOpen(false)}>Fermer</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </SidebarProvider>
+  );
+};
+
+export default AdminReservations;
