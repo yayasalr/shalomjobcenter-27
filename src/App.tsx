@@ -51,4 +51,12 @@ const App = () => (
           <Route path="/admin/parametres" element={<AdminSettings />} />
           <Route path="/logement/:id" element={<ListingDetail />} />
           <Route path="/emplois" element={<Jobs />} />
-          <Route path="/emploi/:
+          <Route path="/emploi/:id" element={<JobDetail />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
