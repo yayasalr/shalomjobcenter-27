@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Search, Menu, User, Globe } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { useAuth } from "@/hooks/useAuth";
+import useAuth from "@/hooks/useAuth";
 
 export const Navbar = () => {
   const location = useLocation();
