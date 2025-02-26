@@ -1,8 +1,9 @@
 
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Listing } from "@/types/listing";
+import { toast } from "sonner";
 
 interface ListingCardProps {
   listing: Listing;
@@ -10,43 +11,53 @@ interface ListingCardProps {
 
 export const ListingCard = ({ listing }: ListingCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const { id, title, location, price, rating, image, dates, host } = listing;
 
-  // Vérification supplémentaire pour l'URL de l'image
-  const getValidImageUrl = (imageUrl: string) => {
-    // Liste d'images de secours si l'image d'origine n'est pas disponible
-    const fallbackImages = [
-      "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
-      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"
-    ];
+  // Amélioration du traitement des images
+  useEffect(() => {
+    const processImageUrl = () => {
+      // Liste d'images de secours fiables pour Lomé
+      const fallbackImages = [
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", // Villa moderne
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800", // Maison élégante
+        "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800", // Appartement contemporain
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", // Logement lumineux
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"  // Intérieur moderne
+      ];
+      
+      // Si l'image est une URL blob ou vide
+      if (!image || image.startsWith('blob:')) {
+        setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
+        return;
+      }
+      
+      // Si l'image est une URL relative
+      if (image.startsWith('/')) {
+        setImageUrl(image);
+        return;
+      }
+      
+      // Utilisation de l'image telle quelle dans les autres cas
+      setImageUrl(image);
+    };
     
-    // Si l'image commence par blob: ou est vide, on utilise une image de secours
-    if (!imageUrl || imageUrl.startsWith('blob:')) {
-      return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-    }
-    
-    // Si l'image commence par /, on s'assure qu'elle est accessible
-    if (imageUrl.startsWith('/') && !imageUrl.startsWith('/lovable-uploads/')) {
-      return imageUrl;
-    }
-    
-    return imageUrl;
-  };
+    processImageUrl();
+  }, [image]);
 
-  const displayImage = getValidImageUrl(image);
+  // Conversion du prix en FCFA
+  const priceFCFA = Math.round(price * 655.957); // Conversion approximative d'euros en FCFA
 
   return (
     <Link to={`/logement/${id}`} className="group relative">
       <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-200">
         <img
-          src={displayImage}
+          src={imageUrl}
           alt={title}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
-            // En cas d'erreur de chargement d'image, on utilise une image de secours
+            console.log("Erreur de chargement d'image pour:", title);
+            // Image de secours en cas d'erreur
             e.currentTarget.src = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800";
           }}
         />
@@ -54,6 +65,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           onClick={(e) => {
             e.preventDefault();
             setIsFavorite(!isFavorite);
+            toast.success(isFavorite ? "Retiré des favoris" : "Ajouté aux favoris");
           }}
           className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100/90"
         >
@@ -88,7 +100,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           </div>
         </div>
         <p className="mt-2 text-base font-medium text-gray-900">
-          <span>{price} €</span>
+          <span>{priceFCFA.toLocaleString('fr-FR')} FCFA</span>
           <span className="text-gray-500"> par nuit</span>
         </p>
       </div>
