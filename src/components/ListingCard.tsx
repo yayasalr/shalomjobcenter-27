@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface ListingCardProps {
   listing: Listing;
@@ -13,8 +14,9 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
   const { id, title, location, price, rating, image, dates, host } = listing;
+  const { settings } = useSiteSettings();
 
-  // Amélioration du traitement des images
+  // Amélioration de la gestion des images
   useEffect(() => {
     const processImageUrl = () => {
       // Liste d'images de secours fiables pour Lomé
@@ -25,32 +27,78 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
         "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", // Logement lumineux
         "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"  // Intérieur moderne
       ];
-      
-      // Si l'image est une URL blob ou vide
-      if (!image || image.startsWith('blob:')) {
+
+      // Vérification du type d'image et traitement approprié
+      if (!image) {
+        // Pas d'image => utiliser une image de secours
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
-        return;
-      }
-      
-      // Si l'image est une URL relative
-      if (image.startsWith('/')) {
+      } else if (image.startsWith('blob:')) {
+        // Les URLs blob ne sont pas persistantes après rafraîchissement de la page
+        // Nouvelle fonctionnalité #6: résolution des images blob
+        const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+        console.log(`Image blob détectée (${image}), utilisation d'une alternative: ${randomFallback}`);
+        setImageUrl(randomFallback);
+      } else if (image.startsWith('http')) {
+        // URL HTTP normale
         setImageUrl(image);
-        return;
+      } else if (image.startsWith('/')) {
+        // Chemin relatif
+        // S'assurer que l'image existe
+        const img = new Image();
+        img.onload = () => setImageUrl(image);
+        img.onerror = () => {
+          console.warn(`Image non trouvée: ${image}, utilisation d'une alternative`);
+          setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
+        };
+        img.src = image;
+      } else {
+        // Type d'URL inconnu, utiliser une image de secours
+        console.warn(`Format d'image non reconnu: ${image}, utilisation d'une alternative`);
+        setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
       }
-      
-      // Utilisation de l'image telle quelle dans les autres cas
-      setImageUrl(image);
     };
     
     processImageUrl();
   }, [image]);
 
+  // Vérification si le logement est déjà dans les favoris
+  useEffect(() => {
+    const favorites = localStorage.getItem('favorites');
+    if (favorites) {
+      const favList = JSON.parse(favorites);
+      setIsFavorite(favList.includes(id));
+    }
+  }, [id]);
+
+  // Gestion des favoris
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    let favorites: string[] = [];
+    const storedFavorites = localStorage.getItem('favorites');
+    
+    if (storedFavorites) {
+      favorites = JSON.parse(storedFavorites);
+    }
+    
+    if (isFavorite) {
+      favorites = favorites.filter(favId => favId !== id);
+      toast.success("Retiré des favoris");
+    } else {
+      favorites.push(id);
+      toast.success("Ajouté aux favoris");
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
+
   // Conversion du prix en FCFA
-  const priceFCFA = Math.round(price * 655.957); // Conversion approximative d'euros en FCFA
+  const priceFCFA = Math.round(price * 655.957); // Conversion d'euros en FCFA
 
   return (
     <Link to={`/logement/${id}`} className="group relative">
-      <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-200">
+      <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-200 relative">
         <img
           src={imageUrl}
           alt={title}
@@ -62,11 +110,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           }}
         />
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            setIsFavorite(!isFavorite);
-            toast.success(isFavorite ? "Retiré des favoris" : "Ajouté aux favoris");
-          }}
+          onClick={toggleFavorite}
           className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100/90"
         >
           <Heart
@@ -77,6 +121,14 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
             }`}
           />
         </button>
+        
+        {/* Badge de prix */}
+        <div 
+          className="absolute bottom-3 left-3 px-3 py-1 rounded-full text-white font-medium text-sm"
+          style={{ backgroundColor: settings.primaryColor }}
+        >
+          {priceFCFA.toLocaleString('fr-FR')} FCFA
+        </div>
       </div>
 
       <div className="mt-3">
@@ -99,10 +151,6 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
             <span className="text-sm font-medium text-gray-900">{rating}</span>
           </div>
         </div>
-        <p className="mt-2 text-base font-medium text-gray-900">
-          <span>{priceFCFA.toLocaleString('fr-FR')} FCFA</span>
-          <span className="text-gray-500"> par nuit</span>
-        </p>
       </div>
     </Link>
   );
