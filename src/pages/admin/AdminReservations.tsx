@@ -19,17 +19,15 @@ import {
   DialogDescription, 
   DialogFooter, 
   DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+  DialogTitle
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
-  CaretSortIcon, 
-  CheckCircledIcon, 
+  CheckIcon, 
   ClockIcon, 
-  Cross2Icon, 
+  Cross1Icon,
   DotsHorizontalIcon, 
   ReloadIcon, 
   MagnifyingGlassIcon 
@@ -227,11 +225,11 @@ const AdminReservations = () => {
                               }`}
                             >
                               {reservation.status === 'confirmed' ? (
-                                <CheckCircledIcon className="mr-1 h-3.5 w-3.5" />
+                                <CheckIcon className="mr-1 h-3.5 w-3.5" />
                               ) : reservation.status === 'pending' ? (
                                 <ClockIcon className="mr-1 h-3.5 w-3.5" />
                               ) : (
-                                <Cross2Icon className="mr-1 h-3.5 w-3.5" />
+                                <Cross1Icon className="mr-1 h-3.5 w-3.5" />
                               )}
                               {reservation.status === 'confirmed'
                                 ? 'Confirmée'
