@@ -1,24 +1,28 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
 import { ListingCard } from '@/components/ListingCard';
 import { CategoryFiltersSimplified } from '@/components/CategoryFiltersSimplified';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { Listing } from '@/types/listing';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const { listings, isLoading } = useListings();
   const { settings } = useSiteSettings();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   
   // Exemples d'URLs d'images de remplacement fiables
   const placeholderImages = [
-    "https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1780&q=80",
-    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
-    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", // Maison moderne
+    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800", // Maison élégante
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", // Logement lumineux
+    "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800", // Intérieur moderne
+    "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800"  // Appartement contemporain
   ];
 
   // Fonction pour vérifier si une URL d'image est valide ou s'il s'agit d'une URL blob
@@ -29,14 +33,41 @@ const Index = () => {
     return imageUrl;
   };
 
-  // Mapper les listings pour corriger les URLs d'images
-  const processedListings = listings.map((listing, index) => ({
-    ...listing,
-    image: getValidImageUrl(listing.image, index),
-    images: listing.images ? 
-      listing.images.map((img, imgIndex) => getValidImageUrl(img, index + imgIndex)) : 
-      [getValidImageUrl(listing.image, index)]
-  }));
+  // Filtrer les listings en fonction du terme de recherche
+  useEffect(() => {
+    if (!listings) return;
+    
+    if (!searchTerm.trim()) {
+      // Si aucun terme de recherche, afficher tous les listings avec des images corrigées
+      const processed = listings.map((listing, index) => ({
+        ...listing,
+        image: getValidImageUrl(listing.image, index),
+        images: listing.images ? 
+          listing.images.map((img, imgIndex) => getValidImageUrl(img, index + imgIndex)) : 
+          [getValidImageUrl(listing.image, index)]
+      }));
+      setFilteredListings(processed);
+    } else {
+      // Filtrer par terme de recherche
+      const filtered = listings.filter(listing => 
+        listing.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        listing.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ).map((listing, index) => ({
+        ...listing,
+        image: getValidImageUrl(listing.image, index),
+        images: listing.images ? 
+          listing.images.map((img, imgIndex) => getValidImageUrl(img, index + imgIndex)) : 
+          [getValidImageUrl(listing.image, index)]
+      }));
+      setFilteredListings(filtered);
+    }
+  }, [listings, searchTerm]);
+
+  // Affichage du prix en FCFA
+  const formatPriceFCFA = (priceEUR: number): string => {
+    const priceFCFA = Math.round(priceEUR * 655.957);
+    return priceFCFA.toLocaleString('fr-FR');
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -46,32 +77,71 @@ const Index = () => {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Bannière pour les offres d'emploi */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg mb-10 shadow-md overflow-hidden">
+          <div 
+            className="bg-gradient-to-r rounded-lg mb-10 shadow-md overflow-hidden"
+            style={{ 
+              background: `linear-gradient(to right, ${settings.primaryColor}, ${settings.secondaryColor})` 
+            }}
+          >
             <div className="md:flex items-center">
               <div className="p-8 md:w-2/3">
                 <h2 className="text-3xl font-bold text-white mb-4">
                   Découvrez nos offres d'emploi
                 </h2>
-                <p className="text-blue-100 mb-6">
+                <p className="text-white opacity-80 mb-6">
                   Des opportunités dans la sécurité et des logements exclusifs pour nos employés
                 </p>
                 <Link
                   to="/emplois"
                   className="inline-flex items-center bg-white text-blue-700 font-semibold px-6 py-3 rounded-md shadow hover:bg-blue-50 transition"
+                  style={{ color: settings.primaryColor }}
                 >
                   <Briefcase className="mr-2 h-5 w-5" />
                   Voir les offres
                 </Link>
               </div>
               <div className="md:w-1/3 p-6 flex justify-center">
-                <div className="bg-blue-700 p-6 rounded-full">
+                <div className="bg-white bg-opacity-20 p-6 rounded-full">
                   <Briefcase className="h-24 w-24 text-white" />
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Barre de recherche */}
+          <div className="mb-8 flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-grow">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Rechercher par quartier, titre..."
+                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:outline-none"
+                style={{ focusRing: settings.primaryColor }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            {searchTerm && (
+              <Button 
+                onClick={() => setSearchTerm("")}
+                variant="outline"
+                className="whitespace-nowrap"
+              >
+                Effacer la recherche
+              </Button>
+            )}
+          </div>
+
           <h1 className="text-3xl font-bold mb-6">{settings.siteName || "Logements disponibles"}</h1>
+          
+          {/* Affichage des résultats de recherche */}
+          {searchTerm && (
+            <p className="mb-6 text-gray-600">
+              {filteredListings.length} résultat(s) pour "{searchTerm}"
+            </p>
+          )}
           
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -82,13 +152,43 @@ const Index = () => {
                 ></div>
               ))}
             </div>
-          ) : (
+          ) : filteredListings.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {processedListings.map((listing) => (
+              {filteredListings.map((listing) => (
                 <ListingCard key={listing.id} listing={listing} />
               ))}
             </div>
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-xl text-gray-500">Aucun logement ne correspond à votre recherche</p>
+              {searchTerm && (
+                <Button 
+                  onClick={() => setSearchTerm("")}
+                  className="mt-4"
+                  style={{ backgroundColor: settings.primaryColor }}
+                >
+                  Voir tous les logements
+                </Button>
+              )}
+            </div>
           )}
+          
+          {/* Liste des quartiers populaires */}
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold mb-6">Quartiers populaires à Lomé</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {['Tokoin', 'Bè', 'Adidogomé', 'Agoè', 'Kodjoviakopé', 'Nyékonakpoè', 'Hédzranawoé', 'Baguida'].map(neighborhood => (
+                <Button 
+                  key={neighborhood}
+                  variant="outline"
+                  className="py-6 text-lg justify-start"
+                  onClick={() => setSearchTerm(neighborhood)}
+                >
+                  {neighborhood}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -102,6 +202,9 @@ const Index = () => {
                 src={settings.logo || "/placeholder.svg"} 
                 alt={settings.siteName} 
                 className="h-12 w-auto bg-white p-2 rounded"
+                onError={(e) => {
+                  e.currentTarget.src = "/placeholder.svg";
+                }}
               />
               <h3 className="text-xl font-bold">{settings.siteName}</h3>
               <p className="text-gray-400 text-sm">{settings.footer.about}</p>
@@ -112,6 +215,13 @@ const Index = () => {
               <h4 className="text-lg font-semibold mb-4">Contact</h4>
               <div className="text-gray-400 space-y-2">
                 <p>{settings.footer.contact}</p>
+                {settings.companyInfo && (
+                  <>
+                    <p>{settings.companyInfo.address}</p>
+                    <p>{settings.companyInfo.phone}</p>
+                    <p>{settings.companyInfo.email}</p>
+                  </>
+                )}
               </div>
             </div>
             
@@ -121,6 +231,9 @@ const Index = () => {
               <div className="text-gray-400 space-y-2">
                 <p>{settings.footer.terms}</p>
                 <p>{settings.footer.policy}</p>
+                {settings.companyInfo && (
+                  <p>RCCM: {settings.companyInfo.registrationNumber}</p>
+                )}
               </div>
             </div>
             
