@@ -304,7 +304,7 @@ export const JobsTable: React.FC<JobsTableProps> = ({ jobs, onEdit, onDelete }) 
                       </DropdownMenuItem>
                       {job.status === 'active' ? (
                         <DropdownMenuItem onClick={() => {
-                          const updatedJob = { ...job, status: 'closed' };
+                          const updatedJob: Job = { ...job, status: 'closed' };
                           onEdit(updatedJob);
                         }}>
                           <X className="mr-2 h-4 w-4" />
@@ -312,7 +312,7 @@ export const JobsTable: React.FC<JobsTableProps> = ({ jobs, onEdit, onDelete }) 
                         </DropdownMenuItem>
                       ) : (
                         <DropdownMenuItem onClick={() => {
-                          const updatedJob = { ...job, status: 'active' };
+                          const updatedJob: Job = { ...job, status: 'active' };
                           onEdit(updatedJob);
                         }}>
                           <Check className="mr-2 h-4 w-4" />

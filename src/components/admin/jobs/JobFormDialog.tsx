@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Job } from '@/types/job';
+import { Job, JobDomain, JobContract } from '@/types/job';
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -34,10 +34,10 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [title, setTitle] = useState(selectedJob?.title || '');
-  const [domain, setDomain] = useState(selectedJob?.domain || 'residential_security');
+  const [domain, setDomain] = useState<JobDomain>(selectedJob?.domain || 'residential_security');
   const [description, setDescription] = useState(selectedJob?.description || '');
   const [requirements, setRequirements] = useState(selectedJob?.requirements || '');
-  const [contract, setContract] = useState(selectedJob?.contract || 'full_time');
+  const [contract, setContract] = useState<JobContract>(selectedJob?.contract || 'full_time');
   const [location, setLocation] = useState(selectedJob?.location || '');
   const [salary, setSalary] = useState(selectedJob?.salary?.amount || 0);
   const [positions, setPositions] = useState(selectedJob?.positions || 1);
@@ -158,6 +158,15 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     setImages(newImages);
   };
 
+  // Fonction pour convertir les types pour les props de FormFields
+  const handleDomainChange = (value: string) => {
+    setDomain(value as JobDomain);
+  };
+
+  const handleContractChange = (value: string) => {
+    setContract(value as JobContract);
+  };
+
   return (
     <Dialog open={isOpen || isEditing} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -210,13 +219,13 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               title={title}
               setTitle={setTitle}
               domain={domain}
-              setDomain={setDomain}
+              setDomain={handleDomainChange}
               description={description}
               setDescription={setDescription}
               requirements={requirements}
               setRequirements={setRequirements}
               contract={contract}
-              setContract={setContract}
+              setContract={handleContractChange}
               location={location}
               setLocation={setLocation}
               salary={salary}

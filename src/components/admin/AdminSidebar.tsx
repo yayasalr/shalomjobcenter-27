@@ -90,11 +90,11 @@ export const AdminSidebar = () => {
   ];
 
   return (
-    <Sidebar 
+    <Sidebar
       className={`h-screen bg-white border-r border-gray-200 transition-all ${
         collapsed ? 'w-[70px]' : 'w-64'
       }`}
-      collapsed={collapsed}
+      // Suppression de la prop collapsed qui n'existe pas dans le composant Sidebar
     >
       <SidebarHeader className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">

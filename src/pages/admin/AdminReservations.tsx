@@ -44,7 +44,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { Check, Calendar, X, FileText, Mail, Phone, User, Clock, Search, Download, Eye } from 'lucide-react';
+import { Check, Calendar, X, FileText, Mail, Phone, User, Clock, Search, Download, Eye, MapPin } from 'lucide-react';
 import { Job, JobApplication } from '@/types/job';
 
 const AdminReservations = () => {
@@ -218,395 +218,393 @@ const AdminReservations = () => {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col">
-          <AdminTopbar />
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-            <div className="mb-6">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
-                <div>
-                  <h1 className="text-2xl font-semibold text-gray-900">Gestion des demandes</h1>
-                  <p className="text-gray-500 mt-1">
-                    {contentTab === 'reservations' 
-                      ? `${getFilteredReservations().length} réservation(s)` 
-                      : `${getFilteredApplications().length} candidature(s)`}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => exportToCSV(contentTab === 'reservations' ? 'reservations' : 'applications')}
-                    className="gap-2"
-                  >
-                    <Download className="h-4 w-4" />
-                    Exporter
-                  </Button>
-                </div>
+    <div className="flex min-h-screen w-full">
+      <AdminSidebar />
+      <div className="flex flex-1 flex-col">
+        <AdminTopbar />
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <div className="mb-6">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+              <div>
+                <h1 className="text-2xl font-semibold text-gray-900">Gestion des demandes</h1>
+                <p className="text-gray-500 mt-1">
+                  {contentTab === 'reservations' 
+                    ? `${getFilteredReservations().length} réservation(s)` 
+                    : `${getFilteredApplications().length} candidature(s)`}
+                </p>
               </div>
               
-              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
-                <Tabs value={contentTab} onValueChange={setContentTab} className="w-full">
-                  <TabsList className="bg-white border">
-                    <TabsTrigger value="reservations" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
-                      Réservations
-                    </TabsTrigger>
-                    <TabsTrigger value="applications" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
-                      Candidatures
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-                
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-grow">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <Input
-                      placeholder="Rechercher..."
-                      className="pl-9 h-9 w-[200px] lg:w-[300px]"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                  </div>
-                  
-                  {searchQuery && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => setSearchQuery('')}
-                      className="gap-2"
-                    >
-                      Effacer
-                    </Button>
-                  )}
-                </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => exportToCSV(contentTab === 'reservations' ? 'reservations' : 'applications')}
+                  className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  Exporter
+                </Button>
               </div>
-              
-              <Tabs value={tab} onValueChange={setTab} className="mb-6">
-                <TabsList>
-                  <TabsTrigger value="all">
-                    Toutes
+            </div>
+            
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+              <Tabs value={contentTab} onValueChange={setContentTab} className="w-full">
+                <TabsList className="bg-white border">
+                  <TabsTrigger value="reservations" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
+                    Réservations
                   </TabsTrigger>
-                  <TabsTrigger value="pending">
-                    En attente
+                  <TabsTrigger value="applications" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
+                    Candidatures
                   </TabsTrigger>
-                  <TabsTrigger value="confirmed">
-                    Confirmées
-                  </TabsTrigger>
-                  <TabsTrigger value="cancelled">
-                    Annulées
-                  </TabsTrigger>
-                  {contentTab === 'applications' && (
-                    <TabsTrigger value="approved">
-                      Acceptées
-                    </TabsTrigger>
-                  )}
-                  {contentTab === 'applications' && (
-                    <TabsTrigger value="rejected">
-                      Refusées
-                    </TabsTrigger>
-                  )}
                 </TabsList>
               </Tabs>
               
-              <TabsContent value="reservations" className={contentTab === 'reservations' ? 'block' : 'hidden'}>
-                {isLoadingReservations ? (
-                  <div className="text-center py-10">
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
-                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Chargement...</span>
-                    </div>
-                    <p className="mt-2 text-gray-500">Chargement des réservations...</p>
-                  </div>
-                ) : getFilteredReservations().length > 0 ? (
-                  <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
-                          <tr>
-                            <th className="px-6 py-3">Client</th>
-                            <th className="px-6 py-3">Logement</th>
-                            <th className="px-6 py-3">Période</th>
-                            <th className="px-6 py-3">Prix</th>
-                            <th className="px-6 py-3">Statut</th>
-                            <th className="px-6 py-3 text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {getFilteredReservations().map((reservation) => (
-                            <tr key={reservation.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <Avatar className="h-8 w-8 mr-2">
-                                    <AvatarFallback>{reservation.guestName[0]}</AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <div className="text-sm font-medium text-gray-900">{reservation.guestName}</div>
-                                    <div className="text-sm text-gray-500">{reservation.guestEmail}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <div className="h-10 w-10 flex-shrink-0 rounded-md overflow-hidden mr-3">
-                                    <img
-                                      src={reservation.listingImage || "/placeholder.svg"}
-                                      alt={reservation.listingTitle}
-                                      className="h-full w-full object-cover"
-                                    />
-                                  </div>
-                                  <div>
-                                    <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                                      {reservation.listingTitle}
-                                    </div>
-                                    <div className="text-xs text-gray-500 line-clamp-1">
-                                      {reservation.listingLocation}
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">
-                                  {formatDate(reservation.checkIn)} - {formatDate(reservation.checkOut)}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {reservation.guests} voyageur{reservation.guests > 1 ? 's' : ''}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {Math.round(reservation.totalPrice * 655.957).toLocaleString('fr-FR')} FCFA
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <Badge
-                                  className={`${
-                                    reservation.status === 'confirmed'
-                                      ? 'bg-green-100 text-green-800 border-green-200'
-                                      : reservation.status === 'pending'
-                                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                                      : 'bg-red-100 text-red-800 border-red-200'
-                                  }`}
-                                >
-                                  {reservation.status === 'confirmed' ? (
-                                    <>
-                                      <Check className="mr-1 h-3.5 w-3.5" />
-                                      Confirmée
-                                    </>
-                                  ) : reservation.status === 'pending' ? (
-                                    <>
-                                      <Clock className="mr-1 h-3.5 w-3.5" />
-                                      En attente
-                                    </>
-                                  ) : (
-                                    <>
-                                      <X className="mr-1 h-3.5 w-3.5" />
-                                      Annulée
-                                    </>
-                                  )}
-                                </Badge>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-8 p-0">
-                                      <DotsHorizontalIcon className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                      onClick={() => {
-                                        setSelectedReservation(reservation);
-                                        setIsDialogOpen(true);
-                                      }}
-                                    >
-                                      Voir les détails
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleUpdateStatus(reservation.id, 'confirmed')}
-                                      disabled={reservation.status === 'confirmed'}
-                                    >
-                                      Confirmer
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleUpdateStatus(reservation.id, 'pending')}
-                                      disabled={reservation.status === 'pending'}
-                                    >
-                                      Mettre en attente
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => handleUpdateStatus(reservation.id, 'cancelled')}
-                                      disabled={reservation.status === 'cancelled'}
-                                      className="text-red-600"
-                                    >
-                                      Annuler
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-white p-8 rounded-lg shadow text-center">
-                    <div className="mb-4 text-gray-400">
-                      <ClockIcon className="h-12 w-12 mx-auto" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune réservation trouvée</h3>
-                    <p className="text-gray-500">Il n'y a pas de réservations correspondant à vos critères.</p>
-                  </div>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-grow">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Rechercher..."
+                    className="pl-9 h-9 w-[200px] lg:w-[300px]"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
+                {searchQuery && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setSearchQuery('')}
+                    className="gap-2"
+                  >
+                    Effacer
+                  </Button>
                 )}
-              </TabsContent>
-              
-              <TabsContent value="applications" className={contentTab === 'applications' ? 'block' : 'hidden'}>
-                {isLoadingJobs ? (
-                  <div className="text-center py-10">
-                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
-                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Chargement...</span>
-                    </div>
-                    <p className="mt-2 text-gray-500">Chargement des candidatures...</p>
-                  </div>
-                ) : getFilteredApplications().length > 0 ? (
-                  <div className="bg-white rounded-lg shadow overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
-                          <tr>
-                            <th className="px-6 py-3">Candidat</th>
-                            <th className="px-6 py-3">Offre</th>
-                            <th className="px-6 py-3">Contact</th>
-                            <th className="px-6 py-3">Date</th>
-                            <th className="px-6 py-3">Statut</th>
-                            <th className="px-6 py-3 text-right">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {getFilteredApplications().map((item) => (
-                            <tr key={item.application.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="flex items-center">
-                                  <Avatar className="h-8 w-8 mr-2">
-                                    <AvatarFallback>{item.application.applicantName[0]}</AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <div className="text-sm font-medium text-gray-900">{item.application.applicantName}</div>
-                                    <div className="text-sm text-gray-500">{item.application.email}</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900 line-clamp-1">{item.job.title}</div>
-                                  <div className="text-xs text-gray-500 flex items-center">
-                                    <MapPin className="h-3 w-3 mr-1" />
-                                    {item.job.location}
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500 flex items-center">
-                                  <Phone className="h-4 w-4 mr-1 text-gray-400" />
-                                  {item.application.phone}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-gray-500">
-                                  {formatDate(item.application.submittedAt)}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <Badge
-                                  className={`${
-                                    item.application.status === 'approved'
-                                      ? 'bg-green-100 text-green-800 border-green-200'
-                                      : item.application.status === 'pending'
-                                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                                      : 'bg-red-100 text-red-800 border-red-200'
-                                  }`}
-                                >
-                                  {item.application.status === 'approved' ? (
-                                    <>
-                                      <Check className="mr-1 h-3.5 w-3.5" />
-                                      Acceptée
-                                    </>
-                                  ) : item.application.status === 'pending' ? (
-                                    <>
-                                      <Clock className="mr-1 h-3.5 w-3.5" />
-                                      En attente
-                                    </>
-                                  ) : (
-                                    <>
-                                      <X className="mr-1 h-3.5 w-3.5" />
-                                      Refusée
-                                    </>
-                                  )}
-                                </Badge>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="h-8 w-8 p-0">
-                                      <DotsHorizontalIcon className="h-4 w-4" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem
-                                      onClick={() => {
-                                        setSelectedApplication(item.application);
-                                        setIsApplicationDialogOpen(true);
-                                      }}
-                                    >
-                                      Voir les détails
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'approved')}
-                                      disabled={item.application.status === 'approved'}
-                                    >
-                                      Accepter
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'pending')}
-                                      disabled={item.application.status === 'pending'}
-                                    >
-                                      Mettre en attente
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'rejected')}
-                                      disabled={item.application.status === 'rejected'}
-                                      className="text-red-600"
-                                    >
-                                      Refuser
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-white p-8 rounded-lg shadow text-center">
-                    <div className="mb-4 text-gray-400">
-                      <FileText className="h-12 w-12 mx-auto" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune candidature trouvée</h3>
-                    <p className="text-gray-500">Il n'y a pas de candidatures correspondant à vos critères.</p>
-                  </div>
-                )}
-              </TabsContent>
+              </div>
             </div>
-          </main>
-        </div>
+            
+            <Tabs value={tab} onValueChange={setTab} className="mb-6">
+              <TabsList>
+                <TabsTrigger value="all">
+                  Toutes
+                </TabsTrigger>
+                <TabsTrigger value="pending">
+                  En attente
+                </TabsTrigger>
+                <TabsTrigger value="confirmed">
+                  Confirmées
+                </TabsTrigger>
+                <TabsTrigger value="cancelled">
+                  Annulées
+                </TabsTrigger>
+                {contentTab === 'applications' && (
+                  <TabsTrigger value="approved">
+                    Acceptées
+                  </TabsTrigger>
+                )}
+                {contentTab === 'applications' && (
+                  <TabsTrigger value="rejected">
+                    Refusées
+                  </TabsTrigger>
+                )}
+              </TabsList>
+            </Tabs>
+            
+            <TabsContent value="reservations" className={contentTab === 'reservations' ? 'block' : 'hidden'}>
+              {isLoadingReservations ? (
+                <div className="text-center py-10">
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Chargement...</span>
+                  </div>
+                  <p className="mt-2 text-gray-500">Chargement des réservations...</p>
+                </div>
+              ) : getFilteredReservations().length > 0 ? (
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+                        <tr>
+                          <th className="px-6 py-3">Client</th>
+                          <th className="px-6 py-3">Logement</th>
+                          <th className="px-6 py-3">Période</th>
+                          <th className="px-6 py-3">Prix</th>
+                          <th className="px-6 py-3">Statut</th>
+                          <th className="px-6 py-3 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {getFilteredReservations().map((reservation) => (
+                          <tr key={reservation.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <Avatar className="h-8 w-8 mr-2">
+                                  <AvatarFallback>{reservation.guestName[0]}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{reservation.guestName}</div>
+                                  <div className="text-sm text-gray-500">{reservation.guestEmail}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="h-10 w-10 flex-shrink-0 rounded-md overflow-hidden mr-3">
+                                  <img
+                                    src={reservation.listingImage || "/placeholder.svg"}
+                                    alt={reservation.listingTitle}
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 line-clamp-1">
+                                    {reservation.listingTitle}
+                                  </div>
+                                  <div className="text-xs text-gray-500 line-clamp-1">
+                                    {reservation.listingLocation}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {formatDate(reservation.checkIn)} - {formatDate(reservation.checkOut)}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {reservation.guests} voyageur{reservation.guests > 1 ? 's' : ''}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">
+                                {Math.round(reservation.totalPrice * 655.957).toLocaleString('fr-FR')} FCFA
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge
+                                className={`${
+                                  reservation.status === 'confirmed'
+                                    ? 'bg-green-100 text-green-800 border-green-200'
+                                    : reservation.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                    : 'bg-red-100 text-red-800 border-red-200'
+                                }`}
+                              >
+                                {reservation.status === 'confirmed' ? (
+                                  <>
+                                    <Check className="mr-1 h-3.5 w-3.5" />
+                                    Confirmée
+                                  </>
+                                ) : reservation.status === 'pending' ? (
+                                  <>
+                                    <Clock className="mr-1 h-3.5 w-3.5" />
+                                    En attente
+                                  </>
+                                ) : (
+                                  <>
+                                    <X className="mr-1 h-3.5 w-3.5" />
+                                    Annulée
+                                  </>
+                                )}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <DotsHorizontalIcon className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedReservation(reservation);
+                                      setIsDialogOpen(true);
+                                    }}
+                                  >
+                                    Voir les détails
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(reservation.id, 'confirmed')}
+                                    disabled={reservation.status === 'confirmed'}
+                                  >
+                                    Confirmer
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(reservation.id, 'pending')}
+                                    disabled={reservation.status === 'pending'}
+                                  >
+                                    Mettre en attente
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(reservation.id, 'cancelled')}
+                                    disabled={reservation.status === 'cancelled'}
+                                    className="text-red-600"
+                                  >
+                                    Annuler
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white p-8 rounded-lg shadow text-center">
+                  <div className="mb-4 text-gray-400">
+                    <ClockIcon className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune réservation trouvée</h3>
+                  <p className="text-gray-500">Il n'y a pas de réservations correspondant à vos critères.</p>
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="applications" className={contentTab === 'applications' ? 'block' : 'hidden'}>
+              {isLoadingJobs ? (
+                <div className="text-center py-10">
+                  <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                    <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Chargement...</span>
+                  </div>
+                  <p className="mt-2 text-gray-500">Chargement des candidatures...</p>
+                </div>
+              ) : getFilteredApplications().length > 0 ? (
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+                        <tr>
+                          <th className="px-6 py-3">Candidat</th>
+                          <th className="px-6 py-3">Offre</th>
+                          <th className="px-6 py-3">Contact</th>
+                          <th className="px-6 py-3">Date</th>
+                          <th className="px-6 py-3">Statut</th>
+                          <th className="px-6 py-3 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {getFilteredApplications().map((item) => (
+                          <tr key={item.application.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <Avatar className="h-8 w-8 mr-2">
+                                  <AvatarFallback>{item.application.applicantName[0]}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900">{item.application.applicantName}</div>
+                                  <div className="text-sm text-gray-500">{item.application.email}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900 line-clamp-1">{item.job.title}</div>
+                                <div className="text-xs text-gray-500 flex items-center">
+                                  <MapPin className="h-3 w-3 mr-1" />
+                                  {item.job.location}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500 flex items-center">
+                                <Phone className="h-4 w-4 mr-1 text-gray-400" />
+                                {item.application.phone}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-500">
+                                {formatDate(item.application.submittedAt)}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Badge
+                                className={`${
+                                  item.application.status === 'approved'
+                                    ? 'bg-green-100 text-green-800 border-green-200'
+                                    : item.application.status === 'pending'
+                                    ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                    : 'bg-red-100 text-red-800 border-red-200'
+                                }`}
+                              >
+                                {item.application.status === 'approved' ? (
+                                  <>
+                                    <Check className="mr-1 h-3.5 w-3.5" />
+                                    Acceptée
+                                  </>
+                                ) : item.application.status === 'pending' ? (
+                                  <>
+                                    <Clock className="mr-1 h-3.5 w-3.5" />
+                                    En attente
+                                  </>
+                                ) : (
+                                  <>
+                                    <X className="mr-1 h-3.5 w-3.5" />
+                                    Refusée
+                                  </>
+                                )}
+                              </Badge>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" className="h-8 w-8 p-0">
+                                    <DotsHorizontalIcon className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem
+                                    onClick={() => {
+                                      setSelectedApplication(item.application);
+                                      setIsApplicationDialogOpen(true);
+                                    }}
+                                  >
+                                    Voir les détails
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'approved')}
+                                    disabled={item.application.status === 'approved'}
+                                  >
+                                    Accepter
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'pending')}
+                                    disabled={item.application.status === 'pending'}
+                                  >
+                                    Mettre en attente
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'rejected')}
+                                    disabled={item.application.status === 'rejected'}
+                                    className="text-red-600"
+                                  >
+                                    Refuser
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white p-8 rounded-lg shadow text-center">
+                  <div className="mb-4 text-gray-400">
+                    <FileText className="h-12 w-12 mx-auto" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune candidature trouvée</h3>
+                  <p className="text-gray-500">Il n'y a pas de candidatures correspondant à vos critères.</p>
+                </div>
+              )}
+            </TabsContent>
+          </div>
+        </main>
       </div>
 
       {/* Modal de détails de réservation */}
@@ -950,7 +948,7 @@ const AdminReservations = () => {
           )}
         </DialogContent>
       </Dialog>
-    </SidebarProvider>
+    </div>
   );
 };
 
