@@ -1,291 +1,331 @@
 
-import React, { useState, useEffect } from 'react';
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Loader2, Save } from "lucide-react";
-import { Listing } from '@/types/listing';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Listing } from "@/types/listing";
+import { LOME_NEIGHBORHOODS } from "@/hooks/useListings";
+import { toast } from "sonner";
 
 interface ListingFormDialogProps {
-  selectedListing?: Listing | null;
+  selectedListing: Listing | null;
   isEditing: boolean;
-  onSave: (formData: Omit<Listing, "id">) => Promise<void>;
+  onSave: (formData: any) => void;
   onCancel: () => void;
 }
 
-export const ListingFormDialog: React.FC<ListingFormDialogProps> = ({
+export const ListingFormDialog = ({
   selectedListing,
   isEditing,
   onSave,
   onCancel,
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    title: selectedListing?.title || '',
-    description: selectedListing?.description || '',
-    price: selectedListing?.price || 0,
-    location: selectedListing?.location || '',
-    images: selectedListing?.images || []
-  });
+}: ListingFormDialogProps) => {
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [neighborhood, setNeighborhood] = useState<string>("");
+  const [mapLocation, setMapLocation] = useState<string>("");
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
+  // Charger les données du logement sélectionné
   useEffect(() => {
-    if (selectedListing) {
-      setIsOpen(true);
-      setFormData({
-        title: selectedListing.title,
-        description: selectedListing.description || '',
-        price: selectedListing.price,
-        location: selectedListing.location,
-        images: selectedListing.images || []
-      });
-    }
-  }, [selectedListing]);
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      description: '',
-      price: 0,
-      location: '',
-      images: []
-    });
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
-      onCancel();
+    if (selectedListing && isEditing) {
+      setTitle(selectedListing.title);
+      setDescription(selectedListing.description || "");
+      setPrice(selectedListing.price.toString());
+      setLocation(selectedListing.location);
+      
+      // Extraire le quartier de la localisation
+      const parts = selectedListing.location.split(',');
+      if (parts.length > 0) {
+        setNeighborhood(parts[0].trim());
+      }
+      
+      // Si un mapLocation existe, le charger
+      if (selectedListing.mapLocation) {
+        setMapLocation(selectedListing.mapLocation);
+      }
+      
+      // Réinitialiser les images
+      setImages([]);
+      
+      // Afficher les images existantes comme prévisualisations
+      if (selectedListing.images && selectedListing.images.length > 0) {
+        setImagePreviews(selectedListing.images.filter(img => !img.startsWith('blob:')));
+      } else if (selectedListing.image && !selectedListing.image.startsWith('blob:')) {
+        setImagePreviews([selectedListing.image]);
+      } else {
+        setImagePreviews([]);
+      }
+      
+      setOpen(true);
+    } else if (!isEditing) {
       resetForm();
+      setOpen(false);
+    }
+  }, [selectedListing, isEditing]);
+
+  // Réinitialiser le formulaire
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setPrice("");
+    setLocation("");
+    setNeighborhood("");
+    setMapLocation("");
+    setImages([]);
+    setImagePreviews([]);
+  };
+
+  // Gérer l'upload d'images
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setImages(prevImages => [...prevImages, ...filesArray]);
+      
+      const newPreviews = filesArray.map(file => URL.createObjectURL(file));
+      setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Supprimer une image
+  const removeImage = (index: number) => {
+    setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
-    const { title, description, price, location, images } = formData;
-    
-    if (!title || !description || !price || !location) {
+    // Révoquer l'URL de l'aperçu pour éviter les fuites de mémoire
+    URL.revokeObjectURL(imagePreviews[index]);
+    setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
+  };
+
+  // Mettre à jour la localisation lorsque le quartier change
+  const handleNeighborhoodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newNeighborhood = e.target.value;
+    setNeighborhood(newNeighborhood);
+    setLocation(`${newNeighborhood}, Lomé, Togo`);
+  };
+
+  // Soumettre le formulaire
+  const handleSubmit = () => {
+    if (!title || !price || !location) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      const submitData: Omit<Listing, "id"> = {
-        title,
-        description,
-        price,
-        location,
-        images,
-        rating: selectedListing?.rating || 0,
-        image: images[0] || "",
-        dates: new Date().toLocaleDateString(),
-        host: {
-          name: "Admin",
-          image: "/placeholder.svg"
-        }
-      };
-
-      await onSave(submitData);
-      handleOpenChange(false);
-    } catch (error) {
-      toast.error("Une erreur est survenue");
-      console.error(error);
-    } finally {
-      setIsSubmitting(false);
+    if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
+      toast.error("Le prix doit être un nombre positif");
+      return;
     }
-  };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (files && files.length > 0) {
-      if (files.length > 10) {
-        toast.error("Vous ne pouvez pas télécharger plus de 10 images");
-        return;
-      }
+    const formData: any = {
+      title,
+      description,
+      price: parseFloat(price),
+      location,
+      mapLocation: mapLocation // Nouveau champ pour la localisation sur la carte
+    };
+
+    // Si on modifie un logement existant
+    if (selectedListing && isEditing) {
+      formData.id = selectedListing.id;
+      formData.rating = selectedListing.rating;
+      formData.dates = selectedListing.dates;
+      formData.host = selectedListing.host;
       
-      const newImages = Array.from(files).map(file => URL.createObjectURL(file));
-      setFormData(prev => ({
-        ...prev,
-        images: [...prev.images, ...newImages]
-      }));
+      // Conserver les images existantes si aucune nouvelle image n'a été ajoutée
+      if (images.length === 0) {
+        formData.image = selectedListing.image;
+        formData.images = selectedListing.images;
+      }
     }
-  };
 
-  const handleRemoveImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
+    // Traiter les nouvelles images
+    if (images.length > 0) {
+      const imageUrls = images.map(file => URL.createObjectURL(file));
+      formData.image = imageUrls[0]; // La première image comme image principale
+      formData.images = imageUrls; // Toutes les images dans un tableau
+    }
+
+    onSave(formData);
+    resetForm();
+    setOpen(false);
   };
 
   return (
-    <Dialog open={isOpen || isEditing} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button 
-          onClick={() => {
-            resetForm();
-            setIsOpen(true);
-          }} 
-          className="gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Ajouter un logement
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[725px] h-[90vh] flex flex-col p-0">
-        <DialogHeader className="px-6 py-4 border-b">
-          <DialogTitle>
-            {isEditing ? "Modifier le logement" : "Ajouter un nouveau logement"}
-          </DialogTitle>
-          <DialogDescription>
-            {isEditing 
-              ? "Modifiez les informations du logement ci-dessous."
-              : "Remplissez les informations pour ajouter un nouveau logement."}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) onCancel();
+      }}>
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => {
+              resetForm();
+              setOpen(true);
+            }}
+          >
+            Ajouter un logement
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditing ? "Modifier un logement" : "Ajouter un logement"}
+            </DialogTitle>
+            <DialogDescription>
+              {isEditing
+                ? "Mettez à jour les informations du logement"
+                : "Remplissez le formulaire pour ajouter un nouveau logement"}
+            </DialogDescription>
+          </DialogHeader>
 
-        <ScrollArea className="flex-1 px-6 py-4">
-          <form id="listing-form" onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-2">
-              <label htmlFor="title" className="font-medium">
-                Titre <span className="text-red-500">*</span>
-              </label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Titre du logement"
-                required
-                className="border-2"
-              />
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Titre</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Titre du logement"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="price">Prix (en €)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="Prix par nuit en euros"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="grid gap-2">
-              <label htmlFor="location" className="font-medium">
-                Localisation <span className="text-red-500">*</span>
-              </label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                placeholder="Adresse du logement"
-                required
-                className="border-2"
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <label htmlFor="description" className="font-medium">
-                Description <span className="text-red-500">*</span>
-              </label>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Description détaillée..."
-                className="min-h-[200px] border-2"
-                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description du logement"
+                rows={4}
               />
             </div>
 
-            <div className="grid gap-2">
-              <label htmlFor="price" className="font-medium">
-                Prix par nuit <span className="text-red-500">*</span>
-              </label>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="neighborhood">Quartier</Label>
+                <select
+                  id="neighborhood"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  value={neighborhood}
+                  onChange={handleNeighborhoodChange}
+                  required
+                >
+                  <option value="">Sélectionnez un quartier</option>
+                  {LOME_NEIGHBORHOODS.map((neighborhood) => (
+                    <option key={neighborhood} value={neighborhood}>
+                      {neighborhood}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Localisation complète</Label>
+                <Input
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Ex: Tokoin, Lomé, Togo"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="mapLocation">Lien de la carte Google Maps</Label>
               <Input
-                id="price"
-                type="number"
-                value={formData.price}
-                onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-                placeholder="Prix en €"
-                min="0"
-                required
-                className="border-2"
+                id="mapLocation"
+                value={mapLocation}
+                onChange={(e) => setMapLocation(e.target.value)}
+                placeholder="Ex: https://www.google.com/maps/embed?pb=..."
               />
+              <p className="text-sm text-gray-500">
+                Comment obtenir un lien d'intégration Google Maps:
+                <ol className="list-decimal pl-5 mt-1 text-xs">
+                  <li>Recherchez le lieu sur Google Maps</li>
+                  <li>Cliquez sur "Partager"</li>
+                  <li>Sélectionnez "Intégrer une carte"</li>
+                  <li>Copiez le lien qui commence par "https://www.google.com/maps/embed"</li>
+                </ol>
+              </p>
             </div>
 
-            <div className="grid gap-2">
-              <label htmlFor="images" className="font-medium">
-                Images (max 10)
-              </label>
+            <div className="space-y-2">
+              <Label htmlFor="images">Images</Label>
               <Input
                 id="images"
                 type="file"
-                multiple
                 accept="image/*"
-                onChange={handleImageUpload}
-                className="border-2"
+                multiple
+                onChange={handleImageChange}
+                className="cursor-pointer"
               />
-              {formData.images.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                  {formData.images.map((image, index) => (
-                    <div key={index} className="relative group">
-                      <img
-                        src={image}
-                        alt={`Preview ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg border-2"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p className="text-xs text-gray-500">
+                Vous pouvez sélectionner plusieurs images. La première image sera utilisée comme aperçu.
+              </p>
             </div>
-          </form>
-        </ScrollArea>
 
-        <DialogFooter className="px-6 py-4 border-t">
-          <div className="flex justify-between w-full">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => handleOpenChange(false)}
-              disabled={isSubmitting}
-              className="px-6"
-            >
+            {/* Prévisualisation des images */}
+            {imagePreviews.length > 0 && (
+              <div className="grid grid-cols-3 gap-2 mt-2">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={preview}
+                      alt={`Preview ${index}`}
+                      className="h-24 w-full object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                      onClick={() => removeImage(index)}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={onCancel}>
               Annuler
             </Button>
-            <Button 
-              type="submit"
-              form="listing-form"
-              disabled={isSubmitting}
-              className="px-6 gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Traitement...
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  {isEditing ? "Appliquer les modifications" : "Publier le logement"}
-                </>
-              )}
+            <Button onClick={handleSubmit}>
+              {isEditing ? "Mettre à jour" : "Ajouter"}
             </Button>
-          </div>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

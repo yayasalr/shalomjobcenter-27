@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { useParams, Link } from "react-router-dom";
 import { useListings } from "@/hooks/useListings";
@@ -20,38 +20,99 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import useAuth from "@/hooks/useAuth";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useReviews } from "@/hooks/useReviews";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { listings, isLoading } = useListings();
+  const { listings, isLoading, addReservation } = useListings();
+  const { settings } = useSiteSettings();
+  const { reviews, addReview } = useReviews();
   const { user } = useAuth();
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [guestCount, setGuestCount] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
-  const [reviews, setReviews] = useState([
-    {
-      id: "1",
-      author: "Michel Dupont",
-      avatar: "/placeholder.svg",
-      rating: 5,
-      date: "Mars 2024",
-      text: "Superbe logement, très bien situé. Le propriétaire est très accueillant. Je recommande vivement !",
-    },
-    {
-      id: "2",
-      author: "Sophie Martin",
-      avatar: "/placeholder.svg",
-      rating: 4,
-      date: "Février 2024",
-      text: "Appartement conforme aux photos, propre et fonctionnel. Un peu bruyant le soir mais globalement un bon séjour.",
-    },
-  ]);
+  const [listingReviews, setListingReviews] = useState<any[]>([]);
+  const [processedImages, setProcessedImages] = useState<string[]>([]);
 
   const listing = listings?.find((listing) => listing.id === id);
+
+  // Traitement des images
+  useEffect(() => {
+    if (listing) {
+      const fallbackImages = [
+        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
+        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
+        "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800"
+      ];
+
+      const validateImage = (url: string, index: number) => {
+        if (!url || url.startsWith('blob:')) {
+          return fallbackImages[index % fallbackImages.length];
+        }
+        return url;
+      };
+
+      if (listing.images && listing.images.length > 0) {
+        const processed = listing.images.map((img, idx) => validateImage(img, idx));
+        setProcessedImages(processed);
+      } else if (listing.image) {
+        setProcessedImages([validateImage(listing.image, 0)]);
+      } else {
+        setProcessedImages([fallbackImages[0]]);
+      }
+    }
+  }, [listing]);
+
+  // Vérifier si le logement est dans les favoris
+  useEffect(() => {
+    if (id) {
+      const favorites = localStorage.getItem('favorites');
+      if (favorites) {
+        const favList = JSON.parse(favorites);
+        setIsFavorite(favList.includes(id));
+      }
+    }
+  }, [id]);
+
+  // Charger les avis pour ce logement
+  useEffect(() => {
+    if (id && reviews) {
+      const filteredReviews = reviews.filter(review => 
+        review.listingId === id && review.status === 'approved'
+      );
+      
+      // Si aucun avis n'est trouvé, ajouter des avis fictifs pour la démo
+      if (filteredReviews.length === 0) {
+        setListingReviews([
+          {
+            id: "demo1",
+            author: "Michel Dupont",
+            avatar: "/placeholder.svg",
+            rating: 5,
+            date: "Mars 2024",
+            comment: "Superbe logement, très bien situé. Le propriétaire est très accueillant. Je recommande vivement !",
+          },
+          {
+            id: "demo2",
+            author: "Sophie Martin",
+            avatar: "/placeholder.svg",
+            rating: 4,
+            date: "Février 2024",
+            comment: "Appartement conforme aux photos, propre et fonctionnel. Un peu bruyant le soir mais globalement un bon séjour.",
+          }
+        ]);
+      } else {
+        setListingReviews(filteredReviews);
+      }
+    }
+  }, [id, reviews]);
 
   const handleReservation = () => {
     if (!user) {
@@ -64,13 +125,48 @@ const ListingDetail = () => {
       return;
     }
     
-    // Calcul du nombre de jours
-    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const totalPrice = diffDays * (listing?.price || 0);
+    // Convertir les dates en objets Date
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     
-    toast.success("Réservation enregistrée avec succès !");
-    // Ici, nous simulons une réservation réussie
+    // Vérifier si les dates sont valides
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      toast.error("Dates invalides");
+      return;
+    }
+    
+    // Vérifier si la date de début est avant la date de fin
+    if (start >= end) {
+      toast.error("La date de départ doit être après la date d'arrivée");
+      return;
+    }
+    
+    // Calcul du nombre de jours
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (!listing) return;
+    
+    // Créer l'objet de réservation
+    const reservation = {
+      listingId: listing.id,
+      userId: user.id,
+      startDate,
+      endDate,
+      guestCount,
+      totalPrice: diffDays * listing.price,
+      status: 'pending'
+    };
+    
+    // Envoyer la réservation
+    addReservation.mutate(reservation, {
+      onSuccess: () => {
+        toast.success("Réservation effectuée avec succès !");
+      },
+      onError: () => {
+        toast.error("Erreur lors de la réservation");
+      }
+    });
   };
 
   const handleSubmitReview = () => {
@@ -84,18 +180,64 @@ const ListingDetail = () => {
       return;
     }
     
+    if (!id) return;
+    
     const newReview = {
-      id: Math.random().toString(36).substring(7),
+      listingId: id,
       author: user.name,
-      avatar: user.avatar || "/placeholder.svg",
       rating: reviewRating,
-      date: new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" }),
-      text: reviewText,
+      comment: reviewText
     };
     
-    setReviews([newReview, ...reviews]);
-    setReviewText("");
-    toast.success("Avis publié avec succès !");
+    addReview.mutate(newReview, {
+      onSuccess: () => {
+        toast.success("Votre avis a été soumis pour modération");
+        setReviewText("");
+        
+        // Ajouter temporairement l'avis à la liste locale
+        setListingReviews(prev => [
+          {
+            id: Math.random().toString(36).substring(7),
+            author: user.name,
+            avatar: user.avatar || "/placeholder.svg",
+            rating: reviewRating,
+            date: new Date().toLocaleDateString("fr-FR", { month: "long", year: "numeric" }),
+            comment: reviewText,
+            status: 'pending'
+          },
+          ...prev
+        ]);
+      }
+    });
+  };
+  
+  // Toggle favorite
+  const toggleFavorite = () => {
+    if (!id) return;
+    
+    let favorites: string[] = [];
+    const storedFavorites = localStorage.getItem('favorites');
+    
+    if (storedFavorites) {
+      favorites = JSON.parse(storedFavorites);
+    }
+    
+    if (isFavorite) {
+      favorites = favorites.filter(favId => favId !== id);
+      toast.success("Retiré des favoris");
+    } else {
+      favorites.push(id);
+      toast.success("Ajouté aux favoris");
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    setIsFavorite(!isFavorite);
+  };
+
+  // Affichage du prix en FCFA
+  const formatPriceFCFA = (priceEUR: number): string => {
+    const priceFCFA = Math.round(priceEUR * 655.957);
+    return priceFCFA.toLocaleString('fr-FR');
   };
 
   if (isLoading) {
@@ -153,6 +295,10 @@ const ListingDetail = () => {
     );
   }
 
+  // Calcul de la note moyenne
+  const averageRating = listingReviews.reduce((acc, review) => acc + review.rating, 0) / 
+                        (listingReviews.length || 1);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -170,7 +316,7 @@ const ListingDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="relative overflow-hidden rounded-lg">
             <img
-              src={listing.images?.[selectedImageIndex] || listing.image}
+              src={processedImages[selectedImageIndex] || processedImages[0]}
               alt={listing.title}
               className="w-full h-[400px] object-cover"
             />
@@ -184,8 +330,8 @@ const ListingDetail = () => {
             </Button>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            {listing.images
-              ?.slice(1, 5)
+            {processedImages
+              .slice(1, 5)
               .map((image, index) => (
                 <div
                   key={index}
@@ -197,19 +343,19 @@ const ListingDetail = () => {
                     alt={`${listing.title} - ${index + 1}`}
                     className="w-full h-[195px] object-cover"
                   />
-                  {index === 3 && listing.images && listing.images.length > 5 && (
+                  {index === 3 && processedImages.length > 5 && (
                     <Dialog>
                       <DialogTrigger asChild>
                         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white">
                           <span className="text-lg font-semibold">
-                            +{listing.images.length - 5} photos
+                            +{processedImages.length - 5} photos
                           </span>
                         </div>
                       </DialogTrigger>
                       <DialogContent className="max-w-4xl">
                         <Carousel className="w-full">
                           <CarouselContent>
-                            {listing.images.map((image, i) => (
+                            {processedImages.map((image, i) => (
                               <CarouselItem key={i}>
                                 <div className="aspect-video w-full overflow-hidden rounded-xl">
                                   <img
@@ -239,13 +385,13 @@ const ListingDetail = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900">
-                  Hébergé par {listing.host.name}
+                  Hébergé par {listing.host?.name || "l'hôte"}
                 </h2>
                 <p className="text-gray-600">{listing.dates}</p>
               </div>
               <Avatar className="h-12 w-12">
-                <AvatarImage src={listing.host.image} />
-                <AvatarFallback>{listing.host.name[0]}</AvatarFallback>
+                <AvatarImage src={listing.host?.image || "/placeholder.svg"} />
+                <AvatarFallback>{(listing.host?.name || "Hôte")[0]}</AvatarFallback>
               </Avatar>
             </div>
 
@@ -254,12 +400,12 @@ const ListingDetail = () => {
                 <TabsTrigger value="description">Description</TabsTrigger>
                 <TabsTrigger value="equipment">Équipements</TabsTrigger>
                 <TabsTrigger value="location">Localisation</TabsTrigger>
-                <TabsTrigger value="reviews">Avis ({reviews.length})</TabsTrigger>
+                <TabsTrigger value="reviews">Avis ({listingReviews.length})</TabsTrigger>
               </TabsList>
               
               <TabsContent value="description">
                 <div className="prose max-w-none">
-                  <p className="text-gray-700">{listing.description}</p>
+                  <p className="text-gray-700">{listing.description || "Aucune description disponible."}</p>
                 </div>
               </TabsContent>
               
@@ -279,7 +425,24 @@ const ListingDetail = () => {
               
               <TabsContent value="location">
                 <div className="aspect-video rounded-lg bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500">Carte de localisation</p>
+                  {listing.mapLocation ? (
+                    <iframe 
+                      src={listing.mapLocation} 
+                      width="100%" 
+                      height="450" 
+                      style={{ border: 0 }} 
+                      allowFullScreen 
+                      loading="lazy" 
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="rounded-lg"
+                    ></iframe>
+                  ) : (
+                    <div className="text-gray-500 text-center p-8">
+                      <MapPin className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                      <p className="text-lg font-medium">Carte de localisation non disponible</p>
+                      <p className="mt-2">Le propriétaire n'a pas encore ajouté d'emplacement précis.</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
               
@@ -321,35 +484,41 @@ const ListingDetail = () => {
                   </div>
                   
                   {/* Liste des avis */}
-                  {reviews.map((review) => (
-                    <div key={review.id} className="border-b pb-6 last:border-b-0">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center">
-                          <Avatar className="h-10 w-10 mr-3">
-                            <AvatarImage src={review.avatar} />
-                            <AvatarFallback>{review.author[0]}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <h4 className="font-medium">{review.author}</h4>
-                            <p className="text-sm text-gray-500">{review.date}</p>
+                  {listingReviews.length > 0 ? (
+                    listingReviews.map((review) => (
+                      <div key={review.id} className="border-b pb-6 last:border-b-0">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center">
+                            <Avatar className="h-10 w-10 mr-3">
+                              <AvatarImage src={review.avatar || "/placeholder.svg"} />
+                              <AvatarFallback>{review.author?.[0] || "?"}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h4 className="font-medium">{review.author}</h4>
+                              <p className="text-sm text-gray-500">{review.date}</p>
+                            </div>
+                          </div>
+                          <div className="flex">
+                            {[1, 2, 3, 4, 5].map((rating) => (
+                              <Star
+                                key={rating}
+                                className={`h-4 w-4 ${
+                                  rating <= review.rating
+                                    ? "text-yellow-400 fill-yellow-400"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
                           </div>
                         </div>
-                        <div className="flex">
-                          {[1, 2, 3, 4, 5].map((rating) => (
-                            <Star
-                              key={rating}
-                              className={`h-4 w-4 ${
-                                rating <= review.rating
-                                  ? "text-yellow-400 fill-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
+                        <p className="text-gray-700">{review.comment}</p>
                       </div>
-                      <p className="text-gray-700">{review.text}</p>
+                    ))
+                  ) : (
+                    <div className="text-center py-6">
+                      <p className="text-gray-500">Aucun avis pour le moment. Soyez le premier à donner votre avis !</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
@@ -360,13 +529,14 @@ const ListingDetail = () => {
             <div className="bg-white rounded-lg border p-6 shadow-sm">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <span className="text-2xl font-bold">{listing.price}€</span>
+                  <span className="text-2xl font-bold">{formatPriceFCFA(listing.price)} FCFA</span>
                   <span className="text-gray-600"> / nuit</span>
+                  <span className="text-sm text-gray-500 block">({listing.price}€)</span>
                 </div>
                 <div className="flex items-center">
                   <Star className="h-4 w-4 text-yellow-400 fill-yellow-400 mr-1" />
                   <span className="text-sm">
-                    {listing.rating || "Nouveau"} · {reviews.length} avis
+                    {averageRating.toFixed(1)} · {listingReviews.length} avis
                   </span>
                 </div>
               </div>
@@ -378,7 +548,7 @@ const ListingDetail = () => {
                     <input
                       type="date"
                       className="w-full focus:outline-none text-sm"
-                      onChange={(e) => setStartDate(new Date(e.target.value))}
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                   </div>
                   <div className="p-4">
@@ -386,7 +556,7 @@ const ListingDetail = () => {
                     <input
                       type="date"
                       className="w-full focus:outline-none text-sm"
-                      onChange={(e) => setEndDate(new Date(e.target.value))}
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                   </div>
                 </div>
@@ -407,14 +577,18 @@ const ListingDetail = () => {
                 </div>
               </div>
 
-              <Button className="w-full mb-4" onClick={handleReservation}>
+              <Button 
+                className="w-full mb-4" 
+                onClick={handleReservation}
+                style={{ backgroundColor: settings.primaryColor }}
+              >
                 Réserver
               </Button>
               
               <Button
                 variant="outline"
                 className="w-full flex items-center justify-center"
-                onClick={() => setIsFavorite(!isFavorite)}
+                onClick={toggleFavorite}
               >
                 <Heart
                   className={`mr-2 h-4 w-4 ${
@@ -426,17 +600,17 @@ const ListingDetail = () => {
 
               <div className="mt-6 space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">{listing.price}€ x 7 nuits</span>
-                  <span>{listing.price * 7}€</span>
+                  <span className="text-gray-600">{formatPriceFCFA(listing.price)} FCFA x 7 nuits</span>
+                  <span>{formatPriceFCFA(listing.price * 7)} FCFA</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Frais de service</span>
-                  <span>{Math.round(listing.price * 7 * 0.12)}€</span>
+                  <span>{formatPriceFCFA(Math.round(listing.price * 7 * 0.12))} FCFA</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold">
                   <span>Total</span>
-                  <span>{listing.price * 7 + Math.round(listing.price * 7 * 0.12)}€</span>
+                  <span>{formatPriceFCFA(listing.price * 7 + Math.round(listing.price * 7 * 0.12))} FCFA</span>
                 </div>
               </div>
             </div>
@@ -461,6 +635,9 @@ const ListingDetail = () => {
                       src={item.image}
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                      onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800";
+                      }}
                     />
                   </div>
                   <div className="mt-3">
@@ -472,7 +649,7 @@ const ListingDetail = () => {
                       </div>
                     </div>
                     <p className="text-gray-500">{item.title}</p>
-                    <p className="font-medium mt-1">{item.price}€ / nuit</p>
+                    <p className="font-medium mt-1">{formatPriceFCFA(item.price)} FCFA</p>
                   </div>
                 </Link>
               ))}

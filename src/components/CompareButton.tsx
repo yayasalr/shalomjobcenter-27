@@ -57,3 +57,29 @@ export const CompareButton = ({ listingId }: CompareButtonProps) => {
       // Ajouter à la comparaison (maximum 4)
       if (compareIds.length >= 4) {
         toast.error("Vous ne pouvez comparer que 4 logements maximum");
+        return;
+      }
+      
+      compareIds.push(listingId);
+      toast.success("Ajouté à la comparaison");
+    }
+    
+    localStorage.setItem('compareListings', JSON.stringify(compareIds));
+    setIsComparing(!isComparing);
+    
+    // Déclencher un événement pour que les autres composants puissent réagir
+    window.dispatchEvent(new Event('storage'));
+  };
+  
+  return (
+    <button
+      className={`flex items-center justify-center p-2 rounded-full ${
+        isComparing ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 border'
+      }`}
+      onClick={toggleCompare}
+      title={isComparing ? "Retirer de la comparaison" : "Ajouter à la comparaison"}
+    >
+      <Scale className="h-4 w-4" />
+    </button>
+  );
+};

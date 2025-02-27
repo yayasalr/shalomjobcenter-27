@@ -18,16 +18,16 @@ const INITIAL_REVIEWS: Review[] = [
   {
     id: "1",
     listingId: "1",
-    author: "John Doe",
+    author: "Michel Dupont",
     rating: 4,
     comment: "Très bon séjour, appartement propre et bien situé",
     date: "2024-02-15",
-    status: "pending"
+    status: "approved"
   },
   {
     id: "2",
-    listingId: "2",
-    author: "Jane Smith",
+    listingId: "1",
+    author: "Sophie Martin",
     rating: 5,
     comment: "Excellent accueil, je recommande vivement",
     date: "2024-02-16",
@@ -40,7 +40,7 @@ export const useReviews = () => {
   const queryClient = useQueryClient();
 
   const { data: reviews = [], isLoading, error } = useQuery({
-    queryKey: ['admin-reviews'],
+    queryKey: ['reviews'],
     queryFn: async (): Promise<Review[]> => {
       return loadData('reviews', INITIAL_REVIEWS);
     },
@@ -60,7 +60,7 @@ export const useReviews = () => {
       return { reviewId, status };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
       toast.success("Statut de l'avis mis à jour avec succès");
     },
     onError: () => {
@@ -78,7 +78,7 @@ export const useReviews = () => {
       return updatedReview;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
       toast.success("Avis mis à jour avec succès");
     },
     onError: () => {
@@ -100,8 +100,8 @@ export const useReviews = () => {
       return review;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
-      toast.success("Avis ajouté avec succès");
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
+      toast.success("Avis ajouté avec succès et en attente de modération");
     },
     onError: () => {
       toast.error("Erreur lors de l'ajout de l'avis");
@@ -116,7 +116,7 @@ export const useReviews = () => {
       return reviewId;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+      queryClient.invalidateQueries({ queryKey: ['reviews'] });
       toast.success("Avis supprimé avec succès");
     },
     onError: () => {
