@@ -483,4 +483,475 @@ const AdminReservations = () => {
                             <th className="px-6 py-3">Contact</th>
                             <th className="px-6 py-3">Date</th>
                             <th className="px-6 py-3">Statut</th>
-                            <th className="
+                            <th className="px-6 py-3 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {getFilteredApplications().map((item) => (
+                            <tr key={item.application.id} className="hover:bg-gray-50">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex items-center">
+                                  <Avatar className="h-8 w-8 mr-2">
+                                    <AvatarFallback>{item.application.applicantName[0]}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="text-sm font-medium text-gray-900">{item.application.applicantName}</div>
+                                    <div className="text-sm text-gray-500">{item.application.email}</div>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 line-clamp-1">{item.job.title}</div>
+                                  <div className="text-xs text-gray-500 flex items-center">
+                                    <MapPin className="h-3 w-3 mr-1" />
+                                    {item.job.location}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500 flex items-center">
+                                  <Phone className="h-4 w-4 mr-1 text-gray-400" />
+                                  {item.application.phone}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="text-sm text-gray-500">
+                                  {formatDate(item.application.submittedAt)}
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <Badge
+                                  className={`${
+                                    item.application.status === 'approved'
+                                      ? 'bg-green-100 text-green-800 border-green-200'
+                                      : item.application.status === 'pending'
+                                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                      : 'bg-red-100 text-red-800 border-red-200'
+                                  }`}
+                                >
+                                  {item.application.status === 'approved' ? (
+                                    <>
+                                      <Check className="mr-1 h-3.5 w-3.5" />
+                                      Acceptée
+                                    </>
+                                  ) : item.application.status === 'pending' ? (
+                                    <>
+                                      <Clock className="mr-1 h-3.5 w-3.5" />
+                                      En attente
+                                    </>
+                                  ) : (
+                                    <>
+                                      <X className="mr-1 h-3.5 w-3.5" />
+                                      Refusée
+                                    </>
+                                  )}
+                                </Badge>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="h-8 w-8 p-0">
+                                      <DotsHorizontalIcon className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                      onClick={() => {
+                                        setSelectedApplication(item.application);
+                                        setIsApplicationDialogOpen(true);
+                                      }}
+                                    >
+                                      Voir les détails
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'approved')}
+                                      disabled={item.application.status === 'approved'}
+                                    >
+                                      Accepter
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'pending')}
+                                      disabled={item.application.status === 'pending'}
+                                    >
+                                      Mettre en attente
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'rejected')}
+                                      disabled={item.application.status === 'rejected'}
+                                      className="text-red-600"
+                                    >
+                                      Refuser
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-8 rounded-lg shadow text-center">
+                    <div className="mb-4 text-gray-400">
+                      <FileText className="h-12 w-12 mx-auto" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune candidature trouvée</h3>
+                    <p className="text-gray-500">Il n'y a pas de candidatures correspondant à vos critères.</p>
+                  </div>
+                )}
+              </TabsContent>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      {/* Modal de détails de réservation */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          {selectedReservation && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Détails de la réservation</DialogTitle>
+                <DialogDescription>
+                  Réservation #{selectedReservation.id.substring(0, 8)}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="grid gap-4 py-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Logement</h3>
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 flex-shrink-0 rounded-md overflow-hidden mr-3">
+                        <img
+                          src={selectedReservation.listingImage || "/placeholder.svg"}
+                          alt={selectedReservation.listingTitle}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="text-sm">
+                        <div className="font-medium">{selectedReservation.listingTitle}</div>
+                        <div className="text-gray-500">{selectedReservation.listingLocation}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Client</h3>
+                    <div className="flex items-center">
+                      <Avatar className="h-10 w-10 mr-3">
+                        <AvatarFallback>{selectedReservation.guestName[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="text-sm">
+                        <div className="font-medium">{selectedReservation.guestName}</div>
+                        <div className="text-gray-500">{selectedReservation.guestEmail}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Période de séjour</h3>
+                    <div className="text-sm">
+                      <div className="flex items-center mb-1">
+                        <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>Arrivée: {formatDate(selectedReservation.checkIn)}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>Départ: {formatDate(selectedReservation.checkOut)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Détails</h3>
+                    <div className="text-sm">
+                      <div className="flex items-center mb-1">
+                        <User className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>{selectedReservation.guests} voyageur{selectedReservation.guests > 1 ? 's' : ''}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>Réservé le {formatDate(selectedReservation.createdAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <h3 className="text-sm font-medium mb-1">Statut et paiement</h3>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="text-sm">
+                      <Badge
+                        className={`${
+                          selectedReservation.status === 'confirmed'
+                            ? 'bg-green-100 text-green-800 border-green-200'
+                            : selectedReservation.status === 'pending'
+                            ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                            : 'bg-red-100 text-red-800 border-red-200'
+                        }`}
+                      >
+                        {selectedReservation.status === 'confirmed' ? (
+                          <>
+                            <Check className="mr-1 h-3.5 w-3.5" />
+                            Confirmée
+                          </>
+                        ) : selectedReservation.status === 'pending' ? (
+                          <>
+                            <Clock className="mr-1 h-3.5 w-3.5" />
+                            En attente
+                          </>
+                        ) : (
+                          <>
+                            <X className="mr-1 h-3.5 w-3.5" />
+                            Annulée
+                          </>
+                        )}
+                      </Badge>
+                    </div>
+                    
+                    <div className="text-sm">
+                      <div className="font-medium">
+                        Prix: {Math.round(selectedReservation.totalPrice * 655.957).toLocaleString('fr-FR')} FCFA
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {selectedReservation.notes && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="text-sm font-medium mb-1">Notes</h3>
+                      <div className="text-sm bg-gray-50 p-3 rounded-md">{selectedReservation.notes}</div>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <DialogFooter>
+                <div className="flex justify-between w-full">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    Fermer
+                  </Button>
+                  
+                  <div className="space-x-2">
+                    {selectedReservation.status !== 'confirmed' && (
+                      <Button
+                        onClick={() => {
+                          handleUpdateStatus(selectedReservation.id, 'confirmed');
+                          setIsDialogOpen(false);
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Check className="mr-2 h-4 w-4" />
+                        Confirmer
+                      </Button>
+                    )}
+                    
+                    {selectedReservation.status !== 'cancelled' && (
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          handleUpdateStatus(selectedReservation.id, 'cancelled');
+                          setIsDialogOpen(false);
+                        }}
+                      >
+                        <X className="mr-2 h-4 w-4" />
+                        Annuler
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Modal de détails de candidature */}
+      <Dialog open={isApplicationDialogOpen} onOpenChange={setIsApplicationDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          {selectedApplication && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Détails de la candidature</DialogTitle>
+                <DialogDescription>
+                  Candidature #{selectedApplication.id.substring(0, 8)}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="grid gap-4 py-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Offre</h3>
+                    <div className="text-sm">
+                      {getJobForApplication(selectedApplication.jobId) && (
+                        <>
+                          <div className="font-medium">{getJobForApplication(selectedApplication.jobId)?.title}</div>
+                          <div className="text-gray-500">{getJobForApplication(selectedApplication.jobId)?.location}</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Candidat</h3>
+                    <div className="flex items-center">
+                      <Avatar className="h-10 w-10 mr-3">
+                        <AvatarFallback>{selectedApplication.applicantName[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="text-sm">
+                        <div className="font-medium">{selectedApplication.applicantName}</div>
+                        <div className="text-gray-500">{selectedApplication.email}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Contact</h3>
+                    <div className="text-sm">
+                      <div className="flex items-center mb-1">
+                        <Mail className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>{selectedApplication.email}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Phone className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>{selectedApplication.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-sm font-medium mb-1">Détails</h3>
+                    <div className="text-sm">
+                      <div className="flex items-center mb-1">
+                        <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                        <span>Candidature envoyée le {formatDate(selectedApplication.submittedAt)}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Badge
+                          className={`${
+                            selectedApplication.status === 'approved'
+                              ? 'bg-green-100 text-green-800 border-green-200'
+                              : selectedApplication.status === 'pending'
+                              ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                              : 'bg-red-100 text-red-800 border-red-200'
+                          }`}
+                        >
+                          {selectedApplication.status === 'approved' ? (
+                            <>
+                              <Check className="mr-1 h-3.5 w-3.5" />
+                              Acceptée
+                            </>
+                          ) : selectedApplication.status === 'pending' ? (
+                            <>
+                              <Clock className="mr-1 h-3.5 w-3.5" />
+                              En attente
+                            </>
+                          ) : (
+                            <>
+                              <X className="mr-1 h-3.5 w-3.5" />
+                              Refusée
+                            </>
+                          )}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {selectedApplication.resume && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="text-sm font-medium mb-1">CV</h3>
+                      <div className="text-sm">
+                        <Link 
+                          to={selectedApplication.resume} 
+                          target="_blank" 
+                          className="text-blue-600 hover:underline flex items-center"
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          Voir le CV
+                        </Link>
+                      </div>
+                    </div>
+                  </>
+                )}
+                
+                {selectedApplication.coverLetter && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="text-sm font-medium mb-1">Lettre de motivation</h3>
+                      <div className="text-sm bg-gray-50 p-3 rounded-md">{selectedApplication.coverLetter}</div>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <DialogFooter>
+                <div className="flex justify-between w-full">
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsApplicationDialogOpen(false)}
+                  >
+                    Fermer
+                  </Button>
+                  
+                  <div className="space-x-2">
+                    {selectedApplication.status !== 'approved' && getJobForApplication(selectedApplication.jobId) && (
+                      <Button
+                        onClick={() => {
+                          updateApplicationStatus(selectedApplication.id, selectedApplication.jobId, 'approved');
+                          setIsApplicationDialogOpen(false);
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        <Check className="mr-2 h-4 w-4" />
+                        Accepter
+                      </Button>
+                    )}
+                    
+                    {selectedApplication.status !== 'rejected' && getJobForApplication(selectedApplication.jobId) && (
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          updateApplicationStatus(selectedApplication.id, selectedApplication.jobId, 'rejected');
+                          setIsApplicationDialogOpen(false);
+                        }}
+                      >
+                        <X className="mr-2 h-4 w-4" />
+                        Refuser
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </SidebarProvider>
+  );
+};
+
+export default AdminReservations;
