@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Job } from "@/types/job";
+import { Job, JobApplication } from "@/types/job";
 import { toast } from "sonner";
 import useLocalStorage from "./useLocalStorage";
 
@@ -93,6 +93,16 @@ const MOCK_JOBS: Job[] = [
   }
 ];
 
+// Type pour les données de candidature reçues du formulaire
+interface JobApplicationFormData {
+  jobId: string;
+  name: string;
+  email: string;
+  phone: string;
+  resume?: string;
+  coverLetter?: string;
+}
+
 export const useJobs = () => {
   const { loadData, saveData } = useLocalStorage();
   const queryClient = useQueryClient();
@@ -167,6 +177,48 @@ export const useJobs = () => {
     },
   });
 
+  // Ajout de la mutation pour postuler à une offre d'emploi
+  const applyForJob = useMutation({
+    mutationFn: async (applicationData: JobApplicationFormData) => {
+      const currentJobs = loadData('jobs', MOCK_JOBS);
+      const jobIndex = currentJobs.findIndex(job => job.id === applicationData.jobId);
+      
+      if (jobIndex === -1) {
+        throw new Error("Offre d'emploi introuvable");
+      }
+      
+      // Création d'un nouvel objet d'application
+      const newApplication: JobApplication = {
+        id: Math.random().toString(36).substr(2, 9),
+        jobId: applicationData.jobId,
+        applicantName: applicationData.name,
+        email: applicationData.email,
+        phone: applicationData.phone,
+        resume: applicationData.resume,
+        coverLetter: applicationData.coverLetter,
+        status: "pending",
+        submittedAt: new Date().toISOString()
+      };
+      
+      // Ajout de l'application à l'offre d'emploi
+      if (!currentJobs[jobIndex].applications) {
+        currentJobs[jobIndex].applications = [];
+      }
+      
+      currentJobs[jobIndex].applications!.push(newApplication);
+      saveData('jobs', currentJobs);
+      
+      return newApplication;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast.success("Votre candidature a été envoyée avec succès");
+    },
+    onError: () => {
+      toast.error("Erreur lors de l'envoi de votre candidature");
+    },
+  });
+
   return {
     jobs,
     isLoading,
@@ -174,5 +226,6 @@ export const useJobs = () => {
     addJob,
     updateJob,
     deleteJob,
+    applyForJob
   };
 };
