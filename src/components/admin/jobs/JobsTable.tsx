@@ -1,11 +1,27 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Job } from '@/types/job';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Edit, Trash, Briefcase, MapPin, Clock, Users } from 'lucide-react';
+import { 
+  MoreHorizontal, Check, X, FileEdit, Trash, Eye, 
+  CalendarCheck, MapPin, CheckCircle, BriefcaseBusiness
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface JobsTableProps {
   jobs: Job[];
@@ -14,133 +30,311 @@ interface JobsTableProps {
 }
 
 export const JobsTable: React.FC<JobsTableProps> = ({ jobs, onEdit, onDelete }) => {
+  const [sortBy, setSortBy] = useState<keyof Job>('publishDate');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+  // Fonction pour formater la date
   const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), 'dd MMMM yyyy', { locale: fr });
-    } catch (error) {
-      return dateString;
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
+
+  // Fonction pour déterminer si une offre est expirée
+  const isExpired = (job: Job) => {
+    if (job.status === 'closed') return true;
+    const deadlineDate = new Date(job.deadline);
+    const today = new Date();
+    return today > deadlineDate;
+  };
+
+  // Fonction pour obtenir le style du badge de statut
+  const getStatusBadgeStyle = (job: Job) => {
+    if (job.status === 'closed') {
+      return 'bg-red-100 text-red-800 border-red-200';
+    }
+    
+    return isExpired(job)
+      ? 'bg-amber-100 text-amber-800 border-amber-200'
+      : 'bg-green-100 text-green-800 border-green-200';
+  };
+
+  // Fonction pour obtenir le texte du statut
+  const getStatusText = (job: Job) => {
+    if (job.status === 'closed') return 'Clôturée';
+    return isExpired(job) ? 'Expirée' : 'Active';
+  };
+
+  // Tri des offres
+  const sortedJobs = [...jobs].sort((a, b) => {
+    // Gestion du tri selon différents types de champs
+    if (sortBy === 'salary') {
+      return sortDirection === 'asc'
+        ? a.salary.amount - b.salary.amount
+        : b.salary.amount - a.salary.amount;
+    } else if (sortBy === 'publishDate' || sortBy === 'deadline') {
+      const dateA = new Date(a[sortBy]).getTime();
+      const dateB = new Date(b[sortBy]).getTime();
+      return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+    } else {
+      // Pour les champs de type string
+      const valA = String(a[sortBy] || '').toLowerCase();
+      const valB = String(b[sortBy] || '').toLowerCase();
+      return sortDirection === 'asc'
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    }
+  });
+
+  // Fonction pour changer le tri
+  const handleSort = (column: keyof Job) => {
+    if (sortBy === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortBy(column);
+      setSortDirection('asc');
     }
   };
 
-  const getContractLabel = (contract: string) => {
-    switch (contract) {
-      case 'full_time':
-        return 'Temps plein';
-      case 'part_time':
-        return 'Temps partiel';
-      case 'contract':
-        return 'Contrat';
-      default:
-        return contract;
-    }
-  };
-
-  const getDomainLabel = (domain: string) => {
+  // Fonction pour obtenir le nom du domaine d'emploi
+  const getDomainName = (domain: string) => {
     const domains: Record<string, string> = {
-      residential_security: 'Sécurité résidentielle',
-      bodyguard: 'Garde du corps',
-      private_property: 'Surveillance propriétés privées',
-      industrial_security: 'Sécurité industrielle',
-      office_security: 'Sécurité de bureau',
-      security_patrol: 'Patrouilleur',
-      access_control: 'Contrôle d\'accès',
-      security_systems: 'Opérateur systèmes',
-      construction_security: 'Sécurité chantier',
-      site_supervisor: 'Surveillant travaux',
-      security_coordinator: 'Coordinateur sécurité',
-      event_security: 'Sécurité événementielle',
-      k9_security: 'Sécurité cynophile',
-      security_manager: 'Responsable sécurité',
-      security_consultant: 'Consultant sécurité',
-      security_trainer: 'Formateur sécurité'
+      'residential_security': 'Sécurité résidentielle',
+      'bodyguard': 'Garde du corps',
+      'private_property': 'Propriétés privées',
+      'industrial_security': 'Sécurité industrielle',
+      'event_security': 'Sécurité événementielle',
+      'k9_security': 'Maître-chien',
+      'security_trainer': 'Formateur sécurité',
+      'housing_offer': 'Offre de logement'
     };
     
     return domains[domain] || domain;
   };
 
+  // Fonction pour obtenir le nom du type de contrat
+  const getContractName = (contract: string) => {
+    const contracts: Record<string, string> = {
+      'full_time': 'CDI',
+      'part_time': 'Temps partiel',
+      'contract': 'CDD'
+    };
+    
+    return contracts[contract] || contract;
+  };
+
+  // Ajouter les comptes de candidatures
+  const getApplicationsCount = (job: Job) => {
+    return job.applications?.length || 0;
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
-          <thead className="text-xs text-gray-500 uppercase tracking-wider bg-gray-50">
-            <tr>
-              <th className="px-6 py-3">Titre</th>
-              <th className="px-6 py-3">Domaine</th>
-              <th className="px-6 py-3">Localisation</th>
-              <th className="px-6 py-3">Contrat</th>
-              <th className="px-6 py-3">Salaire</th>
-              <th className="px-6 py-3">Date limite</th>
-              <th className="px-6 py-3">Statut</th>
-              <th className="px-6 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {jobs.map((job) => (
-              <tr key={job.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium">{job.title}</td>
-                <td className="px-6 py-4 text-gray-600">{getDomainLabel(job.domain)}</td>
-                <td className="px-6 py-4 text-gray-600">
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-1 text-gray-400" />
-                    {job.location}
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-left">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+          <tr>
+            <th className="px-6 py-3" style={{ width: '40%' }}>
+              <button 
+                onClick={() => handleSort('title')} 
+                className="flex items-center font-medium"
+              >
+                Titre 
+                {sortBy === 'title' && (
+                  <span className="ml-1">
+                    {sortDirection === 'asc' ? '↑' : '↓'}
+                  </span>
+                )}
+              </button>
+            </th>
+            <th className="px-6 py-3">
+              <button 
+                onClick={() => handleSort('location')} 
+                className="flex items-center font-medium"
+              >
+                Localisation
+                {sortBy === 'location' && (
+                  <span className="ml-1">
+                    {sortDirection === 'asc' ? '↑' : '↓'}
+                  </span>
+                )}
+              </button>
+            </th>
+            <th className="px-6 py-3 whitespace-nowrap">
+              <button 
+                onClick={() => handleSort('salary')} 
+                className="flex items-center font-medium"
+              >
+                Salaire (€)
+                {sortBy === 'salary' && (
+                  <span className="ml-1">
+                    {sortDirection === 'asc' ? '↑' : '↓'}
+                  </span>
+                )}
+              </button>
+            </th>
+            <th className="px-6 py-3 whitespace-nowrap">
+              <button 
+                onClick={() => handleSort('deadline')} 
+                className="flex items-center font-medium"
+              >
+                Date limite
+                {sortBy === 'deadline' && (
+                  <span className="ml-1">
+                    {sortDirection === 'asc' ? '↑' : '↓'}
+                  </span>
+                )}
+              </button>
+            </th>
+            <th className="px-6 py-3">Statut</th>
+            <th className="px-6 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedJobs.map((job) => (
+            <tr 
+              key={job.id} 
+              className={`border-b hover:bg-gray-50 ${
+                job.status === 'closed' || isExpired(job) ? 'bg-gray-50' : ''
+              }`}
+            >
+              <td className="px-6 py-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 mr-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      job.isHousingOffer ? 'bg-purple-100' : 'bg-blue-100'
+                    }`}>
+                      {job.isHousingOffer ? (
+                        <CalendarCheck className={`h-5 w-5 ${job.isHousingOffer ? 'text-purple-700' : 'text-blue-700'}`} />
+                      ) : (
+                        <BriefcaseBusiness className={`h-5 w-5 ${job.isHousingOffer ? 'text-purple-700' : 'text-blue-700'}`} />
+                      )}
+                    </div>
                   </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    <Briefcase className="h-4 w-4 mr-1 text-gray-400" />
-                    {getContractLabel(job.contract)}
+                  <div>
+                    <div className="font-medium text-gray-900">{job.title}</div>
+                    <div className="text-gray-500 text-xs mt-1">
+                      {job.isHousingOffer ? (
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                          Logement
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          {getDomainName(job.domain)}
+                        </Badge>
+                      )}
+                      <Badge variant="outline" className="ml-2 bg-gray-50 text-gray-700 border-gray-200">
+                        {getContractName(job.contract)}
+                      </Badge>
+                    </div>
                   </div>
-                </td>
-                <td className="px-6 py-4 font-medium">
-                  {job.salary.amount} {job.salary.currency}
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1 text-gray-400" />
-                    {formatDate(job.deadline)}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <Badge variant={job.status === 'active' ? 'success' : 'destructive'}>
-                    {job.status === 'active' ? 'Active' : 'Fermée'}
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex items-center">
+                  <MapPin className="h-4 w-4 text-gray-400 mr-1" />
+                  <span>{job.location}</span>
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                {job.isHousingOffer ? (
+                  <span>{job.price?.toLocaleString('fr-FR')} €</span>
+                ) : (
+                  <span>{job.salary.amount.toLocaleString('fr-FR')} €</span>
+                )}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className={`${isExpired(job) && job.status !== 'closed' ? 'text-amber-700' : ''}`}>
+                        {formatDate(job.deadline)}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Publiée le {formatDate(job.publishDate)}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex items-center space-x-1">
+                  <Badge variant="outline" className={getStatusBadgeStyle(job)}>
+                    {getStatusText(job)}
                   </Badge>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEdit(job)}
-                      className="flex items-center"
-                    >
-                      <Edit className="h-4 w-4 mr-1" />
-                      Modifier
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => onDelete(job.id)}
-                      className="flex items-center"
-                    >
-                      <Trash className="h-4 w-4 mr-1" />
-                      Supprimer
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {jobs.length === 0 && (
-        <div className="text-center py-10">
-          <Users className="mx-auto h-10 w-10 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Aucune offre d'emploi</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Commencez par créer une nouvelle offre d'emploi.
-          </p>
-        </div>
-      )}
+                  
+                  {job.applications && job.applications.length > 0 && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      {job.applications.length} candidat{job.applications.length > 1 ? 's' : ''}
+                    </Badge>
+                  )}
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex items-center justify-end space-x-2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link to={`/emploi/${job.id}`} target="_blank">
+                          <Button size="icon" variant="ghost">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Voir l'offre</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => onEdit(job)}>
+                        <FileEdit className="mr-2 h-4 w-4" />
+                        Modifier
+                      </DropdownMenuItem>
+                      {job.status === 'active' ? (
+                        <DropdownMenuItem onClick={() => {
+                          const updatedJob = { ...job, status: 'closed' };
+                          onEdit(updatedJob);
+                        }}>
+                          <X className="mr-2 h-4 w-4" />
+                          Clôturer
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => {
+                          const updatedJob = { ...job, status: 'active' };
+                          onEdit(updatedJob);
+                        }}>
+                          <Check className="mr-2 h-4 w-4" />
+                          Activer
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={() => onDelete(job.id)}
+                        className="text-red-600"
+                      >
+                        <Trash className="mr-2 h-4 w-4" />
+                        Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

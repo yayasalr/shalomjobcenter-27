@@ -1,22 +1,24 @@
 
 import React from 'react';
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { JobDomain, JobContract } from '@/types/job';
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { X, Plus } from 'lucide-react';
 
 interface FormFieldsProps {
   title: string;
   setTitle: (value: string) => void;
-  domain: JobDomain;
-  setDomain: (value: JobDomain) => void;
+  domain: string;
+  setDomain: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
   requirements: string;
   setRequirements: (value: string) => void;
-  contract: JobContract;
-  setContract: (value: JobContract) => void;
+  contract: string;
+  setContract: (value: string) => void;
   location: string;
   setLocation: (value: string) => void;
   salary: number;
@@ -25,6 +27,17 @@ interface FormFieldsProps {
   setPositions: (value: number) => void;
   deadline: string;
   setDeadline: (value: string) => void;
+  isHousingOffer?: boolean;
+  price?: number;
+  setPrice?: (value: number) => void;
+  bedrooms?: number;
+  setBedrooms?: (value: number) => void;
+  bathrooms?: number;
+  setBathrooms?: (value: number) => void;
+  images?: string[];
+  onAddImage?: () => void;
+  onUpdateImage?: (index: number, value: string) => void;
+  onRemoveImage?: (index: number) => void;
 }
 
 export const FormFields: React.FC<FormFieldsProps> = ({
@@ -46,24 +59,42 @@ export const FormFields: React.FC<FormFieldsProps> = ({
   setPositions,
   deadline,
   setDeadline,
+  isHousingOffer = false,
+  price = 0,
+  setPrice,
+  bedrooms = 1,
+  setBedrooms,
+  bathrooms = 1,
+  setBathrooms,
+  images = [],
+  onAddImage,
+  onUpdateImage,
+  onRemoveImage
 }) => {
+  // Préparation de la date minimum pour le délai (aujourd'hui)
+  const today = new Date().toISOString().split('T')[0];
+  
   return (
-    <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="title">Titre de l'offre <span className="text-red-500">*</span></Label>
-          <Input
-            id="title"
-            placeholder="Ex: Agent de sécurité pour résidences"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
+    <div className="space-y-6">
+      <div>
+        <Label htmlFor="title" className="block text-sm font-medium mb-1">
+          Titre <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Titre de l'offre"
+          required
+        />
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="domain">Domaine <span className="text-red-500">*</span></Label>
-          <Select value={domain} onValueChange={(value: JobDomain) => setDomain(value)}>
+      {!isHousingOffer && (
+        <div>
+          <Label htmlFor="domain" className="block text-sm font-medium mb-1">
+            Domaine <span className="text-red-500">*</span>
+          </Label>
+          <Select value={domain} onValueChange={setDomain}>
             <SelectTrigger>
               <SelectValue placeholder="Sélectionner un domaine" />
             </SelectTrigger>
@@ -80,105 +111,214 @@ export const FormFields: React.FC<FormFieldsProps> = ({
               <SelectItem value="site_supervisor">Surveillant travaux</SelectItem>
               <SelectItem value="security_coordinator">Coordinateur sécurité</SelectItem>
               <SelectItem value="event_security">Sécurité événementielle</SelectItem>
-              <SelectItem value="k9_security">Sécurité cynophile</SelectItem>
+              <SelectItem value="k9_security">Maître-chien</SelectItem>
               <SelectItem value="security_manager">Responsable sécurité</SelectItem>
               <SelectItem value="security_consultant">Consultant sécurité</SelectItem>
               <SelectItem value="security_trainer">Formateur sécurité</SelectItem>
             </SelectContent>
           </Select>
         </div>
-      </div>
+      )}
 
-      <div className="space-y-2">
-        <Label htmlFor="description">Description du poste <span className="text-red-500">*</span></Label>
+      <div>
+        <Label htmlFor="description" className="block text-sm font-medium mb-1">
+          Description <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="description"
-          placeholder="Décrivez en détail les responsabilités et le contexte du poste"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder={`Description détaillée de ${isHousingOffer ? 'ce logement' : 'cette offre d\'emploi'}`}
           rows={5}
           required
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="requirements">Exigences et qualifications <span className="text-red-500">*</span></Label>
+      <div>
+        <Label htmlFor="requirements" className="block text-sm font-medium mb-1">
+          {isHousingOffer ? 'Caractéristiques' : 'Exigences'} <span className="text-red-500">*</span>
+        </Label>
         <Textarea
           id="requirements"
-          placeholder="Listez les compétences, certifications et expériences requises"
           value={requirements}
           onChange={(e) => setRequirements(e.target.value)}
+          placeholder={isHousingOffer 
+            ? "Caractéristiques du logement (une par ligne)" 
+            : "Exigences du poste (une par ligne)"
+          }
           rows={5}
           required
         />
+        <p className="text-xs text-gray-500 mt-1">Entrez une exigence par ligne</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="contract">Type de contrat <span className="text-red-500">*</span></Label>
-          <Select value={contract} onValueChange={(value: JobContract) => setContract(value)}>
+      {!isHousingOffer && (
+        <div>
+          <Label htmlFor="contract" className="block text-sm font-medium mb-1">
+            Type de contrat <span className="text-red-500">*</span>
+          </Label>
+          <Select value={contract} onValueChange={setContract}>
             <SelectTrigger>
               <SelectValue placeholder="Sélectionner un type de contrat" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="full_time">Temps plein</SelectItem>
+              <SelectItem value="full_time">CDI</SelectItem>
               <SelectItem value="part_time">Temps partiel</SelectItem>
-              <SelectItem value="contract">Contrat</SelectItem>
+              <SelectItem value="contract">CDD</SelectItem>
             </SelectContent>
           </Select>
         </div>
+      )}
 
-        <div className="space-y-2">
-          <Label htmlFor="location">Localisation <span className="text-red-500">*</span></Label>
-          <Input
-            id="location"
-            placeholder="Ex: Paris, Lyon, Marseille..."
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-          />
-        </div>
+      <div>
+        <Label htmlFor="location" className="block text-sm font-medium mb-1">
+          Localisation <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="ex: Tokoin, Lomé, Togo"
+          required
+        />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="space-y-2">
-          <Label htmlFor="salary">Salaire mensuel (€) <span className="text-red-500">*</span></Label>
+      {isHousingOffer ? (
+        <div>
+          <Label htmlFor="price" className="block text-sm font-medium mb-1">
+            Prix (€) <span className="text-red-500">*</span>
+          </Label>
+          <Input
+            id="price"
+            type="number"
+            value={price}
+            onChange={(e) => setPrice && setPrice(Number(e.target.value))}
+            placeholder="Prix du logement en euros"
+            min="0"
+            step="0.01"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">Prix en FCFA: {Math.round(price * 655.957).toLocaleString('fr-FR')} FCFA</p>
+        </div>
+      ) : (
+        <div>
+          <Label htmlFor="salary" className="block text-sm font-medium mb-1">
+            Salaire (€) <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="salary"
             type="number"
-            placeholder="Ex: 2000"
             value={salary}
             onChange={(e) => setSalary(Number(e.target.value))}
-            min={0}
+            placeholder="Salaire mensuel en euros"
+            min="0"
+            step="0.01"
             required
           />
+          <p className="text-xs text-gray-500 mt-1">Salaire en FCFA: {Math.round(salary * 655.957).toLocaleString('fr-FR')} FCFA</p>
         </div>
+      )}
 
-        <div className="space-y-2">
-          <Label htmlFor="positions">Nombre de postes <span className="text-red-500">*</span></Label>
+      {isHousingOffer ? (
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="bedrooms" className="block text-sm font-medium mb-1">
+              Nombre de chambres
+            </Label>
+            <Input
+              id="bedrooms"
+              type="number"
+              value={bedrooms}
+              onChange={(e) => setBedrooms && setBedrooms(Number(e.target.value))}
+              min="0"
+              step="1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="bathrooms" className="block text-sm font-medium mb-1">
+              Nombre de salles de bain
+            </Label>
+            <Input
+              id="bathrooms"
+              type="number"
+              value={bathrooms}
+              onChange={(e) => setBathrooms && setBathrooms(Number(e.target.value))}
+              min="0"
+              step="0.5"
+            />
+          </div>
+        </div>
+      ) : (
+        <div>
+          <Label htmlFor="positions" className="block text-sm font-medium mb-1">
+            Nombre de postes <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="positions"
             type="number"
-            placeholder="Ex: 1"
             value={positions}
             onChange={(e) => setPositions(Number(e.target.value))}
-            min={1}
+            placeholder="Nombre de postes disponibles"
+            min="1"
+            step="1"
             required
           />
         </div>
+      )}
 
-        <div className="space-y-2">
-          <Label htmlFor="deadline">Date limite <span className="text-red-500">*</span></Label>
-          <Input
-            id="deadline"
-            type="date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            min={new Date().toISOString().split('T')[0]}
-            required
-          />
-        </div>
+      <div>
+        <Label htmlFor="deadline" className="block text-sm font-medium mb-1">
+          Date limite <span className="text-red-500">*</span>
+        </Label>
+        <Input
+          id="deadline"
+          type="date"
+          value={deadline}
+          onChange={(e) => setDeadline(e.target.value)}
+          min={today}
+          required
+        />
       </div>
-    </>
+
+      {isHousingOffer && (
+        <div>
+          <Label className="block text-sm font-medium mb-1">
+            Images du logement
+          </Label>
+          <div className="space-y-2">
+            {images.map((image, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <Input
+                  value={image}
+                  onChange={(e) => onUpdateImage && onUpdateImage(index, e.target.value)}
+                  placeholder="URL de l'image"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onRemoveImage && onRemoveImage(index)}
+                  className="flex-shrink-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onAddImage}
+              className="w-full text-sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter une image
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            Ajoutez des URLs d'images pour votre logement. La première sera l'image principale.
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
