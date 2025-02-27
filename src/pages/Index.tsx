@@ -117,8 +117,11 @@ const Index = () => {
               <input
                 type="text"
                 placeholder="Rechercher par quartier, titre..."
-                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:ring-2 focus:outline-none"
-                style={{ focusRing: settings.primaryColor }}
+                className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ 
+                  borderColor: settings.primaryColor,
+                  boxShadow: `0 0 0 0px ${settings.primaryColor}`
+                }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />

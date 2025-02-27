@@ -20,7 +20,7 @@ import AdminReservations from './pages/admin/AdminReservations';
 import AdminPayments from './pages/admin/AdminPayments';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSupport from './pages/admin/AdminSupport';
-import AdminSettings from './pages/admin/AdminSettings';
+import { AdminSettings } from './pages/admin/AdminSettings';
 
 // Import components
 import { CompareListings } from './components/CompareListings';
