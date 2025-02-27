@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,7 +26,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 }
 
@@ -33,7 +35,39 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight;
+  }
+  
+  /* Typographie hiérarchique */
+  h1 {
+    @apply text-4xl sm:text-5xl md:text-6xl mb-6;
+  }
+  h2 {
+    @apply text-3xl sm:text-4xl mb-4;
+  }
+  h3 {
+    @apply text-2xl sm:text-3xl mb-3;
+  }
+  h4 {
+    @apply text-xl sm:text-2xl mb-2;
+  }
+  
+  /* Polices pour les différents types de contenu */
+  .font-brand {
+    @apply font-serif;
+  }
+  .font-heading {
+    @apply font-display;
+  }
+  .font-body {
+    @apply font-sans;
+  }
+  .font-code {
+    @apply font-mono;
   }
 }
 
@@ -44,6 +78,48 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  /* Effets de transitions et hover */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+  .hover-scale {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  .hover-shadow {
+    @apply transition-shadow duration-300 hover:shadow-lg;
+  }
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-sholom-primary/20;
+  }
+  
+  /* Effets de bordure et background */
+  .border-gradient {
+    @apply relative;
+    &::before {
+      content: "";
+      @apply absolute inset-0 rounded-[inherit] p-[2px] bg-gradient-to-r from-sholom-primary to-sholom-secondary -z-10;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+  }
+  
+  /* Animation du shimmer pour les skeleton loaders */
+  .shimmer {
+    @apply relative overflow-hidden;
+    &::after {
+      @apply absolute inset-0 -translate-x-full;
+      background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0.2) 20%,
+        rgba(255, 255, 255, 0.5) 60%,
+        rgba(255, 255, 255, 0)
+      );
+      content: '';
+      animation: shimmer 2s infinite;
+    }
   }
 }
 
@@ -62,4 +138,29 @@
 
 .border-airbnb-red {
   border-color: #FF385C;
+}
+
+/* Animations spécifiques */
+.transition-custom {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Style de la barre de défilement */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
 }

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Scale } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 interface CompareButtonProps {
   listingId: string;
@@ -72,14 +73,18 @@ export const CompareButton = ({ listingId }: CompareButtonProps) => {
   };
   
   return (
-    <button
-      className={`flex items-center justify-center p-2 rounded-full ${
-        isComparing ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 border'
+    <motion.button
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      className={`flex items-center justify-center p-2 rounded-full shadow-sm backdrop-blur-sm ${
+        isComparing 
+          ? 'bg-sholom-primary text-white' 
+          : 'bg-white/80 text-gray-500 border border-gray-200'
       }`}
       onClick={toggleCompare}
       title={isComparing ? "Retirer de la comparaison" : "Ajouter à la comparaison"}
     >
-      <Scale className="h-4 w-4" />
-    </button>
+      <Scale className="h-5 w-5" />
+    </motion.button>
   );
 };

@@ -1,172 +1,219 @@
 
 import React, { useState, useEffect } from 'react';
-import { Listing } from '@/types/listing';
-import { X, ArrowRight } from 'lucide-react';
-import { Button } from './ui/button';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useListings } from '@/hooks/useListings';
 import { Link } from 'react-router-dom';
-import { toast } from 'sonner';
+import { X, Scale, ArrowRight, MapPin, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const CompareListings = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedListings, setSelectedListings] = useState<Listing[]>([]);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
   const { listings } = useListings();
-  const { settings } = useSiteSettings();
-  
-  // Chargement des listings à comparer depuis le localStorage
+  const [compareListings, setCompareListings] = useState<any[]>([]);
+
+  // Charger les IDs depuis le localStorage
   useEffect(() => {
-    const compareIds = localStorage.getItem('compareListings');
-    if (compareIds && listings.length > 0) {
-      try {
-        const ids = JSON.parse(compareIds);
-        const selectedItems = listings.filter(listing => ids.includes(listing.id));
-        setSelectedListings(selectedItems);
-        
-        // Ouvrir automatiquement le panel s'il y a des éléments à comparer
-        if (selectedItems.length > 0) {
-          setIsOpen(true);
+    const handleStorageChange = () => {
+      const storedIds = localStorage.getItem('compareListings');
+      if (storedIds) {
+        try {
+          const ids = JSON.parse(storedIds);
+          setCompareIds(ids);
+          setIsVisible(ids.length > 0);
+        } catch (e) {
+          console.error("Erreur lors de la récupération des logements à comparer:", e);
         }
-      } catch (e) {
-        console.error("Erreur lors du chargement des logements à comparer:", e);
+      } else {
+        setCompareIds([]);
+        setIsVisible(false);
       }
-    }
-  }, [listings]);
-  
-  // Sauvegarder les changements dans le localStorage
+    };
+
+    handleStorageChange();
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // Obtenir les détails des logements à comparer
   useEffect(() => {
-    const ids = selectedListings.map(listing => listing.id);
-    localStorage.setItem('compareListings', JSON.stringify(ids));
-  }, [selectedListings]);
-  
-  // Fonction pour supprimer un logement de la comparaison
-  const removeListing = (id: string) => {
-    setSelectedListings(prev => prev.filter(item => item.id !== id));
-    if (selectedListings.length <= 1) {
-      setIsOpen(false);
+    if (!listings || compareIds.length === 0) {
+      setCompareListings([]);
+      return;
     }
-    toast.success("Logement retiré de la comparaison");
+
+    const filteredListings = listings.filter(listing => compareIds.includes(listing.id));
+    setCompareListings(filteredListings);
+  }, [listings, compareIds]);
+
+  // Supprimer un logement de la comparaison
+  const removeListing = (id: string) => {
+    const updatedIds = compareIds.filter(compareId => compareId !== id);
+    localStorage.setItem('compareListings', JSON.stringify(updatedIds));
+    
+    // Mettre à jour l'état local
+    setCompareIds(updatedIds);
+    
+    // Masquer le panneau si plus aucun logement à comparer
+    if (updatedIds.length === 0) {
+      setIsVisible(false);
+    }
+    
+    // Déclencher un événement pour que les autres composants puissent réagir
+    window.dispatchEvent(new Event('storage'));
   };
-  
-  // Fonction pour supprimer tous les logements de la comparaison
-  const clearAll = () => {
-    setSelectedListings([]);
-    setIsOpen(false);
-    toast.success("Comparaison vidée");
+
+  // Vider la comparaison
+  const clearComparison = () => {
+    localStorage.removeItem('compareListings');
+    setCompareIds([]);
+    setIsVisible(false);
+    window.dispatchEvent(new Event('storage'));
   };
-  
-  // Conversion du prix en FCFA
+
+  // Affichage du prix en FCFA
   const formatPriceFCFA = (priceEUR: number): string => {
     const priceFCFA = Math.round(priceEUR * 655.957);
     return priceFCFA.toLocaleString('fr-FR');
   };
-  
-  // Vérification d'une image
-  const validateImage = (imageUrl: string): string => {
-    if (!imageUrl || imageUrl.startsWith('blob:')) {
-      return "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800";
+
+  // Animations
+  const containerVariants = {
+    hidden: { y: 100, opacity: 0 },
+    visible: { 
+      y: 0, 
+      opacity: 1,
+      transition: { type: 'spring', damping: 25, stiffness: 500 }
+    },
+    exit: { 
+      y: 100, 
+      opacity: 0,
+      transition: { duration: 0.2 }
     }
-    return imageUrl;
   };
-  
-  // S'il n'y a pas de logements à comparer, ne rien afficher
-  if (selectedListings.length === 0) return null;
-  
+
+  if (!isVisible) return null;
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Bandeau replié */}
-      {!isOpen && (
-        <div 
-          className="cursor-pointer p-3 text-white flex items-center justify-between"
-          style={{ backgroundColor: settings.primaryColor }}
-          onClick={() => setIsOpen(true)}
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          key="compare-panel"
+          className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-40"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
         >
-          <div className="flex items-center">
-            <span className="font-medium">Comparer ({selectedListings.length})</span>
-          </div>
-          <ArrowRight className="h-5 w-5" />
-        </div>
-      )}
-      
-      {/* Panel de comparaison ouvert */}
-      {isOpen && (
-        <div className="bg-white border-t border-gray-200 shadow-lg">
-          <div className="p-3 border-b flex items-center justify-between"  
-               style={{ borderColor: settings.primaryColor }}>
-            <h3 className="font-bold text-lg">Comparer les logements</h3>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={clearAll}
-              >
-                Tout supprimer
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setIsOpen(false)}
-              >
-                <X className="h-5 w-5" />
-              </Button>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <Scale className="h-5 w-5 text-sholom-primary mr-2" />
+                <h3 className="text-lg font-semibold">
+                  Comparer ({compareListings.length} logement{compareListings.length > 1 ? 's' : ''})
+                </h3>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={clearComparison}
+                  className="text-sholom-muted hover:text-red-500"
+                >
+                  Vider
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setIsVisible(false)}
+                  className="text-sholom-muted"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
-          </div>
-          
-          <div className="p-4 overflow-x-auto">
-            <div className="flex space-x-4 min-w-max">
-              {selectedListings.map(listing => (
-                <div key={listing.id} className="w-64 flex-shrink-0 border rounded-lg overflow-hidden">
-                  <div className="relative">
-                    <img 
-                      src={validateImage(listing.image)} 
-                      alt={listing.title}
-                      className="w-full h-40 object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800";
-                      }}
-                    />
-                    <button 
-                      className="absolute top-2 right-2 p-1 bg-white rounded-full shadow"
-                      onClick={() => removeListing(listing.id)}
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                  
-                  <div className="p-3">
-                    <h4 className="font-medium text-gray-900 truncate">{listing.title}</h4>
-                    <p className="text-sm text-gray-500 truncate">{listing.location}</p>
-                    
-                    <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-                      <div>
-                        <span className="text-gray-500">Prix:</span>
-                        <p className="font-medium">{formatPriceFCFA(listing.price)} FCFA</p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Note:</span>
-                        <p className="font-medium flex items-center">
-                          <svg className="h-4 w-4 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                          {listing.rating}
-                        </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {compareListings.map((listing) => (
+                <motion.div 
+                  key={listing.id}
+                  className="relative rounded-lg overflow-hidden border border-gray-200 bg-white shadow-sm hover-shadow transition-all"
+                  whileHover={{ y: -5, boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
+                >
+                  <button
+                    onClick={() => removeListing(listing.id)}
+                    className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-1 z-10 hover:bg-red-500 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                  <Link to={`/logement/${listing.id}`} className="flex flex-col h-full">
+                    <div className="relative h-32">
+                      <img
+                        src={listing.image}
+                        alt={listing.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                      <div className="absolute bottom-2 left-2 right-2">
+                        <div className="flex items-center justify-between text-white">
+                          <div className="text-sm truncate font-medium">{listing.title}</div>
+                          <div className="flex items-center bg-white/20 backdrop-blur-sm rounded px-1.5 py-0.5 text-xs">
+                            <Star className="h-3 w-3 text-yellow-400 fill-yellow-400 mr-0.5" />
+                            {listing.rating || "N/A"}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <div className="mt-3">
-                      <Link to={`/logement/${listing.id}`}>
-                        <Button className="w-full text-white" style={{ backgroundColor: settings.primaryColor }}>
-                          Voir les détails
+                    <div className="p-3 flex-grow flex flex-col">
+                      <div className="flex items-center text-sholom-muted text-xs mb-1">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {listing.location}
+                      </div>
+                      <div className="mt-auto pt-2 flex items-center justify-between">
+                        <div className="text-sm font-semibold text-sholom-primary">
+                          {formatPriceFCFA(listing.price)} FCFA
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="p-0 h-auto text-xs text-sholom-muted hover:text-sholom-primary flex items-center"
+                        >
+                          Détails <ArrowRight className="ml-1 h-3 w-3" />
                         </Button>
-                      </Link>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
+                </motion.div>
+              ))}
+              
+              {Array.from({ length: 4 - compareListings.length }).map((_, index) => (
+                <div 
+                  key={`empty-${index}`} 
+                  className="border border-dashed border-gray-300 rounded-lg flex items-center justify-center h-40 bg-gray-50"
+                >
+                  <p className="text-gray-400 text-sm">Ajoutez un logement</p>
                 </div>
               ))}
             </div>
+            
+            {compareListings.length > 1 && (
+              <div className="flex justify-center mt-4">
+                <Link to="/compare">
+                  <Button className="bg-sholom-primary hover:bg-sholom-primary/90">
+                    Comparer en détail
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </AnimatePresence>
   );
 };
