@@ -58,7 +58,7 @@ export const AdminSettings = () => {
     secondaryColor: settings.secondaryColor || '#6366f1',
     fontFamily: settings.fontFamily || 'Inter',
     borderRadius: settings.borderRadius || 'medium',
-    darkMode: settings.darkMode || false,
+    darkMode: settings.darkMode ?? false,
   });
   
   const [localization, setLocalization] = useState({
@@ -73,7 +73,7 @@ export const AdminSettings = () => {
     maxFileSize: settings.maxFileSize || 5, // en MB
     allowedFileTypes: settings.allowedFileTypes || 'jpg,jpeg,png,gif,pdf',
     imageCompression: settings.imageCompression || 'medium',
-    watermarkEnabled: settings.watermarkEnabled || false,
+    watermarkEnabled: settings.watermarkEnabled ?? false,
     watermarkOpacity: settings.watermarkOpacity || 50,
   });
   
@@ -92,19 +92,19 @@ export const AdminSettings = () => {
     stripeLiveKey: settings.stripeLiveKey || '',
     stripeTestKey: settings.stripeTestKey || '',
     paypalClientId: settings.paypalClientId || '',
-    testMode: settings.testMode || true,
+    testMode: settings.testMode ?? false,
     commissionRate: settings.commissionRate || 5,
     minWithdrawalAmount: settings.minWithdrawalAmount || 1000,
   });
   
-  const [socialSettings, setSOcialSettings] = useState({
+  const [socialSettings, setSocialSettings] = useState({
     facebookUrl: settings.facebookUrl || '',
     twitterUrl: settings.twitterUrl || '',
     instagramUrl: settings.instagramUrl || '',
     linkedinUrl: settings.linkedinUrl || '',
     youtubeUrl: settings.youtubeUrl || '',
-    enableSocialLogin: settings.enableSocialLogin || true,
-    enableSocialSharing: settings.enableSocialSharing || true,
+    enableSocialLogin: settings.enableSocialLogin ?? false,
+    enableSocialSharing: settings.enableSocialSharing ?? false,
   });
   
   // Gérer l'enregistrement des paramètres généraux
@@ -923,7 +923,7 @@ export const AdminSettings = () => {
                       <Input 
                         id="facebookUrl" 
                         value={socialSettings.facebookUrl} 
-                        onChange={(e) => setSOcialSettings({...socialSettings, facebookUrl: e.target.value})}
+                        onChange={(e) => setSocialSettings({...socialSettings, facebookUrl: e.target.value})}
                         placeholder="https://facebook.com/votrepage"
                       />
                     </div>
@@ -933,7 +933,7 @@ export const AdminSettings = () => {
                       <Input 
                         id="twitterUrl" 
                         value={socialSettings.twitterUrl} 
-                        onChange={(e) => setSOcialSettings({...socialSettings, twitterUrl: e.target.value})}
+                        onChange={(e) => setSocialSettings({...socialSettings, twitterUrl: e.target.value})}
                         placeholder="https://twitter.com/votrecompte"
                       />
                     </div>
@@ -943,7 +943,7 @@ export const AdminSettings = () => {
                       <Input 
                         id="instagramUrl" 
                         value={socialSettings.instagramUrl} 
-                        onChange={(e) => setSOcialSettings({...socialSettings, instagramUrl: e.target.value})}
+                        onChange={(e) => setSocialSettings({...socialSettings, instagramUrl: e.target.value})}
                         placeholder="https://instagram.com/votrecompte"
                       />
                     </div>
@@ -953,7 +953,7 @@ export const AdminSettings = () => {
                       <Input 
                         id="linkedinUrl" 
                         value={socialSettings.linkedinUrl} 
-                        onChange={(e) => setSOcialSettings({...socialSettings, linkedinUrl: e.target.value})}
+                        onChange={(e) => setSocialSettings({...socialSettings, linkedinUrl: e.target.value})}
                         placeholder="https://linkedin.com/company/votreentreprise"
                       />
                     </div>
@@ -963,7 +963,7 @@ export const AdminSettings = () => {
                       <Input 
                         id="youtubeUrl" 
                         value={socialSettings.youtubeUrl} 
-                        onChange={(e) => setSOcialSettings({...socialSettings, youtubeUrl: e.target.value})}
+                        onChange={(e) => setSocialSettings({...socialSettings, youtubeUrl: e.target.value})}
                         placeholder="https://youtube.com/c/votrechaine"
                       />
                     </div>
@@ -974,7 +974,7 @@ export const AdminSettings = () => {
                       <Switch 
                         id="enableSocialLogin" 
                         checked={socialSettings.enableSocialLogin}
-                        onCheckedChange={(checked) => setSOcialSettings({...socialSettings, enableSocialLogin: checked})}
+                        onCheckedChange={(checked) => setSocialSettings({...socialSettings, enableSocialLogin: checked})}
                       />
                       <Label htmlFor="enableSocialLogin">Activer la connexion via réseaux sociaux</Label>
                     </div>
@@ -983,7 +983,7 @@ export const AdminSettings = () => {
                       <Switch 
                         id="enableSocialSharing" 
                         checked={socialSettings.enableSocialSharing}
-                        onCheckedChange={(checked) => setSOcialSettings({...socialSettings, enableSocialSharing: checked})}
+                        onCheckedChange={(checked) => setSocialSettings({...socialSettings, enableSocialSharing: checked})}
                       />
                       <Label htmlFor="enableSocialSharing">Activer les boutons de partage social</Label>
                     </div>
