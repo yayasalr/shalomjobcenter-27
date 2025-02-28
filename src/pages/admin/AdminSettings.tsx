@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
@@ -283,9 +284,9 @@ export function AdminSettings() {
           
           setSocialSettings({
             facebook: settings.socialLinks.facebook,
-            twitter: socialSettings.twitter,
+            twitter: settings.socialLinks.twitter,
             instagram: socialSettings.instagram,
-            linkedin: socialSettings.linkedin,
+            linkedin: settings.socialLinks.linkedin,
           });
           
           setCompanySettings({
@@ -318,58 +319,57 @@ export function AdminSettings() {
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <div className="flex flex-1 flex-col">
-          <AdminTopbar />
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-            <div className="mb-6">
-              <h1 className="text-2xl font-semibold">Paramètres du site</h1>
-              <p className="text-gray-500">
-                Configurez tous les aspects de votre site web
-              </p>
-            </div>
+    <div className="flex min-h-screen w-full">
+      <AdminSidebar />
+      <div className="flex flex-1 flex-col">
+        <AdminTopbar />
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-semibold">Paramètres du site</h1>
+            <p className="text-gray-500">
+              Configurez tous les aspects de votre site web
+            </p>
+          </div>
 
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-12 lg:col-span-9 space-y-6">
-                <Tabs defaultValue="general" className="w-full">
-                  <TabsList className="mb-6 grid w-full grid-cols-4 lg:grid-cols-8">
-                    <TabsTrigger value="general" className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      <span>Général</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="appearance" className="flex items-center gap-2">
-                      <Palette className="h-4 w-4" />
-                      <span>Apparence</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="company" className="flex items-center gap-2">
-                      <Building className="h-4 w-4" />
-                      <span>Entreprise</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="media" className="flex items-center gap-2">
-                      <Image className="h-4 w-4" />
-                      <span>Médias</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="reservations" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      <span>Réservations</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="email" className="flex items-center gap-2">
-                      <Mail className="h-4 w-4" />
-                      <span>Email</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="payment" className="flex items-center gap-2">
-                      <CreditCard className="h-4 w-4" />
-                      <span>Paiement</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="notifications" className="flex items-center gap-2">
-                      <Bell className="h-4 w-4" />
-                      <span>Notifications</span>
-                    </TabsTrigger>
-                  </TabsList>
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-12 lg:col-span-9 space-y-6">
+              <Tabs defaultValue="general" className="w-full">
+                <TabsList className="mb-6 grid w-full grid-cols-4 lg:grid-cols-8">
+                  <TabsTrigger value="general" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    <span>Général</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="appearance" className="flex items-center gap-2">
+                    <Palette className="h-4 w-4" />
+                    <span>Apparence</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="company" className="flex items-center gap-2">
+                    <Building className="h-4 w-4" />
+                    <span>Entreprise</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="media" className="flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    <span>Médias</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="reservations" className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>Réservations</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="email" className="flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    <span>Email</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="payment" className="flex items-center gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    <span>Paiement</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="notifications" className="flex items-center gap-2">
+                    <Bell className="h-4 w-4" />
+                    <span>Notifications</span>
+                  </TabsTrigger>
+                </TabsList>
 
-                  {/* Onglet Général */}
+                {/* Onglet Général */}
                 <TabsContent value="general">
                   <Card>
                     <CardHeader>
@@ -496,509 +496,192 @@ export function AdminSettings() {
                   </Card>
                 </TabsContent>
 
-                {/* Onglet Apparence */}
+                {/* Autres onglets seront ajoutés ici */}
                 <TabsContent value="appearance">
-                  <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-                    <Card className="md:col-span-2">
-                      <CardHeader>
-                        <CardTitle>Couleurs du site</CardTitle>
-                        <CardDescription>
-                          Personnalisez les couleurs principales de votre site
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="space-y-2">
-                            <Label htmlFor="primaryColor">Couleur principale</Label>
-                            <div className="flex items-center gap-4">
-                              <Input
-                                id="primaryColor"
-                                type="color"
-                                value={colorSettings.primaryColor}
-                                onChange={(e) =>
-                                  setColorSettings({
-                                    ...colorSettings,
-                                    primaryColor: e.target.value,
-                                  })
-                                }
-                                className="w-20 h-10 p-1"
-                              />
-                              <Input
-                                value={colorSettings.primaryColor}
-                                onChange={(e) =>
-                                  setColorSettings({
-                                    ...colorSettings,
-                                    primaryColor: e.target.value,
-                                  })
-                                }
-                                className="font-mono"
-                              />
-                            </div>
-                            <p className="text-sm text-gray-500">
-                              Utilisée pour les éléments principaux comme les boutons et les liens.
-                            </p>
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label htmlFor="secondaryColor">Couleur secondaire</Label>
-                            <div className="flex items-center gap-4">
-                              <Input
-                                id="secondaryColor"
-                                type="color"
-                                value={colorSettings.secondaryColor}
-                                onChange={(e) =>
-                                  setColorSettings({
-                                    ...colorSettings,
-                                    secondaryColor: e.target.value,
-                                  })
-                                }
-                                className="w-20 h-10 p-1"
-                              />
-                              <Input
-                                value={colorSettings.secondaryColor}
-                                onChange={(e) =>
-                                  setColorSettings({
-                                    ...colorSettings,
-                                    secondaryColor: e.target.value,
-                                  })
-                                }
-                                className="font-mono"
-                              />
-                            </div>
-                            <p className="text-sm text-gray-500">
-                              Utilisée pour les accents et éléments secondaires.
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="mt-6">
-                          <h3 className="text-lg font-medium mb-2">Aperçu des couleurs</h3>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div 
-                              className="h-20 rounded-md flex items-center justify-center text-white" 
-                              style={{ backgroundColor: colorSettings.primaryColor }}
-                            >
-                              Couleur principale
-                            </div>
-                            <div 
-                              className="h-20 rounded-md flex items-center justify-center text-white" 
-                              style={{ backgroundColor: colorSettings.secondaryColor }}
-                            >
-                              Couleur secondaire
-                            </div>
-                          </div>
-                          
-                          <div className="mt-6 space-y-2">
-                            <h4 className="text-sm font-medium">Exemples d'éléments</h4>
-                            <div className="p-4 border rounded-lg space-y-4">
-                              <div className="space-y-2">
-                                <button 
-                                  className="px-4 py-2 rounded-md text-white" 
-                                  style={{ backgroundColor: colorSettings.primaryColor }}
-                                >
-                                  Bouton principal
-                                </button>
-                                <button 
-                                  className="px-4 py-2 ml-2 rounded-md text-white" 
-                                  style={{ backgroundColor: colorSettings.secondaryColor }}
-                                >
-                                  Bouton secondaire
-                                </button>
-                              </div>
-                              <div>
-                                <a href="#" style={{ color: colorSettings.primaryColor }}>Voici à quoi ressemblerait un lien</a>
-                              </div>
-                              <div 
-                                className="p-3 rounded-md text-white text-sm" 
-                                style={{ backgroundColor: colorSettings.primaryColor }}
-                              >
-                                Un élément de mise en avant avec la couleur principale
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="justify-between border-t px-6 py-4">
-                        <div className="text-xs text-gray-500">
-                          Dernière modification : {new Date().toLocaleDateString()}
-                        </div>
-                        <Button 
-                          onClick={handleSaveColorSettings}
-                          disabled={updateSettings.isPending}
-                        >
-                          {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Pied de page</CardTitle>
-                        <CardDescription>
-                          Configurez les informations du pied de page
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="contact">Contact</Label>
-                          <Textarea
-                            id="contact"
-                            value={footerSettings.contact}
-                            onChange={(e) =>
-                              setFooterSettings({
-                                ...footerSettings,
-                                contact: e.target.value,
-                              })
-                            }
-                            rows={3}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="about">À propos de nous</Label>
-                          <Textarea
-                            id="about"
-                            value={footerSettings.about}
-                            onChange={(e) =>
-                              setFooterSettings({
-                                ...footerSettings,
-                                about: e.target.value,
-                              })
-                            }
-                            rows={3}
-                          />
-                        </div>
-                      </CardContent>
-                      <CardFooter className="justify-end border-t px-6 py-4">
-                        <Button 
-                          onClick={handleSaveFooterSettings}
-                          disabled={updateSettings.isPending}
-                        >
-                          Enregistrer
-                        </Button>
-                      </CardFooter>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>Pages légales</CardTitle>
-                        <CardDescription>
-                          Configurez les informations légales
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="terms">Conditions d'utilisation</Label>
-                          <Textarea
-                            id="terms"
-                            value={footerSettings.terms}
-                            onChange={(e) =>
-                              setFooterSettings({
-                                ...footerSettings,
-                                terms: e.target.value,
-                              })
-                            }
-                            rows={3}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="policy">Politique de confidentialité</Label>
-                          <Textarea
-                            id="policy"
-                            value={footerSettings.policy}
-                            onChange={(e) =>
-                              setFooterSettings({
-                                ...footerSettings,
-                                policy: e.target.value,
-                              })
-                            }
-                            rows={3}
-                          />
-                        </div>
-                      </CardContent>
-                      <CardFooter className="justify-end border-t px-6 py-4">
-                        <Button 
-                          onClick={handleSaveFooterSettings}
-                          disabled={updateSettings.isPending}
-                        >
-                          Enregistrer
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </div>
+                  {/* Contenu de l'onglet Apparence */}
                 </TabsContent>
 
-                {/* Onglet Entreprise */}
                 <TabsContent value="company">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Informations de l'entreprise</CardTitle>
-                      <CardDescription>
-                        Configurez les informations de contact et administratives
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="address">Adresse</Label>
-                          <Textarea
-                            id="address"
-                            value={companySettings.address}
-                            onChange={(e) =>
-                              setCompanySettings({
-                                ...companySettings,
-                                address: e.target.value,
-                              })
-                            }
-                            rows={3}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="email">Email professionnel</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            value={companySettings.email}
-                            onChange={(e) =>
-                              setCompanySettings({
-                                ...companySettings,
-                                email: e.target.value,
-                              })
-                            }
-                          />
-                          <Label htmlFor="phone" className="mt-4">Téléphone</Label>
-                          <Input
-                            id="phone"
-                            value={companySettings.phone}
-                            onChange={(e) =>
-                              setCompanySettings({
-                                ...companySettings,
-                                phone: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <Separator />
-
-                      <div className="space-y-2">
-                        <Label htmlFor="registrationNumber">Numéro d'enregistrement</Label>
-                        <Input
-                          id="registrationNumber"
-                          value={companySettings.registrationNumber}
-                          onChange={(e) =>
-                            setCompanySettings({
-                              ...companySettings,
-                              registrationNumber: e.target.value,
-                            })
-                          }
-                        />
-                        <p className="text-sm text-gray-500">
-                          Numéro d'enregistrement officiel de votre entreprise (SIRET, RCCM, etc.)
-                        </p>
-                      </div>
-
-                      <div className="p-4 bg-amber-50 text-amber-800 rounded-md text-sm flex items-start">
-                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium">Informations légales</p>
-                          <p className="mt-1">
-                            Ces informations apparaîtront sur vos factures et documents légaux. 
-                            Assurez-vous qu'elles sont correctes et à jour.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="justify-between border-t px-6 py-4">
-                      <div className="text-xs text-gray-500">
-                        Dernière modification : {new Date().toLocaleDateString()}
-                      </div>
-                      <Button 
-                        onClick={handleSaveCompanySettings}
-                        disabled={updateSettings.isPending}
-                      >
-                        <Save className="h-4 w-4 mr-2" />
-                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                  {/* Contenu de l'onglet Entreprise */}
                 </TabsContent>
 
-                {/* Onglet Réservations */}
+                <TabsContent value="media">
+                  {/* Contenu de l'onglet Médias */}
+                </TabsContent>
+
                 <TabsContent value="reservations">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Paramètres de réservation</CardTitle>
-                      <CardDescription>
-                        Configurez les règles de réservation pour votre plateforme
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="minStay">Durée minimale de séjour (jours)</Label>
-                          <Input
-                            id="minStay"
-                            type="number"
-                            min="1"
-                            value={reservationSettings.minStay}
-                            onChange={(e) =>
-                              setReservationSettings({
-                                ...reservationSettings,
-                                minStay: parseInt(e.target.value) || 1,
-                              })
-                            }
-                          />
-                          <p className="text-sm text-gray-500">
-                            Nombre minimum de jours pour une réservation
-                          </p>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="maxStay">Durée maximale de séjour (jours)</Label>
-                          <Input
-                            id="maxStay"
-                            type="number"
-                            min={reservationSettings.minStay}
-                            value={reservationSettings.maxStay}
-                            onChange={(e) =>
-                              setReservationSettings({
-                                ...reservationSettings,
-                                maxStay: parseInt(e.target.value) || reservationSettings.minStay,
-                              })
-                            }
-                          />
-                          <p className="text-sm text-gray-500">
-                            Nombre maximum de jours pour une réservation
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="advanceBookingDays">Jours de réservation à l'avance</Label>
-                          <Input
-                            id="advanceBookingDays"
-                            type="number"
-                            min="0"
-                            value={reservationSettings.advanceBookingDays}
-                            onChange={(e) =>
-                              setReservationSettings({
-                                ...reservationSettings,
-                                advanceBookingDays: parseInt(e.target.value) || 0,
-                              })
-                            }
-                          />
-                          <p className="text-sm text-gray-500">
-                            Combien de jours à l'avance les clients peuvent réserver
-                          </p>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="instantBooking">Réservation instantanée</Label>
-                            <Switch
-                              id="instantBooking"
-                              checked={reservationSettings.instantBooking}
-                              onCheckedChange={(checked) =>
-                                setReservationSettings({
-                                  ...reservationSettings,
-                                  instantBooking: checked,
-                                })
-                              }
-                            />
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Permettre aux clients de réserver sans approbation préalable
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="p-4 bg-blue-50 text-blue-800 rounded-md text-sm flex items-start">
-                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="font-medium">Paramètres globaux</p>
-                          <p className="mt-1">
-                            Ces paramètres s'appliquent par défaut à tous les logements. 
-                            Les hôtes peuvent les personnaliser pour leurs propres annonces.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="justify-between border-t px-6 py-4">
-                      <div className="text-xs text-gray-500">
-                        {listings.length} logement{listings.length !== 1 ? 's' : ''} sur la plateforme
-                      </div>
-                      <Button 
-                        onClick={handleSaveReservationSettings}
-                        disabled={updateSettings.isPending}
-                      >
-                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                  {/* Contenu de l'onglet Réservations */}
                 </TabsContent>
 
-                {/* Onglet Email */}
                 <TabsContent value="email">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Configuration des emails</CardTitle>
-                      <CardDescription>
-                        Paramètres du serveur SMTP et des notifications par email
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="smtpServer">Serveur SMTP</Label>
-                          <Input
-                            id="smtpServer"
-                            value={emailSettings.smtpServer}
-                            onChange={(e) =>
-                              setEmailSettings({
-                                ...emailSettings,
-                                smtpServer: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
+                  {/* Contenu de l'onglet Email */}
+                </TabsContent>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="smtpPort">Port SMTP</Label>
-                          <Input
-                            id="smtpPort"
-                            type="number"
-                            value={emailSettings.smtpPort}
-                            onChange={(e) =>
-                              setEmailSettings({
-                                ...emailSettings,
-                                smtpPort: parseInt(e.target.value) || 587,
-                              })
-                            }
-                          />
-                        </div>
-                      </div>
+                <TabsContent value="payment">
+                  {/* Contenu de l'onglet Paiement */}
+                </TabsContent>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="smtpUsername">Nom d'utilisateur SMTP</Label>
-                          <Input
-                            id="smtpUsername"
-                            value={emailSettings.smtpUsername}
-                            onChange={(e) =>
-                              setEmailSettings({
-                                ...emailSettings,
-                                smtpUsername: e.target.value,
-                              })
-                            }
-                          />
-                        </div>
+                <TabsContent value="notifications">
+                  {/* Contenu de l'onglet Notifications */}
+                </TabsContent>
+              </Tabs>
+            </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="smtpPassword">Mot de passe SMTP</Label>
-                          <Input
-                            id="smtp
+            <div className="col-span-12 lg:col-span-3 space-y-6">
+              {/* Panneau latéral des actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Actions</CardTitle>
+                  <CardDescription>Gérez vos paramètres</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Button variant="outline" className="w-full justify-start" onClick={() => setIsExportDialogOpen(true)}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Exporter les paramètres
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start" onClick={() => fileInputRef.current?.click()}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Importer les paramètres
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".json"
+                      onChange={handleImportSettings}
+                      className="hidden"
+                    />
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start text-red-600" onClick={() => setIsResetDialogOpen(true)}>
+                    <Trash className="mr-2 h-4 w-4" />
+                    Réinitialiser les paramètres
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Aide</CardTitle>
+                  <CardDescription>Besoin d'assistance ?</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>Comment modifier le logo ?</AccordionTrigger>
+                      <AccordionContent>
+                        Allez dans l'onglet "Général" et entrez l'URL de votre logo dans le champ correspondant. 
+                        Assurez-vous que l'image est accessible publiquement.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>Comment configurer les emails ?</AccordionTrigger>
+                      <AccordionContent>
+                        Accédez à l'onglet "Email" pour configurer les paramètres SMTP et les modèles de notifications.
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="item-3">
+                      <AccordionTrigger>Où gérer les utilisateurs ?</AccordionTrigger>
+                      <AccordionContent>
+                        La gestion des utilisateurs se fait dans la section "Utilisateurs" du menu principal, 
+                        et non dans les paramètres du site.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      {/* Dialogs */}
+      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Réinitialiser les paramètres</DialogTitle>
+            <DialogDescription>
+              Êtes-vous sûr de vouloir réinitialiser tous les paramètres ? Cette action est irréversible.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center p-4 bg-amber-50 text-amber-800 rounded-md">
+            <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
+            <p className="text-sm">
+              Tous vos paramètres personnalisés seront perdus et remplacés par les valeurs par défaut.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsResetDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button variant="destructive" onClick={handleResetSettings}>
+              Réinitialiser
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Exporter les paramètres</DialogTitle>
+            <DialogDescription>
+              Téléchargez un fichier JSON contenant tous vos paramètres personnalisés.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center p-4 bg-blue-50 text-blue-800 rounded-md">
+            <Info className="h-5 w-5 mr-2 flex-shrink-0" />
+            <p className="text-sm">
+              Ce fichier peut être utilisé pour restaurer vos paramètres ultérieurement 
+              ou les transférer vers une autre installation.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsExportDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleExportSettings}>
+              <Download className="mr-2 h-4 w-4" />
+              Télécharger
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isTestEmailDialogOpen} onOpenChange={setIsTestEmailDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Envoyer un email de test</DialogTitle>
+            <DialogDescription>
+              Envoyez un email de test pour vérifier la configuration SMTP.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="testEmailTo">Adresse email de destination</Label>
+              <Input
+                id="testEmailTo"
+                type="email"
+                placeholder="votre@email.com"
+                value={testEmailTo}
+                onChange={(e) => setTestEmailTo(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center p-4 bg-blue-50 text-blue-800 rounded-md">
+              <Info className="h-5 w-5 mr-2 flex-shrink-0" />
+              <p className="text-sm">
+                Un email de test sera envoyé avec les paramètres SMTP configurés.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsTestEmailDialogOpen(false)}>
+              Annuler
+            </Button>
+            <Button onClick={handleSendTestEmail}>
+              <Mail className="mr-2 h-4 w-4" />
+              Envoyer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
