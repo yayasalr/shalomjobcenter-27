@@ -48,10 +48,8 @@ import {
   UserX,
   RefreshCw,
   Shield,
-  Code,
-  BriefcaseBusiness,
-  Phone
-} from 'lucide-react';
+  BriefcaseBusiness
+} from "lucide-react";
 
 interface User {
   id: string;

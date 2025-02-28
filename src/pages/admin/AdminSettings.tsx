@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useSiteSettings, SiteSettings } from '@/hooks/useSiteSettings';
 import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { useListings } from '@/hooks/useListings';
 import { toast } from 'sonner';
 import { 
@@ -34,8 +34,7 @@ import {
   Shield, 
   Code,
   Database,
-  Save,
-  RefreshCw
+  Save
 } from 'lucide-react';
 import { 
   Dialog, 
@@ -54,11 +53,9 @@ import {
 } from "@/components/ui/accordion";
 
 export function AdminSettings() {
-  const { settings, updateSettings, resetSettings, exportSettings, importSettings, applySettingsToDOM } = useSiteSettings();
+  const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
   const { listings } = useListings();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const logoFileInputRef = useRef<HTMLInputElement>(null);
-  const faviconFileInputRef = useRef<HTMLInputElement>(null);
   
   const [generalSettings, setGeneralSettings] = useState({
     siteName: settings.siteName,
@@ -133,49 +130,23 @@ export function AdminSettings() {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
   const [isTestEmailDialogOpen, setIsTestEmailDialogOpen] = useState(false);
   const [testEmailTo, setTestEmailTo] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   
   const handleSaveGeneralSettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       siteName: generalSettings.siteName,
       logo: generalSettings.logo,
       language: generalSettings.language as 'fr' | 'en',
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        // Appliquer immédiatement les modifications au DOM
-        applySettingsToDOM();
-        toast.success("Les paramètres généraux ont été mis à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour des paramètres");
-      }
     });
   };
 
   const handleSaveColorSettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       primaryColor: colorSettings.primaryColor,
       secondaryColor: colorSettings.secondaryColor,
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        applySettingsToDOM();
-        toast.success("Les paramètres de couleur ont été mis à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour des couleurs");
-      }
     });
   };
 
   const handleSaveFooterSettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       footer: {
         contact: footerSettings.contact,
@@ -183,21 +154,10 @@ export function AdminSettings() {
         terms: footerSettings.terms,
         policy: footerSettings.policy,
       },
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        applySettingsToDOM();
-        toast.success("Les paramètres du pied de page ont été mis à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour du pied de page");
-      }
     });
   };
 
   const handleSaveSocialSettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       socialLinks: {
         facebook: socialSettings.facebook,
@@ -205,21 +165,10 @@ export function AdminSettings() {
         instagram: socialSettings.instagram,
         linkedin: socialSettings.linkedin,
       },
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        applySettingsToDOM();
-        toast.success("Les paramètres des réseaux sociaux ont été mis à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour des réseaux sociaux");
-      }
     });
   };
 
   const handleSaveCompanySettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       companyInfo: {
         address: companySettings.address,
@@ -227,21 +176,10 @@ export function AdminSettings() {
         email: companySettings.email,
         registrationNumber: companySettings.registrationNumber,
       },
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        applySettingsToDOM();
-        toast.success("Les informations de l'entreprise ont été mises à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour des informations de l'entreprise");
-      }
     });
   };
 
   const handleSaveReservationSettings = () => {
-    setIsSaving(true);
     updateSettings.mutate({
       reservationSettings: {
         minStay: reservationSettings.minStay,
@@ -249,16 +187,6 @@ export function AdminSettings() {
         advanceBookingDays: reservationSettings.advanceBookingDays,
         instantBooking: reservationSettings.instantBooking,
       },
-    }, {
-      onSuccess: () => {
-        setIsSaving(false);
-        applySettingsToDOM();
-        toast.success("Les paramètres de réservation ont été mis à jour avec succès");
-      },
-      onError: () => {
-        setIsSaving(false);
-        toast.error("Une erreur est survenue lors de la mise à jour des paramètres de réservation");
-      }
     });
   };
 
@@ -278,54 +206,48 @@ export function AdminSettings() {
   };
 
   const handleResetSettings = () => {
-    resetSettings.mutate(undefined, {
-      onSuccess: () => {
-        setIsResetDialogOpen(false);
-        
-        // Réinitialiser les états locaux avec les valeurs par défaut
-        setGeneralSettings({
-          siteName: settings.siteName,
-          logo: settings.logo,
-          language: settings.language,
-          favicon: settings.logo,
-        });
-        
-        setColorSettings({
-          primaryColor: settings.primaryColor,
-          secondaryColor: settings.secondaryColor,
-        });
-        
-        setFooterSettings({
-          contact: settings.footer.contact,
-          about: settings.footer.about,
-          terms: settings.footer.terms,
-          policy: settings.footer.policy,
-        });
-        
-        setSocialSettings({
-          facebook: settings.socialLinks.facebook,
-          twitter: settings.socialLinks.twitter,
-          instagram: settings.socialLinks.instagram,
-          linkedin: settings.socialLinks.linkedin,
-        });
-        
-        setCompanySettings({
-          address: settings.companyInfo.address,
-          phone: settings.companyInfo.phone,
-          email: settings.companyInfo.email,
-          registrationNumber: settings.companyInfo.registrationNumber,
-        });
-        
-        setReservationSettings({
-          minStay: settings.reservationSettings.minStay,
-          maxStay: settings.reservationSettings.maxStay,
-          advanceBookingDays: settings.reservationSettings.advanceBookingDays,
-          instantBooking: settings.reservationSettings.instantBooking,
-        });
-
-        // Appliquer immédiatement les changements au DOM
-        applySettingsToDOM();
-      }
+    resetSettings.mutate();
+    setIsResetDialogOpen(false);
+    
+    // Réinitialiser les états locaux
+    setGeneralSettings({
+      siteName: settings.siteName,
+      logo: settings.logo,
+      language: settings.language,
+      favicon: settings.logo,
+    });
+    
+    setColorSettings({
+      primaryColor: settings.primaryColor,
+      secondaryColor: settings.secondaryColor,
+    });
+    
+    setFooterSettings({
+      contact: settings.footer.contact,
+      about: settings.footer.about,
+      terms: settings.footer.terms,
+      policy: settings.footer.policy,
+    });
+    
+    setSocialSettings({
+      facebook: settings.socialLinks.facebook,
+      twitter: settings.socialLinks.twitter,
+      instagram: settings.socialLinks.instagram,
+      linkedin: settings.socialLinks.linkedin,
+    });
+    
+    setCompanySettings({
+      address: settings.companyInfo.address,
+      phone: settings.companyInfo.phone,
+      email: settings.companyInfo.email,
+      registrationNumber: settings.companyInfo.registrationNumber,
+    });
+    
+    setReservationSettings({
+      minStay: settings.reservationSettings.minStay,
+      maxStay: settings.reservationSettings.maxStay,
+      advanceBookingDays: settings.reservationSettings.advanceBookingDays,
+      instantBooking: settings.reservationSettings.instantBooking,
     });
   };
 
@@ -362,7 +284,7 @@ export function AdminSettings() {
           setSocialSettings({
             facebook: settings.socialLinks.facebook,
             twitter: settings.socialLinks.twitter,
-            instagram: settings.socialLinks.instagram,
+            instagram: socialSettings.instagram,
             linkedin: settings.socialLinks.linkedin,
           });
           
@@ -379,52 +301,8 @@ export function AdminSettings() {
             advanceBookingDays: settings.reservationSettings.advanceBookingDays,
             instantBooking: settings.reservationSettings.instantBooking,
           });
-
-          // Appliquer immédiatement les changements au DOM
-          applySettingsToDOM();
         }
       });
-    }
-  };
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Dans une application réelle, ici vous téléchargeriez d'abord l'image sur un serveur
-      // et recevriez une URL que vous utiliseriez pour mettre à jour la logo
-      
-      // Simuler une conversion d'image en base64 pour démo locale
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setGeneralSettings({
-          ...generalSettings,
-          logo: base64String
-        });
-        
-        // Afficher un message de confirmation
-        toast.success("Logo téléchargé avec succès. N'oubliez pas d'enregistrer les modifications.");
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleFaviconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Simuler une conversion d'image en base64 pour démo locale
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setGeneralSettings({
-          ...generalSettings,
-          favicon: base64String
-        });
-        
-        // Afficher un message de confirmation
-        toast.success("Favicon téléchargé avec succès. N'oubliez pas d'enregistrer les modifications.");
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -439,48 +317,17 @@ export function AdminSettings() {
     setTestEmailTo('');
   };
 
-  const handleApplyPreview = () => {
-    // Appliquer les paramètres actuels pour prévisualisation
-    applySettingsToDOM();
-    setIsPreviewVisible(true);
-    toast.success("Prévisualisation appliquée. Vous pouvez voir les changements sur votre site.");
-    
-    // Ouvrir le site dans un nouvel onglet
-    window.open('/', '_blank');
-  };
-
   return (
     <div className="flex min-h-screen w-full">
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
         <AdminTopbar />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="mb-6 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-semibold">Paramètres du site</h1>
-              <p className="text-gray-500">
-                Configurez tous les aspects de votre site web
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleApplyPreview}>
-                <Image className="mr-2 h-4 w-4" />
-                Prévisualiser
-              </Button>
-              <Button 
-                variant="default" 
-                className="bg-green-600 hover:bg-green-700" 
-                onClick={() => {
-                  handleSaveGeneralSettings();
-                  handleSaveColorSettings();
-                  handleSaveFooterSettings();
-                  handleSaveCompanySettings();
-                }}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                Enregistrer tout
-              </Button>
-            </div>
+          <div className="mb-6">
+            <h1 className="text-2xl font-semibold">Paramètres du site</h1>
+            <p className="text-gray-500">
+              Configurez tous les aspects de votre site web
+            </p>
           </div>
 
           <div className="grid grid-cols-12 gap-6">
@@ -550,133 +397,61 @@ export function AdminSettings() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="logo">Logo du site</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                            <div className="space-y-2">
-                              <div className="p-4 border rounded-lg bg-white flex items-center justify-center">
-                                <img 
-                                  src={generalSettings.logo} 
-                                  alt="Logo du site" 
-                                  className="h-16 w-auto object-contain"
-                                  onError={(e) => {
-                                    e.currentTarget.src = "/placeholder.svg";
-                                  }}
-                                />
-                              </div>
-                              <div className="flex space-x-2">
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="sm"
-                                  className="flex-1"
-                                  onClick={() => logoFileInputRef.current?.click()}
-                                >
-                                  <Upload className="mr-2 h-4 w-4" />
-                                  Téléverser
-                                  <input
-                                    ref={logoFileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleLogoUpload}
-                                    className="hidden"
-                                  />
-                                </Button>
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setGeneralSettings({
-                                    ...generalSettings,
-                                    logo: "/placeholder.svg"
-                                  })}
-                                >
-                                  <Trash className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="logoUrl">URL du logo</Label>
-                              <Input
-                                id="logoUrl"
-                                value={generalSettings.logo}
-                                onChange={(e) =>
-                                  setGeneralSettings({
-                                    ...generalSettings,
-                                    logo: e.target.value,
-                                  })
-                                }
-                                placeholder="https://votre-site.com/logo.png"
+                          <Label htmlFor="logo">URL du logo</Label>
+                          <Input
+                            id="logo"
+                            value={generalSettings.logo}
+                            onChange={(e) =>
+                              setGeneralSettings({
+                                ...generalSettings,
+                                logo: e.target.value,
+                              })
+                            }
+                          />
+                          <div className="mt-2 flex items-center space-x-4">
+                            <div className="p-2 border rounded">
+                              <img 
+                                src={generalSettings.logo} 
+                                alt="Logo du site" 
+                                className="h-16 w-auto object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.src = "/placeholder.svg";
+                                }}
                               />
-                              <div className="text-sm text-gray-500">
-                                <p>Format recommandé: PNG ou SVG</p>
-                                <p>Taille recommandée: 200x60 pixels</p>
-                              </div>
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              <p>Format recommandé: PNG ou SVG</p>
+                              <p>Taille recommandée: 200x60 pixels</p>
                             </div>
                           </div>
                         </div>
 
                         <div className="space-y-2">
                           <Label htmlFor="favicon">Favicon</Label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                            <div className="space-y-2">
-                              <div className="p-4 border rounded-lg bg-white flex items-center justify-center">
-                                <img 
-                                  src={generalSettings.favicon} 
-                                  alt="Favicon du site" 
-                                  className="h-10 w-10 object-contain"
-                                  onError={(e) => {
-                                    e.currentTarget.src = "/placeholder.svg";
-                                  }}
-                                />
-                              </div>
-                              <div className="flex space-x-2">
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="sm"
-                                  className="flex-1"
-                                  onClick={() => faviconFileInputRef.current?.click()}
-                                >
-                                  <Upload className="mr-2 h-4 w-4" />
-                                  Téléverser
-                                  <input
-                                    ref={faviconFileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleFaviconUpload}
-                                    className="hidden"
-                                  />
-                                </Button>
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setGeneralSettings({
-                                    ...generalSettings,
-                                    favicon: "/placeholder.svg"
-                                  })}
-                                >
-                                  <Trash className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                            <div className="space-y-2">
-                              <Label htmlFor="faviconUrl">URL du favicon</Label>
-                              <Input
-                                id="faviconUrl"
-                                value={generalSettings.favicon}
-                                onChange={(e) =>
-                                  setGeneralSettings({
-                                    ...generalSettings,
-                                    favicon: e.target.value,
-                                  })
-                                }
-                                placeholder="https://votre-site.com/favicon.ico"
+                          <Input
+                            id="favicon"
+                            value={generalSettings.favicon}
+                            onChange={(e) =>
+                              setGeneralSettings({
+                                ...generalSettings,
+                                favicon: e.target.value,
+                              })
+                            }
+                          />
+                          <div className="mt-2 flex items-center space-x-4">
+                            <div className="p-2 border rounded">
+                              <img 
+                                src={generalSettings.favicon} 
+                                alt="Favicon du site" 
+                                className="h-8 w-8 object-contain"
+                                onError={(e) => {
+                                  e.currentTarget.src = "/placeholder.svg";
+                                }}
                               />
-                              <div className="text-sm text-gray-500">
-                                <p>Format recommandé: ICO ou PNG</p>
-                                <p>Taille recommandée: 32x32 pixels</p>
-                              </div>
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              <p>Format recommandé: ICO ou PNG</p>
+                              <p>Taille recommandée: 32x32 pixels</p>
                             </div>
                           </div>
                         </div>
@@ -712,19 +487,9 @@ export function AdminSettings() {
                       </div>
                       <Button 
                         onClick={handleSaveGeneralSettings}
-                        disabled={isSaving}
+                        disabled={updateSettings.isPending}
                       >
-                        {isSaving ? (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Enregistrement...
-                          </>
-                        ) : (
-                          <>
-                            <Save className="mr-2 h-4 w-4" />
-                            Enregistrer les modifications
-                          </>
-                        )}
+                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -732,150 +497,238 @@ export function AdminSettings() {
 
                 {/* Onglet Apparence */}
                 <TabsContent value="appearance">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Apparence du site</CardTitle>
-                      <CardDescription>
-                        Personnalisez les couleurs et l'apparence visuelle de votre site
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="primaryColor">Couleur principale</Label>
-                          <div className="flex items-center gap-4">
-                            <Input
-                              id="primaryColor"
-                              type="color"
-                              value={colorSettings.primaryColor}
-                              onChange={(e) =>
-                                setColorSettings({
-                                  ...colorSettings,
-                                  primaryColor: e.target.value,
-                                })
-                              }
-                              className="w-20 h-10 p-1"
-                            />
-                            <Input
-                              value={colorSettings.primaryColor}
-                              onChange={(e) =>
-                                setColorSettings({
-                                  ...colorSettings,
-                                  primaryColor: e.target.value,
-                                })
-                              }
-                              className="font-mono"
-                            />
+                  <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+                    <Card className="md:col-span-2">
+                      <CardHeader>
+                        <CardTitle>Couleurs du site</CardTitle>
+                        <CardDescription>
+                          Personnalisez les couleurs principales de votre site
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-6">
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <Label htmlFor="primaryColor">Couleur principale</Label>
+                            <div className="flex items-center gap-4">
+                              <Input
+                                id="primaryColor"
+                                type="color"
+                                value={colorSettings.primaryColor}
+                                onChange={(e) =>
+                                  setColorSettings({
+                                    ...colorSettings,
+                                    primaryColor: e.target.value,
+                                  })
+                                }
+                                className="w-20 h-10 p-1"
+                              />
+                              <Input
+                                value={colorSettings.primaryColor}
+                                onChange={(e) =>
+                                  setColorSettings({
+                                    ...colorSettings,
+                                    primaryColor: e.target.value,
+                                  })
+                                }
+                                className="font-mono"
+                              />
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              Utilisée pour les éléments principaux comme les boutons et les liens.
+                            </p>
                           </div>
-                          <p className="text-sm text-gray-500">
-                            Utilisée pour les éléments principaux comme les boutons et les liens.
-                          </p>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="secondaryColor">Couleur secondaire</Label>
+                            <div className="flex items-center gap-4">
+                              <Input
+                                id="secondaryColor"
+                                type="color"
+                                value={colorSettings.secondaryColor}
+                                onChange={(e) =>
+                                  setColorSettings({
+                                    ...colorSettings,
+                                    secondaryColor: e.target.value,
+                                  })
+                                }
+                                className="w-20 h-10 p-1"
+                              />
+                              <Input
+                                value={colorSettings.secondaryColor}
+                                onChange={(e) =>
+                                  setColorSettings({
+                                    ...colorSettings,
+                                    secondaryColor: e.target.value,
+                                  })
+                                }
+                                className="font-mono"
+                              />
+                            </div>
+                            <p className="text-sm text-gray-500">
+                              Utilisée pour les accents et éléments secondaires.
+                            </p>
+                          </div>
                         </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="secondaryColor">Couleur secondaire</Label>
-                          <div className="flex items-center gap-4">
-                            <Input
-                              id="secondaryColor"
-                              type="color"
-                              value={colorSettings.secondaryColor}
-                              onChange={(e) =>
-                                setColorSettings({
-                                  ...colorSettings,
-                                  secondaryColor: e.target.value,
-                                })
-                              }
-                              className="w-20 h-10 p-1"
-                            />
-                            <Input
-                              value={colorSettings.secondaryColor}
-                              onChange={(e) =>
-                                setColorSettings({
-                                  ...colorSettings,
-                                  secondaryColor: e.target.value,
-                                })
-                              }
-                              className="font-mono"
-                            />
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Utilisée pour les accents et éléments secondaires.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-8">
-                        <h3 className="text-lg font-medium mb-2">Aperçu des couleurs</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div 
-                            className="h-20 rounded-md flex items-center justify-center text-white" 
-                            style={{ backgroundColor: colorSettings.primaryColor }}
-                          >
-                            Couleur principale
-                          </div>
-                          <div 
-                            className="h-20 rounded-md flex items-center justify-center text-white" 
-                            style={{ backgroundColor: colorSettings.secondaryColor }}
-                          >
-                            Couleur secondaire
-                          </div>
-                        </div>
-                        
-                        <div className="mt-6 space-y-2">
-                          <h4 className="text-sm font-medium">Exemples d'éléments</h4>
-                          <div className="p-4 border rounded-lg space-y-4">
-                            <div className="space-x-2">
-                              <button 
-                                className="px-4 py-2 rounded-md text-white" 
-                                style={{ backgroundColor: colorSettings.primaryColor }}
-                              >
-                                Bouton principal
-                              </button>
-                              <button 
-                                className="px-4 py-2 rounded-md text-white" 
-                                style={{ backgroundColor: colorSettings.secondaryColor }}
-                              >
-                                Bouton secondaire
-                              </button>
-                            </div>
-                            <div>
-                              <a href="#" style={{ color: colorSettings.primaryColor }}>Voici à quoi ressemblerait un lien</a>
-                            </div>
+                        <div className="mt-6">
+                          <h3 className="text-lg font-medium mb-2">Aperçu des couleurs</h3>
+                          <div className="grid grid-cols-2 gap-4">
                             <div 
-                              className="p-3 rounded-md text-white text-sm" 
+                              className="h-20 rounded-md flex items-center justify-center text-white" 
                               style={{ backgroundColor: colorSettings.primaryColor }}
                             >
-                              Un élément de mise en avant avec la couleur principale
+                              Couleur principale
+                            </div>
+                            <div 
+                              className="h-20 rounded-md flex items-center justify-center text-white" 
+                              style={{ backgroundColor: colorSettings.secondaryColor }}
+                            >
+                              Couleur secondaire
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 space-y-2">
+                            <h4 className="text-sm font-medium">Exemples d'éléments</h4>
+                            <div className="p-4 border rounded-lg space-y-4">
+                              <div className="space-y-2">
+                                <button 
+                                  className="px-4 py-2 rounded-md text-white" 
+                                  style={{ backgroundColor: colorSettings.primaryColor }}
+                                >
+                                  Bouton principal
+                                </button>
+                                <button 
+                                  className="px-4 py-2 ml-2 rounded-md text-white" 
+                                  style={{ backgroundColor: colorSettings.secondaryColor }}
+                                >
+                                  Bouton secondaire
+                                </button>
+                              </div>
+                              <div>
+                                <a href="#" style={{ color: colorSettings.primaryColor }}>Voici à quoi ressemblerait un lien</a>
+                              </div>
+                              <div 
+                                className="p-3 rounded-md text-white text-sm" 
+                                style={{ backgroundColor: colorSettings.primaryColor }}
+                              >
+                                Un élément de mise en avant avec la couleur principale
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="justify-between border-t px-6 py-4">
-                      <div className="text-xs text-gray-500">
-                        Les modifications de couleur s'appliquent immédiatement sur tout le site.
-                      </div>
-                      <Button 
-                        onClick={handleSaveColorSettings}
-                        disabled={isSaving}
-                      >
-                        {isSaving ? (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Enregistrement...
-                          </>
-                        ) : (
-                          <>
-                            <Save className="mr-2 h-4 w-4" />
-                            Enregistrer les modifications
-                          </>
-                        )}
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                      </CardContent>
+                      <CardFooter className="justify-between border-t px-6 py-4">
+                        <div className="text-xs text-gray-500">
+                          Dernière modification : {new Date().toLocaleDateString()}
+                        </div>
+                        <Button 
+                          onClick={handleSaveColorSettings}
+                          disabled={updateSettings.isPending}
+                        >
+                          {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Pied de page</CardTitle>
+                        <CardDescription>
+                          Configurez les informations du pied de page
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="contact">Contact</Label>
+                          <Textarea
+                            id="contact"
+                            value={footerSettings.contact}
+                            onChange={(e) =>
+                              setFooterSettings({
+                                ...footerSettings,
+                                contact: e.target.value,
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="about">À propos de nous</Label>
+                          <Textarea
+                            id="about"
+                            value={footerSettings.about}
+                            onChange={(e) =>
+                              setFooterSettings({
+                                ...footerSettings,
+                                about: e.target.value,
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+                      </CardContent>
+                      <CardFooter className="justify-end border-t px-6 py-4">
+                        <Button 
+                          onClick={handleSaveFooterSettings}
+                          disabled={updateSettings.isPending}
+                        >
+                          Enregistrer
+                        </Button>
+                      </CardFooter>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Pages légales</CardTitle>
+                        <CardDescription>
+                          Configurez les informations légales
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="terms">Conditions d'utilisation</Label>
+                          <Textarea
+                            id="terms"
+                            value={footerSettings.terms}
+                            onChange={(e) =>
+                              setFooterSettings({
+                                ...footerSettings,
+                                terms: e.target.value,
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="policy">Politique de confidentialité</Label>
+                          <Textarea
+                            id="policy"
+                            value={footerSettings.policy}
+                            onChange={(e) =>
+                              setFooterSettings({
+                                ...footerSettings,
+                                policy: e.target.value,
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+                      </CardContent>
+                      <CardFooter className="justify-end border-t px-6 py-4">
+                        <Button 
+                          onClick={handleSaveFooterSettings}
+                          disabled={updateSettings.isPending}
+                        >
+                          Enregistrer
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </div>
                 </TabsContent>
 
-                {/* Autres onglets seront ajoutés ici */}
+                {/* Onglet Entreprise */}
                 <TabsContent value="company">
                   <Card>
                     <CardHeader>
@@ -964,78 +817,706 @@ export function AdminSettings() {
                       </div>
                       <Button 
                         onClick={handleSaveCompanySettings}
-                        disabled={isSaving}
+                        disabled={updateSettings.isPending}
                       >
-                        {isSaving ? (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Enregistrement...
-                          </>
-                        ) : (
-                          <>
-                            <Save className="mr-2 h-4 w-4" />
-                            Enregistrer les modifications
-                          </>
-                        )}
+                        <Save className="h-4 w-4 mr-2" />
+                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
                       </Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="media">
-                  {/* Contenu de l'onglet Médias */}
-                </TabsContent>
-
+                {/* Onglet Réservations */}
                 <TabsContent value="reservations">
-                  {/* Contenu de l'onglet Réservations */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Paramètres de réservation</CardTitle>
+                      <CardDescription>
+                        Configurez les règles de réservation pour votre plateforme
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="minStay">Durée minimale de séjour (jours)</Label>
+                          <Input
+                            id="minStay"
+                            type="number"
+                            min="1"
+                            value={reservationSettings.minStay}
+                            onChange={(e) =>
+                              setReservationSettings({
+                                ...reservationSettings,
+                                minStay: parseInt(e.target.value) || 1,
+                              })
+                            }
+                          />
+                          <p className="text-sm text-gray-500">
+                            Nombre minimum de jours pour une réservation
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="maxStay">Durée maximale de séjour (jours)</Label>
+                          <Input
+                            id="maxStay"
+                            type="number"
+                            min={reservationSettings.minStay}
+                            value={reservationSettings.maxStay}
+                            onChange={(e) =>
+                              setReservationSettings({
+                                ...reservationSettings,
+                                maxStay: parseInt(e.target.value) || reservationSettings.minStay,
+                              })
+                            }
+                          />
+                          <p className="text-sm text-gray-500">
+                            Nombre maximum de jours pour une réservation
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="advanceBookingDays">Jours de réservation à l'avance</Label>
+                          <Input
+                            id="advanceBookingDays"
+                            type="number"
+                            min="0"
+                            value={reservationSettings.advanceBookingDays}
+                            onChange={(e) =>
+                              setReservationSettings({
+                                ...reservationSettings,
+                                advanceBookingDays: parseInt(e.target.value) || 0,
+                              })
+                            }
+                          />
+                          <p className="text-sm text-gray-500">
+                            Combien de jours à l'avance les clients peuvent réserver
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="instantBooking">Réservation instantanée</Label>
+                            <Switch
+                              id="instantBooking"
+                              checked={reservationSettings.instantBooking}
+                              onCheckedChange={(checked) =>
+                                setReservationSettings({
+                                  ...reservationSettings,
+                                  instantBooking: checked,
+                                })
+                              }
+                            />
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            Permettre aux clients de réserver sans approbation préalable
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-blue-50 text-blue-800 rounded-md text-sm flex items-start">
+                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium">Paramètres globaux</p>
+                          <p className="mt-1">
+                            Ces paramètres s'appliquent par défaut à tous les logements. 
+                            Les hôtes peuvent les personnaliser pour leurs propres annonces.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        {listings.length} logement{listings.length !== 1 ? 's' : ''} sur la plateforme
+                      </div>
+                      <Button 
+                        onClick={handleSaveReservationSettings}
+                        disabled={updateSettings.isPending}
+                      >
+                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </TabsContent>
 
+                {/* Onglet Email */}
                 <TabsContent value="email">
-                  {/* Contenu de l'onglet Email */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Configuration des emails</CardTitle>
+                      <CardDescription>
+                        Paramètres du serveur SMTP et des notifications par email
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpServer">Serveur SMTP</Label>
+                          <Input
+                            id="smtpServer"
+                            value={emailSettings.smtpServer}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                smtpServer: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpPort">Port SMTP</Label>
+                          <Input
+                            id="smtpPort"
+                            type="number"
+                            value={emailSettings.smtpPort}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                smtpPort: parseInt(e.target.value) || 587,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpUsername">Nom d'utilisateur SMTP</Label>
+                          <Input
+                            id="smtpUsername"
+                            value={emailSettings.smtpUsername}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                smtpUsername: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="smtpPassword">Mot de passe SMTP</Label>
+                          <Input
+                            id="smtpPassword"
+                            type="password"
+                            value={emailSettings.smtpPassword}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                smtpPassword: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="senderName">Nom de l'expéditeur</Label>
+                          <Input
+                            id="senderName"
+                            value={emailSettings.senderName}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                senderName: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="senderEmail">Email de l'expéditeur</Label>
+                          <Input
+                            id="senderEmail"
+                            type="email"
+                            value={emailSettings.senderEmail}
+                            onChange={(e) =>
+                              setEmailSettings({
+                                ...emailSettings,
+                                senderEmail: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="enableNotifications"
+                          checked={emailSettings.enableNotifications}
+                          onCheckedChange={(checked) =>
+                            setEmailSettings({
+                              ...emailSettings,
+                              enableNotifications: checked,
+                            })
+                          }
+                        />
+                        <Label htmlFor="enableNotifications">Activer les notifications par email</Label>
+                      </div>
+
+                      <div className="p-4 bg-gray-50 rounded-md">
+                        <h3 className="text-sm font-medium mb-2">Tester la configuration</h3>
+                        <div className="flex gap-2">
+                          <Button variant="outline" onClick={() => setIsTestEmailDialogOpen(true)}>
+                            Envoyer un email de test
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        Ces paramètres sont nécessaires pour envoyer des emails depuis la plateforme
+                      </div>
+                      <Button 
+                        onClick={handleSaveEmailSettings}
+                      >
+                        Enregistrer
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </TabsContent>
 
+                {/* Onglet Paiement */}
                 <TabsContent value="payment">
-                  {/* Contenu de l'onglet Paiement */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Configuration des paiements</CardTitle>
+                      <CardDescription>
+                        Paramètres de paiement et de facturation
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="currency">Devise</Label>
+                          <Select 
+                            value={paymentSettings.currency}
+                            onValueChange={(value) =>
+                              setPaymentSettings({
+                                ...paymentSettings,
+                                currency: value,
+                              })
+                            }
+                          >
+                            <SelectTrigger id="currency">
+                              <SelectValue placeholder="Choisir une devise" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="EUR">Euro (€)</SelectItem>
+                              <SelectItem value="USD">Dollar américain ($)</SelectItem>
+                              <SelectItem value="GBP">Livre sterling (£)</SelectItem>
+                              <SelectItem value="XOF">Franc CFA (FCFA)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <Label htmlFor="stripeLiveKey">Clé API Stripe (Production)</Label>
+                            <Input
+                              id="stripeLiveKey"
+                              value={paymentSettings.stripeLiveKey}
+                              onChange={(e) =>
+                                setPaymentSettings({
+                                  ...paymentSettings,
+                                  stripeLiveKey: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="stripeTestKey">Clé API Stripe (Test)</Label>
+                            <Input
+                              id="stripeTestKey"
+                              value={paymentSettings.stripeTestKey}
+                              onChange={(e) =>
+                                setPaymentSettings({
+                                  ...paymentSettings,
+                                  stripeTestKey: e.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            id="testMode"
+                            checked={paymentSettings.testMode}
+                            onCheckedChange={(checked) =>
+                              setPaymentSettings({
+                                ...paymentSettings,
+                                testMode: checked,
+                              })
+                            }
+                          />
+                          <Label htmlFor="testMode">Mode test activé</Label>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="serviceFeePercentage">Frais de service (%)</Label>
+                          <Input
+                            id="serviceFeePercentage"
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={paymentSettings.serviceFeePercentage}
+                            onChange={(e) =>
+                              setPaymentSettings({
+                                ...paymentSettings,
+                                serviceFeePercentage: parseFloat(e.target.value) || 0,
+                              })
+                            }
+                          />
+                          <p className="text-sm text-gray-500">
+                            Pourcentage prélevé sur chaque transaction comme frais de service
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-yellow-50 text-yellow-800 rounded-md flex items-start">
+                        <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium">Mode test activé</p>
+                          <p className="mt-1">
+                            Les paiements sont traités en mode test. Aucune transaction réelle ne sera effectuée.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        Les clés API ne sont jamais affichées en clair côté client
+                      </div>
+                      <Button onClick={handleSavePaymentSettings}>
+                        Enregistrer
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </TabsContent>
 
+                {/* Onglet Notifications */}
                 <TabsContent value="notifications">
-                  {/* Contenu de l'onglet Notifications */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Paramètres de notification</CardTitle>
+                      <CardDescription>
+                        Configurez les notifications système et utilisateur
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-medium">Canaux de notification</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="enableEmailNotifications" className="font-medium">Notifications par email</Label>
+                              <p className="text-xs text-gray-500">Envoyer des notifications par email aux utilisateurs</p>
+                            </div>
+                            <Switch
+                              id="enableEmailNotifications"
+                              checked={notificationSettings.enableEmailNotifications}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  enableEmailNotifications: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="enableSmsNotifications" className="font-medium">Notifications par SMS</Label>
+                              <p className="text-xs text-gray-500">Envoyer des notifications par SMS aux utilisateurs</p>
+                            </div>
+                            <Switch
+                              id="enableSmsNotifications"
+                              checked={notificationSettings.enableSmsNotifications}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  enableSmsNotifications: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="enablePushNotifications" className="font-medium">Notifications push</Label>
+                              <p className="text-xs text-gray-500">Envoyer des notifications push sur les appareils mobiles</p>
+                            </div>
+                            <Switch
+                              id="enablePushNotifications"
+                              checked={notificationSettings.enablePushNotifications}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  enablePushNotifications: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-medium">Événements de notification</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="newReservationNotification">Nouvelles réservations</Label>
+                            <Switch
+                              id="newReservationNotification"
+                              checked={notificationSettings.newReservationNotification}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  newReservationNotification: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="reservationStatusChangeNotification">Changements de statut des réservations</Label>
+                            <Switch
+                              id="reservationStatusChangeNotification"
+                              checked={notificationSettings.reservationStatusChangeNotification}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  reservationStatusChangeNotification: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="newMessageNotification">Nouveaux messages</Label>
+                            <Switch
+                              id="newMessageNotification"
+                              checked={notificationSettings.newMessageNotification}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  newMessageNotification: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="newReviewNotification">Nouveaux avis</Label>
+                            <Switch
+                              id="newReviewNotification"
+                              checked={notificationSettings.newReviewNotification}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  newReviewNotification: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-medium">Marketing</h3>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="marketingEmails" className="font-medium">Emails marketing</Label>
+                              <p className="text-xs text-gray-500">Envoyer des emails promotionnels aux utilisateurs</p>
+                            </div>
+                            <Switch
+                              id="marketingEmails"
+                              checked={notificationSettings.marketingEmails}
+                              onCheckedChange={(checked) =>
+                                setNotificationSettings({
+                                  ...notificationSettings,
+                                  marketingEmails: checked,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        Les utilisateurs peuvent personnaliser leurs préférences de notification
+                      </div>
+                      <Button onClick={handleSaveNotificationSettings}>
+                        Enregistrer
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+
+                {/* Onglet Médias */}
+                <TabsContent value="media">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Gestion des médias</CardTitle>
+                      <CardDescription>
+                        Configurez les paramètres de téléchargement et de stockage des médias
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label>Taille maximale de téléchargement</Label>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="number"
+                              min="1"
+                              max="20"
+                              defaultValue={5}
+                            />
+                            <span className="text-gray-500">MB</span>
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            Taille maximale des fichiers téléchargés
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Formats autorisés</Label>
+                          <div className="p-3 bg-gray-50 rounded-md text-gray-600 text-sm">
+                            JPG, PNG, GIF, WEBP, PDF, DOC, DOCX, XLS, XLSX
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            Formats de fichiers acceptés pour le téléchargement
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label>Optimisation des images</Label>
+                          <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-2">
+                              <Switch defaultChecked id="optimize-images" />
+                              <Label htmlFor="optimize-images">Optimiser les images à l'upload</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch defaultChecked id="create-thumbnails" />
+                              <Label htmlFor="create-thumbnails">Créer des miniatures</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch defaultChecked id="preserve-exif" />
+                              <Label htmlFor="preserve-exif">Préserver les métadonnées EXIF</Label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Stockage</Label>
+                          <Select defaultValue="local">
+                            <SelectTrigger>
+                              <SelectValue placeholder="Sélectionnez un système de stockage" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="local">Stockage local</SelectItem>
+                              <SelectItem value="s3">Amazon S3</SelectItem>
+                              <SelectItem value="cloudinary">Cloudinary</SelectItem>
+                              <SelectItem value="gcloud">Google Cloud Storage</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-sm text-gray-500">
+                            Où les fichiers téléchargés seront stockés
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-blue-50 text-blue-800 rounded-md text-sm flex items-start">
+                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium">Stockage actuel</p>
+                          <p className="mt-1">
+                            Espace utilisé: <span className="font-medium">256 MB</span> / 5 GB
+                          </p>
+                          <div className="w-full h-2 bg-blue-200 rounded-full mt-2">
+                            <div className="h-full bg-blue-600 rounded-full" style={{ width: '5%' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        La gestion efficace des médias améliore les performances du site
+                      </div>
+                      <Button>
+                        Enregistrer
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </TabsContent>
               </Tabs>
             </div>
 
             <div className="col-span-12 lg:col-span-3 space-y-6">
-              {/* Panneau latéral des actions */}
               <Card>
                 <CardHeader>
                   <CardTitle>Actions</CardTitle>
-                  <CardDescription>Gérez vos paramètres</CardDescription>
+                  <CardDescription>
+                    Gestion des paramètres
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Button variant="outline" className="w-full justify-start" onClick={() => setIsExportDialogOpen(true)}>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => setIsExportDialogOpen(true)}
+                  >
                     <Download className="mr-2 h-4 w-4" />
                     Exporter les paramètres
                   </Button>
-                  <Button variant="outline" className="w-full justify-start" onClick={() => fileInputRef.current?.click()}>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
                     <Upload className="mr-2 h-4 w-4" />
                     Importer les paramètres
                     <input
-                      ref={fileInputRef}
                       type="file"
+                      ref={fileInputRef}
+                      className="hidden"
                       accept=".json"
                       onChange={handleImportSettings}
-                      className="hidden"
                     />
                   </Button>
+                  
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start text-yellow-600" 
-                    onClick={handleApplyPreview}
+                    className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => setIsResetDialogOpen(true)}
                   >
-                    <Image className="mr-2 h-4 w-4" />
-                    Prévisualiser les changements
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start text-red-600" onClick={() => setIsResetDialogOpen(true)}>
                     <Trash className="mr-2 h-4 w-4" />
                     Réinitialiser les paramètres
                   </Button>
@@ -1044,44 +1525,109 @@ export function AdminSettings() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Aide</CardTitle>
-                  <CardDescription>Besoin d'assistance ?</CardDescription>
+                  <CardTitle>Informations système</CardTitle>
+                  <CardDescription>
+                    Détails techniques
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-500">Version</span>
+                      <span className="text-sm font-medium">1.0.0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-500">Environnement</span>
+                      <span className="text-sm font-medium">Production</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-gray-500">Dernière mise à jour</span>
+                      <span className="text-sm font-medium">{new Date().toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
                   <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>Comment modifier le logo ?</AccordionTrigger>
+                    <AccordionItem value="logs">
+                      <AccordionTrigger className="text-sm">
+                        <div className="flex items-center">
+                          <Code className="h-4 w-4 mr-2" />
+                          Journaux système
+                        </div>
+                      </AccordionTrigger>
                       <AccordionContent>
-                        Allez dans l'onglet "Général" et téléversez votre logo en cliquant sur le bouton "Téléverser".
-                        Vous pouvez également entrer l'URL de votre logo si celui-ci est déjà hébergé sur Internet.
-                        N'oubliez pas de cliquer sur "Enregistrer les modifications" pour appliquer les changements.
+                        <div className="text-xs font-mono bg-gray-100 p-2 rounded overflow-auto max-h-32">
+                          <p>2024-05-01 15:32:21 - Paramètres mis à jour</p>
+                          <p>2024-05-01 14:25:33 - Connexion administrateur</p>
+                          <p>2024-05-01 12:11:05 - Sauvegarde automatique</p>
+                          <p>2024-05-01 10:05:47 - Démarrage du système</p>
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger>Comment changer les couleurs du site ?</AccordionTrigger>
+
+                    <AccordionItem value="database">
+                      <AccordionTrigger className="text-sm">
+                        <div className="flex items-center">
+                          <Database className="h-4 w-4 mr-2" />
+                          Base de données
+                        </div>
+                      </AccordionTrigger>
                       <AccordionContent>
-                        Accédez à l'onglet "Apparence" pour modifier les couleurs principale et secondaire du site.
-                        Vous pouvez utiliser le sélecteur de couleur ou entrer directement un code hexadécimal.
-                        Les modifications seront appliquées immédiatement après avoir cliqué sur "Enregistrer les modifications".
+                        <div className="text-xs">
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-500">Type</span>
+                            <span className="font-medium">PostgreSQL</span>
+                          </div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-500">Version</span>
+                            <span className="font-medium">14.2</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Taille</span>
+                            <span className="font-medium">125 MB</span>
+                          </div>
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-3">
-                      <AccordionTrigger>Comment prévisualiser les changements ?</AccordionTrigger>
+
+                    <AccordionItem value="security">
+                      <AccordionTrigger className="text-sm">
+                        <div className="flex items-center">
+                          <Shield className="h-4 w-4 mr-2" />
+                          Sécurité
+                        </div>
+                      </AccordionTrigger>
                       <AccordionContent>
-                        Après avoir effectué vos modifications, cliquez sur le bouton "Prévisualiser" en haut de la page
-                        ou sur "Prévisualiser les changements" dans le panneau latéral. Une nouvelle fenêtre s'ouvrira
-                        avec votre site public affichant les modifications apportées.
+                        <div className="text-xs">
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-500">SSL</span>
+                            <span className="font-medium text-green-600">Activé</span>
+                          </div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-500">2FA</span>
+                            <span className="font-medium text-green-600">Activé</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500">Dernière analyse</span>
+                            <span className="font-medium">2024-05-01</span>
+                          </div>
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
                 </CardContent>
+                <CardFooter className="justify-center border-t px-6 py-4">
+                  <Button variant="outline" size="sm">
+                    <Info className="mr-2 h-4 w-4" />
+                    Centre d'aide
+                  </Button>
+                </CardFooter>
               </Card>
             </div>
           </div>
         </main>
       </div>
 
-      {/* Dialogs */}
+      {/* Dialogue de réinitialisation */}
       <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -1090,37 +1636,49 @@ export function AdminSettings() {
               Êtes-vous sûr de vouloir réinitialiser tous les paramètres ? Cette action est irréversible.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex items-center p-4 bg-amber-50 text-amber-800 rounded-md">
-            <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0" />
-            <p className="text-sm">
-              Tous vos paramètres personnalisés seront perdus et remplacés par les valeurs par défaut.
-            </p>
+          <div className="p-4 bg-red-50 text-red-800 rounded-md text-sm flex items-start mb-4">
+            <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Attention</p>
+              <p className="mt-1">
+                La réinitialisation restaurera tous les paramètres à leurs valeurs par défaut.
+                Les modifications non sauvegardées seront perdues.
+              </p>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsResetDialogOpen(false)}>
               Annuler
             </Button>
-            <Button variant="destructive" onClick={handleResetSettings}>
-              Réinitialiser
+            <Button 
+              variant="destructive" 
+              onClick={handleResetSettings}
+              disabled={resetSettings.isPending}
+            >
+              {resetSettings.isPending ? "Réinitialisation..." : "Réinitialiser"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Dialogue d'exportation */}
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Exporter les paramètres</DialogTitle>
             <DialogDescription>
-              Téléchargez un fichier JSON contenant tous vos paramètres personnalisés.
+              Téléchargez un fichier JSON contenant tous les paramètres actuels.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex items-center p-4 bg-blue-50 text-blue-800 rounded-md">
-            <Info className="h-5 w-5 mr-2 flex-shrink-0" />
-            <p className="text-sm">
-              Ce fichier peut être utilisé pour restaurer vos paramètres ultérieurement 
-              ou les transférer vers une autre installation.
-            </p>
+          <div className="p-4 bg-blue-50 text-blue-800 rounded-md text-sm flex items-start mb-4">
+            <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium">Information</p>
+              <p className="mt-1">
+                Le fichier exporté peut être utilisé pour restaurer les paramètres
+                ou pour les transférer vers une autre installation.
+              </p>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsExportDialogOpen(false)}>
@@ -1128,23 +1686,24 @@ export function AdminSettings() {
             </Button>
             <Button onClick={handleExportSettings}>
               <Download className="mr-2 h-4 w-4" />
-              Télécharger
+              Exporter
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Dialogue d'email de test */}
       <Dialog open={isTestEmailDialogOpen} onOpenChange={setIsTestEmailDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Envoyer un email de test</DialogTitle>
             <DialogDescription>
-              Envoyez un email de test pour vérifier la configuration SMTP.
+              Envoyez un email de test pour vérifier votre configuration SMTP.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="testEmailTo">Adresse email de destination</Label>
+              <Label htmlFor="testEmailTo">Adresse de destination</Label>
               <Input
                 id="testEmailTo"
                 type="email"
@@ -1153,11 +1712,8 @@ export function AdminSettings() {
                 onChange={(e) => setTestEmailTo(e.target.value)}
               />
             </div>
-            <div className="flex items-center p-4 bg-blue-50 text-blue-800 rounded-md">
-              <Info className="h-5 w-5 mr-2 flex-shrink-0" />
-              <p className="text-sm">
-                Un email de test sera envoyé avec les paramètres SMTP configurés.
-              </p>
+            <div className="p-4 bg-yellow-50 text-yellow-800 rounded-md text-sm">
+              <p>Un email de test sera envoyé à l'adresse spécifiée.</p>
             </div>
           </div>
           <DialogFooter>
@@ -1166,7 +1722,7 @@ export function AdminSettings() {
             </Button>
             <Button onClick={handleSendTestEmail}>
               <Mail className="mr-2 h-4 w-4" />
-              Envoyer
+              Envoyer le test
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -11,21 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { 
   AreaChart, 
-  Area, 
   BarChart, 
-  Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from 'recharts';
+  LineChart, 
+  PieChart 
+} from '@/components/ui/chart';
 import { 
   CalendarDays, 
   CircleDollarSign, 
@@ -91,7 +80,7 @@ export const AdminDashboard = () => {
     
     return {
       pendingReservations,
-      pendingReviews: reviews.filter(r => r.status === 'pending').length,
+      pendingReviews: reviews.filter(r => !r.approved).length,
       pendingApplications: jobApplications
     };
   };
@@ -166,8 +155,6 @@ export const AdminDashboard = () => {
     { name: "Emplois", value: jobs.filter(j => !j.isHousingOffer).length },
     { name: "Offres Logement", value: jobs.filter(j => j.isHousingOffer).length },
   ];
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('fr-FR', {
@@ -371,32 +358,12 @@ export const AdminDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData[period]}>
-                <defs>
-                  <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FF385C" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#FF385C" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                <XAxis dataKey="name" className="text-xs" />
-                <YAxis 
-                  className="text-xs"
-                  tickFormatter={(value) => formatCurrency(value)}
-                />
-                <Tooltip 
-                  formatter={(value) => [formatCurrency(value as number), "Revenus"]}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="total" 
-                  stroke="#FF385C" 
-                  fillOpacity={1} 
-                  fill="url(#totalGradient)" 
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            <AreaChart 
+              data={revenueData[period]} 
+              categories={['total']}
+              colors={['#FF385C']} 
+              valueFormatter={formatCurrency}
+            />
           </CardContent>
         </Card>
 
@@ -433,15 +400,11 @@ export const AdminDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="h-[350px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={reservationsData[period]}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-gray-200" />
-                <XAxis dataKey="name" className="text-xs" />
-                <YAxis className="text-xs" />
-                <Tooltip formatter={(value) => [`${value} réservations`, "Total"]} />
-                <Bar dataKey="total" fill="#FF385C" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarChart 
+              data={reservationsData[period]} 
+              categories={['total']}
+              colors={['#FF385C']}
+            />
           </CardContent>
         </Card>
       </div>
@@ -457,26 +420,10 @@ export const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => [`${value} annonces`, ""]} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <PieChart 
+                data={categoryData}
+                colors={['#3b82f6', '#10b981', '#f59e0b']}
+              />
             </div>
           </CardContent>
         </Card>
@@ -582,10 +529,10 @@ export const AdminDashboard = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <div className="h-8 w-8 rounded-full overflow-hidden mr-2 flex-shrink-0 bg-gray-200 flex items-center justify-center">
-                        {review.author.charAt(0).toUpperCase()}
+                        {review.userName.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <div className="font-medium text-sm">{review.author}</div>
+                        <div className="font-medium text-sm">{review.userName}</div>
                         <div className="text-xs text-muted-foreground">{formatDate(review.date)}</div>
                       </div>
                     </div>
