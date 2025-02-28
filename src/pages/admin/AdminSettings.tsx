@@ -27,7 +27,7 @@ import {
   Upload,
   Save,
   Palette,
-  Language,
+  Languages,
   DollarSign,
   Euro,
   MapPin,
@@ -109,7 +109,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres généraux
   const handleSaveGeneralSettings = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...generalSettings
     });
@@ -118,7 +118,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres d'apparence
   const handleSaveAppearance = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...appearance
     });
@@ -127,7 +127,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres de localisation
   const handleSaveLocalization = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...localization
     });
@@ -136,7 +136,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres médias
   const handleSaveMediaSettings = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...mediaSettings
     });
@@ -145,7 +145,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres email
   const handleSaveEmailSettings = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...emailSettings
     });
@@ -154,7 +154,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres de paiement
   const handleSavePaymentSettings = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...paymentSettings
     });
@@ -163,7 +163,7 @@ export const AdminSettings = () => {
   
   // Gérer l'enregistrement des paramètres sociaux
   const handleSaveSocialSettings = () => {
-    updateSettings({
+    updateSettings.mutate({
       ...settings,
       ...socialSettings
     });

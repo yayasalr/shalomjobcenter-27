@@ -34,6 +34,47 @@ export interface SiteSettings {
     email: string;
     registrationNumber: string;
   };
+  // Propriétés supplémentaires pour les paramètres du site
+  siteDescription?: string;
+  adminEmail?: string;
+  supportEmail?: string;
+  phoneNumber?: string;
+  address?: string;
+  favicon?: string;
+  fontFamily?: string;
+  borderRadius?: string;
+  darkMode?: boolean;
+  defaultLanguage?: string;
+  defaultCurrency?: string;
+  dateFormat?: string;
+  timeFormat?: string;
+  timezone?: string;
+  maxFileSize?: number;
+  allowedFileTypes?: string;
+  imageCompression?: string;
+  watermarkEnabled?: boolean;
+  watermarkOpacity?: number;
+  mailProvider?: string;
+  smtpHost?: string;
+  smtpPort?: string;
+  smtpUser?: string;
+  smtpPassword?: string;
+  senderName?: string;
+  senderEmail?: string;
+  currency?: string;
+  stripeLiveKey?: string;
+  stripeTestKey?: string;
+  paypalClientId?: string;
+  testMode?: boolean;
+  commissionRate?: number;
+  minWithdrawalAmount?: number;
+  facebookUrl?: string;
+  twitterUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  youtubeUrl?: string;
+  enableSocialLogin?: boolean;
+  enableSocialSharing?: boolean;
 }
 
 // Paramètres par défaut
@@ -69,6 +110,47 @@ const defaultSettings: SiteSettings = {
     email: "info@locationplus.tg",
     registrationNumber: "RCCM TG-LOM-2023-B-12345",
   },
+  // Valeurs par défaut pour les propriétés supplémentaires
+  siteDescription: "Plateforme de location de logements",
+  adminEmail: "admin@locationplus.fr",
+  supportEmail: "support@locationplus.fr",
+  phoneNumber: "+228 90 123 456",
+  address: "Lomé, Togo",
+  favicon: "/favicon.ico",
+  fontFamily: "Inter",
+  borderRadius: "medium",
+  darkMode: false,
+  defaultLanguage: "fr",
+  defaultCurrency: "XOF",
+  dateFormat: "DD/MM/YYYY",
+  timeFormat: "24h",
+  timezone: "Africa/Lome",
+  maxFileSize: 5,
+  allowedFileTypes: "jpg,jpeg,png,gif,pdf",
+  imageCompression: "medium",
+  watermarkEnabled: false,
+  watermarkOpacity: 50,
+  mailProvider: "smtp",
+  smtpHost: "smtp.example.com",
+  smtpPort: "587",
+  smtpUser: "user@example.com",
+  smtpPassword: "",
+  senderName: "Location+",
+  senderEmail: "no-reply@locationplus.fr",
+  currency: "XOF",
+  stripeLiveKey: "",
+  stripeTestKey: "",
+  paypalClientId: "",
+  testMode: true,
+  commissionRate: 5,
+  minWithdrawalAmount: 1000,
+  facebookUrl: "https://facebook.com/locationplus",
+  twitterUrl: "https://twitter.com/locationplus",
+  instagramUrl: "https://instagram.com/locationplus",
+  linkedinUrl: "https://linkedin.com/company/locationplus",
+  youtubeUrl: "",
+  enableSocialLogin: true,
+  enableSocialSharing: true,
 };
 
 // Fonction pour charger les paramètres depuis le localStorage
