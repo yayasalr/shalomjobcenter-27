@@ -12,7 +12,15 @@ import NotFound from './pages/NotFound';
 import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
 
+// User routes
+import Profile from './pages/user/Profile';
+import Favorites from './pages/user/Favorites';
+import UserReservations from './pages/user/Reservations';
+import Messages from './pages/user/Messages';
+import Notifications from './pages/user/Notifications';
+
 // Admin routes
+import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminListings from './pages/admin/AdminListings';
 import AdminJobs from './pages/admin/AdminJobs';
 import AdminReviews from './pages/admin/AdminReviews';
@@ -40,7 +48,15 @@ function App() {
           <Route path="/emplois" element={<Jobs />} />
           <Route path="/emploi/:id" element={<JobDetail />} />
           
+          {/* User routes */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/reservations" element={<UserReservations />} />
+          <Route path="/messages" element={<Messages />} />
+          <Route path="/notifications" element={<Notifications />} />
+          
           {/* Admin routes */}
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/logements" element={<AdminListings />} />
           <Route path="/admin/emplois" element={<AdminJobs />} />
           <Route path="/admin/avis" element={<AdminReviews />} />
