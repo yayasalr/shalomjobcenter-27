@@ -48,8 +48,9 @@ import {
   UserX,
   RefreshCw,
   Shield,
-  BriefcaseBusiness
-} from "lucide-react";
+  BriefcaseBusiness,
+  Smartphone
+} from 'lucide-react';
 
 interface User {
   id: string;
@@ -976,7 +977,7 @@ const AdminUsers = () => {
                     <div className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center">
                         <div className="p-2 rounded-full bg-blue-100 text-blue-700 mr-3">
-                          <Phone className="h-5 w-5" />
+                          <Smartphone className="h-5 w-5" />
                         </div>
                         <div>
                           <h4 className="font-medium">Téléphone</h4>
