@@ -45,7 +45,19 @@ export const Navbar = () => {
   useEffect(() => {
     document.documentElement.style.setProperty('--primary', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
-  }, [settings.primaryColor, settings.secondaryColor]);
+    
+    // Mettre à jour le titre de la page
+    document.title = settings.siteName;
+    
+    // Appliquer le favicon
+    let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'shortcut icon';
+      document.head.appendChild(link);
+    }
+    link.href = settings.logo; // On utilise le logo comme favicon par défaut
+  }, [settings.primaryColor, settings.secondaryColor, settings.siteName, settings.logo]);
 
   return (
     <div
@@ -77,13 +89,13 @@ export const Navbar = () => {
 
         {/* Navigation principale - Desktop */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link to="/" className="font-medium hover:text-sholom-primary transition-colors">
+          <Link to="/" className="font-medium hover:text-primary transition-colors">
             <div className="flex items-center">
               <Home className="mr-1 h-4 w-4" />
               Accueil
             </div>
           </Link>
-          <Link to="/emplois" className="font-medium hover:text-sholom-primary transition-colors">
+          <Link to="/emplois" className="font-medium hover:text-primary transition-colors">
             <div className="flex items-center">
               <BriefcaseBusiness className="mr-1 h-4 w-4" />
               Emplois
@@ -91,7 +103,7 @@ export const Navbar = () => {
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="font-medium flex items-center hover:text-sholom-primary transition-colors">
+              <button className="font-medium flex items-center hover:text-primary transition-colors">
                 <MapPin className="mr-1 h-4 w-4" />
                 Quartiers
                 <ChevronDown className="ml-1 h-4 w-4" />
@@ -142,7 +154,7 @@ export const Navbar = () => {
         {/* Actions utilisateur */}
         <div className="flex items-center gap-4">
           {/* Bouton de langue */}
-          <button className="hidden md:flex items-center gap-1 text-sm hover:text-sholom-primary transition-colors">
+          <button className="hidden md:flex items-center gap-1 text-sm hover:text-primary transition-colors">
             <Globe className="h-4 w-4" />
             <span>{settings.language === 'fr' ? 'FR' : 'EN'}</span>
           </button>
@@ -197,13 +209,23 @@ export const Navbar = () => {
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center bg-sholom-primary text-white rounded-full px-4 py-2 gap-2 shadow-sm hover:bg-sholom-primary/90"
+                className="flex items-center bg-primary text-white rounded-full px-4 py-2 gap-2 shadow-sm hover:bg-primary/90"
               >
                 <LogIn className="h-4 w-4" />
                 <span className="font-medium">Connexion</span>
               </motion.div>
             </Link>
           )}
+
+          {/* Bouton pour ouvrir le menu mobile */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
       </div>
 
@@ -211,15 +233,15 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-4 px-4 z-50 animate-fade-in-down">
           <div className="space-y-4">
-            <Link to="/" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
+            <Link to="/" className="block px-4 py-2 hover:bg-gray-100 rounded-md" onClick={() => setMobileMenuOpen(false)}>
               <div className="flex items-center">
-                <Home className="mr-2 h-5 w-5 text-sholom-primary" />
+                <Home className="mr-2 h-5 w-5 text-primary" />
                 Accueil
               </div>
             </Link>
-            <Link to="/emplois" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
+            <Link to="/emplois" className="block px-4 py-2 hover:bg-gray-100 rounded-md" onClick={() => setMobileMenuOpen(false)}>
               <div className="flex items-center">
-                <BriefcaseBusiness className="mr-2 h-5 w-5 text-sholom-primary" />
+                <BriefcaseBusiness className="mr-2 h-5 w-5 text-primary" />
                 Emplois
               </div>
             </Link>
@@ -231,6 +253,7 @@ export const Navbar = () => {
                     key={neighborhood}
                     to={`/?q=${neighborhood}`}
                     className="text-sm px-3 py-1.5 bg-gray-100 rounded-md hover:bg-gray-200"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {neighborhood}
                   </Link>
@@ -239,8 +262,8 @@ export const Navbar = () => {
             </div>
             <div className="border-t border-gray-200 pt-4">
               <div className="flex justify-between">
-                <Link to="/login" className="block w-full">
-                  <Button className="w-full bg-sholom-primary hover:bg-sholom-primary/90">
+                <Link to="/login" className="block w-full" onClick={() => setMobileMenuOpen(false)}>
+                  <Button className="w-full bg-primary hover:bg-primary/90">
                     <LogIn className="mr-2 h-4 w-4" />
                     Connexion
                   </Button>

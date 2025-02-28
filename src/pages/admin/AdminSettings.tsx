@@ -14,7 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useListings } from '@/hooks/useListings';
 import { toast } from 'sonner';
-import { SidebarProvider } from '@/components/ui/sidebar';
 import { 
   Settings, 
   Globe, 
@@ -35,7 +34,8 @@ import {
   Shield, 
   Code,
   Database,
-  Save
+  Save,
+  RefreshCw
 } from 'lucide-react';
 import { 
   Dialog, 
@@ -54,9 +54,11 @@ import {
 } from "@/components/ui/accordion";
 
 export function AdminSettings() {
-  const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
+  const { settings, updateSettings, resetSettings, exportSettings, importSettings, applySettingsToDOM } = useSiteSettings();
   const { listings } = useListings();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoFileInputRef = useRef<HTMLInputElement>(null);
+  const faviconFileInputRef = useRef<HTMLInputElement>(null);
   
   const [generalSettings, setGeneralSettings] = useState({
     siteName: settings.siteName,
@@ -131,23 +133,49 @@ export function AdminSettings() {
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
   const [isTestEmailDialogOpen, setIsTestEmailDialogOpen] = useState(false);
   const [testEmailTo, setTestEmailTo] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   
   const handleSaveGeneralSettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       siteName: generalSettings.siteName,
       logo: generalSettings.logo,
       language: generalSettings.language as 'fr' | 'en',
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        // Appliquer immédiatement les modifications au DOM
+        applySettingsToDOM();
+        toast.success("Les paramètres généraux ont été mis à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour des paramètres");
+      }
     });
   };
 
   const handleSaveColorSettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       primaryColor: colorSettings.primaryColor,
       secondaryColor: colorSettings.secondaryColor,
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        applySettingsToDOM();
+        toast.success("Les paramètres de couleur ont été mis à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour des couleurs");
+      }
     });
   };
 
   const handleSaveFooterSettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       footer: {
         contact: footerSettings.contact,
@@ -155,10 +183,21 @@ export function AdminSettings() {
         terms: footerSettings.terms,
         policy: footerSettings.policy,
       },
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        applySettingsToDOM();
+        toast.success("Les paramètres du pied de page ont été mis à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour du pied de page");
+      }
     });
   };
 
   const handleSaveSocialSettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       socialLinks: {
         facebook: socialSettings.facebook,
@@ -166,10 +205,21 @@ export function AdminSettings() {
         instagram: socialSettings.instagram,
         linkedin: socialSettings.linkedin,
       },
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        applySettingsToDOM();
+        toast.success("Les paramètres des réseaux sociaux ont été mis à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour des réseaux sociaux");
+      }
     });
   };
 
   const handleSaveCompanySettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       companyInfo: {
         address: companySettings.address,
@@ -177,10 +227,21 @@ export function AdminSettings() {
         email: companySettings.email,
         registrationNumber: companySettings.registrationNumber,
       },
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        applySettingsToDOM();
+        toast.success("Les informations de l'entreprise ont été mises à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour des informations de l'entreprise");
+      }
     });
   };
 
   const handleSaveReservationSettings = () => {
+    setIsSaving(true);
     updateSettings.mutate({
       reservationSettings: {
         minStay: reservationSettings.minStay,
@@ -188,6 +249,16 @@ export function AdminSettings() {
         advanceBookingDays: reservationSettings.advanceBookingDays,
         instantBooking: reservationSettings.instantBooking,
       },
+    }, {
+      onSuccess: () => {
+        setIsSaving(false);
+        applySettingsToDOM();
+        toast.success("Les paramètres de réservation ont été mis à jour avec succès");
+      },
+      onError: () => {
+        setIsSaving(false);
+        toast.error("Une erreur est survenue lors de la mise à jour des paramètres de réservation");
+      }
     });
   };
 
@@ -207,48 +278,54 @@ export function AdminSettings() {
   };
 
   const handleResetSettings = () => {
-    resetSettings.mutate();
-    setIsResetDialogOpen(false);
-    
-    // Réinitialiser les états locaux
-    setGeneralSettings({
-      siteName: settings.siteName,
-      logo: settings.logo,
-      language: settings.language,
-      favicon: settings.logo,
-    });
-    
-    setColorSettings({
-      primaryColor: settings.primaryColor,
-      secondaryColor: settings.secondaryColor,
-    });
-    
-    setFooterSettings({
-      contact: settings.footer.contact,
-      about: settings.footer.about,
-      terms: settings.footer.terms,
-      policy: settings.footer.policy,
-    });
-    
-    setSocialSettings({
-      facebook: settings.socialLinks.facebook,
-      twitter: settings.socialLinks.twitter,
-      instagram: socialSettings.instagram,
-      linkedin: settings.socialLinks.linkedin,
-    });
-    
-    setCompanySettings({
-      address: settings.companyInfo.address,
-      phone: settings.companyInfo.phone,
-      email: settings.companyInfo.email,
-      registrationNumber: settings.companyInfo.registrationNumber,
-    });
-    
-    setReservationSettings({
-      minStay: settings.reservationSettings.minStay,
-      maxStay: settings.reservationSettings.maxStay,
-      advanceBookingDays: settings.reservationSettings.advanceBookingDays,
-      instantBooking: settings.reservationSettings.instantBooking,
+    resetSettings.mutate(undefined, {
+      onSuccess: () => {
+        setIsResetDialogOpen(false);
+        
+        // Réinitialiser les états locaux avec les valeurs par défaut
+        setGeneralSettings({
+          siteName: settings.siteName,
+          logo: settings.logo,
+          language: settings.language,
+          favicon: settings.logo,
+        });
+        
+        setColorSettings({
+          primaryColor: settings.primaryColor,
+          secondaryColor: settings.secondaryColor,
+        });
+        
+        setFooterSettings({
+          contact: settings.footer.contact,
+          about: settings.footer.about,
+          terms: settings.footer.terms,
+          policy: settings.footer.policy,
+        });
+        
+        setSocialSettings({
+          facebook: settings.socialLinks.facebook,
+          twitter: settings.socialLinks.twitter,
+          instagram: settings.socialLinks.instagram,
+          linkedin: settings.socialLinks.linkedin,
+        });
+        
+        setCompanySettings({
+          address: settings.companyInfo.address,
+          phone: settings.companyInfo.phone,
+          email: settings.companyInfo.email,
+          registrationNumber: settings.companyInfo.registrationNumber,
+        });
+        
+        setReservationSettings({
+          minStay: settings.reservationSettings.minStay,
+          maxStay: settings.reservationSettings.maxStay,
+          advanceBookingDays: settings.reservationSettings.advanceBookingDays,
+          instantBooking: settings.reservationSettings.instantBooking,
+        });
+
+        // Appliquer immédiatement les changements au DOM
+        applySettingsToDOM();
+      }
     });
   };
 
@@ -285,7 +362,7 @@ export function AdminSettings() {
           setSocialSettings({
             facebook: settings.socialLinks.facebook,
             twitter: settings.socialLinks.twitter,
-            instagram: socialSettings.instagram,
+            instagram: settings.socialLinks.instagram,
             linkedin: settings.socialLinks.linkedin,
           });
           
@@ -302,8 +379,52 @@ export function AdminSettings() {
             advanceBookingDays: settings.reservationSettings.advanceBookingDays,
             instantBooking: settings.reservationSettings.instantBooking,
           });
+
+          // Appliquer immédiatement les changements au DOM
+          applySettingsToDOM();
         }
       });
+    }
+  };
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Dans une application réelle, ici vous téléchargeriez d'abord l'image sur un serveur
+      // et recevriez une URL que vous utiliseriez pour mettre à jour la logo
+      
+      // Simuler une conversion d'image en base64 pour démo locale
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setGeneralSettings({
+          ...generalSettings,
+          logo: base64String
+        });
+        
+        // Afficher un message de confirmation
+        toast.success("Logo téléchargé avec succès. N'oubliez pas d'enregistrer les modifications.");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFaviconUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Simuler une conversion d'image en base64 pour démo locale
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setGeneralSettings({
+          ...generalSettings,
+          favicon: base64String
+        });
+        
+        // Afficher un message de confirmation
+        toast.success("Favicon téléchargé avec succès. N'oubliez pas d'enregistrer les modifications.");
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -318,17 +439,48 @@ export function AdminSettings() {
     setTestEmailTo('');
   };
 
+  const handleApplyPreview = () => {
+    // Appliquer les paramètres actuels pour prévisualisation
+    applySettingsToDOM();
+    setIsPreviewVisible(true);
+    toast.success("Prévisualisation appliquée. Vous pouvez voir les changements sur votre site.");
+    
+    // Ouvrir le site dans un nouvel onglet
+    window.open('/', '_blank');
+  };
+
   return (
     <div className="flex min-h-screen w-full">
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
         <AdminTopbar />
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold">Paramètres du site</h1>
-            <p className="text-gray-500">
-              Configurez tous les aspects de votre site web
-            </p>
+          <div className="mb-6 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-semibold">Paramètres du site</h1>
+              <p className="text-gray-500">
+                Configurez tous les aspects de votre site web
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleApplyPreview}>
+                <Image className="mr-2 h-4 w-4" />
+                Prévisualiser
+              </Button>
+              <Button 
+                variant="default" 
+                className="bg-green-600 hover:bg-green-700" 
+                onClick={() => {
+                  handleSaveGeneralSettings();
+                  handleSaveColorSettings();
+                  handleSaveFooterSettings();
+                  handleSaveCompanySettings();
+                }}
+              >
+                <Save className="mr-2 h-4 w-4" />
+                Enregistrer tout
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-12 gap-6">
@@ -398,61 +550,133 @@ export function AdminSettings() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="logo">URL du logo</Label>
-                          <Input
-                            id="logo"
-                            value={generalSettings.logo}
-                            onChange={(e) =>
-                              setGeneralSettings({
-                                ...generalSettings,
-                                logo: e.target.value,
-                              })
-                            }
-                          />
-                          <div className="mt-2 flex items-center space-x-4">
-                            <div className="p-2 border rounded">
-                              <img 
-                                src={generalSettings.logo} 
-                                alt="Logo du site" 
-                                className="h-16 w-auto object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.src = "/placeholder.svg";
-                                }}
-                              />
+                          <Label htmlFor="logo">Logo du site</Label>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div className="space-y-2">
+                              <div className="p-4 border rounded-lg bg-white flex items-center justify-center">
+                                <img 
+                                  src={generalSettings.logo} 
+                                  alt="Logo du site" 
+                                  className="h-16 w-auto object-contain"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/placeholder.svg";
+                                  }}
+                                />
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="flex-1"
+                                  onClick={() => logoFileInputRef.current?.click()}
+                                >
+                                  <Upload className="mr-2 h-4 w-4" />
+                                  Téléverser
+                                  <input
+                                    ref={logoFileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleLogoUpload}
+                                    className="hidden"
+                                  />
+                                </Button>
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setGeneralSettings({
+                                    ...generalSettings,
+                                    logo: "/placeholder.svg"
+                                  })}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              <p>Format recommandé: PNG ou SVG</p>
-                              <p>Taille recommandée: 200x60 pixels</p>
+                            <div className="space-y-2">
+                              <Label htmlFor="logoUrl">URL du logo</Label>
+                              <Input
+                                id="logoUrl"
+                                value={generalSettings.logo}
+                                onChange={(e) =>
+                                  setGeneralSettings({
+                                    ...generalSettings,
+                                    logo: e.target.value,
+                                  })
+                                }
+                                placeholder="https://votre-site.com/logo.png"
+                              />
+                              <div className="text-sm text-gray-500">
+                                <p>Format recommandé: PNG ou SVG</p>
+                                <p>Taille recommandée: 200x60 pixels</p>
+                              </div>
                             </div>
                           </div>
                         </div>
 
                         <div className="space-y-2">
                           <Label htmlFor="favicon">Favicon</Label>
-                          <Input
-                            id="favicon"
-                            value={generalSettings.favicon}
-                            onChange={(e) =>
-                              setGeneralSettings({
-                                ...generalSettings,
-                                favicon: e.target.value,
-                              })
-                            }
-                          />
-                          <div className="mt-2 flex items-center space-x-4">
-                            <div className="p-2 border rounded">
-                              <img 
-                                src={generalSettings.favicon} 
-                                alt="Favicon du site" 
-                                className="h-8 w-8 object-contain"
-                                onError={(e) => {
-                                  e.currentTarget.src = "/placeholder.svg";
-                                }}
-                              />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div className="space-y-2">
+                              <div className="p-4 border rounded-lg bg-white flex items-center justify-center">
+                                <img 
+                                  src={generalSettings.favicon} 
+                                  alt="Favicon du site" 
+                                  className="h-10 w-10 object-contain"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "/placeholder.svg";
+                                  }}
+                                />
+                              </div>
+                              <div className="flex space-x-2">
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm"
+                                  className="flex-1"
+                                  onClick={() => faviconFileInputRef.current?.click()}
+                                >
+                                  <Upload className="mr-2 h-4 w-4" />
+                                  Téléverser
+                                  <input
+                                    ref={faviconFileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFaviconUpload}
+                                    className="hidden"
+                                  />
+                                </Button>
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setGeneralSettings({
+                                    ...generalSettings,
+                                    favicon: "/placeholder.svg"
+                                  })}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
-                            <div className="text-sm text-gray-500">
-                              <p>Format recommandé: ICO ou PNG</p>
-                              <p>Taille recommandée: 32x32 pixels</p>
+                            <div className="space-y-2">
+                              <Label htmlFor="faviconUrl">URL du favicon</Label>
+                              <Input
+                                id="faviconUrl"
+                                value={generalSettings.favicon}
+                                onChange={(e) =>
+                                  setGeneralSettings({
+                                    ...generalSettings,
+                                    favicon: e.target.value,
+                                  })
+                                }
+                                placeholder="https://votre-site.com/favicon.ico"
+                              />
+                              <div className="text-sm text-gray-500">
+                                <p>Format recommandé: ICO ou PNG</p>
+                                <p>Taille recommandée: 32x32 pixels</p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -488,21 +712,274 @@ export function AdminSettings() {
                       </div>
                       <Button 
                         onClick={handleSaveGeneralSettings}
-                        disabled={updateSettings.isPending}
+                        disabled={isSaving}
                       >
-                        {updateSettings.isPending ? "Enregistrement..." : "Enregistrer les modifications"}
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Enregistrement...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Enregistrer les modifications
+                          </>
+                        )}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+
+                {/* Onglet Apparence */}
+                <TabsContent value="appearance">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Apparence du site</CardTitle>
+                      <CardDescription>
+                        Personnalisez les couleurs et l'apparence visuelle de votre site
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="primaryColor">Couleur principale</Label>
+                          <div className="flex items-center gap-4">
+                            <Input
+                              id="primaryColor"
+                              type="color"
+                              value={colorSettings.primaryColor}
+                              onChange={(e) =>
+                                setColorSettings({
+                                  ...colorSettings,
+                                  primaryColor: e.target.value,
+                                })
+                              }
+                              className="w-20 h-10 p-1"
+                            />
+                            <Input
+                              value={colorSettings.primaryColor}
+                              onChange={(e) =>
+                                setColorSettings({
+                                  ...colorSettings,
+                                  primaryColor: e.target.value,
+                                })
+                              }
+                              className="font-mono"
+                            />
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            Utilisée pour les éléments principaux comme les boutons et les liens.
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="secondaryColor">Couleur secondaire</Label>
+                          <div className="flex items-center gap-4">
+                            <Input
+                              id="secondaryColor"
+                              type="color"
+                              value={colorSettings.secondaryColor}
+                              onChange={(e) =>
+                                setColorSettings({
+                                  ...colorSettings,
+                                  secondaryColor: e.target.value,
+                                })
+                              }
+                              className="w-20 h-10 p-1"
+                            />
+                            <Input
+                              value={colorSettings.secondaryColor}
+                              onChange={(e) =>
+                                setColorSettings({
+                                  ...colorSettings,
+                                  secondaryColor: e.target.value,
+                                })
+                              }
+                              className="font-mono"
+                            />
+                          </div>
+                          <p className="text-sm text-gray-500">
+                            Utilisée pour les accents et éléments secondaires.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-8">
+                        <h3 className="text-lg font-medium mb-2">Aperçu des couleurs</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div 
+                            className="h-20 rounded-md flex items-center justify-center text-white" 
+                            style={{ backgroundColor: colorSettings.primaryColor }}
+                          >
+                            Couleur principale
+                          </div>
+                          <div 
+                            className="h-20 rounded-md flex items-center justify-center text-white" 
+                            style={{ backgroundColor: colorSettings.secondaryColor }}
+                          >
+                            Couleur secondaire
+                          </div>
+                        </div>
+                        
+                        <div className="mt-6 space-y-2">
+                          <h4 className="text-sm font-medium">Exemples d'éléments</h4>
+                          <div className="p-4 border rounded-lg space-y-4">
+                            <div className="space-x-2">
+                              <button 
+                                className="px-4 py-2 rounded-md text-white" 
+                                style={{ backgroundColor: colorSettings.primaryColor }}
+                              >
+                                Bouton principal
+                              </button>
+                              <button 
+                                className="px-4 py-2 rounded-md text-white" 
+                                style={{ backgroundColor: colorSettings.secondaryColor }}
+                              >
+                                Bouton secondaire
+                              </button>
+                            </div>
+                            <div>
+                              <a href="#" style={{ color: colorSettings.primaryColor }}>Voici à quoi ressemblerait un lien</a>
+                            </div>
+                            <div 
+                              className="p-3 rounded-md text-white text-sm" 
+                              style={{ backgroundColor: colorSettings.primaryColor }}
+                            >
+                              Un élément de mise en avant avec la couleur principale
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        Les modifications de couleur s'appliquent immédiatement sur tout le site.
+                      </div>
+                      <Button 
+                        onClick={handleSaveColorSettings}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Enregistrement...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Enregistrer les modifications
+                          </>
+                        )}
                       </Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
 
                 {/* Autres onglets seront ajoutés ici */}
-                <TabsContent value="appearance">
-                  {/* Contenu de l'onglet Apparence */}
-                </TabsContent>
-
                 <TabsContent value="company">
-                  {/* Contenu de l'onglet Entreprise */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Informations de l'entreprise</CardTitle>
+                      <CardDescription>
+                        Configurez les informations de contact et administratives
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="address">Adresse</Label>
+                          <Textarea
+                            id="address"
+                            value={companySettings.address}
+                            onChange={(e) =>
+                              setCompanySettings({
+                                ...companySettings,
+                                address: e.target.value,
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email professionnel</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            value={companySettings.email}
+                            onChange={(e) =>
+                              setCompanySettings({
+                                ...companySettings,
+                                email: e.target.value,
+                              })
+                            }
+                          />
+                          <Label htmlFor="phone" className="mt-4">Téléphone</Label>
+                          <Input
+                            id="phone"
+                            value={companySettings.phone}
+                            onChange={(e) =>
+                              setCompanySettings({
+                                ...companySettings,
+                                phone: e.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <Label htmlFor="registrationNumber">Numéro d'enregistrement</Label>
+                        <Input
+                          id="registrationNumber"
+                          value={companySettings.registrationNumber}
+                          onChange={(e) =>
+                            setCompanySettings({
+                              ...companySettings,
+                              registrationNumber: e.target.value,
+                            })
+                          }
+                        />
+                        <p className="text-sm text-gray-500">
+                          Numéro d'enregistrement officiel de votre entreprise (SIRET, RCCM, etc.)
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-amber-50 text-amber-800 rounded-md text-sm flex items-start">
+                        <Info className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium">Informations légales</p>
+                          <p className="mt-1">
+                            Ces informations apparaîtront sur vos factures et documents légaux. 
+                            Assurez-vous qu'elles sont correctes et à jour.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="justify-between border-t px-6 py-4">
+                      <div className="text-xs text-gray-500">
+                        Dernière modification : {new Date().toLocaleDateString()}
+                      </div>
+                      <Button 
+                        onClick={handleSaveCompanySettings}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? (
+                          <>
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                            Enregistrement...
+                          </>
+                        ) : (
+                          <>
+                            <Save className="mr-2 h-4 w-4" />
+                            Enregistrer les modifications
+                          </>
+                        )}
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </TabsContent>
 
                 <TabsContent value="media">
@@ -550,6 +1027,14 @@ export function AdminSettings() {
                       className="hidden"
                     />
                   </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-yellow-600" 
+                    onClick={handleApplyPreview}
+                  >
+                    <Image className="mr-2 h-4 w-4" />
+                    Prévisualiser les changements
+                  </Button>
                   <Button variant="outline" className="w-full justify-start text-red-600" onClick={() => setIsResetDialogOpen(true)}>
                     <Trash className="mr-2 h-4 w-4" />
                     Réinitialiser les paramètres
@@ -567,21 +1052,25 @@ export function AdminSettings() {
                     <AccordionItem value="item-1">
                       <AccordionTrigger>Comment modifier le logo ?</AccordionTrigger>
                       <AccordionContent>
-                        Allez dans l'onglet "Général" et entrez l'URL de votre logo dans le champ correspondant. 
-                        Assurez-vous que l'image est accessible publiquement.
+                        Allez dans l'onglet "Général" et téléversez votre logo en cliquant sur le bouton "Téléverser".
+                        Vous pouvez également entrer l'URL de votre logo si celui-ci est déjà hébergé sur Internet.
+                        N'oubliez pas de cliquer sur "Enregistrer les modifications" pour appliquer les changements.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-2">
-                      <AccordionTrigger>Comment configurer les emails ?</AccordionTrigger>
+                      <AccordionTrigger>Comment changer les couleurs du site ?</AccordionTrigger>
                       <AccordionContent>
-                        Accédez à l'onglet "Email" pour configurer les paramètres SMTP et les modèles de notifications.
+                        Accédez à l'onglet "Apparence" pour modifier les couleurs principale et secondaire du site.
+                        Vous pouvez utiliser le sélecteur de couleur ou entrer directement un code hexadécimal.
+                        Les modifications seront appliquées immédiatement après avoir cliqué sur "Enregistrer les modifications".
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-3">
-                      <AccordionTrigger>Où gérer les utilisateurs ?</AccordionTrigger>
+                      <AccordionTrigger>Comment prévisualiser les changements ?</AccordionTrigger>
                       <AccordionContent>
-                        La gestion des utilisateurs se fait dans la section "Utilisateurs" du menu principal, 
-                        et non dans les paramètres du site.
+                        Après avoir effectué vos modifications, cliquez sur le bouton "Prévisualiser" en haut de la page
+                        ou sur "Prévisualiser les changements" dans le panneau latéral. Une nouvelle fenêtre s'ouvrira
+                        avec votre site public affichant les modifications apportées.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>

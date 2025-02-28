@@ -104,6 +104,8 @@ const saveSettings = (settings: SiteSettings) => {
 
 // Fonction pour appliquer les paramètres du site au DOM
 const applySettingsToDOM = (settings: SiteSettings) => {
+  console.log("Appliquer les paramètres au DOM:", settings);
+  
   // Appliquer les couleurs principales
   document.documentElement.style.setProperty('--primary', settings.primaryColor);
   document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
@@ -129,7 +131,16 @@ const applySettingsToDOM = (settings: SiteSettings) => {
     }
   });
   
-  console.log("Paramètres appliqués au DOM:", settings);
+  // Mettre à jour le favicon
+  let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'shortcut icon';
+    document.head.appendChild(link);
+  }
+  link.href = settings.logo;
+  
+  console.log("Paramètres appliqués au DOM");
 }
 
 export const useSiteSettings = () => {
