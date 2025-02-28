@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from './components/ui/toaster';
 import { Toaster as SonnerToaster } from 'sonner';
+import { SidebarProvider } from './components/ui/sidebar'; // Ajouté pour résoudre l'erreur
 
 import Index from './pages/Index';
 import ListingDetail from './pages/ListingDetail';
@@ -39,44 +40,46 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/logement/:id" element={<ListingDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/emplois" element={<Jobs />} />
-          <Route path="/emploi/:id" element={<JobDetail />} />
+      <SidebarProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/logement/:id" element={<ListingDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/emplois" element={<Jobs />} />
+            <Route path="/emploi/:id" element={<JobDetail />} />
+            
+            {/* User routes */}
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/reservations" element={<UserReservations />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/notifications" element={<Notifications />} />
+            
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/logements" element={<AdminListings />} />
+            <Route path="/admin/emplois" element={<AdminJobs />} />
+            <Route path="/admin/avis" element={<AdminReviews />} />
+            <Route path="/admin/reservations" element={<AdminReservations />} />
+            <Route path="/admin/paiements" element={<AdminPayments />} />
+            <Route path="/admin/utilisateurs" element={<AdminUsers />} />
+            <Route path="/admin/support" element={<AdminSupport />} />
+            <Route path="/admin/parametres" element={<AdminSettings />} />
+            
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
           
-          {/* User routes */}
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/reservations" element={<UserReservations />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/notifications" element={<Notifications />} />
+          {/* Composant de comparaison qui sera visible sur toutes les pages */}
+          <CompareListings />
           
-          {/* Admin routes */}
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/logements" element={<AdminListings />} />
-          <Route path="/admin/emplois" element={<AdminJobs />} />
-          <Route path="/admin/avis" element={<AdminReviews />} />
-          <Route path="/admin/reservations" element={<AdminReservations />} />
-          <Route path="/admin/paiements" element={<AdminPayments />} />
-          <Route path="/admin/utilisateurs" element={<AdminUsers />} />
-          <Route path="/admin/support" element={<AdminSupport />} />
-          <Route path="/admin/parametres" element={<AdminSettings />} />
-          
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        
-        {/* Composant de comparaison qui sera visible sur toutes les pages */}
-        <CompareListings />
-        
-        {/* Toasters pour les notifications */}
-        <SonnerToaster position="top-right" closeButton />
-        <Toaster />
-      </Router>
+          {/* Toasters pour les notifications */}
+          <SonnerToaster position="top-right" closeButton />
+          <Toaster />
+        </Router>
+      </SidebarProvider>
     </QueryClientProvider>
   );
 }

@@ -37,9 +37,11 @@ import {
   Check
 } from 'lucide-react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const AdminSettings = () => {
   const { settings, updateSettings } = useSiteSettings();
+  const isMobile = useIsMobile();
   
   // États locaux pour les formulaires
   const [generalSettings, setGeneralSettings] = useState({
@@ -176,61 +178,61 @@ export const AdminSettings = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex flex-col md:flex-row min-h-screen w-full">
       <AdminSidebar />
       <div className="flex flex-1 flex-col">
         <AdminTopbar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold">Paramètres du site</h1>
-            <p className="text-gray-500">Configurez les paramètres généraux de votre site</p>
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-3 md:p-6">
+          <div className="mb-4 md:mb-6">
+            <h1 className="text-xl md:text-2xl font-semibold">Paramètres du site</h1>
+            <p className="text-gray-500 text-sm md:text-base">Configurez les paramètres généraux de votre site</p>
           </div>
           
-          <Tabs defaultValue="general" className="space-y-6">
-            <div className="bg-white p-4 rounded-lg shadow mb-6 overflow-x-auto">
-              <TabsList className="inline-flex h-9 w-auto">
-                <TabsTrigger value="general" className="flex items-center">
-                  <Settings className="h-4 w-4 mr-2" />
+          <Tabs defaultValue="general" className="space-y-4 md:space-y-6">
+            <div className="bg-white p-2 md:p-4 rounded-lg shadow mb-4 md:mb-6 overflow-x-auto">
+              <TabsList className={`inline-flex h-auto w-auto flex-wrap md:flex-nowrap gap-1 ${isMobile ? 'flex-col w-full' : ''}`}>
+                <TabsTrigger value="general" className="flex items-center text-xs md:text-sm">
+                  <Settings className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Général
                 </TabsTrigger>
-                <TabsTrigger value="appearance" className="flex items-center">
-                  <Palette className="h-4 w-4 mr-2" />
+                <TabsTrigger value="appearance" className="flex items-center text-xs md:text-sm">
+                  <Palette className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Apparence
                 </TabsTrigger>
-                <TabsTrigger value="localization" className="flex items-center">
-                  <Globe className="h-4 w-4 mr-2" />
+                <TabsTrigger value="localization" className="flex items-center text-xs md:text-sm">
+                  <Globe className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Localisation
                 </TabsTrigger>
-                <TabsTrigger value="media" className="flex items-center">
-                  <Image className="h-4 w-4 mr-2" />
+                <TabsTrigger value="media" className="flex items-center text-xs md:text-sm">
+                  <Image className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Médias
                 </TabsTrigger>
-                <TabsTrigger value="email" className="flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
+                <TabsTrigger value="email" className="flex items-center text-xs md:text-sm">
+                  <Mail className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Email
                 </TabsTrigger>
-                <TabsTrigger value="payment" className="flex items-center">
-                  <CreditCard className="h-4 w-4 mr-2" />
+                <TabsTrigger value="payment" className="flex items-center text-xs md:text-sm">
+                  <CreditCard className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                   Paiement
                 </TabsTrigger>
-                <TabsTrigger value="social" className="flex items-center">
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Réseaux sociaux
+                <TabsTrigger value="social" className="flex items-center text-xs md:text-sm">
+                  <Share2 className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                  Réseaux
                 </TabsTrigger>
               </TabsList>
             </div>
             
             {/* Paramètres généraux */}
             <TabsContent value="general">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Paramètres généraux</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Paramètres généraux</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les informations de base de votre site
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="siteName">Nom du site</Label>
                       <Input 
@@ -277,7 +279,7 @@ export const AdminSettings = () => {
                       value={generalSettings.siteDescription} 
                       onChange={(e) => setGeneralSettings({...generalSettings, siteDescription: e.target.value})}
                     />
-                    <p className="text-sm text-gray-500">Cette description apparaîtra dans les moteurs de recherche</p>
+                    <p className="text-xs text-gray-500">Cette description apparaîtra dans les moteurs de recherche</p>
                   </div>
                   
                   <div className="space-y-2">
@@ -289,20 +291,20 @@ export const AdminSettings = () => {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="logo">Logo</Label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 md:gap-4 flex-wrap md:flex-nowrap">
                         <img 
                           src={generalSettings.logo} 
                           alt="Logo" 
-                          className="h-12 w-12 object-contain border rounded-md"
+                          className="h-10 w-10 md:h-12 md:w-12 object-contain border rounded-md"
                           onError={(e) => {
                             e.currentTarget.src = "/placeholder.svg";
                           }}
                         />
-                        <Button variant="outline" className="gap-2">
-                          <Upload className="h-4 w-4" />
+                        <Button variant="outline" size="sm" className="text-xs md:text-sm gap-1 md:gap-2">
+                          <Upload className="h-3 w-3 md:h-4 md:w-4" />
                           Changer
                         </Button>
                       </div>
@@ -310,26 +312,26 @@ export const AdminSettings = () => {
                     
                     <div className="space-y-2">
                       <Label htmlFor="favicon">Favicon</Label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2 md:gap-4 flex-wrap md:flex-nowrap">
                         <img 
                           src={generalSettings.favicon} 
                           alt="Favicon" 
-                          className="h-12 w-12 object-contain border rounded-md" 
+                          className="h-10 w-10 md:h-12 md:w-12 object-contain border rounded-md" 
                           onError={(e) => {
                             e.currentTarget.src = "/favicon.ico";
                           }}
                         />
-                        <Button variant="outline" className="gap-2">
-                          <Upload className="h-4 w-4" />
+                        <Button variant="outline" size="sm" className="text-xs md:text-sm gap-1 md:gap-2">
+                          <Upload className="h-3 w-3 md:h-4 md:w-4" />
                           Changer
                         </Button>
                       </div>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveGeneralSettings} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveGeneralSettings} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -338,20 +340,20 @@ export const AdminSettings = () => {
             
             {/* Paramètres d'apparence */}
             <TabsContent value="appearance">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Apparence</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Apparence</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Personnalisez l'apparence de votre site
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="primaryColor">Couleur principale</Label>
                       <div className="flex items-center gap-2">
                         <div 
-                          className="h-8 w-8 rounded-md border" 
+                          className="h-6 w-6 md:h-8 md:w-8 rounded-md border" 
                           style={{ backgroundColor: appearance.primaryColor }}
                         />
                         <Input 
@@ -366,7 +368,7 @@ export const AdminSettings = () => {
                       <Label htmlFor="secondaryColor">Couleur secondaire</Label>
                       <div className="flex items-center gap-2">
                         <div 
-                          className="h-8 w-8 rounded-md border" 
+                          className="h-6 w-6 md:h-8 md:w-8 rounded-md border" 
                           style={{ backgroundColor: appearance.secondaryColor }}
                         />
                         <Input 
@@ -378,7 +380,7 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="fontFamily">Police de caractères</Label>
                       <Select 
@@ -426,11 +428,11 @@ export const AdminSettings = () => {
                     <Label htmlFor="darkMode">Activer le mode sombre</Label>
                   </div>
                   
-                  <div className="border rounded-lg p-4 bg-gray-50">
-                    <h3 className="text-sm font-medium mb-2">Aperçu</h3>
+                  <div className="border rounded-lg p-3 md:p-4 bg-gray-50">
+                    <h3 className="text-xs md:text-sm font-medium mb-2">Aperçu</h3>
                     <div className="flex flex-col gap-2">
                       <div 
-                        className="p-4 rounded-md text-white" 
+                        className="p-2 md:p-4 rounded-md text-white" 
                         style={{ 
                           backgroundColor: appearance.primaryColor,
                           borderRadius: appearance.borderRadius === 'none' ? '0' : 
@@ -438,10 +440,10 @@ export const AdminSettings = () => {
                             appearance.borderRadius === 'medium' ? '0.5rem' : '1rem'
                         }}
                       >
-                        <p style={{ fontFamily: appearance.fontFamily }}>Bouton principal</p>
+                        <p style={{ fontFamily: appearance.fontFamily }} className="text-xs md:text-sm">Bouton principal</p>
                       </div>
                       <div 
-                        className="p-4 rounded-md text-white" 
+                        className="p-2 md:p-4 rounded-md text-white" 
                         style={{ 
                           backgroundColor: appearance.secondaryColor,
                           borderRadius: appearance.borderRadius === 'none' ? '0' : 
@@ -449,14 +451,14 @@ export const AdminSettings = () => {
                             appearance.borderRadius === 'medium' ? '0.5rem' : '1rem'
                         }}
                       >
-                        <p style={{ fontFamily: appearance.fontFamily }}>Bouton secondaire</p>
+                        <p style={{ fontFamily: appearance.fontFamily }} className="text-xs md:text-sm">Bouton secondaire</p>
                       </div>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveAppearance} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveAppearance} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -465,15 +467,15 @@ export const AdminSettings = () => {
             
             {/* Paramètres de localisation */}
             <TabsContent value="localization">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Localisation</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Localisation</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les paramètres régionaux de votre site
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="defaultLanguage">Langue par défaut</Label>
                       <Select 
@@ -525,7 +527,7 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="dateFormat">Format de date</Label>
                       <Select 
@@ -578,9 +580,9 @@ export const AdminSettings = () => {
                     </Select>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveLocalization} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveLocalization} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -589,15 +591,15 @@ export const AdminSettings = () => {
             
             {/* Paramètres des médias */}
             <TabsContent value="media">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Médias</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Médias</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les paramètres pour la gestion des fichiers médias
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="maxFileSize">Taille maximale des fichiers (MB)</Label>
                       <Input 
@@ -650,8 +652,8 @@ export const AdminSettings = () => {
                     </div>
                     
                     {mediaSettings.watermarkEnabled && (
-                      <div className="pl-6 space-y-2">
-                        <Label htmlFor="watermarkOpacity">Opacité du filigrane (%)</Label>
+                      <div className="pl-3 md:pl-6 space-y-2">
+                        <Label htmlFor="watermarkOpacity" className="text-xs md:text-sm">Opacité du filigrane (%)</Label>
                         <Input 
                           id="watermarkOpacity" 
                           type="number" 
@@ -665,9 +667,9 @@ export const AdminSettings = () => {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveMediaSettings} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveMediaSettings} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -676,14 +678,14 @@ export const AdminSettings = () => {
             
             {/* Paramètres des emails */}
             <TabsContent value="email">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Email</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Email</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les paramètres d'envoi d'emails
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
                   <div className="space-y-2">
                     <Label htmlFor="mailProvider">Fournisseur d'email</Label>
                     <Select 
@@ -703,8 +705,8 @@ export const AdminSettings = () => {
                   </div>
                   
                   {emailSettings.mailProvider === 'smtp' && (
-                    <div className="space-y-6 border-l-2 pl-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4 md:space-y-6 border-l-2 pl-3 md:pl-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="smtpHost">Serveur SMTP</Label>
                           <Input 
@@ -724,7 +726,7 @@ export const AdminSettings = () => {
                         </div>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="smtpUser">Utilisateur SMTP</Label>
                           <Input 
@@ -747,7 +749,7 @@ export const AdminSettings = () => {
                     </div>
                   )}
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="senderName">Nom de l'expéditeur</Label>
                       <Input 
@@ -768,9 +770,9 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col gap-2 pt-4">
-                    <Button onClick={handleTestEmail} variant="outline" className="w-fit gap-2">
-                      <Mail className="h-4 w-4" />
+                  <div className="flex flex-col gap-2 pt-2 md:pt-4">
+                    <Button onClick={handleTestEmail} variant="outline" className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-fit">
+                      <Mail className="h-3 w-3 md:h-4 md:w-4" />
                       Envoyer un email de test
                     </Button>
                     <p className="text-xs text-gray-500">
@@ -778,9 +780,9 @@ export const AdminSettings = () => {
                     </p>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveEmailSettings} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveEmailSettings} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -789,14 +791,14 @@ export const AdminSettings = () => {
             
             {/* Paramètres de paiement */}
             <TabsContent value="payment">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Paiement</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Paiement</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les options de paiement de votre site
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
                   <div className="space-y-2">
                     <Label htmlFor="currency">Devise principale</Label>
                     <Select 
@@ -809,30 +811,30 @@ export const AdminSettings = () => {
                       <SelectContent>
                         <SelectItem value="XOF">
                           <div className="flex items-center">
-                            <DollarSign className="h-4 w-4 mr-2" />
-                            <span>XOF - Franc CFA BCEAO</span>
+                            <DollarSign className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                            <span className="text-xs md:text-sm">XOF - Franc CFA BCEAO</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="EUR">
                           <div className="flex items-center">
-                            <Euro className="h-4 w-4 mr-2" />
-                            <span>EUR - Euro</span>
+                            <Euro className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                            <span className="text-xs md:text-sm">EUR - Euro</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="USD">
                           <div className="flex items-center">
-                            <DollarSign className="h-4 w-4 mr-2" />
-                            <span>USD - Dollar américain</span>
+                            <DollarSign className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+                            <span className="text-xs md:text-sm">USD - Dollar américain</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-medium">Stripe</h3>
+                  <div className="space-y-3 md:space-y-4">
+                    <h3 className="text-xs md:text-sm font-medium">Stripe</h3>
                     <div className="space-y-2">
-                      <Label htmlFor="stripeLiveKey">Clé API Stripe (Production)</Label>
+                      <Label htmlFor="stripeLiveKey" className="text-xs md:text-sm">Clé API Stripe (Production)</Label>
                       <Input 
                         id="stripeLiveKey" 
                         value={paymentSettings.stripeLiveKey} 
@@ -841,7 +843,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="stripeTestKey">Clé API Stripe (Test)</Label>
+                      <Label htmlFor="stripeTestKey" className="text-xs md:text-sm">Clé API Stripe (Test)</Label>
                       <Input 
                         id="stripeTestKey" 
                         value={paymentSettings.stripeTestKey} 
@@ -850,10 +852,10 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-medium">PayPal</h3>
+                  <div className="space-y-3 md:space-y-4">
+                    <h3 className="text-xs md:text-sm font-medium">PayPal</h3>
                     <div className="space-y-2">
-                      <Label htmlFor="paypalClientId">ID Client PayPal</Label>
+                      <Label htmlFor="paypalClientId" className="text-xs md:text-sm">ID Client PayPal</Label>
                       <Input 
                         id="paypalClientId" 
                         value={paymentSettings.paypalClientId} 
@@ -868,12 +870,12 @@ export const AdminSettings = () => {
                       checked={paymentSettings.testMode}
                       onCheckedChange={(checked) => setPaymentSettings({...paymentSettings, testMode: checked})}
                     />
-                    <Label htmlFor="testMode">Activer le mode test (sandbox)</Label>
+                    <Label htmlFor="testMode" className="text-xs md:text-sm">Activer le mode test (sandbox)</Label>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="commissionRate">Taux de commission (%)</Label>
+                      <Label htmlFor="commissionRate" className="text-xs md:text-sm">Taux de commission (%)</Label>
                       <Input 
                         id="commissionRate" 
                         type="number"
@@ -886,7 +888,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="minWithdrawalAmount">Montant min. de retrait</Label>
+                      <Label htmlFor="minWithdrawalAmount" className="text-xs md:text-sm">Montant min. de retrait</Label>
                       <Input 
                         id="minWithdrawalAmount" 
                         type="number"
@@ -898,9 +900,9 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSavePaymentSettings} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSavePaymentSettings} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
@@ -909,17 +911,17 @@ export const AdminSettings = () => {
             
             {/* Paramètres des réseaux sociaux */}
             <TabsContent value="social">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Réseaux sociaux</CardTitle>
-                  <CardDescription>
+              <Card className="overflow-hidden">
+                <CardHeader className="p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Réseaux sociaux</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configurez les liens vers vos réseaux sociaux et options de partage
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="space-y-4 md:space-y-6 p-4 md:p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="facebookUrl">Facebook</Label>
+                      <Label htmlFor="facebookUrl" className="text-xs md:text-sm">Facebook</Label>
                       <Input 
                         id="facebookUrl" 
                         value={socialSettings.facebookUrl} 
@@ -929,7 +931,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="twitterUrl">Twitter / X</Label>
+                      <Label htmlFor="twitterUrl" className="text-xs md:text-sm">Twitter / X</Label>
                       <Input 
                         id="twitterUrl" 
                         value={socialSettings.twitterUrl} 
@@ -939,7 +941,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="instagramUrl">Instagram</Label>
+                      <Label htmlFor="instagramUrl" className="text-xs md:text-sm">Instagram</Label>
                       <Input 
                         id="instagramUrl" 
                         value={socialSettings.instagramUrl} 
@@ -949,7 +951,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="linkedinUrl">LinkedIn</Label>
+                      <Label htmlFor="linkedinUrl" className="text-xs md:text-sm">LinkedIn</Label>
                       <Input 
                         id="linkedinUrl" 
                         value={socialSettings.linkedinUrl} 
@@ -959,7 +961,7 @@ export const AdminSettings = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="youtubeUrl">YouTube</Label>
+                      <Label htmlFor="youtubeUrl" className="text-xs md:text-sm">YouTube</Label>
                       <Input 
                         id="youtubeUrl" 
                         value={socialSettings.youtubeUrl} 
@@ -969,14 +971,14 @@ export const AdminSettings = () => {
                     </div>
                   </div>
                   
-                  <div className="space-y-4 pt-2">
+                  <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
                     <div className="flex items-center space-x-2">
                       <Switch 
                         id="enableSocialLogin" 
                         checked={socialSettings.enableSocialLogin}
                         onCheckedChange={(checked) => setSocialSettings({...socialSettings, enableSocialLogin: checked})}
                       />
-                      <Label htmlFor="enableSocialLogin">Activer la connexion via réseaux sociaux</Label>
+                      <Label htmlFor="enableSocialLogin" className="text-xs md:text-sm">Activer la connexion via réseaux sociaux</Label>
                     </div>
                     
                     <div className="flex items-center space-x-2">
@@ -985,13 +987,13 @@ export const AdminSettings = () => {
                         checked={socialSettings.enableSocialSharing}
                         onCheckedChange={(checked) => setSocialSettings({...socialSettings, enableSocialSharing: checked})}
                       />
-                      <Label htmlFor="enableSocialSharing">Activer les boutons de partage social</Label>
+                      <Label htmlFor="enableSocialSharing" className="text-xs md:text-sm">Activer les boutons de partage social</Label>
                     </div>
                   </div>
                 </CardContent>
-                <CardFooter>
-                  <Button onClick={handleSaveSocialSettings} className="gap-2">
-                    <Save className="h-4 w-4" />
+                <CardFooter className="bg-gray-50 p-4 md:p-6">
+                  <Button onClick={handleSaveSocialSettings} className="text-xs md:text-sm gap-1 md:gap-2 w-full md:w-auto">
+                    <Save className="h-3 w-3 md:h-4 md:w-4" />
                     Enregistrer les modifications
                   </Button>
                 </CardFooter>
