@@ -7,6 +7,7 @@
   object-fit: cover;
   border-radius: var(--radius-lg); /* Using variable */
   transition: transform 0.4s ease;
+  margin-bottom: 10px; /* Add bottom margin */
 }
 
 .listing-card-container:hover .listing-card-image {
@@ -18,6 +19,7 @@
   width: 100%;
   height: auto;
   object-fit: cover;
+  margin: 10px 0; /* Add vertical margins */
 }
 
 /* Styles for specific page images */
@@ -30,6 +32,7 @@
   max-width: 100%;
   height: auto;
   transition: transform 0.3s ease;
+  margin: 15px 0; /* Add vertical margins */
 }
 
 .about-image:hover,
@@ -42,11 +45,12 @@
   aspect-ratio: 1/1;
   object-fit: cover;
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 140px; /* Increased from 120px */
+  height: 140px; /* Increased from 120px */
   transition: transform 0.3s ease;
   border: 3px solid #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 10px; /* Add margin all around */
 }
 
 .team-member-image:hover {
@@ -59,6 +63,7 @@
   width: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
+  margin-bottom: 12px; /* Add bottom margin */
 }
 
 /* Featured listing image */

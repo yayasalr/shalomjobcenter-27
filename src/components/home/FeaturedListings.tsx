@@ -37,7 +37,7 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
   };
 
   return (
-    <div className="mb-16 w-full">
+    <div className="mb-16 w-full px-4 py-6">
       <div className="flex items-center justify-between mb-8 px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <h2 className="text-3xl font-bold text-sholom-dark">
           En vedette
@@ -51,12 +51,12 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
         </Link>
       </div>
       
-      <div className="featured-grid">
+      <div className="featured-grid gap-6">
         {listings.map((listing) => (
           <Link 
             key={listing.id} 
             to={`/logement/${listing.id}`}
-            className="group relative rounded-xl overflow-hidden shadow-md hover-lift hover-shadow transition-all"
+            className="group relative rounded-xl overflow-hidden shadow-md hover-lift hover-shadow transition-all m-2"
           >
             <div className="relative aspect-[16/9]">
               <img

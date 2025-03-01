@@ -1,8 +1,8 @@
 
 /* Responsive spacing utilities fully optimized */
 .responsive-spacing {
-  padding: 0;
-  margin: 0;
+  padding: var(--spacing-md);
+  margin: var(--spacing-sm);
 }
 
 /* Immersive section for full-width content - optimized to truly span full width */
@@ -12,36 +12,36 @@
   position: relative;
   left: 0;
   right: 0;
-  margin: 0;
-  padding: 0;
+  margin: var(--spacing-md) 0;
+  padding: 0 var(--padding-mobile);
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .immersive-section {
-    padding: 0;
+    padding: 0 var(--padding-tablet);
     width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
-    padding: 0;
+    padding: 0 var(--padding-desktop);
     width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .immersive-section {
-    padding: 0;
+    padding: 0 var(--padding-large);
     width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-3xl)) {
   .immersive-section {
-    padding: 0;
+    padding: 0 var(--padding-xlarge);
     width: 100vw;
   }
 }
@@ -50,8 +50,8 @@
 .full-width {
   width: 100vw;
   max-width: 100%;
-  margin: 0;
-  padding: 0;
+  margin: var(--spacing-md) 0;
+  padding: 0 var(--padding-mobile);
   box-sizing: border-box;
   overflow-x: hidden;
 }
