@@ -1,8 +1,9 @@
 
 /* Card styles */
 .card {
-  padding: 2em;
+  padding: 1.5em;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
 }
 
 .card:hover {
@@ -13,6 +14,7 @@
 /* Card hover state */
 .card-hover {
   transition: all 0.3s ease;
+  width: 100%;
 }
 
 .card-hover:hover {
@@ -24,6 +26,7 @@
 .hover-lift {
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   will-change: transform;
+  width: 100%;
 }
 
 .hover-lift:hover {
@@ -37,6 +40,7 @@
   overflow: hidden;
   background: #ffffff;
   transition: all 0.35s ease;
+  width: 100%;
 }
 
 .refined-card:hover {
@@ -49,9 +53,11 @@
   overflow: hidden;
   border-radius: 14px;
   position: relative;
+  width: 100%;
 }
 
 /* Enhanced card content spacing */
 .card-content {
   padding: 1.25rem 0.5rem 0.75rem;
+  width: 100%;
 }
