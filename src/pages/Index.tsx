@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -6,8 +5,6 @@ import { CategoryFiltersSimplified } from '@/components/CategoryFiltersSimplifie
 import { Listing } from '@/types/listing';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HeroSection } from '@/components/home/HeroSection';
-import { JobsBanner } from '@/components/home/JobsBanner';
-import { FeaturedListings } from '@/components/home/FeaturedListings';
 import { SearchBar } from '@/components/home/SearchBar';
 import { ListingsGrid } from '@/components/home/ListingsGrid';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
@@ -86,14 +83,7 @@ const Index = () => {
       
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
-          <JobsBanner />
-          
-          {featuredListings.length > 0 && (
-            <FeaturedListings 
-              listings={featuredListings} 
-              formatPriceFCFA={formatPriceFCFA} 
-            />
-          )}
+          {/* JobsBanner and FeaturedListings removed */}
         </div>
       </div>
       
