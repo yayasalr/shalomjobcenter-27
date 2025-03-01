@@ -1,4 +1,3 @@
-
 import { Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -124,18 +123,18 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   const hostImage = host?.image && !host.image.includes('placeholder') ? host.image : hostDefaultImage;
 
   return (
-    <Link to={`/logement/${id}`} className="group relative block hover-lift transition-all duration-300 rounded-xl overflow-hidden h-full">
+    <Link to={`/logement/${id}`} className="group block relative hover-lift transition-all duration-300 rounded-xl overflow-hidden h-full">
       {/* Badge "Coup de coeur voyageurs" */}
-      <div className="absolute top-3 left-3 z-10">
+      <div className="absolute top-4 left-4 z-10">
         <Badge 
           variant="outline" 
-          className="px-2 py-1 bg-white text-xs font-medium text-black border-none shadow-sm flex items-center gap-1"
+          className="px-3 py-1 bg-white text-sm font-medium text-black border-none shadow-sm flex items-center gap-1"
         >
           <span className="text-amber-400">★</span> Coup de cœur voyageurs
         </Badge>
       </div>
 
-      <div className="aspect-square w-full overflow-hidden relative">
+      <div className="aspect-square w-full overflow-hidden relative rounded-xl">
         <img
           src={imageUrl}
           alt={title}
@@ -147,7 +146,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           }}
         />
         
-        <div className="absolute top-3 right-3 flex gap-2 z-10">
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -165,19 +164,17 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
         </div>
       </div>
 
-      <div className="mt-4 px-1">
+      <div className="mt-4 px-1 space-y-1">
         <div className="flex justify-between items-start">
-          <div>
-            <h3 className="font-medium text-lg">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
-            <p className="text-sm text-gray-500 mt-1">Séjournez chez {hostName}</p>
-            <p className="text-sm text-gray-500 mt-0.5">{dates}</p>
-            <p className="font-medium mt-2 text-base">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
-          </div>
-          <div className="flex items-center mt-1">
+          <h3 className="font-medium text-lg">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
+          <div className="flex items-center">
             <Star className="h-4 w-4 text-black fill-black mr-1" />
             <span className="text-sm font-medium">{rating || "Nouveau"}</span>
           </div>
         </div>
+        <p className="text-sm text-gray-500">Séjournez chez {hostName}</p>
+        <p className="text-sm text-gray-500">{dates}</p>
+        <p className="font-medium mt-2 text-base">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
       </div>
     </Link>
   );
