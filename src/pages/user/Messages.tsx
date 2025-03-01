@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,30 +12,30 @@ import useAuth from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 // Types pour les données
-interface Message {
+type Message = {
   id: string;
   content: string;
-  sender: 'user' | 'other' | 'admin' | 'system';
   timestamp: Date;
   read: boolean;
-}
+  sender: "user" | "admin" | "system" | "other";
+};
 
-interface Conversation {
+type Conversation = {
   id: string;
   with: {
     id: string;
     name: string;
     avatar?: string;
-    role?: 'user' | 'host' | 'admin';
+    role?: "user" | "host" | "admin";
   };
+  messages: Message[];
   lastMessage: {
     content: string;
     timestamp: Date;
     read: boolean;
-    sender: 'user' | 'other' | 'admin' | 'system';
+    sender: "user" | "admin" | "system" | "other";
   };
-  messages: Message[];
-}
+};
 
 const ADMIN_USER = {
   id: 'admin',
@@ -105,18 +104,18 @@ const Messages = () => {
     const welcomeMessage: Message = {
       id: `welcome-${Date.now()}`,
       content: `Bienvenue ${user.name} sur SHALOM JOB CENTER ! Nous sommes ravis de vous accueillir. N'hésitez pas à parcourir les offres d'emploi et les logements disponibles. Si vous avez des questions, contactez notre équipe d'assistance.`,
-      sender: 'system',
       timestamp: new Date(),
       read: false,
+      sender: 'system',
     };
 
     // Créer la conversation avec l'administrateur
     const adminWelcomeMessage: Message = {
       id: `admin-welcome-${Date.now()}`,
       content: `Bonjour ${user.name}, je suis l'administrateur de la plateforme. N'hésitez pas à me contacter si vous avez des questions.`,
-      sender: 'admin',
       timestamp: new Date(),
       read: false,
+      sender: 'admin',
     };
 
     const initialConversations: Conversation[] = [
@@ -154,9 +153,9 @@ const Messages = () => {
     const updatedMessage: Message = {
       id: `m${Date.now()}`,
       content: newMessage,
-      sender: 'user',
       timestamp: new Date(),
       read: true,
+      sender: 'user',
     };
     
     const updatedConversations: Conversation[] = conversations.map(conv => {
@@ -200,9 +199,9 @@ const Messages = () => {
           content: selectedConversation.with.id === 'admin' 
             ? "Merci pour votre message. Je reviendrai vers vous dès que possible."
             : "Merci de votre intérêt pour nos services. Notre équipe est là pour vous aider !",
-          sender: selectedConversation.with.id === 'admin' ? 'admin' : 'system',
           timestamp: new Date(),
           read: false,
+          sender: selectedConversation.with.id === 'admin' ? 'admin' : 'system',
         };
         
         const updatedWithResponse: Conversation[] = conversations.map(conv => {

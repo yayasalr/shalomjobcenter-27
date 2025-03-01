@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { X, Plus } from 'lucide-react';
+import { Loader2, ImagePlus } from 'lucide-react';
 
 interface FormFieldsProps {
   title: string;
@@ -38,6 +38,7 @@ interface FormFieldsProps {
   onAddImage?: () => void;
   onUpdateImage?: (index: number, value: string) => void;
   onRemoveImage?: (index: number) => void;
+  isUploading?: boolean;
 }
 
 export const FormFields: React.FC<FormFieldsProps> = ({
@@ -69,9 +70,9 @@ export const FormFields: React.FC<FormFieldsProps> = ({
   images = [],
   onAddImage,
   onUpdateImage,
-  onRemoveImage
+  onRemoveImage,
+  isUploading = false
 }) => {
-  // Préparation de la date minimum pour le délai (aujourd'hui)
   const today = new Date().toISOString().split('T')[0];
   
   return (
@@ -286,33 +287,48 @@ export const FormFields: React.FC<FormFieldsProps> = ({
             Images du logement
           </Label>
           <div className="space-y-2">
-            {images.map((image, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                  value={image}
-                  onChange={(e) => onUpdateImage && onUpdateImage(index, e.target.value)}
-                  placeholder="URL de l'image"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => onRemoveImage && onRemoveImage(index)}
-                  className="flex-shrink-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onAddImage}
-              className="w-full text-sm"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter une image
-            </Button>
+            <label className="block text-sm font-medium">Images du logement</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative border rounded-md overflow-hidden">
+                  <img
+                    src={image}
+                    alt={`Image ${index + 1}`}
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="absolute top-2 right-2 flex space-x-1">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="h-6 w-6 rounded-full"
+                      onClick={() => onRemoveImage(index)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                className="h-32 border-dashed flex flex-col items-center justify-center"
+                onClick={onAddImage}
+                disabled={isUploading}
+              >
+                {isUploading ? (
+                  <>
+                    <Loader2 className="h-6 w-6 animate-spin mb-1" />
+                    <span className="text-xs">Téléchargement...</span>
+                  </>
+                ) : (
+                  <>
+                    <ImagePlus className="h-6 w-6 mb-1" />
+                    <span className="text-xs">Ajouter une image</span>
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
           <p className="text-xs text-gray-500 mt-1">
             Ajoutez des URLs d'images pour votre logement. La première sera l'image principale.

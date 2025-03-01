@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
@@ -14,31 +13,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from 'sonner';
 
 // Types pour les données
-interface Message {
+type Message = {
   id: string;
   content: string;
-  sender: 'user' | 'admin';
   timestamp: Date;
   read: boolean;
-}
+  sender: "user" | "admin" | "system" | "other";
+};
 
-interface Conversation {
+type Conversation = {
   id: string;
   with: {
     id: string;
     name: string;
     avatar?: string;
-    email?: string; 
-    role?: 'user' | 'host' | 'admin';
+    email?: string;
+    role?: "user" | "host" | "admin";
   };
+  messages: Message[];
   lastMessage: {
     content: string;
     timestamp: Date;
     read: boolean;
-    sender: 'user' | 'admin';
+    sender: "user" | "admin" | "system" | "other";
   };
-  messages: Message[];
-}
+};
 
 const AdminMessages = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);

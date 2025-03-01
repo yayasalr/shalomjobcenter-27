@@ -4,6 +4,7 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
 
+// Updated sidebar variants to ensure proper width behavior
 const sidebarVariants = cva(
   "h-screen overflow-auto fixed left-0 top-0 z-50 bg-background shadow-lg transition-transform duration-300 ease-in-out",
   {

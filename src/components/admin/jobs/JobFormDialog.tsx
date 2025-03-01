@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Loader2, Save, Check } from "lucide-react";
+import { Plus, Loader2, Save, Check, ImagePlus, X, Upload } from "lucide-react";
 import { FormFields } from './FormFields';
 
 interface JobFormDialogProps {
@@ -47,6 +47,9 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   const [bedrooms, setBedrooms] = useState(selectedJob?.bedrooms || 1);
   const [bathrooms, setBathrooms] = useState(selectedJob?.bathrooms || 1);
   const [images, setImages] = useState<string[]>(selectedJob?.images || []);
+  const [isPublished, setIsPublished] = useState(selectedJob?.status === 'active');
+  const [featuredImage, setFeaturedImage] = useState(selectedJob?.image || '');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (selectedJob) {
@@ -65,6 +68,8 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
       setBedrooms(selectedJob.bedrooms || 1);
       setBathrooms(selectedJob.bathrooms || 1);
       setImages(selectedJob.images || []);
+      setIsPublished(selectedJob.status === 'active');
+      setFeaturedImage(selectedJob.image || '');
     }
   }, [selectedJob]);
 
@@ -91,6 +96,8 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     setBedrooms(1);
     setBathrooms(1);
     setImages([]);
+    setIsPublished(true);
+    setFeaturedImage('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -117,8 +124,13 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
       positions,
       publishDate: new Date().toISOString().split('T')[0],
       deadline,
-      status: "active" as const
+      status: isPublished ? "active" : "draft"
     };
+
+    // Add featured image if available
+    if (featuredImage) {
+      formData.image = featuredImage;
+    }
 
     // Si c'est une offre de logement, ajoutez les propriétés spécifiques
     if (isHousingOffer) {
@@ -141,9 +153,32 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     }
   };
 
+  // Simulate image upload
+  const simulateImageUpload = (callback: (url: string) => void) => {
+    setIsUploading(true);
+    // Simulate delay for upload
+    setTimeout(() => {
+      // Generate a random image URL from Unsplash
+      const imageUrl = `https://source.unsplash.com/random/800x600/?apartment,house&${Date.now()}`;
+      callback(imageUrl);
+      setIsUploading(false);
+    }, 1500);
+  };
+
+  // Handle featured image upload
+  const handleFeaturedImageUpload = () => {
+    simulateImageUpload((url) => {
+      setFeaturedImage(url);
+      toast.success("Image principale téléchargée avec succès");
+    });
+  };
+
   // Fonctions pour gérer les images
   const handleAddImage = () => {
-    setImages([...images, '']);
+    simulateImageUpload((url) => {
+      setImages([...images, url]);
+      toast.success("Nouvelle image ajoutée");
+    });
   };
 
   const handleUpdateImage = (index: number, url: string) => {
@@ -156,6 +191,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
+    toast.success("Image supprimée");
   };
 
   // Fonction pour convertir les types pour les props de FormFields
@@ -196,15 +232,28 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
         <ScrollArea className="flex-1 px-6 py-4">
           <form id="job-form" onSubmit={handleSubmit} className="space-y-4">
             <div className="mb-6">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={isHousingOffer}
-                  onChange={() => setIsHousingOffer(!isHousingOffer)}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium">Ceci est une offre de logement</span>
-              </label>
+              <div className="flex items-center justify-between mb-4">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={isHousingOffer}
+                    onChange={() => setIsHousingOffer(!isHousingOffer)}
+                    className="mr-2"
+                  />
+                  <span className="text-sm font-medium">Ceci est une offre de logement</span>
+                </label>
+                
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={isPublished}
+                    onChange={() => setIsPublished(!isPublished)}
+                    className="mr-2"
+                  />
+                  <span className="text-sm font-medium">Publier cette offre</span>
+                </label>
+              </div>
+              
               {isHousingOffer && (
                 <div className="mt-2 p-3 bg-purple-50 rounded-md text-sm text-purple-700 border border-purple-200">
                   <div className="flex items-center">
@@ -212,6 +261,69 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
                     Vous êtes en train de créer une offre de logement
                   </div>
                 </div>
+              )}
+              
+              {!isPublished && (
+                <div className="mt-2 p-3 bg-amber-50 rounded-md text-sm text-amber-700 border border-amber-200">
+                  <div className="flex items-center">
+                    <Check className="h-4 w-4 mr-2" />
+                    Cette offre sera enregistrée comme brouillon
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Section d'image principale */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2">Image principale</label>
+              {featuredImage ? (
+                <div className="relative rounded-md overflow-hidden border">
+                  <img 
+                    src={featuredImage} 
+                    alt={title || 'Image principale'} 
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute top-2 right-2 flex space-x-2">
+                    <Button 
+                      type="button" 
+                      variant="destructive" 
+                      size="icon" 
+                      className="h-8 w-8 rounded-full" 
+                      onClick={() => setFeaturedImage('')}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      size="icon" 
+                      className="h-8 w-8 rounded-full" 
+                      onClick={handleFeaturedImageUpload}
+                    >
+                      <Upload className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full h-48 flex flex-col items-center justify-center border-dashed"
+                  onClick={handleFeaturedImageUpload}
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="h-8 w-8 animate-spin mb-2" />
+                      <span>Téléchargement en cours...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus className="h-8 w-8 mb-2" />
+                      <span>Ajouter une image principale</span>
+                    </>
+                  )}
+                </Button>
               )}
             </div>
             
@@ -245,6 +357,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               onAddImage={handleAddImage}
               onUpdateImage={handleUpdateImage}
               onRemoveImage={handleRemoveImage}
+              isUploading={isUploading}
             />
           </form>
         </ScrollArea>
