@@ -5,11 +5,11 @@ import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useReservations, Reservation } from "@/hooks/useReservations";
 import { useJobs } from "@/hooks/useJobs";
-import { TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { JobApplication } from '@/types/job';
 import { toast } from "sonner";
 
-// Import our new components
+// Import our components
 import ReservationsTable from './reservations/components/ReservationsTable';
 import ApplicationsTable from './reservations/components/ApplicationsTable';
 import ReservationDetailsDialog from './reservations/components/ReservationDetailsDialog';
@@ -120,23 +120,25 @@ const AdminReservations = () => {
               itemType={contentTab === 'reservations' ? 'réservation' : 'candidature'}
             />
             
-            <TabsContent value="reservations" className={contentTab === 'reservations' ? 'block' : 'hidden'}>
-              <ReservationsTable
-                reservations={getFilteredReservations(reservations, tab, searchQuery)}
-                handleUpdateStatus={handleUpdateStatus}
-                onSelectReservation={handleSelectReservation}
-                isLoading={isLoadingReservations}
-              />
-            </TabsContent>
-            
-            <TabsContent value="applications" className={contentTab === 'applications' ? 'block' : 'hidden'}>
-              <ApplicationsTable
-                applications={getFilteredApplications(jobs, tab, searchQuery)}
-                updateApplicationStatus={updateApplicationStatus}
-                onSelectApplication={handleSelectApplication}
-                isLoading={isLoadingJobs}
-              />
-            </TabsContent>
+            <Tabs value={contentTab} defaultValue="reservations">
+              <TabsContent value="reservations">
+                <ReservationsTable
+                  reservations={getFilteredReservations(reservations, tab, searchQuery)}
+                  handleUpdateStatus={handleUpdateStatus}
+                  onSelectReservation={handleSelectReservation}
+                  isLoading={isLoadingReservations}
+                />
+              </TabsContent>
+              
+              <TabsContent value="applications">
+                <ApplicationsTable
+                  applications={getFilteredApplications(jobs, tab, searchQuery)}
+                  updateApplicationStatus={updateApplicationStatus}
+                  onSelectApplication={handleSelectApplication}
+                  isLoading={isLoadingJobs}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
       </div>
