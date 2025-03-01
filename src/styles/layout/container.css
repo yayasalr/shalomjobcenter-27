@@ -52,6 +52,7 @@
   aspect-ratio: 4/3;
   width: 100%;
   object-fit: cover;
+  border-radius: 8px;
 }
 
 /* Assurer que les images s'étendent correctement */
@@ -88,4 +89,23 @@
   .responsive-spacing {
     padding: 1.5rem;
   }
+}
+
+/* Styles spécifiques pour les pages About, Contact et Support */
+.about-image,
+.contact-image,
+.support-image {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.team-member-image {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
 }

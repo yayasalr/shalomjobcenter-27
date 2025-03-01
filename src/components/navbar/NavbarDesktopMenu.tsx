@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { BriefcaseBusiness, ChevronDown, Home, MapPin } from "lucide-react";
+import { BriefcaseBusiness, ChevronDown, Home, HelpCircle, Info, MapPin, Mail } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +49,36 @@ export const NavbarDesktopMenu = () => {
             <Link to="/" className="w-full flex items-center justify-between">
               Tous les quartiers
               <MapPin className="h-4 w-4" />
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="font-medium flex items-center hover:text-sholom-primary transition-colors">
+            <Info className="mr-1 h-4 w-4" />
+            À propos
+            <ChevronDown className="ml-1 h-4 w-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuItem>
+            <Link to="/about" className="w-full flex items-center">
+              <Info className="mr-2 h-4 w-4" />
+              À propos de nous
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/contact" className="w-full flex items-center">
+              <Mail className="mr-2 h-4 w-4" />
+              Nous contacter
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to="/support" className="w-full flex items-center">
+              <HelpCircle className="mr-2 h-4 w-4" />
+              Support
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>

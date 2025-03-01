@@ -12,6 +12,9 @@ import Register from './pages/auth/Register';
 import NotFound from './pages/NotFound';
 import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
+import AboutUs from './pages/AboutUs';
+import Contact from './pages/Contact';
+import Support from './pages/Support';
 
 // User routes
 import Profile from './pages/user/Profile';
@@ -56,6 +59,9 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/emplois" element={<Jobs />} />
             <Route path="/emploi/:id" element={<JobDetail />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/support" element={<Support />} />
             
             {/* User routes */}
             <Route path="/profile" element={<Profile />} />

@@ -1,9 +1,10 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { BriefcaseBusiness, Home, LogIn, MapPin } from "lucide-react";
+import { BriefcaseBusiness, Home, HelpCircle, Info, LogIn, Mail, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Separator } from "@/components/ui/separator";
 
 interface NavbarMobileMenuProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
             Emplois
           </div>
         </Link>
+        
         <div className="px-4 py-2">
           <div className="font-medium mb-2">Quartiers populaires</div>
           <div className="grid grid-cols-2 gap-2">
@@ -47,6 +49,30 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
             ))}
           </div>
         </div>
+        
+        <Separator />
+        
+        <Link to="/about" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
+          <div className="flex items-center">
+            <Info className="mr-2 h-5 w-5 text-sholom-primary" />
+            À propos de nous
+          </div>
+        </Link>
+        <Link to="/contact" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
+          <div className="flex items-center">
+            <Mail className="mr-2 h-5 w-5 text-sholom-primary" />
+            Nous contacter
+          </div>
+        </Link>
+        <Link to="/support" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
+          <div className="flex items-center">
+            <HelpCircle className="mr-2 h-5 w-5 text-sholom-primary" />
+            Support
+          </div>
+        </Link>
+        
+        <Separator />
+        
         <div className="border-t border-gray-200 pt-4">
           <div className="flex justify-between">
             <Link to="/login" className="block w-full">
