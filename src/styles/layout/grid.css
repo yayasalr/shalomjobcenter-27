@@ -2,7 +2,7 @@
 /* Improved Airbnb-style card grid spacing */
 .airbnb-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
   gap: var(--spacing-md) var(--spacing-md); /* Consistent gap */
   width: 100%;
   max-width: 100%;
@@ -12,36 +12,75 @@
 /* Responsive grid layout with smoother breakpoints */
 @media (min-width: 550px) {
   .airbnb-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-sm), 1fr);
   }
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .airbnb-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-md), 1fr);
     padding: 0 var(--padding-tablet);
   }
 }
 
 @media (min-width: 950px) {
   .airbnb-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-lg), 1fr);
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .airbnb-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-xl), 1fr);
     padding: 0 var(--padding-desktop);
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .airbnb-grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-2xl), 1fr);
     padding: 0 var(--padding-large);
     max-width: 1920px; /* Prevent excessive stretching on ultra-wide screens */
     margin: 0 auto;
+  }
+}
+
+/* Featured listings grid */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 550px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .featured-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 950px) {
+  .featured-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: var(--breakpoint-xl)) {
+  .featured-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: var(--breakpoint-2xl)) {
+  .featured-grid {
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 

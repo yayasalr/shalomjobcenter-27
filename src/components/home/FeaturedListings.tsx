@@ -52,7 +52,7 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
         </Link>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="featured-grid">
         {listings.map((listing) => (
           <Link 
             key={listing.id} 

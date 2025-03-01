@@ -49,11 +49,12 @@ const Index = () => {
     }));
     
     const shuffled = [...processedListings].sort(() => 0.5 - Math.random());
-    setFeaturedListings(shuffled.slice(0, 3));
+    // Augmenter le nombre de logements en vedette à 6 (ou moins si pas assez de logements)
+    setFeaturedListings(shuffled.slice(0, Math.min(6, shuffled.length)));
     
     if (!searchTerm.trim()) {
       setFilteredListings(processedListings);
-      setVisibleListings(processedListings.slice(0, 12)); // Afficher plus de logements initialement
+      setVisibleListings(processedListings.slice(0, 18)); // Afficher plus de logements initialement (3 rangées de 6)
     } else {
       const filtered = processedListings.filter(listing => 
         listing.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -71,7 +72,7 @@ const Index = () => {
 
   const loadMoreListings = () => {
     if (visibleListings.length < filteredListings.length) {
-      setVisibleListings(filteredListings.slice(0, visibleListings.length + 6)); // Charger 6 logements supplémentaires
+      setVisibleListings(filteredListings.slice(0, visibleListings.length + 12)); // Charger 12 logements supplémentaires (2 rangées de 6)
     }
   };
 

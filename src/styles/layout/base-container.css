@@ -16,7 +16,7 @@
   padding: 0;
 }
 
-/* Content container with responsive padding */
+/* Content container with minimal responsive padding */
 .content-container {
   width: 100%;
   max-width: 100%;
