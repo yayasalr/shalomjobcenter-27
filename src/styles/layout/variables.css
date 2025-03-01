@@ -1,38 +1,41 @@
 
 /* Common breakpoint variables */
 :root {
-  /* Breakpoints */
+  /* Breakpoints - ajustés pour les très grands écrans */
   --breakpoint-sm: 640px;
   --breakpoint-md: 744px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1128px;
   --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1920px; /* Nouveau breakpoint pour écrans très larges */
   
-  /* Spacing */
-  --spacing-xs: 6px;
-  --spacing-sm: 10px; /* Réduit pour permettre plus d'éléments */
-  --spacing-md: 20px;
-  --spacing-lg: 28px;
-  --spacing-xl: 36px;
+  /* Spacing - réduit davantage pour maximiser l'espace */
+  --spacing-xs: 4px; /* Réduit */
+  --spacing-sm: 8px; /* Réduit */
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
   
-  /* Padding - réduit pour utiliser plus d'espace */
-  --padding-mobile: 2px;
-  --padding-tablet: 4px;
-  --padding-desktop: 6px;
-  --padding-large: 8px;
+  /* Padding - optimisé pour utiliser tout l'espace disponible */
+  --padding-mobile: 8px;
+  --padding-tablet: 12px;
+  --padding-desktop: 16px;
+  --padding-large: 20px;
+  --padding-xlarge: 24px; /* Nouveau padding pour très grands écrans */
   
   /* Border radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 14px;
   
-  /* Grid columns by breakpoint - Augmenté pour plus de colonnes */
+  /* Grid columns by breakpoint - Optimisé pour grands écrans */
   --grid-cols-mobile: 1;
   --grid-cols-sm: 2;
   --grid-cols-md: 3;
   --grid-cols-lg: 4;
   --grid-cols-xl: 5;
   --grid-cols-2xl: 6;
+  --grid-cols-3xl: 8; /* Encore plus de colonnes pour très grands écrans */
 
   /* Text colors for better readability */
   --text-dark: #1A1F2C;

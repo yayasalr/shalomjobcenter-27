@@ -1,16 +1,16 @@
 
-/* Improved Airbnb-style card grid spacing - réduit les gaps */
+/* Improved Airbnb-style card grid spacing - optimisé pour grands écrans */
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
-  gap: var(--spacing-xs) var(--spacing-xs);
+  gap: var(--spacing-xs);
   width: 100%;
   max-width: 100%;
   padding: 0 var(--padding-mobile);
   margin: 0;
 }
 
-/* Responsive grid layout - breakpoints ajustés pour plus de colonnes */
+/* Responsive grid layout - breakpoints ajustés pour plus d'optimisation */
 @media (min-width: 500px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-sm), 1fr);
@@ -44,10 +44,11 @@
   }
 }
 
-/* Forced 6 columns for large screens */
-@media (min-width: 1800px) {
+/* Support pour très grands écrans */
+@media (min-width: 1920px) {
   .airbnb-grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(var(--grid-cols-3xl), 1fr);
+    padding: 0 var(--padding-xlarge);
   }
 }
 
@@ -92,10 +93,10 @@
   }
 }
 
-/* Forced 6 columns for large screens */
-@media (min-width: 1800px) {
+/* Support pour très grands écrans */
+@media (min-width: 1920px) {
   .featured-grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(8, 1fr);
   }
 }
 

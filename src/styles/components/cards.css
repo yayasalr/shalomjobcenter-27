@@ -1,7 +1,7 @@
 
-/* Card styles */
+/* Card styles optimisés */
 .card {
-  padding: 1.25em;
+  padding: 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   margin: 0;
@@ -17,6 +17,7 @@
   transition: all 0.3s ease;
   width: 100%;
   margin: 0;
+  height: 100%;
 }
 
 .card-hover:hover {
@@ -30,6 +31,7 @@
   will-change: transform;
   width: 100%;
   margin: 0;
+  height: 100%;
 }
 
 .hover-lift:hover {
@@ -45,6 +47,7 @@
   transition: all 0.35s ease;
   width: 100%;
   margin: 0;
+  height: 100%;
 }
 
 .refined-card:hover {
@@ -62,6 +65,6 @@
 
 /* Enhanced card content spacing */
 .card-content {
-  padding: 1rem 0.5rem 0.5rem;
+  padding: 0.75rem 0.5rem 0.5rem;
   width: 100%;
 }

@@ -1,22 +1,22 @@
 
-/* Responsive spacing utilities */
+/* Responsive spacing utilities optimisées */
 .responsive-spacing {
-  padding: 0.75rem;
+  padding: 0.5rem;
 }
 
 @media (min-width: var(--breakpoint-sm)) {
   .responsive-spacing {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 }
 
 @media (min-width: var(--breakpoint-lg)) {
   .responsive-spacing {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 }
 
-/* Immersive section for full-width content */
+/* Immersive section for full-width content - optimisé pour grands écrans */
 .immersive-section {
   width: 100vw;
   position: relative;
@@ -36,5 +36,17 @@
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
     padding: 120px var(--padding-desktop);
+  }
+}
+
+@media (min-width: var(--breakpoint-2xl)) {
+  .immersive-section {
+    padding: 140px var(--padding-large);
+  }
+}
+
+@media (min-width: var(--breakpoint-3xl)) {
+  .immersive-section {
+    padding: 160px var(--padding-xlarge);
   }
 }
