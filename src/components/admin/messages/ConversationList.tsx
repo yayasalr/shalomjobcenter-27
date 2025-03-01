@@ -96,7 +96,9 @@ const ConversationList: React.FC<ConversationListProps> = ({
                         {conversation.lastMessage.timestamp.toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500">{conversation.with.email}</p>
+                    {conversation.with.email && (
+                      <p className="text-xs text-gray-500">{conversation.with.email}</p>
+                    )}
                     <div className="flex justify-between mt-1">
                       <p className={`text-sm truncate ${
                         unreadCount > 0 ? 'font-medium' : 'text-gray-500'

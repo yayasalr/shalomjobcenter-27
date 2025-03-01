@@ -13,6 +13,7 @@ export type Conversation = {
   with: {
     id: string;
     name: string;
+    email?: string; // Make email optional
     avatar?: string;
     role?: "user" | "host" | "admin";
   };

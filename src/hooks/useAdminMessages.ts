@@ -47,7 +47,7 @@ export const useAdminMessages = () => {
                 with: {
                   id: userId,
                   name: userData.name,
-                  email: userData.email,
+                  email: userData.email, // This is now valid because we made email optional in the type
                   avatar: userData.avatar || '/placeholder.svg',
                   role: userData.role,
                 },

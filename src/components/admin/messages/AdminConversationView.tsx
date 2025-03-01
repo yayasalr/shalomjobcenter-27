@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 import { Conversation } from '@/components/messages/types';
-import { EmptyConversation } from '@/components/messages/EmptyConversation';
+import EmptyConversation from '@/components/messages/EmptyConversation';
 
 interface AdminConversationViewProps {
   conversation: Conversation | null;
@@ -37,7 +37,9 @@ const AdminConversationView: React.FC<AdminConversationViewProps> = ({
           </Avatar>
           <div>
             <h2 className="font-medium">{conversation.with.name}</h2>
-            <p className="text-xs text-gray-500">{conversation.with.email}</p>
+            {conversation.with.email && (
+              <p className="text-xs text-gray-500">{conversation.with.email}</p>
+            )}
           </div>
         </div>
         <div className="flex gap-2">
