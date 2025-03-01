@@ -3,10 +3,10 @@
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
-  gap: var(--spacing-xs);
-  width: 100vw;
-  max-width: 100vw;
-  padding: 0 var(--padding-mobile);
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
@@ -21,14 +21,12 @@
 @media (min-width: var(--breakpoint-md)) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-md), 1fr);
-    padding: 0 var(--padding-tablet);
   }
 }
 
 @media (min-width: 900px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-lg), 1fr);
-    padding: 0 var(--padding-desktop);
   }
 }
 
@@ -41,7 +39,6 @@
 @media (min-width: 1440px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-2xl), 1fr);
-    padding: 0 var(--padding-large);
   }
 }
 
@@ -49,7 +46,6 @@
 @media (min-width: 1920px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-3xl), 1fr);
-    padding: 0 var(--padding-xlarge);
   }
 }
 
@@ -57,11 +53,11 @@
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: var(--spacing-xs);
-  width: 100vw;
-  max-width: 100vw;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
   margin: 0;
-  padding: 0 var(--padding-mobile);
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -74,14 +70,12 @@
 @media (min-width: var(--breakpoint-md)) {
   .featured-grid {
     grid-template-columns: repeat(3, 1fr);
-    padding: 0 var(--padding-tablet);
   }
 }
 
 @media (min-width: 900px) {
   .featured-grid {
     grid-template-columns: repeat(4, 1fr);
-    padding: 0 var(--padding-desktop);
   }
 }
 
@@ -94,15 +88,12 @@
 @media (min-width: 1440px) {
   .featured-grid {
     grid-template-columns: repeat(6, 1fr);
-    padding: 0 var(--padding-large);
   }
 }
 
-/* Support pour très grands écrans */
 @media (min-width: 1920px) {
   .featured-grid {
     grid-template-columns: repeat(8, 1fr);
-    padding: 0 var(--padding-xlarge);
   }
 }
 

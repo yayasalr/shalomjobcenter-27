@@ -1,59 +1,47 @@
 
 /* Responsive spacing utilities optimisées */
 .responsive-spacing {
-  padding: 0.25rem;
-}
-
-@media (min-width: var(--breakpoint-sm)) {
-  .responsive-spacing {
-    padding: 0.5rem;
-  }
-}
-
-@media (min-width: var(--breakpoint-lg)) {
-  .responsive-spacing {
-    padding: 0.75rem;
-  }
+  padding: 0;
 }
 
 /* Immersive section for full-width content - optimisé pour grands écrans */
 .immersive-section {
-  width: 100vw;
+  width: 100%;
   position: relative;
   left: 0;
   right: 0;
   margin: 0;
-  padding: 40px var(--padding-mobile);
+  padding: 20px 0;
   box-sizing: border-box;
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .immersive-section {
-    padding: 50px var(--padding-tablet);
+    padding: 25px 0;
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
-    padding: 60px var(--padding-desktop);
+    padding: 30px 0;
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .immersive-section {
-    padding: 70px var(--padding-large);
+    padding: 35px 0;
   }
 }
 
 @media (min-width: var(--breakpoint-3xl)) {
   .immersive-section {
-    padding: 80px var(--padding-xlarge);
+    padding: 40px 0;
   }
 }
 
 /* Full width container - pour les éléments qui doivent prendre toute la largeur */
 .full-width {
-  width: 100vw;
+  width: 100%;
   margin: 0;
   box-sizing: border-box;
 }

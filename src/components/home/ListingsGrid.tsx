@@ -67,7 +67,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-full px-0 mx-0">
+      <div className="w-full">
         <div className="text-center py-16 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
             <Search className="h-8 w-8 text-gray-400" />
