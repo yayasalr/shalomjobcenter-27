@@ -103,7 +103,7 @@ export const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ user }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={saveProfile} className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium">
+        <Button onClick={saveProfile} className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium w-full md:w-auto">
           <Save className="h-4 w-4 mr-2" />
           Enregistrer les modifications
         </Button>

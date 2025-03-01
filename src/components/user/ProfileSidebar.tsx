@@ -14,9 +14,16 @@ interface ProfileSidebarProps {
 }
 
 export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarChange }) => {
-  const [avatar, setAvatar] = useState(user?.avatar || "/placeholder.svg");
+  const [avatar, setAvatar] = useState<string | undefined>(user?.avatar || "/placeholder.svg");
   const [isUploading, setIsUploading] = useState(false);
   const [avatarKey, setAvatarKey] = useState(Date.now()); // Clé unique pour forcer le rechargement de l'image
+
+  // Mise à jour de l'avatar local lorsque user?.avatar change
+  useEffect(() => {
+    if (user?.avatar && user.avatar !== avatar) {
+      setAvatar(user.avatar);
+    }
+  }, [user?.avatar]);
 
   const handleImageUpload = (file: File) => {
     setIsUploading(true);
@@ -34,15 +41,9 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
           setIsUploading(false);
           setAvatarKey(Date.now()); // Générer une nouvelle clé pour forcer le rechargement
           
-          // Dans une application réelle, vous stockeriez cette URL dans la base de données
-          try {
-            localStorage.setItem('userAvatar', previewUrl);
-            // Notifier le composant parent du changement d'avatar
-            if (onAvatarChange) {
-              onAvatarChange(previewUrl);
-            }
-          } catch (error) {
-            console.error("Erreur lors du stockage de l'avatar:", error);
+          // Notifier le composant parent du changement d'avatar
+          if (onAvatarChange) {
+            onAvatarChange(previewUrl);
           }
           
           toast.success("Photo de profil mise à jour avec succès");
@@ -51,22 +52,6 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
     };
     reader.readAsDataURL(file);
   };
-
-  // Récupérer l'avatar stocké au chargement du composant
-  useEffect(() => {
-    try {
-      const storedAvatar = localStorage.getItem('userAvatar');
-      if (storedAvatar) {
-        setAvatar(storedAvatar);
-        // Notifier le composant parent du changement d'avatar au chargement
-        if (onAvatarChange) {
-          onAvatarChange(storedAvatar);
-        }
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération de l'avatar:", error);
-    }
-  }, [onAvatarChange]);
 
   return (
     <Card>

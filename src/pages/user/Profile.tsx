@@ -12,16 +12,17 @@ const Profile = () => {
   const { user, updateUserAvatar } = useAuth();
   const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
   
-  // Charger l'avatar depuis le localStorage au chargement du composant
+  // Charger l'avatar depuis le localStorage au chargement initial du composant seulement
   useEffect(() => {
     const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
       setUserAvatar(storedAvatar);
-      if (updateUserAvatar) {
+      // Mettre à jour l'avatar dans useAuth seulement au chargement initial
+      if (updateUserAvatar && user && user.avatar !== storedAvatar) {
         updateUserAvatar(storedAvatar);
       }
     }
-  }, [updateUserAvatar]);
+  }, []);  // Dépendances vides pour s'exécuter une seule fois
   
   const handleAvatarChange = (avatarUrl: string) => {
     setUserAvatar(avatarUrl);
@@ -30,7 +31,8 @@ const Profile = () => {
     }
   };
   
-  const updatedUser = user ? { ...user, avatar: userAvatar } : null;
+  // Création d'un objet utilisateur mis à jour pour les composants enfants
+  const updatedUser = user ? { ...user, avatar: userAvatar || user.avatar } : null;
   
   return (
     <div className="min-h-screen bg-gray-50">

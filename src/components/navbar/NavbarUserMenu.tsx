@@ -27,7 +27,7 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
   const { settings } = useSiteSettings();
   const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
   
-  // Charger l'avatar depuis le localStorage
+  // Charger l'avatar depuis le localStorage et l'actualiser lorsque user change
   useEffect(() => {
     const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
