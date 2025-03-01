@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Bell, Menu, Search, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useAuth } from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 
 export const AdminTopbar = () => {
   const { user, logout } = useAuth();
@@ -30,11 +31,11 @@ export const AdminTopbar = () => {
     <header className="h-16 flex items-center border-b bg-white px-4 sticky top-0 z-30">
       <div className="flex items-center w-full">
         <div className="flex items-center md:hidden">
-          <Button variant="ghost" size="icon" className="mr-2" asChild>
-            <SidebarTrigger>
+          <SidebarTrigger>
+            <Button variant="ghost" size="icon" className="mr-2">
               <Menu className="h-5 w-5" />
-            </SidebarTrigger>
-          </Button>
+            </Button>
+          </SidebarTrigger>
         </div>
         
         <div className="flex-1 flex items-center justify-between">
