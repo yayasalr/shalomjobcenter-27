@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, Mail, Calendar } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Search, Filter, Mail, Calendar, Send } from 'lucide-react';
 import { ContactFormSubmission } from '@/types/contact';
 import { format } from 'date-fns';
 
@@ -27,7 +28,17 @@ const ContactSubmissionsTab: React.FC = () => {
           }
           return value;
         });
-        setSubmissions(parsedSubmissions);
+        
+        // Ensure all submissions have a valid status
+        const validatedSubmissions = parsedSubmissions.map((sub: any) => {
+          // Ensure the status is one of the allowed values
+          if (sub.status !== 'new' && sub.status !== 'read' && sub.status !== 'responded') {
+            sub.status = 'new';
+          }
+          return sub as ContactFormSubmission;
+        });
+        
+        setSubmissions(validatedSubmissions);
       } catch (error) {
         console.error("Erreur lors du chargement des soumissions:", error);
         setSubmissions([]);
@@ -55,13 +66,13 @@ const ContactSubmissionsTab: React.FC = () => {
     // Mark as read if it's new
     if (submission.status === 'new') {
       const updatedSubmissions = submissions.map(sub => 
-        sub.id === submission.id ? { ...sub, status: 'read' } : sub
+        sub.id === submission.id ? { ...sub, status: 'read' as const } : sub
       );
       setSubmissions(updatedSubmissions);
       localStorage.setItem('contactFormSubmissions', JSON.stringify(updatedSubmissions));
       
       // Update the selected submission as well
-      submission = { ...submission, status: 'read' };
+      submission = { ...submission, status: 'read' as const };
     }
     
     setSelectedSubmission(submission);
@@ -73,14 +84,14 @@ const ContactSubmissionsTab: React.FC = () => {
     
     // Update submission status
     const updatedSubmissions = submissions.map(sub => 
-      sub.id === selectedSubmission.id ? { ...sub, status: 'responded' } : sub
+      sub.id === selectedSubmission.id ? { ...sub, status: 'responded' as const } : sub
     );
     
     setSubmissions(updatedSubmissions);
     localStorage.setItem('contactFormSubmissions', JSON.stringify(updatedSubmissions));
     
     // Update selected submission
-    setSelectedSubmission({ ...selectedSubmission, status: 'responded' });
+    setSelectedSubmission({ ...selectedSubmission, status: 'responded' as const });
     
     // Clear response text
     setResponseText('');
