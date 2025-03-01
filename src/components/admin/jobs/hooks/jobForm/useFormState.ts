@@ -50,6 +50,7 @@ export const useFormState = ({ selectedJob }: UseJobFormProps): JobFormStateWith
   }, [selectedJob]);
 
   return {
+    // State values
     isOpen,
     isSubmitting,
     isUploading,
@@ -69,6 +70,8 @@ export const useFormState = ({ selectedJob }: UseJobFormProps): JobFormStateWith
     images,
     isPublished,
     featuredImage,
+    
+    // State setters
     setIsOpen,
     setIsSubmitting,
     setIsUploading,
