@@ -59,7 +59,7 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
             to={`/logement/${listing.id}`}
             className="group relative rounded-xl overflow-hidden shadow-md hover-lift hover-shadow transition-all"
           >
-            <div className="relative aspect-[4/3]">
+            <div className="relative aspect-[16/9]">
               <img
                 src={getValidImage(listing)}
                 alt={listing.title}

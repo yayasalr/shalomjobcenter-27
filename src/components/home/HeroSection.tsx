@@ -110,9 +110,9 @@ export const HeroSection = () => {
             <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-sholom-primary/20 rounded-full blur-2xl"></div>
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800" 
+                src="https://images.unsplash.com/photo-1472396961693-142e6e269027?w=800" 
                 alt="Logement premium" 
-                className="w-full h-auto object-cover rounded-2xl hover-scale"
+                className="w-full h-auto object-cover rounded-2xl hover-scale aspect-[16/9]"
               />
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                 <div className="flex items-center text-white gap-4">

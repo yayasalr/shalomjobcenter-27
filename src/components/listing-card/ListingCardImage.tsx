@@ -41,7 +41,7 @@ export const ListingCardImage = ({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+    <div className="relative overflow-hidden rounded-xl aspect-[16/9]">
       <img
         src={imageUrl}
         alt={title}

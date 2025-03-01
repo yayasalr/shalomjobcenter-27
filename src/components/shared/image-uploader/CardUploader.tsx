@@ -29,7 +29,7 @@ export const CardUploader: React.FC<CardUploaderProps> = ({
         onClick={handleFileSelect}
         className={`border-2 border-dashed border-gray-300 rounded-lg overflow-hidden ${
           isUploading ? 'bg-gray-50' : 'hover:bg-gray-50'
-        } transition-colors cursor-pointer ${previewClassName}`}
+        } transition-colors cursor-pointer ${previewClassName} aspect-[16/9]`}
       >
         {previewUrl ? (
           <div className="relative h-full">
