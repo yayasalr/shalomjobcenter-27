@@ -22,7 +22,7 @@ export const NavbarLogo = () => {
         whileTap={{ scale: 0.95 }}
         className="relative"
       >
-        <div className="h-10 sm:h-12 w-auto flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-2 shadow-md overflow-hidden">
+        <div className="h-10 sm:h-12 w-auto flex items-center justify-center rounded-full overflow-hidden">
           {!logoError ? (
             <img 
               src={settings.logo} 

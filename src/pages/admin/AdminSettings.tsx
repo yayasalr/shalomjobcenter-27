@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { useSiteSettings, SiteSettings } from '@/hooks/useSiteSettings';
+import { BackButton } from '@/components/shared/BackButton';
 
 // Import our new components
 import { GeneralSettingsTab } from '@/components/admin/settings/GeneralSettingsTab';
@@ -120,6 +121,7 @@ const AdminSettings = () => {
   
   return (
     <div className="container mx-auto px-4 py-24">
+      <BackButton />
       <h1 className="text-3xl font-bold mb-8">Paramètres du site</h1>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

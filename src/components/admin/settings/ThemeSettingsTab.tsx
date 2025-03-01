@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ImageUploadField } from './ImageUploadField';
 import { ColorPickerField } from './ColorPickerField';
+import { toast } from "sonner";
 
 interface ThemeSettingsTabProps {
   settings: SiteSettings;
@@ -54,13 +55,16 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
           <div>
             <Label>Logo</Label>
             <div className="flex items-center space-x-4 mt-1">
-              <div className="h-12 w-12 border rounded-md flex items-center justify-center overflow-hidden bg-gray-50">
+              <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-full">
                 {!logoError ? (
                   <img 
                     src={logoUrl} 
                     alt="Logo" 
                     className="h-full w-auto object-contain" 
-                    onError={() => setLogoError(true)}
+                    onError={() => {
+                      setLogoError(true);
+                      toast.error("Erreur de chargement du logo");
+                    }}
                   />
                 ) : (
                   <span className="text-sm text-gray-400">Logo</span>
@@ -77,13 +81,16 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
           <div>
             <Label>Favicon</Label>
             <div className="flex items-center space-x-4 mt-1">
-              <div className="h-12 w-12 border rounded-md flex items-center justify-center overflow-hidden bg-gray-50">
+              <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
                 {!faviconError ? (
                   <img 
                     src={faviconUrl} 
                     alt="Favicon" 
                     className="h-full w-auto object-contain"
-                    onError={() => setFaviconError(true)}
+                    onError={() => {
+                      setFaviconError(true);
+                      toast.error("Erreur de chargement du favicon");
+                    }}
                   />
                 ) : (
                   <span className="text-sm text-gray-400">Favicon</span>
@@ -98,6 +105,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
             </div>
           </div>
         </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ColorPickerField
             label="Couleur principale"

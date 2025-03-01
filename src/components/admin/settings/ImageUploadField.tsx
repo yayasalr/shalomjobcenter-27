@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Upload, Image } from "lucide-react";
+import { Image, Upload } from "lucide-react";
 import { ImageUploader } from '@/components/shared/ImageUploader';
 
 interface ImageUploadFieldProps {

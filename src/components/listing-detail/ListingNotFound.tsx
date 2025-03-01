@@ -2,9 +2,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { BackButton } from "@/components/shared/BackButton";
 
 const ListingNotFound = () => (
   <div className="text-center py-16">
+    <BackButton />
     <h2 className="text-2xl font-bold text-gray-900">
       Logement non trouvé
     </h2>

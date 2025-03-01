@@ -7,6 +7,7 @@ import { NavbarDesktopMenu } from "./NavbarDesktopMenu";
 import { NavbarSearchBar } from "./NavbarSearchBar";
 import { NavbarUserMenu } from "./NavbarUserMenu";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
+import { BackButton } from "@/components/shared/BackButton";
 
 export const Navbar = () => {
   const location = useLocation();
@@ -46,30 +47,32 @@ export const Navbar = () => {
   }, [settings.primaryColor, settings.secondaryColor, scrolled]);
 
   return (
-    <div
-      className={`w-full fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-2 shadow-md bg-white/95 backdrop-blur-sm" : "py-4 bg-transparent"
-      }`}
-    >
-      <div className="navbar-container mx-auto flex items-center justify-between">
-        {/* Logo et Nom du site */}
-        <NavbarLogo />
+    <>
+      <div
+        className={`w-full fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? "py-2 shadow-md bg-white/95 backdrop-blur-sm" : "py-4 bg-transparent"
+        }`}
+      >
+        <div className="navbar-container mx-auto flex items-center justify-between">
+          {/* Logo et Nom du site */}
+          <NavbarLogo />
 
-        {/* Navigation principale - Desktop */}
-        <NavbarDesktopMenu />
+          {/* Navigation principale - Desktop */}
+          <NavbarDesktopMenu />
 
-        {/* Barre de recherche */}
-        <NavbarSearchBar />
+          {/* Barre de recherche */}
+          <NavbarSearchBar />
 
-        {/* Actions utilisateur */}
-        <NavbarUserMenu 
-          mobileMenuOpen={mobileMenuOpen} 
-          setMobileMenuOpen={setMobileMenuOpen} 
-        />
+          {/* Actions utilisateur */}
+          <NavbarUserMenu 
+            mobileMenuOpen={mobileMenuOpen} 
+            setMobileMenuOpen={setMobileMenuOpen} 
+          />
+        </div>
+
+        {/* Menu mobile */}
+        <NavbarMobileMenu isOpen={mobileMenuOpen} />
       </div>
-
-      {/* Menu mobile */}
-      <NavbarMobileMenu isOpen={mobileMenuOpen} />
-    </div>
+    </>
   );
 };
