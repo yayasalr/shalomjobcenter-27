@@ -59,7 +59,7 @@ const Index = () => {
     if (!searchTerm.trim()) {
       // Si aucun terme de recherche, afficher tous les listings
       setFilteredListings(processedListings);
-      setVisibleListings(processedListings.slice(0, 12)); // Afficher 12 premiers par défaut (6x2 comme l'image de référence)
+      setVisibleListings(processedListings.slice(0, 8)); // Afficher 8 premiers par défaut pour mieux s'adapter aux écrans larges
     } else {
       // Filtrer par terme de recherche
       const filtered = processedListings.filter(listing => 
@@ -80,17 +80,17 @@ const Index = () => {
   // Charger plus de logements
   const loadMoreListings = () => {
     if (visibleListings.length < filteredListings.length) {
-      setVisibleListings(filteredListings.slice(0, visibleListings.length + 6)); // Charger 6 de plus (une rangée complète)
+      setVisibleListings(filteredListings.slice(0, visibleListings.length + 4)); // Charger 4 de plus
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white w-full">
       <Navbar />
       
       <HeroSection />
       
-      <div className="container-wide px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24 mx-auto py-12">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 mx-auto py-12">
         <JobsBanner />
         
         {featuredListings.length > 0 && (
@@ -101,19 +101,19 @@ const Index = () => {
         )}
       </div>
       
-      <div className="pt-6">
-        <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 mx-auto">
+      <div className="pt-6 w-full">
+        <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 mx-auto">
           <CategoryFiltersSimplified />
         </div>
         
-        <div className="py-4">
+        <div className="py-4 w-full">
           <SearchBar 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             primaryColor={settings.primaryColor} 
           />
 
-          <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 mt-4">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-14 mt-4">
             <h2 className="text-2xl font-medium text-sholom-dark">
               {searchTerm 
                 ? `Résultats pour "${searchTerm}"` 

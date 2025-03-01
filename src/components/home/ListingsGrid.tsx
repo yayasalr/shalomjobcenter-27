@@ -49,7 +49,7 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="container-wide py-8">
+      <div className="w-full py-8 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
@@ -67,7 +67,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="container-wide py-8">
+      <div className="w-full py-8 px-4">
         <div className="text-center py-16 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
             <Search className="h-8 w-8 text-gray-400" />
@@ -87,9 +87,9 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24 py-10 w-full max-w-full mx-auto">
+    <div className="w-full py-10 px-6 sm:px-8 md:px-10 lg:px-12 xl:px-14 2xl:px-16 mx-auto">
       <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-10"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -103,7 +103,7 @@ export const ListingsGrid = ({
       
       {/* "Voir plus" button */}
       {!searchTerm && visibleListings.length < filteredListings.length && (
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-16">
           <Button 
             onClick={loadMoreListings}
             variant="outline"

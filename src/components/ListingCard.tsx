@@ -124,7 +124,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   const hostImage = host?.image && !host.image.includes('placeholder') ? host.image : hostDefaultImage;
 
   return (
-    <Link to={`/logement/${id}`} className="group relative block hover-lift transition-all duration-300 rounded-xl overflow-hidden">
+    <Link to={`/logement/${id}`} className="group relative block hover-lift transition-all duration-300 rounded-xl overflow-hidden h-full">
       {/* Badge "Coup de coeur voyageurs" */}
       <div className="absolute top-3 left-3 z-10">
         <Badge 
@@ -165,13 +165,13 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
         </div>
       </div>
 
-      <div className="mt-3">
+      <div className="mt-4 px-1">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-medium">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
+            <h3 className="font-medium text-lg">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
             <p className="text-sm text-gray-500 mt-1">Séjournez chez {hostName}</p>
             <p className="text-sm text-gray-500 mt-0.5">{dates}</p>
-            <p className="font-medium mt-1">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
+            <p className="font-medium mt-2 text-base">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
           </div>
           <div className="flex items-center mt-1">
             <Star className="h-4 w-4 text-black fill-black mr-1" />
