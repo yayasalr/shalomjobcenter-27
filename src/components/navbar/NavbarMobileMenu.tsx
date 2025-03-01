@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { BriefcaseBusiness, Home, LogIn, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 interface NavbarMobileMenuProps {
   isOpen: boolean;
@@ -12,7 +13,13 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
   if (!isOpen) return null;
   
   return (
-    <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-4 px-4 z-50 animate-fade-in-down">
+    <motion.div 
+      className="md:hidden fixed top-[60px] left-0 right-0 bg-white border-t border-gray-200 shadow-lg py-4 px-4 z-50 overflow-y-auto max-h-[calc(100vh-60px)]"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+    >
       <div className="space-y-4">
         <Link to="/" className="block px-4 py-2 hover:bg-gray-100 rounded-md">
           <div className="flex items-center">
@@ -51,6 +58,6 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

@@ -30,6 +30,12 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
+@media (min-width: 640px) {
+  .container-wide {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
 @media (min-width: 1280px) {
   .container-wide {
     padding-left: 2rem;
@@ -40,6 +46,72 @@
   .container-wide {
     padding-left: 4rem;
     padding-right: 4rem;
+  }
+}
+
+/* Aspect ratio container for responsive images */
+.aspect-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.aspect-container-square {
+  position: relative;
+  padding-bottom: 100%; /* 1:1 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.aspect-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive typography */
+.responsive-title {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+@media (min-width: 640px) {
+  .responsive-title {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-title {
+    font-size: 2.25rem;
+  }
+}
+
+.responsive-text {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-text {
+    font-size: 1rem;
+  }
+}
+
+/* Hiding elements responsively */
+.hidden-xs {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .hidden-xs {
+    display: block;
+  }
+  .visible-xs {
+    display: none;
   }
 }
 
@@ -78,4 +150,36 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+/* Utilités de mise en page */
+.full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+/* Pour éviter le débordement horizontal sur mobile */
+.no-overflow-x {
+  overflow-x: hidden;
+}
+
+/* Classes d'espacement réactives */
+.section-spacer {
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 640px) {
+  .section-spacer {
+    margin-bottom: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacer {
+    margin-bottom: 4rem;
+  }
 }

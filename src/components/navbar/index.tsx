@@ -38,7 +38,7 @@ export const Navbar = () => {
     document.documentElement.style.setProperty('--primary', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
     
-    // Add a CSS variable for the navbar text color based on scroll state
+    // Ajouter une variable CSS pour la couleur du texte de la navbar en fonction de l'état de défilement
     document.documentElement.style.setProperty(
       '--navbar-text-color', 
       scrolled ? settings.primaryColor : "#111827"
@@ -62,7 +62,7 @@ export const Navbar = () => {
         <NavbarSearchBar />
 
         {/* Actions utilisateur */}
-        <NavbarUserMenu />
+        <NavbarUserMenu mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
       </div>
 
       {/* Menu mobile */}

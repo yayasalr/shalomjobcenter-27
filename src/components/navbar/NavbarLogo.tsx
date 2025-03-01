@@ -9,18 +9,22 @@ export const NavbarLogo = () => {
   
   return (
     <Link to="/" className="flex items-center gap-2">
-      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <motion.div 
+        whileHover={{ scale: 1.05 }} 
+        whileTap={{ scale: 0.95 }}
+        className="relative"
+      >
         <img 
           src={settings.logo} 
           alt={settings.siteName}
-          className="h-10 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
+          className="h-8 sm:h-10 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
           onError={(e) => {
             e.currentTarget.src = "/placeholder.svg";
           }}
         />
       </motion.div>
       <motion.span 
-        className="text-xl font-bold site-name hidden md:block font-serif" 
+        className="text-lg sm:text-xl font-bold site-name hidden xs:block font-serif" 
         style={{ color: "var(--navbar-text-color)" }}
         whileHover={{ scale: 1.05 }}
       >
