@@ -10,6 +10,19 @@
   --sholom-success: hsl(142, 76%, 36%);
   --sholom-warning: hsl(45, 100%, 51%);
   --sholom-info: hsl(210, 100%, 51%);
+
+  /* New text color variables for better readability */
+  --text-dark: #1A1F2C;
+  --text-medium: #4A5568;
+  --text-light: #FFFFFF;
+  
+  /* New button color variables */
+  --button-primary: #8B5CF6;
+  --button-primary-hover: #7C3AED;
+  --button-secondary: #F1F5F9;
+  --button-secondary-hover: #E2E8F0;
+  --button-accent: #F97316;
+  --button-accent-hover: #EA580C;
 }
 
 /* Background colors */
@@ -59,7 +72,7 @@
   background-color: var(--sholom-info);
 }
 
-/* Hover background colors - add missing hover classes */
+/* Hover background colors */
 .hover\:bg-sholom-primary:hover {
   background-color: hsl(var(--sholom-primary));
 }
@@ -135,6 +148,42 @@
 }
 .border-sholom-info {
   border-color: var(--sholom-info);
+}
+
+/* Better button styles */
+.btn-solid {
+  background-color: var(--button-primary);
+  color: var(--text-light);
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-solid:hover {
+  background-color: var(--button-primary-hover);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--text-dark);
+  border: 2px solid var(--button-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--button-primary-lightest);
+}
+
+/* Additional utility classes for text readability */
+.text-readable-dark {
+  color: var(--text-dark);
+}
+
+.text-readable-medium {
+  color: var(--text-medium);
+}
+
+.text-readable-light {
+  color: var(--text-light);
 }
 
 /* Font weight utilities */

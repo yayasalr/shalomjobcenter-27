@@ -26,11 +26,22 @@
   --radius-md: 12px;
   --radius-lg: 14px;
   
-  /* Grid columns by breakpoint */
+  /* Grid columns by breakpoint - Updated to support more columns */
   --grid-cols-mobile: 1;
   --grid-cols-sm: 2;
   --grid-cols-md: 3;
   --grid-cols-lg: 4;
   --grid-cols-xl: 5;
   --grid-cols-2xl: 6;
+
+  /* Text colors for better readability */
+  --text-dark: #1A1F2C;
+  --text-medium: #4A5568;
+  --text-light: #FFFFFF;
+  
+  /* Button colors */
+  --button-bg-primary: #8B5CF6;
+  --button-bg-secondary: #F8FAFC;
+  --button-text-primary: #FFFFFF;
+  --button-text-secondary: #1A1F2C;
 }

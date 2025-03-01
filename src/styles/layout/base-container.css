@@ -38,8 +38,8 @@
 @media (min-width: var(--breakpoint-2xl)) {
   .content-container {
     padding: 0 var(--padding-large);
-    max-width: 1920px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
   }
 }
 
@@ -64,7 +64,7 @@
 @media (min-width: var(--breakpoint-2xl)) {
   .navbar-container {
     padding: 0 var(--padding-large);
-    max-width: 1920px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
   }
 }
