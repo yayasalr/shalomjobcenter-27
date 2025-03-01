@@ -1,18 +1,18 @@
 
 /* Responsive spacing utilities optimisées */
 .responsive-spacing {
-  padding: 0.5rem;
+  padding: 0.25rem;
 }
 
 @media (min-width: var(--breakpoint-sm)) {
   .responsive-spacing {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
 }
 
 @media (min-width: var(--breakpoint-lg)) {
   .responsive-spacing {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 }
 
@@ -24,29 +24,38 @@
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  padding: 80px var(--padding-mobile);
+  padding: 60px var(--padding-mobile);
+  box-sizing: border-box;
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .immersive-section {
-    padding: 100px var(--padding-tablet);
+    padding: 70px var(--padding-tablet);
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
-    padding: 120px var(--padding-desktop);
+    padding: 80px var(--padding-desktop);
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .immersive-section {
-    padding: 140px var(--padding-large);
+    padding: 90px var(--padding-large);
   }
 }
 
 @media (min-width: var(--breakpoint-3xl)) {
   .immersive-section {
-    padding: 160px var(--padding-xlarge);
+    padding: 100px var(--padding-xlarge);
   }
+}
+
+/* Full width container - pour les éléments qui doivent prendre toute la largeur */
+.full-width {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  box-sizing: border-box;
 }

@@ -4,10 +4,11 @@
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
   gap: var(--spacing-xs);
-  width: 100%;
-  max-width: 100%;
+  width: 100vw;
+  max-width: 100vw;
   padding: 0 var(--padding-mobile);
-  margin: 0;
+  margin: 0 0 0 calc(50% - 50vw); /* Centrage sur la largeur totale de l'écran */
+  box-sizing: border-box;
 }
 
 /* Responsive grid layout - breakpoints ajustés pour plus d'optimisation */
@@ -57,10 +58,11 @@
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: var(--spacing-xs);
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0 0 0 calc(50% - 50vw); /* Centrage sur la largeur totale de l'écran */
+  padding: 0 var(--padding-mobile);
+  box-sizing: border-box;
 }
 
 @media (min-width: 500px) {
@@ -72,12 +74,14 @@
 @media (min-width: var(--breakpoint-md)) {
   .featured-grid {
     grid-template-columns: repeat(3, 1fr);
+    padding: 0 var(--padding-tablet);
   }
 }
 
 @media (min-width: 900px) {
   .featured-grid {
     grid-template-columns: repeat(4, 1fr);
+    padding: 0 var(--padding-desktop);
   }
 }
 
@@ -90,6 +94,7 @@
 @media (min-width: 1440px) {
   .featured-grid {
     grid-template-columns: repeat(6, 1fr);
+    padding: 0 var(--padding-large);
   }
 }
 
@@ -97,6 +102,7 @@
 @media (min-width: 1920px) {
   .featured-grid {
     grid-template-columns: repeat(8, 1fr);
+    padding: 0 var(--padding-xlarge);
   }
 }
 

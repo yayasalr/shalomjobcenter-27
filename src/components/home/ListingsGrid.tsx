@@ -49,7 +49,7 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="full-width-container">
+      <div className="full-width">
         <div className="airbnb-grid">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300 h-full">
@@ -67,29 +67,27 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="full-width-container">
-        <div className="px-4 w-full">
-          <div className="text-center py-16 border border-dashed rounded-lg bg-white">
-            <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
-              <Search className="h-8 w-8 text-gray-400" />
-            </div>
-            <p className="text-xl text-gray-500 mb-4 minimal-text">Aucun logement ne correspond à votre recherche</p>
-            {searchTerm && (
-              <Button 
-                onClick={() => setSearchTerm("")}
-                className="mt-2 bg-sholom-primary text-white hover:bg-sholom-primary-dark font-medium"
-              >
-                Voir tous les logements
-              </Button>
-            )}
+      <div className="container mx-auto px-4 w-full">
+        <div className="text-center py-16 border border-dashed rounded-lg bg-white">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
+            <Search className="h-8 w-8 text-gray-400" />
           </div>
+          <p className="text-xl text-gray-500 mb-4 minimal-text">Aucun logement ne correspond à votre recherche</p>
+          {searchTerm && (
+            <Button 
+              onClick={() => setSearchTerm("")}
+              className="mt-2 bg-sholom-primary text-white hover:bg-sholom-primary-dark font-medium"
+            >
+              Voir tous les logements
+            </Button>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="full-width-container">
+    <div className="full-width">
       <motion.div 
         className="airbnb-grid"
         variants={containerVariants}

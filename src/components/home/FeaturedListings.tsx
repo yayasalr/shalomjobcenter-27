@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin, Star } from 'lucide-react';
 import { Listing } from '@/types/listing';
 import { FALLBACK_IMAGES } from '@/constants/images';
-import { getValidImageUrl } from '@/utils/imageUtils';
 
 interface FeaturedListingsProps {
   listings: Listing[];
@@ -38,8 +37,8 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
   };
 
   return (
-    <div className="mb-16">
-      <div className="flex items-center justify-between mb-8">
+    <div className="mb-16 w-full">
+      <div className="flex items-center justify-between mb-8 px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
         <h2 className="text-3xl font-bold text-sholom-dark">
           En vedette
         </h2>
@@ -63,7 +62,7 @@ export const FeaturedListings = ({ listings, formatPriceFCFA }: FeaturedListings
               <img
                 src={getValidImage(listing)}
                 alt={listing.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                className="featured-listing-image transition-transform duration-500 group-hover:scale-110"
                 onError={(e) => {
                   console.log("Erreur de chargement d'image pour:", listing.title);
                   e.currentTarget.src = FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)];

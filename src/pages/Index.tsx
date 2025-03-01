@@ -49,13 +49,13 @@ const Index = () => {
     }));
     
     const shuffled = [...processedListings].sort(() => 0.5 - Math.random());
-    // Afficher jusqu'à 6 logements en vedette (ou moins si pas assez de logements)
+    // Afficher jusqu'à 6 logements en vedette (nombre optimal pour la grille)
     setFeaturedListings(shuffled.slice(0, Math.min(6, shuffled.length)));
     
     if (!searchTerm.trim()) {
       setFilteredListings(processedListings);
-      // Afficher 18 logements initialement (3 rangées de 6)
-      setVisibleListings(processedListings.slice(0, 18));
+      // Afficher 24 logements initialement (4 rangées de 6)
+      setVisibleListings(processedListings.slice(0, 24));
     } else {
       const filtered = processedListings.filter(listing => 
         listing.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +84,7 @@ const Index = () => {
       
       <HeroSection />
       
-      <div className="full-width-container">
+      <div className="full-width">
         <div className="content-container py-10">
           <JobsBanner />
           
