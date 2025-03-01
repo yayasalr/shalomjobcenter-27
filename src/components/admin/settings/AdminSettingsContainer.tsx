@@ -1,10 +1,7 @@
 
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { Loader2, Save } from "lucide-react";
 import { Toast } from '@/components/ui/toast';
 import { CheckCircle } from "lucide-react";
 import { useSettingsActions } from './hooks/useSettingsActions';
