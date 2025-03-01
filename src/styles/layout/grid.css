@@ -1,16 +1,17 @@
 
-/* Improved Airbnb-style card grid spacing */
+/* Improved Airbnb-style card grid spacing - réduit les gaps */
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
-  gap: var(--spacing-md) var(--spacing-md); /* Consistent gap */
+  gap: var(--spacing-sm) var(--spacing-sm);
   width: 100%;
   max-width: 100%;
   padding: 0 var(--padding-mobile);
+  margin: 0;
 }
 
-/* Responsive grid layout with smoother breakpoints - adjusted for 6 columns */
-@media (min-width: 550px) {
+/* Responsive grid layout - breakpoints ajustés pour plus de colonnes */
+@media (min-width: 500px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-sm), 1fr);
   }
@@ -23,7 +24,7 @@
   }
 }
 
-@media (min-width: 950px) {
+@media (min-width: 900px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-lg), 1fr);
   }
@@ -40,21 +41,23 @@
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-2xl), 1fr);
     padding: 0 var(--padding-large);
-    max-width: 100%; /* Changed from 1920px to 100% to use full width */
-    margin: 0;
+    max-width: 100%;
+    margin: 0 auto;
   }
 }
 
-/* Featured listings grid - updated to match main grid */
+/* Featured listings grid - ajusté pour correspondre à la grille principale */
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   width: 100%;
   max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-@media (min-width: 550px) {
+@media (min-width: 500px) {
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -66,7 +69,7 @@
   }
 }
 
-@media (min-width: 950px) {
+@media (min-width: 900px) {
   .featured-grid {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -90,6 +93,8 @@
   flex-direction: column;
   width: 100%;
   max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 @media (min-width: 768px) {

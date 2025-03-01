@@ -1,14 +1,15 @@
 
 /* Base container styles */
 #root {
-  max-width: 100%; /* Full width to maximize screen space */
+  max-width: 100%;
+  width: 100%;
   margin: 0;
-  padding: 0; /* Remove padding for full-screen effect */
-  text-align: left; /* Left align text for better readability */
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding: 0;
+  text-align: left;
+  overflow-x: hidden;
 }
 
-/* Full-width container styles */
+/* Full-width container styles - supprimé les marges et padding */
 .full-width-container {
   width: 100%;
   max-width: 100%;
@@ -16,11 +17,12 @@
   padding: 0;
 }
 
-/* Content container with minimal responsive padding */
+/* Content container with reduced padding */
 .content-container {
   width: 100%;
   max-width: 100%;
   padding: 0 var(--padding-mobile);
+  margin: 0;
 }
 
 @media (min-width: var(--breakpoint-md)) {
@@ -39,11 +41,11 @@
   .content-container {
     padding: 0 var(--padding-large);
     max-width: 100%;
-    margin: 0;
+    margin: 0 auto;
   }
 }
 
-/* Navbar container with responsive padding */
+/* Navbar container with reduced padding */
 .navbar-container {
   width: 100%;
   padding: 0 var(--padding-mobile);
@@ -65,6 +67,6 @@
   .navbar-container {
     padding: 0 var(--padding-large);
     max-width: 100%;
-    margin: 0;
+    margin: 0 auto;
   }
 }

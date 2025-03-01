@@ -77,7 +77,7 @@ export const ListingsGrid = ({
             {searchTerm && (
               <Button 
                 onClick={() => setSearchTerm("")}
-                className="mt-2 bg-sholom-primary text-white hover:bg-sholom-primary-dark"
+                className="mt-2 bg-sholom-primary text-white hover:bg-sholom-primary-dark font-medium"
               >
                 Voir tous les logements
               </Button>
@@ -103,13 +103,13 @@ export const ListingsGrid = ({
         ))}
       </motion.div>
       
-      {/* "Voir plus" button with better visibility */}
+      {/* "Voir plus" button avec meilleure visibilité */}
       {!searchTerm && visibleListings.length < filteredListings.length && (
         <div className="flex justify-center mt-12 mb-10">
           <Button 
             onClick={loadMoreListings}
             variant="primary"
-            className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-8 py-6 shadow-md"
+            className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-8 py-6 shadow-md font-medium"
           >
             Voir plus de logements
           </Button>

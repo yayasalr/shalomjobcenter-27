@@ -15,18 +15,18 @@
   --spacing-lg: 32px;
   --spacing-xl: 40px;
   
-  /* Padding */
-  --padding-mobile: var(--spacing-sm);
-  --padding-tablet: var(--spacing-md);
-  --padding-desktop: var(--spacing-lg);
-  --padding-large: var(--spacing-xl);
+  /* Padding - réduit pour utiliser plus d'espace */
+  --padding-mobile: 8px;
+  --padding-tablet: 12px;
+  --padding-desktop: 16px;
+  --padding-large: 20px;
   
   /* Border radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 14px;
   
-  /* Grid columns by breakpoint - Updated to support more columns */
+  /* Grid columns by breakpoint - Augmenté pour plus de colonnes */
   --grid-cols-mobile: 1;
   --grid-cols-sm: 2;
   --grid-cols-md: 3;
@@ -39,7 +39,7 @@
   --text-medium: #4A5568;
   --text-light: #FFFFFF;
   
-  /* Button colors */
+  /* Button colors with enhanced contrast */
   --button-bg-primary: #8B5CF6;
   --button-bg-secondary: #F8FAFC;
   --button-text-primary: #FFFFFF;
