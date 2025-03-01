@@ -6,7 +6,7 @@ import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { CompareButton } from "./CompareButton";
-import { Star, MapPin, Award } from "lucide-react";
+import { Star, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
@@ -112,22 +112,11 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         
-        {/* Badge "Coup de cœur" */}
+        {/* Badge "SHALOM JOB CENTER" avec style doré */}
         <div className="absolute top-3 left-3 z-10">
           <Badge 
-            variant="favorite" 
-            className="px-3 py-1.5 flex items-center shadow-md"
-          >
-            <Award className="h-3.5 w-3.5 mr-1 fill-white" />
-            Coup de cœur voyageurs
-          </Badge>
-        </div>
-        
-        {/* Badge "SHALOM JOB CENTER" */}
-        <div className="absolute top-12 left-3 z-10">
-          <Badge 
-            variant="jobcenter" 
-            className="px-3 py-1.5 shadow-md"
+            variant="outline" 
+            className="px-3 py-1.5 shadow-md bg-gradient-to-r from-amber-300 to-yellow-500 text-white font-semibold border-amber-400"
           >
             SHALOM JOB CENTER
           </Badge>
