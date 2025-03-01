@@ -11,7 +11,7 @@ export const PopularNeighborhoods = ({ setSearchTerm }: PopularNeighborhoodsProp
   const neighborhoods = ['Tokoin', 'Bè', 'Adidogomé', 'Agoè', 'Kodjoviakopé', 'Nyékonakpoè', 'Hédzranawoé', 'Baguida'];
   
   return (
-    <div className="mt-14 mb-16 full-width">
+    <div className="mt-14 mb-16 w-screen px-0 mx-0">
       <div className="w-full">
         <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-6">
           Quartiers populaires à Lomé

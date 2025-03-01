@@ -79,13 +79,13 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white w-full">
+    <div className="min-h-screen bg-white w-screen p-0 m-0">
       <Navbar />
       
       <HeroSection />
       
-      <div className="full-width">
-        <div className="content-container py-10">
+      <div className="w-screen p-0 m-0">
+        <div className="content-container py-10 p-0 m-0">
           <JobsBanner />
           
           {featuredListings.length > 0 && (
@@ -97,19 +97,19 @@ const Index = () => {
         </div>
       </div>
       
-      <div className="pt-4 w-full">
-        <div className="content-container">
+      <div className="pt-4 w-screen p-0 m-0">
+        <div className="content-container p-0 m-0">
           <CategoryFiltersSimplified />
         </div>
         
-        <div className="py-4 w-full">
+        <div className="py-4 w-screen p-0 m-0">
           <SearchBar 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             primaryColor={settings.primaryColor} 
           />
 
-          <div className="content-container mt-4 mb-6">
+          <div className="content-container mt-4 mb-6 p-0 m-0">
             <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
               {searchTerm 
                 ? `Résultats pour "${searchTerm}"` 

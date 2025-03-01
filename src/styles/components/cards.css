@@ -1,7 +1,7 @@
 
-/* Card styles optimisés */
+/* Card styles optimized for edge-to-edge display */
 .card {
-  padding: 0.5rem;
+  padding: 0;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   margin: 0;

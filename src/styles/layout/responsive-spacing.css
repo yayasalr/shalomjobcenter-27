@@ -1,47 +1,49 @@
 
-/* Responsive spacing utilities optimisées */
+/* Responsive spacing utilities fully optimized */
 .responsive-spacing {
   padding: 0;
+  margin: 0;
 }
 
-/* Immersive section for full-width content - optimisé pour grands écrans */
+/* Immersive section for full-width content - optimized to truly span full width */
 .immersive-section {
   width: 100%;
   position: relative;
   left: 0;
   right: 0;
   margin: 0;
-  padding: 20px 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .immersive-section {
-    padding: 25px 0;
+    padding: 0;
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
-    padding: 30px 0;
+    padding: 0;
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .immersive-section {
-    padding: 35px 0;
+    padding: 0;
   }
 }
 
 @media (min-width: var(--breakpoint-3xl)) {
   .immersive-section {
-    padding: 40px 0;
+    padding: 0;
   }
 }
 
-/* Full width container - pour les éléments qui doivent prendre toute la largeur */
+/* Full width container - for elements that must take full width */
 .full-width {
   width: 100%;
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }

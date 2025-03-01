@@ -49,7 +49,7 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="full-width">
+      <div className="w-full">
         <div className="airbnb-grid">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300 h-full">
@@ -87,7 +87,7 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="full-width">
+    <div className="w-screen px-0 mx-0">
       <motion.div 
         className="airbnb-grid"
         variants={containerVariants}

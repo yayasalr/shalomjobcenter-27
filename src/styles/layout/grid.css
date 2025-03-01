@@ -1,5 +1,5 @@
 
-/* Improved Airbnb-style card grid spacing - optimisé pour grands écrans */
+/* Improved Airbnb-style card grid spacing - optimized for large screens */
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
@@ -11,45 +11,51 @@
   box-sizing: border-box;
 }
 
-/* Responsive grid layout - breakpoints ajustés pour plus d'optimisation */
+/* Responsive grid layout - adjusted breakpoints for better optimization */
 @media (min-width: 500px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-sm), 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-md), 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 900px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-lg), 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 1280px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-xl), 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 1440px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-2xl), 1fr);
+    padding: 0;
   }
 }
 
-/* Support pour très grands écrans */
+/* Support for very large screens */
 @media (min-width: 1920px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-3xl), 1fr);
+    padding: 0;
   }
 }
 
-/* Featured listings grid - ajusté pour correspondre à la grille principale */
+/* Featured listings grid - adjusted to match main grid */
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -64,36 +70,42 @@
 @media (min-width: 500px) {
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .featured-grid {
     grid-template-columns: repeat(3, 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 900px) {
   .featured-grid {
     grid-template-columns: repeat(4, 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 1280px) {
   .featured-grid {
     grid-template-columns: repeat(5, 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 1440px) {
   .featured-grid {
     grid-template-columns: repeat(6, 1fr);
+    padding: 0;
   }
 }
 
 @media (min-width: 1920px) {
   .featured-grid {
     grid-template-columns: repeat(8, 1fr);
+    padding: 0;
   }
 }
 
@@ -110,5 +122,6 @@
 @media (min-width: 768px) {
   .flex-container {
     flex-direction: row;
+    padding: 0;
   }
 }
