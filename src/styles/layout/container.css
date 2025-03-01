@@ -1,0 +1,46 @@
+
+/* Container and layout styles */
+#root {
+  max-width: 100%; /* Full width to match the reference image */
+  margin: 0 auto;
+  padding: 0; /* Remove padding to match the reference image layout */
+  text-align: left; /* Left align text to match reference */
+}
+
+/* Airbnb-style card grid spacing */
+.airbnb-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+}
+
+/* Responsive grid layout exactly matching Airbnb's breakpoints */
+@media (min-width: 550px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 744px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 950px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1128px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1640px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

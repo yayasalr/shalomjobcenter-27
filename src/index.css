@@ -2,11 +2,19 @@
 /* Base styles and variables */
 @import './styles/base.css';
 
+/* Layout styles */
+@import './styles/layout/container.css';
+
 /* Animation-related styles */
 @import './styles/animations.css';
+@import './styles/animations/transitions.css';
 
 /* Component-specific styles */
 @import './styles/components.css';
+@import './styles/components/cards.css';
+@import './styles/components/logo.css';
+@import './styles/components/misc.css';
+@import './styles/components/badges.css';
 
 /* Theme-specific styles */
 @import './styles/theme.css';

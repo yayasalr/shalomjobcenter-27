@@ -1,0 +1,55 @@
+
+/* Animations for page transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Loading animation */
+.loading-dots {
+  display: inline-flex;
+}
+
+.loading-dots div {
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background-color: #FF385C;
+  animation: dot-pulse 1.5s infinite ease-in-out;
+}
+
+.loading-dots div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dot-pulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}

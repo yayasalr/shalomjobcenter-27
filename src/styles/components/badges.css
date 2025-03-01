@@ -1,0 +1,22 @@
+
+/* Airbnb badge styles */
+.airbnb-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: #fff;
+  background: linear-gradient(to right, #FF385C, #FF385C);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.airbnb-badge-heart {
+  background: linear-gradient(to right, #FF385C, #FF5A5F);
+}
+
+.airbnb-badge-center {
+  background: linear-gradient(to right, #6246EA, #8B5CF6);
+}
