@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -69,15 +68,34 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function SidebarTrigger() {
+// Updated SidebarTrigger to accept children prop
+export function SidebarTrigger({ 
+  children,
+  asChild
+}: { 
+  children?: React.ReactNode;
+  asChild?: boolean;
+}) {
   const { toggle } = useSidebar();
 
+  // If asChild is true and children are provided, clone the child element with the onClick handler
+  if (asChild && children) {
+    const child = React.Children.only(children) as React.ReactElement;
+    return React.cloneElement(child, {
+      onClick: (e: React.MouseEvent) => {
+        child.props.onClick?.(e);
+        toggle();
+      }
+    });
+  }
+
+  // Default button if no children are provided or asChild is false
   return (
     <button
       className="fixed bottom-4 left-4 z-50 lg:hidden rounded-full bg-primary p-2 text-white shadow-lg"
       onClick={toggle}
     >
-      <MenuIcon className="h-6 w-6" />
+      {children || <MenuIcon className="h-6 w-6" />}
     </button>
   );
 }

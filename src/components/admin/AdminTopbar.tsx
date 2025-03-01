@@ -32,7 +32,7 @@ export const AdminTopbar = () => {
     <header className="h-16 flex items-center border-b bg-white px-4 sticky top-0 z-30">
       <div className="flex items-center w-full">
         <div className="flex items-center md:hidden">
-          {/* Fix: Make SidebarTrigger a parent component with Button as its child */}
+          {/* Use SidebarTrigger with asChild prop */}
           <SidebarTrigger asChild>
             <Button variant="ghost" size="icon" className="mr-2">
               <Menu className="h-5 w-5" />
