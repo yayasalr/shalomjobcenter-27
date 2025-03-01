@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Loader2, X, Upload } from "lucide-react";
+import { Upload, X } from 'lucide-react';
 import { Label } from "@/components/ui/label";
+import { ImageUploader } from '@/components/shared/ImageUploader';
 
 interface ImageManagementSectionProps {
   images: string[];
@@ -27,56 +28,16 @@ export const ImageManagementSection: React.FC<ImageManagementSectionProps> = ({
     <div className="space-y-6">
       {/* Section d'image principale */}
       <div className="mb-6">
-        <Label className="block text-sm font-medium mb-2">Image principale</Label>
-        {featuredImage ? (
-          <div className="relative rounded-md overflow-hidden border">
-            <img 
-              src={featuredImage} 
-              alt="Image principale" 
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute top-2 right-2 flex space-x-2">
-              <Button 
-                type="button" 
-                variant="destructive" 
-                size="icon" 
-                className="h-8 w-8 rounded-full" 
-                onClick={() => setFeaturedImage('')}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <Button 
-                type="button" 
-                variant="secondary" 
-                size="icon" 
-                className="h-8 w-8 rounded-full" 
-                onClick={onFeaturedImageUpload}
-              >
-                <Upload className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <Button 
-            type="button" 
-            variant="outline" 
-            className="w-full h-48 flex flex-col items-center justify-center border-dashed"
-            onClick={onFeaturedImageUpload}
-            disabled={isUploading}
-          >
-            {isUploading ? (
-              <>
-                <Loader2 className="h-8 w-8 animate-spin mb-2" />
-                <span>Téléchargement en cours...</span>
-              </>
-            ) : (
-              <>
-                <ImagePlus className="h-8 w-8 mb-2" />
-                <span>Ajouter une image principale</span>
-              </>
-            )}
-          </Button>
-        )}
+        <ImageUploader
+          currentImage={featuredImage}
+          onImageUpload={() => onFeaturedImageUpload()}
+          onImageRemove={() => setFeaturedImage('')}
+          isUploading={isUploading}
+          variant="featured"
+          label="Image principale"
+          previewClassName="h-48"
+          buttonVariant="outline"
+        />
       </div>
 
       {/* Section d'images supplémentaires */}
@@ -110,17 +71,14 @@ export const ImageManagementSection: React.FC<ImageManagementSectionProps> = ({
             onClick={onAddImage}
             disabled={isUploading}
           >
-            {isUploading ? (
-              <>
-                <Loader2 className="h-6 w-6 animate-spin mb-1" />
-                <span className="text-xs">Téléchargement...</span>
-              </>
-            ) : (
-              <>
-                <ImagePlus className="h-6 w-6 mb-1" />
-                <span className="text-xs">Ajouter une image</span>
-              </>
-            )}
+            <ImageUploader
+              onImageUpload={() => onAddImage()}
+              isUploading={isUploading}
+              variant="card"
+              label="Ajouter une image"
+              className="w-full h-full"
+              previewClassName="h-32"
+            />
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1">

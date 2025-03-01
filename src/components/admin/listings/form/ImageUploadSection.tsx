@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Upload, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageUploader } from '@/components/shared/ImageUploader';
 
 interface ImageUploadSectionProps {
   imagePreviews: string[];
@@ -15,26 +16,30 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
   onImageChange,
   removeImage
 }) => {
+  // Convert the file input handler to be compatible with ImageUploader
+  const handleImageUpload = (file: File) => {
+    const mockEvent = {
+      target: {
+        files: [file] as unknown as FileList
+      }
+    } as React.ChangeEvent<HTMLInputElement>;
+    
+    onImageChange(mockEvent);
+  };
+
   return (
     <div className="space-y-2">
       <Label htmlFor="images" className="text-gray-700 font-medium">Images</Label>
-      <div className="flex items-center gap-2">
-        <label 
-          htmlFor="images" 
-          className="cursor-pointer flex items-center gap-2 bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition-colors shadow-md"
-        >
-          <Upload size={18} />
-          Sélectionner des images
-        </label>
-        <Input
-          id="images"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={onImageChange}
-          className="hidden"
-        />
-      </div>
+      
+      <ImageUploader
+        onImageUpload={handleImageUpload}
+        variant="button"
+        label="Sélectionner des images"
+        buttonVariant="primary"
+        allowedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
+        maxSizeMB={10}
+      />
+      
       <p className="text-xs text-gray-500">
         Vous pouvez sélectionner plusieurs images. La première image sera utilisée comme aperçu.
       </p>
