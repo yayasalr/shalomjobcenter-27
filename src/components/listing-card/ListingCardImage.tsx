@@ -1,8 +1,8 @@
 
-import { Heart, BookOpen } from "lucide-react";
-import { motion } from "framer-motion";
-import { toast } from "sonner";
+import React from "react";
+import { Heart } from "lucide-react";
 import { Listing } from "@/types/listing";
+import { getFallbackImage } from "./utils";
 
 interface ListingCardImageProps {
   listing: Listing;
@@ -14,107 +14,72 @@ interface ListingCardImageProps {
   fallbackImages: string[];
 }
 
-export const ListingCardImage = ({ 
-  listing, 
-  imageUrl, 
-  title, 
-  isHovered, 
-  isFavorite, 
+export const ListingCardImage = ({
+  listing,
+  imageUrl,
+  title,
+  isHovered,
+  isFavorite,
   setIsFavorite,
-  fallbackImages
+  fallbackImages,
 }: ListingCardImageProps) => {
-  // Effet de livre ouvert lors du survol
-  const bookOpenEffect = {
-    closed: { 
-      rotateY: 0,
-      transition: { duration: 0.4 }
-    },
-    open: { 
-      rotateY: 180,
-      transition: { duration: 0.4 }
-    }
-  };
-
-  // Gestion des favoris
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
-    let favorites: string[] = [];
-    const storedFavorites = localStorage.getItem('favorites');
-    
-    if (storedFavorites) {
-      favorites = JSON.parse(storedFavorites);
-    }
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     
     if (isFavorite) {
-      favorites = favorites.filter(favId => favId !== listing.id);
-      toast.success("Retiré des favoris");
+      const newFavorites = favorites.filter((id: string) => id !== listing.id);
+      localStorage.setItem("favorites", JSON.stringify(newFavorites));
     } else {
       favorites.push(listing.id);
-      toast.success("Ajouté aux favoris");
+      localStorage.setItem("favorites", JSON.stringify(favorites));
     }
     
-    localStorage.setItem('favorites', JSON.stringify(favorites));
     setIsFavorite(!isFavorite);
   };
 
   return (
-    <div className="aspect-[4/3] w-full overflow-hidden relative rounded-xl">
-      <motion.div
-        className="h-full w-full"
-        initial="closed"
-        animate={isHovered ? "open" : "closed"}
-        variants={bookOpenEffect}
-        style={{ transformStyle: "preserve-3d" }}
-      >
-        {/* Image principale */}
-        <img
-          src={imageUrl}
-          alt={title}
-          className="h-full w-full object-cover absolute backface-hidden transition-transform duration-500 group-hover:scale-110 rounded-xl"
-          onError={(e) => {
-            // Image de secours en cas d'erreur
-            e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-          }}
-        />
-        
-        {/* Image verso (effet livre ouvert) */}
-        {listing.images && listing.images.length > 1 ? (
-          <img
-            src={listing.images[1]}
-            alt={`${title} - autre vue`}
-            className="h-full w-full object-cover absolute backface-hidden transition-transform duration-500 rounded-xl"
-            style={{ transform: "rotateY(180deg)" }}
-            onError={(e) => {
-              e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-            }}
-          />
-        ) : (
-          <div 
-            className="h-full w-full object-cover absolute backface-hidden flex items-center justify-center bg-gray-100 rounded-xl"
-            style={{ transform: "rotateY(180deg)" }}
-          >
-            <BookOpen className="h-16 w-16 text-gray-400" />
-          </div>
-        )}
-      </motion.div>
+    <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        onError={(e) => {
+          console.log("Image load error for:", title);
+          e.currentTarget.src = getFallbackImage(fallbackImages);
+        }}
+      />
       
-      <div className="absolute top-4 right-4 flex gap-2 z-10">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={toggleFavorite}
-          className="p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-sm"
-        >
-          <Heart
-            className={`h-5 w-5 ${
-              isFavorite
-                ? "fill-red-500 text-red-500 animate-heart-beat"
-                : "stroke-gray-600"
-            }`}
-          />
-        </motion.button>
-      </div>
+      {/* Favorite heart button */}
+      <button
+        onClick={toggleFavorite}
+        className="absolute top-3 right-3 p-2 rounded-full bg-white/90 shadow-md z-10 transition-opacity"
+        aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+      >
+        <Heart
+          className={`h-5 w-5 transition-colors ${
+            isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
+          }`}
+        />
+      </button>
+      
+      {/* Image navigation dots for listings with multiple images */}
+      {listing.images && listing.images.length > 1 && (
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+          {listing.images.slice(0, 5).map((_, index) => (
+            <div
+              key={index}
+              className={`h-1.5 w-1.5 rounded-full transition-all ${
+                isHovered && index === 0
+                  ? "w-6 bg-white"
+                  : "bg-white/70"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -11,7 +11,7 @@
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 16px;
+  gap: 24px;
   width: 100%;
   max-width: 100%;
 }
@@ -20,14 +20,12 @@
 @media (min-width: 550px) {
   .airbnb-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
   }
 }
 
 @media (min-width: 744px) {
   .airbnb-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
   }
 }
 

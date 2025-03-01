@@ -50,10 +50,10 @@ export const ListingsGrid = ({
   if (isLoading) {
     return (
       <div className="w-full mx-auto max-w-full px-2 sm:px-4 md:px-5 lg:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
-              <div className="bg-gray-200 animate-pulse h-48 aspect-[4/3] shimmer"></div>
+              <div className="bg-gray-200 animate-pulse h-0 pb-[75%] relative shimmer"></div>
               <div className="p-4">
                 <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-2"></div>
                 <div className="h-4 w-1/2 bg-gray-200 animate-pulse shimmer"></div>
@@ -89,7 +89,7 @@ export const ListingsGrid = ({
   return (
     <div className="w-full mx-auto max-w-full">
       <motion.div 
-        className="airbnb-grid px-2 sm:px-4 md:px-5 lg:px-6"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 px-2 sm:px-4 md:px-5 lg:px-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
