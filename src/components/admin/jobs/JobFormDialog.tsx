@@ -214,15 +214,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
             <Plus className="h-4 w-4" />
             {buttonText}
           </Button>
-        ) : (
-          <AddItemButton
-            onClick={() => {
-              resetForm();
-              setIsOpen(true);
-            }}
-            label={isEditing ? "Modifier l'offre" : "Ajouter une offre"}
-          />
-        )}
+        ) : null}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[725px] h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b">

@@ -26,6 +26,10 @@ const AdminJobs = () => {
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [showExpired, setShowExpired] = useState(false);
   const [domainFilter, setDomainFilter] = useState<string>('all');
+  
+  // Ajout de l'état pour contrôler l'ouverture des dialogues
+  const [isJobDialogOpen, setIsJobDialogOpen] = useState(false);
+  const [isListingDialogOpen, setIsListingDialogOpen] = useState(false);
 
   // Filtrer les données en fonction de la recherche et autres filtres
   useEffect(() => {
@@ -65,6 +69,7 @@ const AdminJobs = () => {
   const handleSaveJob = async (formData: Omit<Job, "id">) => {
     try {
       await addJob.mutateAsync(formData);
+      setIsJobDialogOpen(false);
     } catch (error) {
       throw error;
     }
@@ -73,6 +78,7 @@ const AdminJobs = () => {
   const handleEditJob = (job: Job) => {
     setSelectedJob(job);
     setIsEditing(true);
+    setIsJobDialogOpen(true);
   };
 
   const handleUpdateJob = async (formData: Omit<Job, "id">) => {
@@ -81,6 +87,7 @@ const AdminJobs = () => {
         await updateJob.mutateAsync({ ...formData, id: selectedJob.id });
         setSelectedJob(null);
         setIsEditing(false);
+        setIsJobDialogOpen(false);
       } catch (error) {
         throw error;
       }
@@ -100,6 +107,7 @@ const AdminJobs = () => {
   const handleSaveListing = async (formData: Omit<Listing, "id">) => {
     try {
       await addListing.mutateAsync(formData);
+      setIsListingDialogOpen(false);
     } catch (error) {
       throw error;
     }
@@ -108,6 +116,7 @@ const AdminJobs = () => {
   const handleEditListing = (listing: Listing) => {
     setSelectedListing(listing);
     setIsEditing(true);
+    setIsListingDialogOpen(true);
   };
 
   const handleUpdateListing = async (formData: Omit<Listing, "id">) => {
@@ -116,6 +125,7 @@ const AdminJobs = () => {
         await updateListing.mutateAsync({ ...formData, id: selectedListing.id });
         setSelectedListing(null);
         setIsEditing(false);
+        setIsListingDialogOpen(false);
       } catch (error) {
         throw error;
       }
@@ -179,6 +189,7 @@ const AdminJobs = () => {
                       onClick={() => {
                         setSelectedJob(null);
                         setIsEditing(false);
+                        setIsJobDialogOpen(true);
                       }}
                       label="Ajouter une offre"
                     />
@@ -189,6 +200,7 @@ const AdminJobs = () => {
                       onClick={() => {
                         setSelectedListing(null);
                         setIsEditing(false);
+                        setIsListingDialogOpen(true);
                       }}
                       label="Ajouter un logement"
                     />
@@ -217,10 +229,12 @@ const AdminJobs = () => {
                 onCreateJob={() => {
                   setSelectedJob(null);
                   setIsEditing(false);
+                  setIsJobDialogOpen(true);
                 }}
                 onCreateListing={() => {
                   setSelectedListing(null);
                   setIsEditing(false);
+                  setIsListingDialogOpen(true);
                 }}
               />
             </div>
@@ -233,7 +247,9 @@ const AdminJobs = () => {
               onCancel={() => {
                 setSelectedJob(null);
                 setIsEditing(false);
+                setIsJobDialogOpen(false);
               }}
+              buttonText=""
             />
             
             <ListingFormDialog
@@ -243,7 +259,10 @@ const AdminJobs = () => {
               onCancel={() => {
                 setSelectedListing(null);
                 setIsEditing(false);
+                setIsListingDialogOpen(false);
               }}
+              isOpen={isListingDialogOpen}
+              setIsOpen={setIsListingDialogOpen}
             />
           </main>
         </div>
