@@ -9,7 +9,7 @@ import { Users, User, MessageSquare } from 'lucide-react';
 import ConversationList from '@/components/admin/messages/ConversationList';
 import AdminConversationView from '@/components/admin/messages/AdminConversationView';
 import SystemMessagesTab from '@/components/admin/messages/SystemMessagesTab';
-import ContactSubmissionsTab from '@/components/admin/messages/ContactSubmissionsTab';
+import ContactSubmissionsTab from '@/components/admin/messages/contact/ContactSubmissionsTab';
 import { useAdminMessages } from '@/hooks/useAdminMessages';
 
 const AdminMessages: React.FC = () => {
