@@ -54,6 +54,7 @@ export interface SiteSettings {
   imageCompression?: string;
   watermarkEnabled?: boolean;
   watermarkOpacity?: number;
+  watermarkImage?: string; // Add the watermarkImage property
   mailProvider?: string;
   smtpHost?: string;
   smtpPort?: string;
@@ -130,6 +131,7 @@ const defaultSettings: SiteSettings = {
   imageCompression: "medium",
   watermarkEnabled: false,
   watermarkOpacity: 50,
+  watermarkImage: "/placeholder.svg", // Set default watermark image
   mailProvider: "smtp",
   smtpHost: "smtp.example.com",
   smtpPort: "587",
