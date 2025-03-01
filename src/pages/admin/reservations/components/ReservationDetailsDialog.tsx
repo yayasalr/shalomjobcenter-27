@@ -1,20 +1,17 @@
 
 import React from 'react';
-import { Reservation } from "@/hooks/useReservations";
-import { formatDate } from "../utils/formatUtils";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogFooter, 
-  DialogHeader, 
-  DialogTitle
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogHeader,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Check, Calendar, X, User, Clock } from 'lucide-react';
+import { Calendar, User, Clock } from "lucide-react";
+import { Reservation } from '@/hooks/useReservations';
+import { Badge } from '@/components/ui/badge';
 
 interface ReservationDetailsDialogProps {
   isOpen: boolean;
@@ -31,171 +28,136 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
 }) => {
   if (!selectedReservation) return null;
 
+  // Fonction pour formater le statut
+  const getStatusBadge = (status: string) => {
+    switch(status) {
+      case 'confirmed':
+        return <Badge className="bg-green-500 text-white">Confirmée</Badge>;
+      case 'pending':
+        return <Badge className="bg-yellow-500 text-white">En attente</Badge>;
+      case 'cancelled':
+        return <Badge className="bg-red-500 text-white">Annulée</Badge>;
+      default:
+        return <Badge className="bg-gray-500 text-white">{status}</Badge>;
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="bg-white border-none shadow-xl max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Détails de la réservation</DialogTitle>
-          <DialogDescription>
-            Réservation #{selectedReservation.id.substring(0, 8)}
+          <DialogTitle className="text-xl font-bold">Détails de la réservation</DialogTitle>
+          <DialogDescription className="text-base">
+            Réservation #{selectedReservation.id}
           </DialogDescription>
         </DialogHeader>
-        
-        <div className="grid gap-4 py-4">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium mb-1">Logement</h3>
-              <div className="flex items-center">
-                <div className="h-10 w-10 flex-shrink-0 rounded-md overflow-hidden mr-3">
-                  <img
-                    src={selectedReservation.listingImage || "/placeholder.svg"}
-                    alt={selectedReservation.listingTitle}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="text-sm">
-                  <div className="font-medium">{selectedReservation.listingTitle}</div>
-                  <div className="text-gray-500">{selectedReservation.listingLocation}</div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-sm font-medium mb-1">Client</h3>
-              <div className="flex items-center">
-                <Avatar className="h-10 w-10 mr-3">
-                  <AvatarFallback>{selectedReservation.guestName[0]}</AvatarFallback>
-                </Avatar>
-                <div className="text-sm">
-                  <div className="font-medium">{selectedReservation.guestName}</div>
-                  <div className="text-gray-500">{selectedReservation.guestEmail}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <Separator />
-          
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-medium mb-1">Période de séjour</h3>
-              <div className="text-sm">
-                <div className="flex items-center mb-1">
-                  <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                  <span>Arrivée: {formatDate(selectedReservation.checkIn)}</span>
-                </div>
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                  <span>Départ: {formatDate(selectedReservation.checkOut)}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-sm font-medium mb-1">Détails</h3>
-              <div className="text-sm">
-                <div className="flex items-center mb-1">
-                  <User className="h-4 w-4 mr-2 text-gray-400" />
-                  <span>{selectedReservation.guests} voyageur{selectedReservation.guests > 1 ? 's' : ''}</span>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-2 text-gray-400" />
-                  <span>Réservé le {formatDate(selectedReservation.createdAt)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <Separator />
-          
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
           <div>
-            <h3 className="text-sm font-medium mb-1">Statut et paiement</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="text-sm">
-                <Badge
-                  className={`${
-                    selectedReservation.status === 'confirmed'
-                      ? 'bg-green-100 text-green-800 border-green-200'
-                      : selectedReservation.status === 'pending'
-                      ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                      : 'bg-red-100 text-red-800 border-red-200'
-                  }`}
-                >
-                  {selectedReservation.status === 'confirmed' ? (
-                    <>
-                      <Check className="mr-1 h-3.5 w-3.5" />
-                      Confirmée
-                    </>
-                  ) : selectedReservation.status === 'pending' ? (
-                    <>
-                      <Clock className="mr-1 h-3.5 w-3.5" />
-                      En attente
-                    </>
-                  ) : (
-                    <>
-                      <X className="mr-1 h-3.5 w-3.5" />
-                      Annulée
-                    </>
-                  )}
-                </Badge>
+            <h3 className="text-lg font-semibold mb-2">Logement</h3>
+            <div className="flex items-center space-x-3">
+              <div className="w-16 h-16 rounded overflow-hidden">
+                <img 
+                  src={selectedReservation.listing.image || "/placeholder.svg"} 
+                  alt={selectedReservation.listing.title} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.svg";
+                  }}
+                />
               </div>
-              
-              <div className="text-sm">
-                <div className="font-medium">
-                  Prix: {Math.round(selectedReservation.totalPrice * 655.957).toLocaleString('fr-FR')} FCFA
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {selectedReservation.notes && (
-            <>
-              <Separator />
               <div>
-                <h3 className="text-sm font-medium mb-1">Notes</h3>
-                <div className="text-sm bg-gray-50 p-3 rounded-md">{selectedReservation.notes}</div>
+                <p className="font-medium">{selectedReservation.listing.title}</p>
+                <p className="text-gray-600">{selectedReservation.listing.location}</p>
               </div>
-            </>
-          )}
-        </div>
-        
-        <DialogFooter>
-          <div className="flex justify-between w-full">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Fermer
-            </Button>
-            
-            <div className="space-x-2">
-              {selectedReservation.status !== 'confirmed' && (
-                <Button
-                  onClick={() => {
-                    handleUpdateStatus(selectedReservation.id, 'confirmed');
-                    onOpenChange(false);
-                  }}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  <Check className="mr-2 h-4 w-4" />
-                  Confirmer
-                </Button>
-              )}
-              
-              {selectedReservation.status !== 'cancelled' && (
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    handleUpdateStatus(selectedReservation.id, 'cancelled');
-                    onOpenChange(false);
-                  }}
-                >
-                  <X className="mr-2 h-4 w-4" />
-                  Annuler
-                </Button>
-              )}
             </div>
           </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Client</h3>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <User className="w-5 h-5 text-gray-600" />
+              </div>
+              <div>
+                <p className="font-medium">{selectedReservation.guest.name}</p>
+                <p className="text-gray-600">{selectedReservation.guest.email}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Période de séjour</h3>
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-gray-600" />
+                <span>Arrivée: {new Date(selectedReservation.checkIn).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-gray-600" />
+                <span>Départ: {new Date(selectedReservation.checkOut).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Détails</h3>
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <User className="w-5 h-5 mr-2 text-gray-600" />
+                <span>{selectedReservation.guestCount} voyageur(s)</span>
+              </div>
+              <div className="flex items-center">
+                <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                <span>Réservé le {new Date(selectedReservation.createdAt).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center mt-6 border-t pt-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Statut et paiement</h3>
+            <div className="flex items-center space-x-2">
+              {getStatusBadge(selectedReservation.status)}
+            </div>
+          </div>
+          <div>
+            <p className="text-xl font-bold">
+              Prix: {new Intl.NumberFormat('fr-FR').format(selectedReservation.totalPrice * 655.957)} FCFA
+            </p>
+            <p className="text-sm text-gray-600 text-right">
+              ({selectedReservation.totalPrice} €)
+            </p>
+          </div>
+        </div>
+
+        <DialogFooter className="flex justify-between items-center gap-2 sm:justify-end mt-6">
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+          >
+            Fermer
+          </Button>
+          <Button 
+            variant="default" 
+            className="bg-green-500 hover:bg-green-600 text-white"
+            onClick={() => {
+              handleUpdateStatus(selectedReservation.id, 'confirmed');
+              onOpenChange(false);
+            }}
+          >
+            <span className="mr-1">✓</span> Confirmer
+          </Button>
+          <Button 
+            variant="destructive"
+            onClick={() => {
+              handleUpdateStatus(selectedReservation.id, 'cancelled');
+              onOpenChange(false);
+            }}
+          >
+            <span className="mr-1">✗</span> Annuler
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
