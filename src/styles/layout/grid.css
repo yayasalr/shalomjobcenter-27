@@ -1,0 +1,60 @@
+
+/* Improved Airbnb-style card grid spacing */
+.airbnb-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px 20px; /* Reduced vertical and horizontal gap */
+  width: 100%;
+  max-width: 100%;
+  padding: 0 16px; /* Reduced horizontal padding for mobile */
+}
+
+/* Responsive grid layout with smoother breakpoints */
+@media (min-width: 550px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 744px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 24px; /* Reduced padding for tablet */
+  }
+}
+
+@media (min-width: 950px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1128px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0 32px; /* Reduced padding for desktop */
+  }
+}
+
+@media (min-width: 1440px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 0 40px; /* Reduced padding for large desktop */
+    max-width: 1920px; /* Prevent excessive stretching on ultra-wide screens */
+    margin: 0 auto;
+  }
+}
+
+/* Flexible container styles */
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .flex-container {
+    flex-direction: row;
+  }
+}

@@ -1,0 +1,53 @@
+
+/* Style for listing images */
+.listing-card-image {
+  aspect-ratio: 4/3;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 14px; /* More rounded corners */
+  transition: transform 0.4s ease;
+}
+
+.listing-card-container:hover .listing-card-image {
+  transform: scale(1.05);
+}
+
+/* General responsive image styling */
+.responsive-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Styles for specific page images */
+.about-image,
+.contact-image,
+.support-image {
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 14px;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.about-image:hover,
+.contact-image:hover,
+.support-image:hover {
+  transform: scale(1.02);
+}
+
+.team-member-image {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  transition: transform 0.3s ease;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.team-member-image:hover {
+  transform: scale(1.05);
+}

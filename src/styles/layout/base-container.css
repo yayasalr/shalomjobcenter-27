@@ -1,0 +1,70 @@
+
+/* Base container styles */
+#root {
+  max-width: 100%; /* Full width to maximize screen space */
+  margin: 0;
+  padding: 0; /* Remove padding for full-screen effect */
+  text-align: left; /* Left align text for better readability */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Full-width container styles */
+.full-width-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Content container with responsive padding */
+.content-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 16px;
+}
+
+@media (min-width: 744px) {
+  .content-container {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: 1128px) {
+  .content-container {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .content-container {
+    padding: 0 40px;
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+}
+
+/* Navbar container with responsive padding */
+.navbar-container {
+  width: 100%;
+  padding: 0 16px;
+}
+
+@media (min-width: 744px) {
+  .navbar-container {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: 1128px) {
+  .navbar-container {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .navbar-container {
+    padding: 0 40px;
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+}
