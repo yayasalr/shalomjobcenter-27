@@ -21,7 +21,7 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
       <div className="flex items-center gap-2">
         <label 
           htmlFor="images" 
-          className="cursor-pointer flex items-center gap-2 bg-gray-50 border border-gray-300 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-100 transition-colors"
+          className="cursor-pointer flex items-center gap-2 bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition-colors shadow-md"
         >
           <Upload size={18} />
           Sélectionner des images
@@ -47,11 +47,11 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
               <img
                 src={preview}
                 alt={`Preview ${index}`}
-                className="h-24 w-full object-cover rounded-md"
+                className="h-24 w-full object-cover rounded-md border shadow-sm"
               />
               <button
                 type="button"
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-md"
                 onClick={() => removeImage(index)}
               >
                 <X size={14} />

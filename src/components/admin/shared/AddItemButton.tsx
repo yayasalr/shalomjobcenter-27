@@ -12,7 +12,7 @@ export const AddItemButton: React.FC<AddItemButtonProps> = ({ onClick, label }) 
   return (
     <Button 
       onClick={onClick}
-      className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium flex items-center gap-2"
+      className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium flex items-center gap-2 shadow-md"
     >
       <PlusCircle size={18} />
       {label}

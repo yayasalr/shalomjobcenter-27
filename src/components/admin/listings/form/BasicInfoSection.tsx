@@ -31,7 +31,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Titre du logement"
-            className="bg-white border-gray-300"
+            className="bg-white border-gray-300 shadow-sm"
             required
           />
         </div>
@@ -45,7 +45,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
             placeholder="Prix par nuit en FCFA"
             min="0"
             step="0.01"
-            className="bg-white border-gray-300"
+            className="bg-white border-gray-300 shadow-sm"
             required
           />
         </div>
@@ -59,7 +59,7 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description du logement"
           rows={4}
-          className="bg-white border-gray-300"
+          className="bg-white border-gray-300 shadow-sm"
         />
       </div>
     </>
