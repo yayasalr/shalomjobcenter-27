@@ -4,19 +4,18 @@
   height: 6em;
   padding: 1.5em;
   will-change: filter;
-  transition: all 300ms;
+  transition: all 300ms ease-in-out;
   max-width: 100%;
   object-fit: contain;
-  border-radius: 50%; /* Keep logo round */
-  box-shadow: none; /* Remove any shadow */
-  border: none; /* Remove border */
+  border-radius: 50%; /* Logo rond */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre légère pour effet de profondeur */
+  border: none; /* Pas de bordure */
+  background: transparent; /* Fond transparent */
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em rgba(255, 56, 92, 0.7)); /* Change to site primary color shadow */
-  transform: scale(1.05); /* Slight scale on hover for attractive effect */
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 1.5em rgba(255, 56, 92, 0.7)); /* Ombre colorée au survol */
+  transform: scale(1.05) rotate(5deg); /* Légère rotation et agrandissement au survol */
 }
 
 .site-name {
@@ -31,6 +30,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: all 300ms ease;
+}
+
+.site-name:hover {
+  letter-spacing: 1px; /* Espacement légèrement plus grand au survol */
 }
 
 @keyframes logo-spin {

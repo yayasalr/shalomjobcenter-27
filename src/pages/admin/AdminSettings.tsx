@@ -18,15 +18,19 @@ const AdminSettings = () => {
   const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState("general");
-  const [logoUrl, setLogoUrl] = useState(settings.logo || "/placeholder.svg");
+  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/placeholder.svg");
   const [logoUploading, setLogoUploading] = useState(false);
-  const [faviconUrl, setFaviconUrl] = useState(settings.favicon || "/favicon.ico");
+  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon || "/favicon.ico");
   const [faviconUploading, setFaviconUploading] = useState(false);
   
   // Synchroniser l'état local avec les paramètres chaque fois qu'ils changent
   useEffect(() => {
-    setLogoUrl(settings.logo || "/placeholder.svg");
-    setFaviconUrl(settings.favicon || "/favicon.ico");
+    if (settings.logo) {
+      setLogoUrl(settings.logo);
+    }
+    if (settings.favicon) {
+      setFaviconUrl(settings.favicon);
+    }
   }, [settings.logo, settings.favicon]);
 
   const handleLogoUpload = (file: File) => {
@@ -40,6 +44,8 @@ const AdminSettings = () => {
     setTimeout(() => {
       // In a real application, you would get the URL from your backend
       const newLogoUrl = "/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png";
+      
+      // Update state and settings
       setLogoUrl(newLogoUrl);
       updateSettings({ logo: newLogoUrl });
       setLogoUploading(false);
@@ -61,6 +67,8 @@ const AdminSettings = () => {
     // Simulate upload
     setTimeout(() => {
       const newFaviconUrl = "/lovable-uploads/740ff73c-9223-468f-941b-578d7b960c2d.png";
+      
+      // Update state and settings
       setFaviconUrl(newFaviconUrl);
       updateSettings({ favicon: newFaviconUrl });
       setFaviconUploading(false);
@@ -135,8 +143,8 @@ const AdminSettings = () => {
 
   const handleReset = () => {
     resetSettings();
-    setLogoUrl(settings.logo);
-    setFaviconUrl(settings.favicon);
+    setLogoUrl(settings.logo || "/placeholder.svg");
+    setFaviconUrl(settings.favicon || "/favicon.ico");
     toast.success("Paramètres réinitialisés avec succès");
   };
   

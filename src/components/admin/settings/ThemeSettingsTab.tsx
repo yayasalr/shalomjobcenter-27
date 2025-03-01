@@ -58,6 +58,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
               <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-full">
                 {!logoError ? (
                   <img 
+                    key={`logo-${logoUrl}`} 
                     src={logoUrl} 
                     alt="Logo" 
                     className="h-full w-auto object-contain" 
@@ -84,6 +85,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
               <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
                 {!faviconError ? (
                   <img 
+                    key={`favicon-${faviconUrl}`}
                     src={faviconUrl} 
                     alt="Favicon" 
                     className="h-full w-auto object-contain"

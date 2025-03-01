@@ -8,11 +8,15 @@ export const NavbarLogo = () => {
   const { settings } = useSiteSettings();
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [logoError, setLogoError] = useState(false);
+  const [currentLogo, setCurrentLogo] = useState(settings.logo || "/placeholder.svg");
   
-  // Reset loading states when logo URL changes
+  // Update currentLogo when settings.logo changes
   useEffect(() => {
-    setLogoLoaded(false);
-    setLogoError(false);
+    if (settings.logo) {
+      setCurrentLogo(settings.logo);
+      setLogoLoaded(false);
+      setLogoError(false);
+    }
   }, [settings.logo]);
   
   return (
@@ -25,11 +29,14 @@ export const NavbarLogo = () => {
         <div className="h-10 sm:h-12 w-auto flex items-center justify-center overflow-hidden rounded-full">
           {!logoError ? (
             <img 
-              src={settings.logo || "/placeholder.svg"} 
+              src={currentLogo} 
               alt={settings.siteName}
               className="w-auto h-full object-contain"
               onLoad={() => setLogoLoaded(true)}
-              onError={() => setLogoError(true)}
+              onError={() => {
+                console.error("Error loading logo:", currentLogo);
+                setLogoError(true);
+              }}
               style={{ display: logoLoaded ? 'block' : 'none' }}
             />
           ) : null}

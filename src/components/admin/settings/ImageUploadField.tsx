@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Image, Upload } from "lucide-react";
@@ -18,15 +18,32 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   isUploading
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [localImageUrl, setLocalImageUrl] = useState(imageUrl);
+  
+  // Mettre à jour l'URL locale lorsque l'URL d'image change
+  React.useEffect(() => {
+    setLocalImageUrl(imageUrl);
+  }, [imageUrl]);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     
     const file = files[0];
+    
+    // Créer un aperçu temporaire
+    const temporaryPreview = URL.createObjectURL(file);
+    setLocalImageUrl(temporaryPreview);
+    
+    // Appeler la fonction de téléchargement
     onUpload(file);
     
-    // Reset input value to allow selecting the same file again
+    // Nettoyer l'URL de l'objet pour éviter les fuites de mémoire
+    setTimeout(() => {
+      URL.revokeObjectURL(temporaryPreview);
+    }, 5000);
+    
+    // Réinitialiser la valeur de l'input pour permettre de sélectionner à nouveau le même fichier
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }

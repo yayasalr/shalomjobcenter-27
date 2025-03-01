@@ -29,11 +29,11 @@ export const useSiteSettings = () => {
     applySettingsToDOM(settings);
   }, []);
 
-  // Apply settings to DOM on each change
+  // Apply settings to DOM on each change and save to localStorage
   useEffect(() => {
     applySettingsToDOM(settings);
-    // Save to localStorage on each change
     localStorage.setItem('siteSettings', JSON.stringify(settings));
+    console.log('Settings updated and saved:', settings);
   }, [settings]);
 
   const updateSettings = useCallback((newSettings: Partial<SiteSettings>) => {

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -15,24 +15,49 @@ interface ProfileSidebarProps {
 export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
   const [avatar, setAvatar] = useState(user?.avatar || "/placeholder.svg");
   const [isUploading, setIsUploading] = useState(false);
+  const [avatarKey, setAvatarKey] = useState(Date.now()); // Clé unique pour forcer le rechargement de l'image
 
   const handleImageUpload = (file: File) => {
     setIsUploading(true);
     
-    // Create a URL for preview
+    // Créer un URL pour la prévisualisation
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
-        // Simulate upload delay
+        // Stocker temporairement l'URL de prévisualisation
+        const previewUrl = event.target.result as string;
+        
+        // Simuler le délai de téléchargement
         setTimeout(() => {
-          setAvatar(event.target.result as string);
+          setAvatar(previewUrl);
           setIsUploading(false);
+          setAvatarKey(Date.now()); // Générer une nouvelle clé pour forcer le rechargement
           toast.success("Photo de profil mise à jour avec succès");
+          
+          // Dans une application réelle, vous stockeriez cette URL dans la base de données
+          // et/ou dans le localStorage pour la persistance
+          try {
+            localStorage.setItem('userAvatar', previewUrl);
+          } catch (error) {
+            console.error("Erreur lors du stockage de l'avatar:", error);
+          }
         }, 1500);
       }
     };
     reader.readAsDataURL(file);
   };
+
+  // Récupérer l'avatar stocké au chargement du composant
+  useEffect(() => {
+    try {
+      const storedAvatar = localStorage.getItem('userAvatar');
+      if (storedAvatar) {
+        setAvatar(storedAvatar);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'avatar:", error);
+    }
+  }, []);
 
   return (
     <Card>
@@ -40,6 +65,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
         <div className="mx-auto relative mb-4 group">
           <Avatar className="h-24 w-24 mx-auto border-4 border-white shadow-md">
             <AvatarImage 
+              key={avatarKey} // Forcer le rechargement de l'image
               src={avatar} 
               alt={user?.name || "Utilisateur"}
               onError={(e) => {
