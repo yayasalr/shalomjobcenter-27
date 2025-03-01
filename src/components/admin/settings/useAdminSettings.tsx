@@ -1,6 +1,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useSiteSettings, SiteSettings } from '@/hooks/useSiteSettings';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { SiteSettings } from '@/types/siteSettings';
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 

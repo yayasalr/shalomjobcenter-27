@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from '@/components/ui/badge';
@@ -17,7 +16,6 @@ const ContactSubmissionsTab: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'new'>('all');
   const [responseText, setResponseText] = useState('');
 
-  // Load submissions from localStorage
   useEffect(() => {
     const storedSubmissions = localStorage.getItem('contactFormSubmissions');
     if (storedSubmissions) {
@@ -29,9 +27,7 @@ const ContactSubmissionsTab: React.FC = () => {
           return value;
         });
         
-        // Ensure all submissions have a valid status
         const validatedSubmissions = parsedSubmissions.map((sub: any) => {
-          // Ensure the status is one of the allowed values
           if (sub.status !== 'new' && sub.status !== 'read' && sub.status !== 'responded') {
             sub.status = 'new';
           }
@@ -46,7 +42,6 @@ const ContactSubmissionsTab: React.FC = () => {
     }
   }, []);
 
-  // Filter submissions based on search query and filter
   const filteredSubmissions = submissions.filter(sub => {
     const matchesSearch = 
       sub.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -61,9 +56,7 @@ const ContactSubmissionsTab: React.FC = () => {
     return matchesSearch;
   });
 
-  // Handle submission selection
   const handleSelectSubmission = (submission: ContactFormSubmission) => {
-    // Mark as read if it's new
     if (submission.status === 'new') {
       const updatedSubmissions = submissions.map(sub => 
         sub.id === submission.id ? { ...sub, status: 'read' as const } : sub
@@ -71,18 +64,15 @@ const ContactSubmissionsTab: React.FC = () => {
       setSubmissions(updatedSubmissions);
       localStorage.setItem('contactFormSubmissions', JSON.stringify(updatedSubmissions));
       
-      // Update the selected submission as well
       submission = { ...submission, status: 'read' as const };
     }
     
     setSelectedSubmission(submission);
   };
 
-  // Handle response to submission
   const handleSendResponse = () => {
     if (!selectedSubmission || !responseText.trim()) return;
     
-    // Update submission status
     const updatedSubmissions = submissions.map(sub => 
       sub.id === selectedSubmission.id ? { ...sub, status: 'responded' as const } : sub
     );
@@ -90,24 +80,19 @@ const ContactSubmissionsTab: React.FC = () => {
     setSubmissions(updatedSubmissions);
     localStorage.setItem('contactFormSubmissions', JSON.stringify(updatedSubmissions));
     
-    // Update selected submission
     setSelectedSubmission({ ...selectedSubmission, status: 'responded' as const });
     
-    // Clear response text
     setResponseText('');
     
-    // Show success message (implement this)
     console.log(`Response sent to ${selectedSubmission.email}: ${responseText}`);
   };
 
-  // Count new submissions
   const newSubmissionsCount = submissions.filter(sub => sub.status === 'new').length;
 
   return (
     <Card>
       <CardContent className="p-6 h-[calc(100vh-280px)]">
         <div className="grid grid-cols-1 md:grid-cols-3 h-full gap-4">
-          {/* List of submissions */}
           <div className="border rounded-lg overflow-hidden">
             <div className="p-4 border-b">
               <div className="flex gap-2 mb-2">
@@ -174,7 +159,6 @@ const ContactSubmissionsTab: React.FC = () => {
             </ScrollArea>
           </div>
           
-          {/* Submission details */}
           <div className="col-span-2 border rounded-lg overflow-hidden flex flex-col">
             {selectedSubmission ? (
               <>

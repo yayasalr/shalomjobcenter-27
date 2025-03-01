@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { SiteSettings } from '@/hooks/useSiteSettings';
+import { SiteSettings } from '@/types/siteSettings';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

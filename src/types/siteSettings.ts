@@ -28,6 +28,7 @@ export interface SiteSettings {
     phone: string;
     email: string;
     registrationNumber: string;
+    mapLocation: string;
   };
   siteDescription: string;
   adminEmail: string;
@@ -70,4 +71,5 @@ export interface SiteSettings {
   youtubeUrl: string;
   enableSocialLogin: boolean;
   enableSocialSharing: boolean;
+  logoUrl: string;
 }
