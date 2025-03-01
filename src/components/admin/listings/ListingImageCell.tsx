@@ -21,7 +21,7 @@ export const ListingImageCell: React.FC<ListingImageCellProps> = ({
       <img
         src={validateImage(listing.image)}
         alt={listing.title}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
         onError={(e) => {
           e.currentTarget.src = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800";
         }}

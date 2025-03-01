@@ -51,7 +51,7 @@ export const Navbar = () => {
         scrolled ? "py-2 shadow-md bg-white/95 backdrop-blur-sm" : "py-4 bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="navbar-container mx-auto flex items-center justify-between">
         {/* Logo et Nom du site */}
         <NavbarLogo />
 

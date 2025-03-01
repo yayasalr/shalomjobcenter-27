@@ -81,19 +81,21 @@ const Index = () => {
       
       <HeroSection />
       
-      <div className="w-full max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6 py-10">
-        <JobsBanner />
-        
-        {featuredListings.length > 0 && (
-          <FeaturedListings 
-            listings={featuredListings} 
-            formatPriceFCFA={formatPriceFCFA} 
-          />
-        )}
+      <div className="full-width-container">
+        <div className="content-container py-10">
+          <JobsBanner />
+          
+          {featuredListings.length > 0 && (
+            <FeaturedListings 
+              listings={featuredListings} 
+              formatPriceFCFA={formatPriceFCFA} 
+            />
+          )}
+        </div>
       </div>
       
       <div className="pt-4 w-full">
-        <div className="max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6">
+        <div className="content-container">
           <CategoryFiltersSimplified />
         </div>
         
@@ -104,15 +106,15 @@ const Index = () => {
             primaryColor={settings.primaryColor} 
           />
 
-          <div className="max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6 mt-4 mb-6">
-            <h2 className="text-2xl font-medium text-sholom-dark">
+          <div className="content-container mt-4 mb-6">
+            <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
               {searchTerm 
                 ? `Résultats pour "${searchTerm}"` 
                 : "Logements en Afrique et partout dans le monde"}
             </h2>
             
             {searchTerm && (
-              <p className="mb-4 text-sholom-muted">
+              <p className="mb-4 text-sholom-muted minimal-text">
                 {filteredListings.length} résultat(s) trouvé(s)
               </p>
             )}

@@ -49,8 +49,8 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="w-full mx-auto max-w-full px-2 sm:px-4 md:px-5 lg:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+      <div className="full-width-container">
+        <div className="airbnb-grid">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
               <div className="bg-gray-200 animate-pulse h-0 pb-[75%] relative shimmer"></div>
@@ -67,29 +67,31 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-full mx-auto max-w-full px-2 sm:px-4 md:px-5 lg:px-6">
-        <div className="text-center py-16 border border-dashed rounded-lg bg-white">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
-            <Search className="h-8 w-8 text-gray-400" />
+      <div className="full-width-container">
+        <div className="content-container">
+          <div className="text-center py-16 border border-dashed rounded-lg bg-white">
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
+              <Search className="h-8 w-8 text-gray-400" />
+            </div>
+            <p className="text-xl text-gray-500 mb-4 minimal-text">Aucun logement ne correspond à votre recherche</p>
+            {searchTerm && (
+              <Button 
+                onClick={() => setSearchTerm("")}
+                className="mt-2 bg-sholom-primary hover:bg-sholom-primary/90"
+              >
+                Voir tous les logements
+              </Button>
+            )}
           </div>
-          <p className="text-xl text-gray-500 mb-4">Aucun logement ne correspond à votre recherche</p>
-          {searchTerm && (
-            <Button 
-              onClick={() => setSearchTerm("")}
-              className="mt-2 bg-sholom-primary hover:bg-sholom-primary/90"
-            >
-              Voir tous les logements
-            </Button>
-          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full mx-auto max-w-full">
+    <div className="full-width-container">
       <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 px-2 sm:px-4 md:px-5 lg:px-6"
+        className="airbnb-grid"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

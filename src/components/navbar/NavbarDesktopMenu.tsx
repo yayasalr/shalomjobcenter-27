@@ -13,7 +13,7 @@ import {
 
 export const NavbarDesktopMenu = () => {
   return (
-    <div className="hidden md:flex items-center space-x-6">
+    <div className="hidden md:flex items-center space-x-8">
       <Link to="/" className="font-medium hover:text-sholom-primary transition-colors">
         <div className="flex items-center">
           <Home className="mr-1 h-4 w-4" />

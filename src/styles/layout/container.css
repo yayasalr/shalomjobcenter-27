@@ -2,9 +2,10 @@
 /* Container and layout styles */
 #root {
   max-width: 100%; /* Full width to match the reference image */
-  margin: 0 auto;
+  margin: 0;
   padding: 0; /* Remove padding to match the reference image layout */
   text-align: left; /* Left align text to match reference */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Airbnb-style card grid spacing with reduced margins */
@@ -14,6 +15,7 @@
   gap: 24px;
   width: 100%;
   max-width: 100%;
+  padding: 0 24px; /* Add horizontal padding for mobile */
 }
 
 /* Responsive grid layout matching featured listings breakpoints */
@@ -26,6 +28,7 @@
 @media (min-width: 744px) {
   .airbnb-grid {
     grid-template-columns: repeat(3, 1fr);
+    padding: 0 32px; /* Increase padding for tablet */
   }
 }
 
@@ -38,12 +41,14 @@
 @media (min-width: 1128px) {
   .airbnb-grid {
     grid-template-columns: repeat(5, 1fr);
+    padding: 0 48px; /* Increase padding for desktop */
   }
 }
 
 @media (min-width: 1440px) {
   .airbnb-grid {
     grid-template-columns: repeat(6, 1fr);
+    padding: 0 64px; /* Increase padding for large desktop */
   }
 }
 
@@ -52,7 +57,8 @@
   aspect-ratio: 4/3;
   width: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px; /* Slightly more rounded corners */
+  transition: transform 0.3s ease;
 }
 
 /* Assurer que les images s'étendent correctement */
@@ -66,6 +72,8 @@
 .flex-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -91,13 +99,45 @@
   }
 }
 
+/* Full-width container styles */
+.full-width-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 24px;
+}
+
+@media (min-width: 744px) {
+  .content-container {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1128px) {
+  .content-container {
+    padding: 0 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .content-container {
+    padding: 0 64px;
+  }
+}
+
 /* Styles spécifiques pour les pages About, Contact et Support */
 .about-image,
 .contact-image,
 .support-image {
   aspect-ratio: 16/9;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
   max-width: 100%;
   height: auto;
 }
@@ -108,4 +148,41 @@
   border-radius: 50%;
   width: 120px;
   height: 120px;
+}
+
+/* Typographie élégante et minimaliste */
+.elegant-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.minimal-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Ajustements pour la barre de navigation */
+.navbar-container {
+  width: 100%;
+  padding: 0 24px;
+}
+
+@media (min-width: 744px) {
+  .navbar-container {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1128px) {
+  .navbar-container {
+    padding: 0 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .navbar-container {
+    padding: 0 64px;
+  }
 }
