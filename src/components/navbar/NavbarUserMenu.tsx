@@ -14,7 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export const NavbarUserMenu = () => {
+interface NavbarUserMenuProps {
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({ 
+  mobileMenuOpen, 
+  setMobileMenuOpen 
+}) => {
   const { user } = useAuth();
   const { settings } = useSiteSettings();
   

@@ -62,7 +62,10 @@ export const Navbar = () => {
         <NavbarSearchBar />
 
         {/* Actions utilisateur */}
-        <NavbarUserMenu mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+        <NavbarUserMenu 
+          mobileMenuOpen={mobileMenuOpen} 
+          setMobileMenuOpen={setMobileMenuOpen} 
+        />
       </div>
 
       {/* Menu mobile */}
