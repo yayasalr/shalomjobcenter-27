@@ -2,7 +2,7 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LOME_NEIGHBORHOODS } from "@/hooks/useListings";
+import { LOME_NEIGHBORHOODS } from "@/constants/locations";
 
 interface LocationSectionProps {
   neighborhood: string;

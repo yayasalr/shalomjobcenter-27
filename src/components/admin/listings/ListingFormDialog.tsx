@@ -10,11 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Listing } from "@/types/listing";
-import { LOME_NEIGHBORHOODS } from "@/hooks/useListings";
 import { toast } from "sonner";
 import { BasicInfoSection } from "./form/BasicInfoSection";
 import { LocationSection } from "./form/LocationSection";
 import { ImageUploadSection } from "./form/ImageUploadSection";
+import { DialogActions } from "./form/DialogActions";
 
 interface ListingFormDialogProps {
   selectedListing: Listing | null;
@@ -33,68 +33,88 @@ export const ListingFormDialog = ({
   isOpen,
   setIsOpen
 }: ListingFormDialogProps) => {
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [neighborhood, setNeighborhood] = useState<string>("");
-  const [mapLocation, setMapLocation] = useState<string>("");
+  // State declarations
+  const [formState, setFormState] = useState({
+    title: "",
+    description: "",
+    price: "",
+    location: "",
+    neighborhood: "",
+    mapLocation: ""
+  });
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
-  // Utiliser isOpen du props s'il est fourni
+  // Use isOpen from props if provided
   const dialogOpen = isOpen !== undefined ? isOpen : open;
   const setDialogOpen = setIsOpen || setOpen;
 
-  // Charger les données du logement sélectionné
+  // Load selected listing data when editing
   useEffect(() => {
     if (selectedListing && isEditing) {
-      setTitle(selectedListing.title);
-      setDescription(selectedListing.description || "");
-      setPrice(selectedListing.price.toString());
-      setLocation(selectedListing.location);
-      
-      // Extraire le quartier de la localisation
-      const parts = selectedListing.location.split(',');
-      if (parts.length > 0) {
-        setNeighborhood(parts[0].trim());
-      }
-      
-      // Si un mapLocation existe, le charger
-      if (selectedListing.mapLocation) {
-        setMapLocation(selectedListing.mapLocation);
-      }
-      
-      // Réinitialiser les images
-      setImages([]);
-      
-      // Afficher les images existantes comme prévisualisations
-      if (selectedListing.images && selectedListing.images.length > 0) {
-        setImagePreviews(selectedListing.images.filter(img => !img.startsWith('blob:')));
-      } else if (selectedListing.image && !selectedListing.image.startsWith('blob:')) {
-        setImagePreviews([selectedListing.image]);
-      } else {
-        setImagePreviews([]);
-      }
+      loadListingData(selectedListing);
     } else if (!isEditing) {
       resetForm();
     }
   }, [selectedListing, isEditing]);
 
-  // Réinitialiser le formulaire
+  // Load listing data from the selected listing
+  const loadListingData = (listing: Listing) => {
+    setFormState({
+      title: listing.title,
+      description: listing.description || "",
+      price: listing.price.toString(),
+      location: listing.location,
+      neighborhood: extractNeighborhood(listing.location),
+      mapLocation: listing.mapLocation || ""
+    });
+    
+    // Reset images and set previews
+    setImages([]);
+    
+    if (listing.images && listing.images.length > 0) {
+      setImagePreviews(listing.images.filter(img => !img.startsWith('blob:')));
+    } else if (listing.image && !listing.image.startsWith('blob:')) {
+      setImagePreviews([listing.image]);
+    } else {
+      setImagePreviews([]);
+    }
+  };
+
+  // Extract neighborhood from location string
+  const extractNeighborhood = (location: string): string => {
+    const parts = location.split(',');
+    return parts.length > 0 ? parts[0].trim() : "";
+  };
+
+  // Form state updaters
+  const updateFormState = (field: string, value: string) => {
+    setFormState(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Update neighborhood and location together
+  const handleNeighborhoodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newNeighborhood = e.target.value;
+    updateFormState("neighborhood", newNeighborhood);
+    updateFormState("location", `${newNeighborhood}, Lomé, Togo`);
+  };
+
+  // Reset the form to initial state
   const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setPrice("");
-    setLocation("");
-    setNeighborhood("");
-    setMapLocation("");
+    setFormState({
+      title: "",
+      description: "",
+      price: "",
+      location: "",
+      neighborhood: "",
+      mapLocation: ""
+    });
     setImages([]);
     setImagePreviews([]);
   };
 
-  // Gérer l'upload d'images
+  // Handle image changes
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -105,43 +125,36 @@ export const ListingFormDialog = ({
     }
   };
 
-  // Supprimer une image
+  // Remove an image
   const removeImage = (index: number) => {
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
-    // Révoquer l'URL de l'aperçu pour éviter les fuites de mémoire
+    // Revoke the URL to prevent memory leaks
     URL.revokeObjectURL(imagePreviews[index]);
     setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
   };
 
-  // Mettre à jour la localisation lorsque le quartier change
-  const handleNeighborhoodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newNeighborhood = e.target.value;
-    setNeighborhood(newNeighborhood);
-    setLocation(`${newNeighborhood}, Lomé, Togo`);
-  };
-
-  // Soumettre le formulaire
+  // Form submission handler
   const handleSubmit = () => {
-    if (!title || !price || !location) {
+    if (!formState.title || !formState.price || !formState.location) {
       toast.error("Veuillez remplir tous les champs obligatoires");
       return;
     }
 
-    if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
+    if (isNaN(parseFloat(formState.price)) || parseFloat(formState.price) <= 0) {
       toast.error("Le prix doit être un nombre positif");
       return;
     }
 
     const formData: any = {
-      title,
-      description,
-      price: parseFloat(price),
-      location,
-      mapLocation: mapLocation
+      title: formState.title,
+      description: formState.description,
+      price: parseFloat(formState.price),
+      location: formState.location,
+      mapLocation: formState.mapLocation
     };
 
-    // Si on modifie un logement existant
+    // If editing an existing listing
     if (selectedListing && isEditing) {
       formData.id = selectedListing.id;
       formData.rating = selectedListing.rating;
@@ -155,11 +168,11 @@ export const ListingFormDialog = ({
       }
     }
 
-    // Traiter les nouvelles images
+    // Process new images
     if (images.length > 0) {
       const imageUrls = images.map(file => URL.createObjectURL(file));
-      formData.image = imageUrls[0]; // La première image comme image principale
-      formData.images = imageUrls; // Toutes les images dans un tableau
+      formData.image = imageUrls[0]; // First image as main image
+      formData.images = imageUrls; // All images in an array
     }
 
     onSave(formData);
@@ -187,22 +200,22 @@ export const ListingFormDialog = ({
         <div className="grid gap-4 py-4">
           {/* Section des informations de base */}
           <BasicInfoSection 
-            title={title}
-            description={description}
-            price={price}
-            setTitle={setTitle}
-            setDescription={setDescription}
-            setPrice={setPrice}
+            title={formState.title}
+            description={formState.description}
+            price={formState.price}
+            setTitle={(title) => updateFormState("title", title)}
+            setDescription={(desc) => updateFormState("description", desc)}
+            setPrice={(price) => updateFormState("price", price)}
           />
 
           {/* Section de localisation */}
           <LocationSection 
-            neighborhood={neighborhood}
-            location={location}
-            mapLocation={mapLocation}
+            neighborhood={formState.neighborhood}
+            location={formState.location}
+            mapLocation={formState.mapLocation}
             handleNeighborhoodChange={handleNeighborhoodChange}
-            setLocation={setLocation}
-            setMapLocation={setMapLocation}
+            setLocation={(loc) => updateFormState("location", loc)}
+            setMapLocation={(map) => updateFormState("mapLocation", map)}
           />
 
           {/* Section d'upload d'images */}
@@ -214,19 +227,11 @@ export const ListingFormDialog = ({
         </div>
 
         <DialogFooter className="bg-gray-50 p-4 rounded-b-lg">
-          <Button 
-            variant="outline" 
-            onClick={onCancel}
-            className="bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
-          >
-            Annuler
-          </Button>
-          <Button 
-            onClick={handleSubmit}
-            className="bg-sholom-primary hover:bg-sholom-primary/90 text-white"
-          >
-            {isEditing ? "Mettre à jour" : "Ajouter"}
-          </Button>
+          <DialogActions 
+            onCancel={onCancel}
+            onSubmit={handleSubmit}
+            isEditing={isEditing}
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>
