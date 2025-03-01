@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Job, JobDomain, JobContract } from '@/types/job';
 import { toast } from "sonner";
@@ -209,6 +208,7 @@ export const useJobForm = ({ selectedJob, onSave, onCancel }: UseJobFormProps) =
     bathrooms,
     setBathrooms,
     images,
+    setImages,
     isPublished,
     setIsPublished,
     featuredImage,
