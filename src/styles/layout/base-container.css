@@ -22,7 +22,7 @@
   width: 100%;
   max-width: 100%;
   padding: 0 var(--padding-mobile);
-  margin: 0 auto;
+  margin: 0;
 }
 
 @media (min-width: var(--breakpoint-md)) {
@@ -54,6 +54,7 @@
   width: 100vw;
   padding: 0 var(--padding-mobile);
   max-width: 100%;
+  margin: 0;
 }
 
 @media (min-width: var(--breakpoint-md)) {

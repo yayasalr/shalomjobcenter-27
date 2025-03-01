@@ -11,12 +11,12 @@ export const PopularNeighborhoods = ({ setSearchTerm }: PopularNeighborhoodsProp
   const neighborhoods = ['Tokoin', 'Bè', 'Adidogomé', 'Agoè', 'Kodjoviakopé', 'Nyékonakpoè', 'Hédzranawoé', 'Baguida'];
   
   return (
-    <div className="mt-16 mb-20 full-width">
-      <div className="max-w-full mx-auto px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
-        <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-6">
+    <div className="mt-14 mb-16 full-width">
+      <div className="mx-0 px-0 w-full">
+        <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-6 px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
           Quartiers populaires à Lomé
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2 px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-20">
           {neighborhoods.map(neighborhood => (
             <Button 
               key={neighborhood}

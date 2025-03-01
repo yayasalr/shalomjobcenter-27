@@ -67,7 +67,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="container mx-auto px-4 w-full">
+      <div className="w-full px-0 mx-0">
         <div className="text-center py-16 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
             <Search className="h-8 w-8 text-gray-400" />
@@ -103,7 +103,7 @@ export const ListingsGrid = ({
       
       {/* "Voir plus" button avec meilleure visibilité */}
       {!searchTerm && visibleListings.length < filteredListings.length && (
-        <div className="flex justify-center mt-12 mb-10">
+        <div className="flex justify-center mt-10 mb-8">
           <Button 
             onClick={loadMoreListings}
             className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-8 py-6 shadow-md font-medium"
