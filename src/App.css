@@ -196,15 +196,20 @@ img.loaded {
 /* Airbnb-style card grid spacing */
 .airbnb-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 24px;
-  padding: 0 24px;
+}
+
+/* Responsive grid layout exactly matching Airbnb's breakpoints */
+@media (min-width: 550px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 744px) {
   .airbnb-grid {
     grid-template-columns: repeat(3, 1fr);
-    padding: 0 40px;
   }
 }
 

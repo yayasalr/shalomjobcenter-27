@@ -50,7 +50,7 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="w-full mx-auto px-5 sm:px-6 md:px-8 lg:px-10 xl:px-20 py-8">
+      <div className="w-full mx-auto max-w-[2520px] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
@@ -68,7 +68,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-full mx-auto px-5 sm:px-6 md:px-8 lg:px-10 xl:px-20 py-8">
+      <div className="w-full mx-auto max-w-[2520px] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24">
         <div className="text-center py-16 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
             <Search className="h-8 w-8 text-gray-400" />
@@ -88,9 +88,9 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="w-full mx-auto">
+    <div className="w-full mx-auto max-w-[2520px]">
       <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 px-5 sm:px-6 md:px-8 lg:px-10 xl:px-20"
+        className="airbnb-grid px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
