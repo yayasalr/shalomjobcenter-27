@@ -21,7 +21,8 @@ export const AdminTopbar = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      // Fix: Call the mutate method of the logout mutation
+      await logout.mutate();
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -31,7 +32,8 @@ export const AdminTopbar = () => {
     <header className="h-16 flex items-center border-b bg-white px-4 sticky top-0 z-30">
       <div className="flex items-center w-full">
         <div className="flex items-center md:hidden">
-          <SidebarTrigger>
+          {/* Fix: Make SidebarTrigger a parent component with Button as its child */}
+          <SidebarTrigger asChild>
             <Button variant="ghost" size="icon" className="mr-2">
               <Menu className="h-5 w-5" />
             </Button>
@@ -55,7 +57,8 @@ export const AdminTopbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.image || "https://github.com/shadcn.png"} alt={user?.name} />
+                    {/* Fix: Use avatar instead of image property */}
+                    <AvatarImage src={user?.avatar || "https://github.com/shadcn.png"} alt={user?.name} />
                     <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </Button>
