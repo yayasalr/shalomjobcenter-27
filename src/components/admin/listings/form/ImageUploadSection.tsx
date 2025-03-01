@@ -1,9 +1,8 @@
-
 import React, { useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { ImageUploader } from '@/components/shared/image-uploader';
-import { useUploadImage } from '@/hooks/useUploadImage';
+import { useUploadImage } from '@/hooks/upload';
 import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadSectionProps {
@@ -28,12 +27,10 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
     allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
   });
 
-  // Convert the file input handler to be compatible with ImageUploader
   const handleImageUpload = useCallback(async (file: File) => {
     try {
       const result = await handleSingleImageUpload(file);
       if (result) {
-        // Create the mock event with the compressed file
         const mockEvent = {
           target: {
             files: [result.compressedFile] as unknown as FileList
@@ -79,7 +76,6 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
         </p>
       )}
 
-      {/* Prévisualisation des images */}
       {imagePreviews.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
           {imagePreviews.map((preview, index) => (
@@ -88,7 +84,7 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
                 src={preview}
                 alt={`Preview ${index}`}
                 className="h-24 w-full object-cover rounded-md border shadow-sm"
-                loading="lazy" // Lazy load images for better performance
+                loading="lazy"
               />
               <button
                 type="button"
