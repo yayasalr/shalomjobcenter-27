@@ -17,25 +17,38 @@ import { CompanySettingsTab } from '@/components/admin/settings/CompanySettingsT
 import { SocialSettingsTab } from '@/components/admin/settings/SocialSettingsTab';
 import { ImportExportTab } from '@/components/admin/settings/ImportExportTab';
 import { NotificationSettingsTab } from '@/components/admin/settings/NotificationSettingsTab';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 const AdminSettings = () => {
   const {
     settings,
-    updateSettings,
+    handleInputChange,
+    handleFooterChange,
     handleCompanyInfoChange,
-    resetSettings,
-    exportSettings,
-    importSettings,
-    applySettingsToDOM
+    handleSocialLinkChange,
+    handleReset,
+    goBackToDashboard,
+    logoUrl,
+    logoUploading,
+    faviconUrl,
+    faviconUploading,
+    handleLogoUpload,
+    handleFaviconUpload,
+    handleThemeColorChange
   } = useAdminSettings();
+  
+  // Get the additional functions directly from useSiteSettings
+  const { 
+    updateSettings, 
+    resetSettings, 
+    exportSettings, 
+    importSettings, 
+    applySettingsToDOM 
+  } = useSiteSettings();
   
   const [activeTab, setActiveTab] = useState("general");
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/placeholder.svg");
-  const [logoUploading, setLogoUploading] = useState(false);
-  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon || "/favicon.ico");
-  const [faviconUploading, setFaviconUploading] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   const handleChange = (field: keyof typeof settings, value: any) => {
@@ -51,12 +64,6 @@ const AdminSettings = () => {
         }
       });
     }
-  };
-  
-  const handleFooterChange = (field: keyof (typeof settings)['footer'], value: string) => {
-    updateSettings({
-      footer: { ...settings.footer, [field]: value }
-    });
   };
   
   const handleSocialLinksChange = (field: keyof (typeof settings)['socialLinks'], value: string) => {
@@ -81,89 +88,6 @@ const AdminSettings = () => {
         setShowSuccessToast(false);
       }, 3000);
     }, 1000);
-  };
-  
-  const handleLogoUpload = (file: File) => {
-    setLogoUploading(true);
-    
-    // Create a preview URL and apply it immediately to see the change
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const result = e.target?.result as string;
-      
-      if (result) {
-        // Update locally and in settings immediately
-        setLogoUrl(result);
-        updateSettings({ logo: result });
-        
-        // Then simulate the server upload for persistent storage
-        setTimeout(() => {
-          // Store in localStorage for persistence
-          try {
-            localStorage.setItem('site_logo', result);
-          } catch (error) {
-            console.error("Error storing logo:", error);
-          }
-          
-          setLogoUploading(false);
-        }, 1000);
-      }
-    };
-    
-    fileReader.readAsDataURL(file);
-  };
-
-  const handleFaviconUpload = (file: File) => {
-    setFaviconUploading(true);
-    
-    // Create a preview URL and apply it immediately
-    const fileReader = new FileReader();
-    fileReader.onload = (e) => {
-      const result = e.target?.result as string;
-      
-      if (result) {
-        // Update locally and in settings immediately
-        setFaviconUrl(result);
-        updateSettings({ favicon: result });
-        
-        // Then simulate the server upload
-        setTimeout(() => {
-          // Store in localStorage for persistence
-          try {
-            localStorage.setItem('site_favicon', result);
-          } catch (error) {
-            console.error("Error storing favicon:", error);
-          }
-          
-          setFaviconUploading(false);
-        }, 1000);
-      }
-    };
-    
-    fileReader.readAsDataURL(file);
-  };
-  
-  const handleImportClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-  
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const file = files[0];
-    await handleImportSettings(file);
-
-    // Reset the file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-  
-  const goBackToDashboard = () => {
-    window.location.href = '/admin';
   };
   
   return (
@@ -207,15 +131,21 @@ const AdminSettings = () => {
             <TabsContent value="general">
               <GeneralSettingsTab 
                 settings={settings} 
-                handleChange={handleChange} 
-                handleNestedChange={handleNestedChange}
+                handleInputChange={handleInputChange} 
               />
             </TabsContent>
             
             <TabsContent value="theme">
               <ThemeSettingsTab 
-                settings={settings} 
-                handleChange={handleChange} 
+                settings={settings}
+                logoUrl={logoUrl}
+                logoUploading={logoUploading}
+                faviconUrl={faviconUrl}
+                faviconUploading={faviconUploading}
+                handleLogoUpload={handleLogoUpload}
+                handleFaviconUpload={handleFaviconUpload}
+                handleThemeColorChange={handleThemeColorChange}
+                handleInputChange={handleInputChange}
               />
             </TabsContent>
             
@@ -237,7 +167,6 @@ const AdminSettings = () => {
               <SocialSettingsTab 
                 settings={settings} 
                 handleSocialLinkChange={handleSocialLinkChange}
-                handleChange={handleChange}
               />
             </TabsContent>
             
