@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -17,15 +17,21 @@ const AdminSettings = () => {
   const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState("general");
-  const [logoUrl, setLogoUrl] = useState(settings.logo);
+  const [logoUrl, setLogoUrl] = useState(settings.logo || "/placeholder.svg");
   const [logoUploading, setLogoUploading] = useState(false);
-  const [faviconUrl, setFaviconUrl] = useState(settings.favicon);
+  const [faviconUrl, setFaviconUrl] = useState(settings.favicon || "/favicon.ico");
   const [faviconUploading, setFaviconUploading] = useState(false);
+  
+  // Synchroniser l'état local avec les paramètres chaque fois qu'ils changent
+  useEffect(() => {
+    setLogoUrl(settings.logo || "/placeholder.svg");
+    setFaviconUrl(settings.favicon || "/favicon.ico");
+  }, [settings.logo, settings.favicon]);
 
   const handleLogoUpload = () => {
     setLogoUploading(true);
     setTimeout(() => {
-      const newLogoUrl = "/lovable-uploads/9eef1ea2-a8eb-4b08-a069-92ccc2b21a1e.png";
+      const newLogoUrl = "/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png";
       setLogoUrl(newLogoUrl);
       updateSettings({ logo: newLogoUrl });
       setLogoUploading(false);
@@ -116,14 +122,14 @@ const AdminSettings = () => {
     <div className="container mx-auto px-4 py-24">
       <h1 className="text-3xl font-bold mb-8">Paramètres du site</h1>
 
-      <Tabs defaultValue={activeTab} className="w-full">
-        <TabsList className="mb-4">
-          <TabsTrigger value="general" onClick={() => setActiveTab("general")}>Général</TabsTrigger>
-          <TabsTrigger value="theme" onClick={() => setActiveTab("theme")}>Thème</TabsTrigger>
-          <TabsTrigger value="footer" onClick={() => setActiveTab("footer")}>Pied de page</TabsTrigger>
-          <TabsTrigger value="company" onClick={() => setActiveTab("company")}>Entreprise</TabsTrigger>
-          <TabsTrigger value="social" onClick={() => setActiveTab("social")}>Réseaux sociaux</TabsTrigger>
-          <TabsTrigger value="importExport" onClick={() => setActiveTab("importExport")}>Import/Export</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="mb-4 flex flex-wrap gap-2">
+          <TabsTrigger value="general">Général</TabsTrigger>
+          <TabsTrigger value="theme">Thème</TabsTrigger>
+          <TabsTrigger value="footer">Pied de page</TabsTrigger>
+          <TabsTrigger value="company">Entreprise</TabsTrigger>
+          <TabsTrigger value="social">Réseaux sociaux</TabsTrigger>
+          <TabsTrigger value="importExport">Import/Export</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SiteSettings } from '@/hooks/useSiteSettings';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,18 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
   handleThemeColorChange,
   handleInputChange
 }) => {
+  const [logoError, setLogoError] = useState(false);
+  const [faviconError, setFaviconError] = useState(false);
+  
+  // Réinitialiser les erreurs lorsque les URLs changent
+  useEffect(() => {
+    setLogoError(false);
+  }, [logoUrl]);
+  
+  useEffect(() => {
+    setFaviconError(false);
+  }, [faviconUrl]);
+  
   return (
     <Card>
       <CardHeader>
@@ -39,18 +51,52 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ImageUploadField
-            label="Logo"
-            imageUrl={logoUrl}
-            onUpload={handleLogoUpload}
-            isUploading={logoUploading}
-          />
-          <ImageUploadField
-            label="Favicon"
-            imageUrl={faviconUrl}
-            onUpload={handleFaviconUpload}
-            isUploading={faviconUploading}
-          />
+          <div>
+            <Label>Logo</Label>
+            <div className="flex items-center space-x-4 mt-1">
+              <div className="h-12 w-12 border rounded-md flex items-center justify-center overflow-hidden bg-gray-50">
+                {!logoError ? (
+                  <img 
+                    src={logoUrl} 
+                    alt="Logo" 
+                    className="h-full w-auto object-contain" 
+                    onError={() => setLogoError(true)}
+                  />
+                ) : (
+                  <span className="text-sm text-gray-400">Logo</span>
+                )}
+              </div>
+              <ImageUploadField
+                label=""
+                imageUrl={logoUrl}
+                onUpload={handleLogoUpload}
+                isUploading={logoUploading}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Favicon</Label>
+            <div className="flex items-center space-x-4 mt-1">
+              <div className="h-12 w-12 border rounded-md flex items-center justify-center overflow-hidden bg-gray-50">
+                {!faviconError ? (
+                  <img 
+                    src={faviconUrl} 
+                    alt="Favicon" 
+                    className="h-full w-auto object-contain"
+                    onError={() => setFaviconError(true)}
+                  />
+                ) : (
+                  <span className="text-sm text-gray-400">Favicon</span>
+                )}
+              </div>
+              <ImageUploadField
+                label=""
+                imageUrl={faviconUrl}
+                onUpload={handleFaviconUpload}
+                isUploading={faviconUploading}
+              />
+            </div>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ColorPickerField
@@ -80,7 +126,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
               id="borderRadius"
               className="w-full border rounded-md p-2"
               defaultValue={settings.borderRadius}
-              onChange={(e) => handleInputChange('borderRadius', e.target.value)}
+              onChange={(e) => handleInputChange('borderRadius', e.target.value as any)}
             >
               <option value="small">Petit</option>
               <option value="medium">Moyen</option>
@@ -88,12 +134,13 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
             </select>
           </div>
         </div>
-        <div>
-          <Label>Mode sombre</Label>
+        <div className="flex items-center space-x-2">
           <Switch
             checked={settings.darkMode}
             onCheckedChange={(checked) => handleInputChange('darkMode', checked)}
+            id="darkMode"
           />
+          <Label htmlFor="darkMode">Mode sombre</Label>
         </div>
       </CardContent>
     </Card>

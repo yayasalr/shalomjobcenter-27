@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export interface SiteSettings {
   siteName: string;
@@ -76,9 +76,9 @@ export interface SiteSettings {
 
 const defaultSettings: SiteSettings = {
   siteName: 'SHALOM JOB CENTER',
-  logo: '/placeholder.svg',
-  primaryColor: '#8B5CF6', // Violet
-  secondaryColor: '#E5DEFF', // Violet clair
+  logo: '/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png',
+  primaryColor: '#FF385C', // Rouge Airbnb
+  secondaryColor: '#222222', // Gris foncé
   language: 'fr',
   footer: {
     contact: 'Contactez-nous à contact@shalomjobcenter.fr',
@@ -147,6 +147,34 @@ const defaultSettings: SiteSettings = {
   enableSocialSharing: true
 };
 
+// Fonction pour garantir que les paramètres sont valides
+const validateSettings = (settings: any): SiteSettings => {
+  const validatedSettings = { ...defaultSettings };
+  
+  // Fusionner les paramètres sauvegardés avec les paramètres par défaut
+  if (settings) {
+    // Valider les propriétés de premier niveau
+    for (const key in defaultSettings) {
+      if (settings[key] !== undefined && settings[key] !== null) {
+        (validatedSettings as any)[key] = settings[key];
+      }
+    }
+    
+    // Valider les objets imbriqués
+    for (const nestedKey of ['footer', 'socialLinks', 'reservationSettings', 'companyInfo']) {
+      if (settings[nestedKey] && typeof settings[nestedKey] === 'object') {
+        for (const innerKey in (defaultSettings as any)[nestedKey]) {
+          if (settings[nestedKey][innerKey] !== undefined && settings[nestedKey][innerKey] !== null) {
+            (validatedSettings as any)[nestedKey][innerKey] = settings[nestedKey][innerKey];
+          }
+        }
+      }
+    }
+  }
+  
+  return validatedSettings;
+};
+
 export const useSiteSettings = () => {
   const [settings, setSettings] = useState<SiteSettings>(() => {
     const savedSettings = localStorage.getItem('siteSettings');
@@ -154,7 +182,7 @@ export const useSiteSettings = () => {
       try {
         const parsedSettings = JSON.parse(savedSettings);
         console.log('Chargement des paramètres du site:', parsedSettings);
-        return parsedSettings;
+        return validateSettings(parsedSettings);
       } catch (e) {
         console.error('Erreur lors du chargement des paramètres:', e);
         return defaultSettings;
@@ -163,10 +191,21 @@ export const useSiteSettings = () => {
     return defaultSettings;
   });
 
+  // Appliquer les paramètres au DOM lors du premier chargement
+  useEffect(() => {
+    applySettingsToDOM();
+  }, []);
+
+  // Appliquer les paramètres au DOM à chaque changement
+  useEffect(() => {
+    applySettingsToDOM();
+    // Sauvegarder dans localStorage à chaque changement
+    localStorage.setItem('siteSettings', JSON.stringify(settings));
+  }, [settings]);
+
   const updateSettings = useCallback((newSettings: Partial<SiteSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
-      localStorage.setItem('siteSettings', JSON.stringify(updated));
       return updated;
     });
   }, []);
@@ -174,7 +213,6 @@ export const useSiteSettings = () => {
   const resetSettings = useCallback(() => {
     setSettings(defaultSettings);
     localStorage.setItem('siteSettings', JSON.stringify(defaultSettings));
-    applySettingsToDOM();
   }, []);
 
   const applySettingsToDOM = useCallback(() => {
@@ -186,27 +224,32 @@ export const useSiteSettings = () => {
     console.log('Paramètres appliqués au DOM:', settings);
   }, [settings]);
 
-  // Add exportSettings function
+  // Fonction d'exportation des paramètres
   const exportSettings = useCallback(() => {
-    const settingsString = JSON.stringify(settings, null, 2);
-    const blob = new Blob([settingsString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'shalomjobcenter-settings.json';
-    document.body.appendChild(a);
-    a.click();
-    
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 0);
-    
-    return true;
+    try {
+      const settingsString = JSON.stringify(settings, null, 2);
+      const blob = new Blob([settingsString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'shalomjobcenter-settings.json';
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'exportation des paramètres:', error);
+      return false;
+    }
   }, [settings]);
 
-  // Add importSettings function
+  // Fonction d'importation des paramètres
   const importSettings = useCallback(async (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -216,31 +259,33 @@ export const useSiteSettings = () => {
           const content = event.target?.result as string;
           const parsedSettings = JSON.parse(content);
           
-          // Validate the imported settings
-          if (!parsedSettings.siteName || !parsedSettings.primaryColor) {
-            console.error('Invalid settings file');
+          // Valider les paramètres importés
+          if (!parsedSettings) {
+            console.error('Fichier de paramètres invalide');
             resolve(false);
             return;
           }
           
-          setSettings(parsedSettings);
-          localStorage.setItem('siteSettings', content);
-          applySettingsToDOM();
+          // Fusionner avec les paramètres par défaut pour garantir une structure valide
+          const validatedSettings = validateSettings(parsedSettings);
+          
+          setSettings(validatedSettings);
+          localStorage.setItem('siteSettings', JSON.stringify(validatedSettings));
           resolve(true);
         } catch (error) {
-          console.error('Error importing settings:', error);
+          console.error('Erreur lors de l\'importation des paramètres:', error);
           resolve(false);
         }
       };
       
       reader.onerror = () => {
-        console.error('Error reading file');
+        console.error('Erreur lors de la lecture du fichier');
         resolve(false);
       };
       
       reader.readAsText(file);
     });
-  }, [applySettingsToDOM]);
+  }, []);
 
   return {
     settings,

@@ -5,6 +5,8 @@
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
+  max-width: 100%;
+  object-fit: contain;
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #8B5CF6aa);
@@ -16,11 +18,15 @@
 .site-name {
   font-family: 'Playfair Display', serif;
   letter-spacing: 0.5px;
-  background: linear-gradient(90deg, #8B5CF6, #6D28D9);
+  background: linear-gradient(90deg, #FF385C, #CF2E49);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @keyframes logo-spin {
