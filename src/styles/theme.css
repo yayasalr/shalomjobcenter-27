@@ -59,6 +59,23 @@
   background-color: var(--sholom-info);
 }
 
+/* Hover background colors - add missing hover classes */
+.hover\:bg-sholom-primary:hover {
+  background-color: hsl(var(--sholom-primary));
+}
+.hover\:bg-sholom-primary-dark:hover {
+  background-color: hsl(var(--sholom-primary-dark));
+}
+.hover\:bg-sholom-primary-lighter:hover {
+  background-color: var(--sholom-primary-lighter);
+}
+.hover\:bg-sholom-accent:hover {
+  background-color: hsl(var(--sholom-accent));
+}
+.hover\:bg-sholom-accent-darker:hover {
+  background-color: var(--sholom-accent-darker);
+}
+
 /* Text colors */
 .text-sholom-primary {
   color: hsl(var(--sholom-primary));

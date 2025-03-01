@@ -30,14 +30,14 @@ export const useAdminConversationActions = (
       };
 
       // Update the selected conversation
-      const updatedSelectedConversation = {
+      const updatedSelectedConversation: Conversation = {
         ...selectedConversation,
         messages: [...selectedConversation.messages, messageToSend],
         lastMessage: {
           content: newMessage,
           timestamp: new Date(),
           read: true,
-          sender: 'admin',
+          sender: 'admin' as const,
         },
       };
 
