@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 346.8 77.2% 49.8%;
+    --primary: 265 83% 63%;
     --primary-foreground: 355.7 100% 97.3%;
  
     --secondary: 210 40% 96.1%;
@@ -23,7 +22,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --accent: 210 40% 96.1%;
+    --accent: 24 95% 53%;
     --accent-foreground: 222.2 47.4% 11.2%;
  
     --destructive: 0 84.2% 60.2%;
@@ -31,15 +30,15 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 265 83% 63%;
  
     --radius: 0.5rem;
     
     /* SHALOM variables */
-    --sholom-primary: 265 83% 60%;
+    --sholom-primary: 265 83% 63%;
     --sholom-primary-dark: 265 94% 58%;
     --sholom-secondary: 253 88% 94%;
-    --sholom-accent: 292 94% 60%;
+    --sholom-accent: 24 95% 53%;
     --sholom-dark: 222 25% 14%;
     --sholom-light: 255 65% 96%;
     --sholom-muted: 216 10% 47%;

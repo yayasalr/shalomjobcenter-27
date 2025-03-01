@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -35,24 +34,24 @@ export default {
             400: "#222222",
           },
         },
-        // Nouvelle palette sophistiquée
+        // Palette de couleurs modernisée et plus vibrante
         sholom: {
-          primary: "#0EA5E9", // Bleu océan
-          secondary: "#6366F1", // Indigo vibrant
-          accent: "#F59E0B", // Ambre chaud
-          dark: "#1E293B", // Slate foncé
-          light: "#F8FAFC", // Slate très clair
-          muted: "#64748B", // Slate moyen
+          primary: "#8B5CF6", // Violet vibrant
+          secondary: "#F1F0FB", // Gris très clair
+          accent: "#F97316", // Orange vif
+          dark: "#403E43", // Gris foncé
+          light: "#F8FAFC", // Blanc cassé
+          muted: "#6B7280", // Gris moyen
           surface: "#FFFFFF", // Surface
           "surface-hover": "#F1F5F9", // Surface avec hover
           success: "#10B981", // Vert émeraude
           warning: "#F59E0B", // Ambre
           error: "#EF4444", // Rouge
           "on-primary": "#FFFFFF", // Texte sur primaire
-          "on-secondary": "#FFFFFF", // Texte sur secondaire
+          "on-secondary": "#403E43", // Texte sur secondaire
           "on-accent": "#FFFFFF", // Texte sur accent
           "on-dark": "#FFFFFF", // Texte sur dark
-          "on-light": "#1E293B", // Texte sur light
+          "on-light": "#403E43", // Texte sur light
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

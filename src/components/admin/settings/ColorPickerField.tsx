@@ -16,14 +16,20 @@ export const ColorPickerField: React.FC<ColorPickerFieldProps> = ({
   return (
     <div>
       <Label>{label}</Label>
-      <div className="flex items-center mt-1">
-        <input
-          type="color"
-          value={color}
-          onChange={(e) => onColorChange(e.target.value)}
-          className="w-10 h-10 p-1 border rounded cursor-pointer"
-        />
-        <span className="ml-2 text-sm text-gray-500">{color}</span>
+      <div className="flex items-center mt-1 gap-3">
+        <div className="relative w-10 h-10 rounded-md overflow-hidden shadow-sm border border-gray-200">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => onColorChange(e.target.value)}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <div 
+            className="w-full h-full" 
+            style={{ backgroundColor: color }}
+          ></div>
+        </div>
+        <span className="text-sm text-gray-600 font-mono">{color}</span>
       </div>
     </div>
   );
