@@ -10,12 +10,14 @@ interface ImageUploadSectionProps {
   imagePreviews: string[];
   onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   removeImage: (index: number) => void;
+  error?: string;
 }
 
 export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
   imagePreviews,
   onImageChange,
-  removeImage
+  removeImage,
+  error
 }) => {
   const { toast } = useToast();
   const { handleSingleImageUpload } = useUploadImage({
@@ -52,7 +54,12 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="images" className="text-gray-700 font-medium">Images</Label>
+      <Label 
+        htmlFor="images" 
+        className={`text-gray-700 font-medium ${error ? 'text-red-500' : ''}`}
+      >
+        Images {imagePreviews.length === 0 && '*'}
+      </Label>
       
       <ImageUploader
         onImageUpload={handleImageUpload}
@@ -61,11 +68,16 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
         buttonVariant="primary"
         allowedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
         maxSizeMB={10}
+        className={error ? 'border border-red-500 rounded-md p-1' : ''}
       />
       
-      <p className="text-xs text-gray-500">
-        Vous pouvez sélectionner plusieurs images. La première image sera utilisée comme aperçu.
-      </p>
+      {error ? (
+        <p className="text-red-500 text-xs mt-1">{error}</p>
+      ) : (
+        <p className="text-xs text-gray-500">
+          Vous pouvez sélectionner plusieurs images. La première image sera utilisée comme aperçu.
+        </p>
+      )}
 
       {/* Prévisualisation des images */}
       {imagePreviews.length > 0 && (
