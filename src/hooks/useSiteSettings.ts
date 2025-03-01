@@ -171,6 +171,12 @@ export const useSiteSettings = () => {
     });
   }, []);
 
+  const resetSettings = useCallback(() => {
+    setSettings(defaultSettings);
+    localStorage.setItem('siteSettings', JSON.stringify(defaultSettings));
+    applySettingsToDOM();
+  }, []);
+
   const applySettingsToDOM = useCallback(() => {
     document.documentElement.style.setProperty('--primary', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
@@ -180,16 +186,68 @@ export const useSiteSettings = () => {
     console.log('Paramètres appliqués au DOM:', settings);
   }, [settings]);
 
-  const resetSettings = useCallback(() => {
-    setSettings(defaultSettings);
-    localStorage.setItem('siteSettings', JSON.stringify(defaultSettings));
-    applySettingsToDOM();
+  // Add exportSettings function
+  const exportSettings = useCallback(() => {
+    const settingsString = JSON.stringify(settings, null, 2);
+    const blob = new Blob([settingsString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'shalomjobcenter-settings.json';
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+    
+    return true;
+  }, [settings]);
+
+  // Add importSettings function
+  const importSettings = useCallback(async (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      
+      reader.onload = (event) => {
+        try {
+          const content = event.target?.result as string;
+          const parsedSettings = JSON.parse(content);
+          
+          // Validate the imported settings
+          if (!parsedSettings.siteName || !parsedSettings.primaryColor) {
+            console.error('Invalid settings file');
+            resolve(false);
+            return;
+          }
+          
+          setSettings(parsedSettings);
+          localStorage.setItem('siteSettings', content);
+          applySettingsToDOM();
+          resolve(true);
+        } catch (error) {
+          console.error('Error importing settings:', error);
+          resolve(false);
+        }
+      };
+      
+      reader.onerror = () => {
+        console.error('Error reading file');
+        resolve(false);
+      };
+      
+      reader.readAsText(file);
+    });
   }, [applySettingsToDOM]);
 
   return {
     settings,
     updateSettings,
     resetSettings,
-    applySettingsToDOM
+    applySettingsToDOM,
+    exportSettings,
+    importSettings
   };
 };

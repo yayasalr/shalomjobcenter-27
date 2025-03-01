@@ -159,7 +159,7 @@ const Messages = () => {
       read: true,
     };
     
-    const updatedConversations = conversations.map(conv => {
+    const updatedConversations: Conversation[] = conversations.map(conv => {
       if (conv.id === selectedConversation.id) {
         return {
           ...conv,
@@ -205,11 +205,11 @@ const Messages = () => {
           read: false,
         };
         
-        const updatedWithResponse = conversations.map(conv => {
+        const updatedWithResponse: Conversation[] = conversations.map(conv => {
           if (conv.id === selectedConversation.id) {
             return {
               ...conv,
-              messages: [...conv.messages, autoResponse],
+              messages: [...conv.messages, updatedMessage, autoResponse],
               lastMessage: {
                 content: autoResponse.content,
                 timestamp: autoResponse.timestamp,
@@ -250,7 +250,7 @@ const Messages = () => {
   // Marquer les messages comme lus lorsqu'une conversation est sélectionnée
   const handleSelectConversation = (conversation: Conversation) => {
     // Marquer tous les messages comme lus
-    const updatedConversations = conversations.map(conv => {
+    const updatedConversations: Conversation[] = conversations.map(conv => {
       if (conv.id === conversation.id && !conv.lastMessage.read) {
         const updatedMessages = conv.messages.map(msg => ({
           ...msg,

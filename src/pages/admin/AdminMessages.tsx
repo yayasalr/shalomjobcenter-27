@@ -66,7 +66,7 @@ const AdminMessages = () => {
           });
           
           // Filtrer pour trouver les conversations avec l'admin
-          const adminConvs = userConversations.filter((conv: Conversation) => 
+          const adminConvs = userConversations.filter((conv: any) => 
             conv.with.id === 'admin'
           );
           
@@ -90,12 +90,12 @@ const AdminMessages = () => {
                 },
                 lastMessage: {
                   ...adminConv.lastMessage,
-                  // Inverser le sender
+                  // Inverser le sender et s'assurer qu'il est du bon type
                   sender: adminConv.lastMessage.sender === 'user' ? 'user' : 'admin',
                 },
                 messages: adminConv.messages.map(msg => ({
                   ...msg,
-                  // Inverser le sender
+                  // Inverser le sender et s'assurer qu'il est du bon type
                   sender: msg.sender === 'user' ? 'user' : 'admin',
                 })),
               };
@@ -133,7 +133,7 @@ const AdminMessages = () => {
       });
       
       // Trouver et mettre à jour la conversation avec l'admin
-      const updatedUserConversations = userConversations.map((conv: Conversation) => {
+      const updatedUserConversations = userConversations.map((conv: any) => {
         if (conv.with.id === 'admin') {
           // Créer une version transformée pour l'utilisateur
           return {
@@ -172,7 +172,7 @@ const AdminMessages = () => {
     };
     
     // Mettre à jour la conversation sélectionnée
-    const updatedSelectedConversation = {
+    const updatedSelectedConversation: Conversation = {
       ...selectedConversation,
       messages: [...selectedConversation.messages, updatedMessage],
       lastMessage: {
@@ -184,7 +184,7 @@ const AdminMessages = () => {
     };
     
     // Mettre à jour l'état des conversations
-    const updatedConversations = conversations.map(conv => 
+    const updatedConversations: Conversation[] = conversations.map(conv => 
       conv.id === selectedConversation.id ? updatedSelectedConversation : conv
     );
     
@@ -221,7 +221,7 @@ const AdminMessages = () => {
       read: true
     }));
     
-    const updatedConversation = {
+    const updatedConversation: Conversation = {
       ...conversation,
       messages: updatedMessages,
       lastMessage: {
@@ -231,7 +231,7 @@ const AdminMessages = () => {
     };
     
     // Mettre à jour l'état des conversations
-    const updatedConversations = conversations.map(conv => 
+    const updatedConversations: Conversation[] = conversations.map(conv => 
       conv.id === conversation.id ? updatedConversation : conv
     );
     
