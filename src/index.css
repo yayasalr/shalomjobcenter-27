@@ -1,337 +1,244 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+ 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+ 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 347.8 77.8% 49.8%;
+ 
+    --primary: 346.8 77.2% 49.8%;
     --primary-foreground: 355.7 100% 97.3%;
+ 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
+ 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+ 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
+ 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.75rem;
+ 
+    --radius: 0.5rem;
+    
+    /* Airbnb variables */
+    --airbnb-red: 346.8 77.2% 49.8%;
+    --airbnb-dark: 0 0% 13.3%;
+    --airbnb-light: 0 0% 95%;
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased font-sans;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-bold tracking-tight;
-  }
-  
-  /* Typographie hiérarchique */
-  h1 {
-    @apply text-4xl sm:text-5xl md:text-6xl mb-6;
-  }
-  h2 {
-    @apply text-3xl sm:text-4xl mb-4;
-  }
-  h3 {
-    @apply text-2xl sm:text-3xl mb-3;
-  }
-  h4 {
-    @apply text-xl sm:text-2xl mb-2;
-  }
-  
-  /* Polices pour les différents types de contenu */
-  .font-brand {
-    @apply font-serif;
-  }
-  .font-heading {
-    @apply font-display;
-  }
-  .font-body {
-    @apply font-sans;
-  }
-  .font-code {
-    @apply font-mono;
+    @apply bg-background text-foreground;
   }
 }
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
+/* Styles personnalisés */
+.notification-pop {
+  animation: pop 0.3s ease-out;
+  transform-origin: top right;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
   }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  /* Effets de transitions et hover */
-  .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-1;
+}
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.loading-dots div {
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  animation: loading 1.4s infinite ease-in-out both;
+}
+
+.loading-dots div:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots div:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading {
+  0%, 80%, 100% {
+    transform: scale(0);
   }
-  .hover-scale {
-    @apply transition-transform duration-300 hover:scale-105;
+  40% {
+    transform: scale(1);
   }
-  .hover-shadow {
-    @apply transition-shadow duration-300 hover:shadow-lg;
-  }
-  .hover-glow {
-    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
-  }
-  
-  /* Effets de bordure et background */
-  .border-gradient {
-    @apply relative;
-    &::before {
-      content: "";
-      @apply absolute inset-0 rounded-[inherit] p-[2px] bg-gradient-to-r from-primary to-secondary -z-10;
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-    }
-  }
-  
-  /* Animation du shimmer pour les skeleton loaders */
-  .shimmer {
-    @apply relative overflow-hidden;
-    &::after {
-      @apply absolute inset-0 -translate-x-full;
-      background-image: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0,
-        rgba(255, 255, 255, 0.2) 20%,
-        rgba(255, 255, 255, 0.5) 60%,
-        rgba(255, 255, 255, 0)
-      );
-      content: '';
-      animation: shimmer 2s infinite;
-    }
-  }
-  
-  /* Nouvelles animations et transitions inspirées d'Airbnb */
-  .fade-in {
-    @apply opacity-0 animate-fade-in;
-  }
-  
-  .slide-in-bottom {
-    @apply opacity-0 translate-y-4 animate-fade-in-up;
-  }
-  
-  .slide-in-top {
-    @apply opacity-0 -translate-y-4 animate-fade-in-down;
-  }
-  
-  .scale-in {
-    @apply opacity-0 scale-95 animate-scale-in;
-  }
-  
-  /* Micro-interactions pour les boutons */
-  .btn-effect {
-    @apply relative overflow-hidden transition-all duration-300;
-    &::after {
-      content: '';
-      @apply absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300;
-    }
-    &:hover::after {
-      @apply opacity-100;
-    }
-    &:active {
-      @apply transform scale-95 transition-transform duration-100;
-    }
-  }
-  
-  /* Animation pour les cartes de logement */
-  .card-hover-effect {
-    @apply transition-all duration-300;
-    &:hover {
-      @apply shadow-xl -translate-y-1;
-    }
-  }
-  
-  /* Animation pour le contenu qui apparaît au scroll */
-  .scroll-reveal {
-    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
-    &.revealed {
-      @apply opacity-100 translate-y-0;
-    }
-  }
-  
-  /* Effet d'ondulation au clic (ripple) */
-  .ripple-effect {
-    @apply relative overflow-hidden;
-    &::after {
-      content: '';
-      @apply absolute rounded-full bg-white/30 scale-0 opacity-0;
-      transform-origin: center;
-      animation: ripple 0.6s ease-out;
-    }
-  }
-  
-  @keyframes ripple {
-    0% {
-      transform: scale(0);
-      opacity: 0.5;
-    }
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-  
-  /* Animation de pulse pour les notifications */
-  .pulse-animation {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-  
-  /* Animation de notification */
-  .notification-pop {
-    animation: notification-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  @keyframes notification-pop {
-    0% {
-      transform: scale(0.8);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  
-  /* Animation pour le loader */
-  .loader-spin {
-    animation: loader-spin 1s linear infinite;
-  }
-  
-  @keyframes loader-spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  /* Animation pour les transitions de page */
-  .page-transition-enter {
+}
+
+/* Animations pour les cartes et boutons */
+.card-hover-effect {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+button {
+  transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Animations pour les onglets */
+.tabs-animation {
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-content-animation {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
     opacity: 0;
     transform: translateY(10px);
   }
-  
-  .page-transition-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 300ms, transform 300ms;
-  }
-  
-  .page-transition-exit {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
-  
-  .page-transition-exit-active {
+}
+
+/* Animation pour les sections d'info */
+.info-section {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
     opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 300ms, transform 300ms;
+    transform: translateX(-20px);
   }
-  
-  /* Animation pour les éléments de recherche */
-  .search-expand {
-    @apply transition-all duration-300 ease-in-out;
-    width: 200px;
-  }
-  
-  .search-expand:focus {
-    width: 300px;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-/* Couleurs Airbnb */
-.bg-airbnb-red {
-  background-color: #FF385C;
+/* Animation pour les formulaires */
+.form-animation input, 
+.form-animation textarea, 
+.form-animation select {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.text-airbnb-red {
-  color: #FF385C;
+.form-animation input:focus, 
+.form-animation textarea:focus, 
+.form-animation select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.25);
 }
 
-.hover\:bg-airbnb-red:hover {
-  background-color: #E31C5F;
+/* Animation pour les avatars */
+.avatar-animation {
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
-.border-airbnb-red {
-  border-color: #FF385C;
+.avatar-animation:hover {
+  transform: scale(1.05);
+  border-color: var(--primary);
 }
 
-.bg-airbnb-gray-100 {
-  background-color: #F7F7F7;
+/* Mise en page responsive */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
-.bg-airbnb-gray-200 {
-  background-color: #DDDDDD;
-}
-
-.text-airbnb-gray-300 {
-  color: #717171;
-}
-
-.text-airbnb-gray-400 {
-  color: #222222;
-}
-
-/* Animations spécifiques */
-.transition-custom {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Style de la barre de défilement */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* Animations keyframes */
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
+@media (min-width: 768px) {
+  .main-layout {
+    grid-template-columns: 1fr 3fr;
   }
 }
 
+/* Style pour les badges */
+.badge {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+}
+
+.badge-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/80;
+}
+
+.badge-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+}
+
+.badge-outline {
+  @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+}
