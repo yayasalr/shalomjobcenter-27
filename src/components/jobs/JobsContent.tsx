@@ -43,7 +43,7 @@ export const JobsContent = () => {
   }, [jobs, searchTerm, domainFilter, showHousingOnly]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Barre de recherche et filtres */}
       <div className="sticky top-20 z-10 bg-white rounded-xl shadow-sm p-4 mb-8">
         <div className="flex flex-col sm:flex-row gap-4 items-center mb-4">

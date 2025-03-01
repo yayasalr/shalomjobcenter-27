@@ -8,7 +8,7 @@ import { JobsFooter } from './JobsFooter';
 
 const JobsPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-full bg-gray-50">
       <Navbar />
       <JobsHero />
       <JobsContent />

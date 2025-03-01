@@ -8,7 +8,7 @@ export const CategoryFiltersSimplified = () => {
   
   return (
     <div className="w-full border-b">
-      <div className="flex overflow-x-auto py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hide-scrollbar">
+      <div className="flex overflow-x-auto py-4 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hide-scrollbar">
         <div className="flex space-x-12 mx-auto">
           <Link
             to="/emplois"

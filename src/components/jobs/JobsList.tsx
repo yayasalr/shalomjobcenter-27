@@ -42,7 +42,7 @@ export const JobsList = ({ jobs }: JobsListProps) => {
   
   return (
     <motion.div 
-      className="space-y-6 px-4 py-6"
+      className="space-y-6 px-4 py-6 w-full"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
