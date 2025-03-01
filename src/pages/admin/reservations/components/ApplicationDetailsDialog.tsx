@@ -69,7 +69,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
                 <User className="w-5 h-5 text-gray-600" />
               </div>
               <div>
-                <p className="font-medium">{selectedApplication.name}</p>
+                <p className="font-medium">{selectedApplication.applicantName}</p>
                 <p className="text-gray-600">{selectedApplication.email}</p>
                 <p className="text-gray-600">{selectedApplication.phone}</p>
               </div>
@@ -102,10 +102,10 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
           <div>
             <h3 className="text-lg font-semibold mb-2">Expériences</h3>
             <div className="space-y-2">
-              {selectedApplication.experience && (
-                <p className="text-gray-800">{selectedApplication.experience}</p>
+              {selectedApplication.resume && (
+                <p className="text-gray-800">{selectedApplication.resume}</p>
               )}
-              {!selectedApplication.experience && (
+              {!selectedApplication.resume && (
                 <p className="text-gray-500 italic">Aucune expérience mentionnée</p>
               )}
             </div>
@@ -114,10 +114,10 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
           <div>
             <h3 className="text-lg font-semibold mb-2">Informations</h3>
             <div className="space-y-2">
-              {selectedApplication.createdAt && (
+              {selectedApplication.submittedAt && (
                 <div className="flex items-center">
                   <Calendar className="w-5 h-5 mr-2 text-gray-600" />
-                  <span>Postuler le: {new Date(selectedApplication.createdAt).toLocaleDateString()}</span>
+                  <span>Postuler le: {new Date(selectedApplication.submittedAt).toLocaleDateString()}</span>
                 </div>
               )}
               <div className="flex items-center">

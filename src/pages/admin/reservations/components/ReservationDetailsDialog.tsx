@@ -58,8 +58,8 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
             <div className="flex items-center space-x-3">
               <div className="w-16 h-16 rounded overflow-hidden">
                 <img 
-                  src={selectedReservation.listing.image || "/placeholder.svg"} 
-                  alt={selectedReservation.listing.title} 
+                  src={selectedReservation.listingImage || "/placeholder.svg"} 
+                  alt={selectedReservation.listingTitle} 
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = "/placeholder.svg";
@@ -67,8 +67,8 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
                 />
               </div>
               <div>
-                <p className="font-medium">{selectedReservation.listing.title}</p>
-                <p className="text-gray-600">{selectedReservation.listing.location}</p>
+                <p className="font-medium">{selectedReservation.listingTitle}</p>
+                <p className="text-gray-600">{selectedReservation.listingLocation}</p>
               </div>
             </div>
           </div>
@@ -80,8 +80,8 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
                 <User className="w-5 h-5 text-gray-600" />
               </div>
               <div>
-                <p className="font-medium">{selectedReservation.guest.name}</p>
-                <p className="text-gray-600">{selectedReservation.guest.email}</p>
+                <p className="font-medium">{selectedReservation.guestName}</p>
+                <p className="text-gray-600">{selectedReservation.guestEmail}</p>
               </div>
             </div>
           </div>
@@ -105,7 +105,7 @@ const ReservationDetailsDialog: React.FC<ReservationDetailsDialogProps> = ({
             <div className="space-y-2">
               <div className="flex items-center">
                 <User className="w-5 h-5 mr-2 text-gray-600" />
-                <span>{selectedReservation.guestCount} voyageur(s)</span>
+                <span>{selectedReservation.guests} voyageur(s)</span>
               </div>
               <div className="flex items-center">
                 <Clock className="w-5 h-5 mr-2 text-gray-600" />
