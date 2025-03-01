@@ -186,3 +186,64 @@ img.loading {
 img.loaded {
   opacity: 1;
 }
+
+/* Book open effect styles */
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Airbnb-style card grid spacing */
+.airbnb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 0 24px;
+}
+
+@media (min-width: 744px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 40px;
+  }
+}
+
+@media (min-width: 950px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1128px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1640px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Airbnb badge styles */
+.airbnb-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: #fff;
+  background: linear-gradient(to right, #FF385C, #FF385C);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+.airbnb-badge-heart {
+  background: linear-gradient(to right, #FF385C, #FF5A5F);
+}
+
+.airbnb-badge-center {
+  background: linear-gradient(to right, #6246EA, #8B5CF6);
+}

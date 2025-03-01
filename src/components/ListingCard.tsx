@@ -1,11 +1,10 @@
-import { Heart } from "lucide-react";
+
+import { Heart, Star, BookOpen, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { CompareButton } from "./CompareButton";
-import { Star, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
@@ -16,10 +15,11 @@ interface ListingCardProps {
 export const ListingCard = ({ listing }: ListingCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [isHovered, setIsHovered] = useState(false);
   const { id, title, location, price, rating, image, dates, host } = listing;
   const { settings } = useSiteSettings();
 
-  // Liste d'images de secours fiables pour Lomé
+  // Liste d'images de secours fiables
   const fallbackImages = [
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", // Villa moderne
     "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800", // Maison élégante
@@ -33,7 +33,6 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
     const processImageUrl = () => {
       // Vérification si les images dans le listing sont des tableaux vides
       if (listing.images && listing.images.length === 0) {
-        console.log(`Listing ${id}: images est un tableau vide, utilisant une image de secours`);
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
         return;
       }
@@ -42,7 +41,6 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
       if (listing.images && listing.images.length > 0 && listing.images[0]) {
         const firstNonEmptyImage = listing.images.find(img => img && img.length > 0);
         if (firstNonEmptyImage) {
-          console.log(`Listing ${id}: utilisation de la première image non vide du tableau images`);
           setImageUrl(firstNonEmptyImage);
           return;
         }
@@ -50,28 +48,19 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
 
       // Vérification du type d'image principale et traitement approprié
       if (!image) {
-        console.log(`Listing ${id}: pas d'image principale, utilisant une image de secours`);
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
       } else if (image.startsWith('blob:')) {
-        // Les URLs blob ne sont pas persistantes après rafraîchissement de la page
         const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-        console.log(`Listing ${id}: Image blob détectée (${image}), utilisation d'une alternative: ${randomFallback}`);
         setImageUrl(randomFallback);
       } else if (image.startsWith('http')) {
-        console.log(`Listing ${id}: URL HTTP normale: ${image}`);
         setImageUrl(image);
       } else if (image.startsWith('/')) {
-        // Chemin relatif - S'assurer que l'image existe
         if (image === '/placeholder.svg' || image.includes('lovable-uploads')) {
-          console.log(`Listing ${id}: Chemin relatif valide: ${image}`);
           setImageUrl(image);
         } else {
-          console.warn(`Listing ${id}: Image relative problématique: ${image}, utilisation d'une alternative`);
           setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
         }
       } else {
-        // Type d'URL inconnu, utiliser une image de secours
-        console.warn(`Listing ${id}: Format d'image non reconnu: ${image}, utilisation d'une alternative`);
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
       }
     };
@@ -117,34 +106,91 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   // Extraction et affichage du quartier depuis la localisation
   const neighborhood = location ? location.split(',')[0].trim() : 'Lomé';
 
-  // Utiliser des hôtes avec photos réelles pour un design plus authenticque comme Airbnb
+  // Utiliser des hôtes avec photos réelles pour un design plus authentique comme Airbnb
   const hostName = host?.name || "Hôte";
-  const hostDefaultImage = "https://a0.muscache.com/im/pictures/user/c6e8bdf0-5a52-4be9-959b-bb4357d13b4a.jpg?aki_policy=profile_medium";
-  const hostImage = host?.image && !host.image.includes('placeholder') ? host.image : hostDefaultImage;
+  
+  // Effet de livre ouvert lors du survol
+  const bookOpenEffect = {
+    closed: { 
+      rotateY: 0,
+      transition: { duration: 0.4 }
+    },
+    open: { 
+      rotateY: 180,
+      transition: { duration: 0.4 }
+    }
+  };
+
+  // Badge aléatoire (soit "Coup de cœur voyageurs" soit "SHALOM JOB CENTER")
+  const badgeType = Math.random() > 0.5 ? "favorite" : "jobcenter";
 
   return (
-    <Link to={`/logement/${id}`} className="group block relative hover-lift transition-all duration-300 rounded-xl overflow-hidden h-full">
-      {/* Badge "Coup de coeur voyageurs" */}
+    <Link 
+      to={`/logement/${id}`} 
+      className="group block relative rounded-xl overflow-hidden h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Badge */}
       <div className="absolute top-4 left-4 z-10">
-        <Badge 
-          variant="outline" 
-          className="px-3 py-1 bg-white text-sm font-medium text-black border-none shadow-sm flex items-center gap-1"
-        >
-          <span className="text-amber-400">★</span> Coup de cœur voyageurs
-        </Badge>
+        {badgeType === "favorite" ? (
+          <Badge 
+            variant="favorite" 
+            className="px-3 py-1 text-sm shadow-sm flex items-center gap-1"
+          >
+            <Star className="h-3.5 w-3.5 fill-current" />
+            Coup de cœur voyageurs
+          </Badge>
+        ) : (
+          <Badge 
+            variant="jobcenter" 
+            className="px-3 py-1 text-sm shadow-sm flex items-center gap-1"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            SHALOM JOB CENTER
+          </Badge>
+        )}
       </div>
 
       <div className="aspect-square w-full overflow-hidden relative rounded-xl">
-        <img
-          src={imageUrl}
-          alt={title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          onError={(e) => {
-            console.log("Erreur de chargement d'image pour:", title);
-            // Image de secours en cas d'erreur
-            e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-          }}
-        />
+        <motion.div
+          className="h-full w-full"
+          initial="closed"
+          animate={isHovered ? "open" : "closed"}
+          variants={bookOpenEffect}
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* Image principale */}
+          <img
+            src={imageUrl}
+            alt={title}
+            className="h-full w-full object-cover absolute backface-hidden transition-transform duration-500 group-hover:scale-110 rounded-xl"
+            onError={(e) => {
+              // Image de secours en cas d'erreur
+              e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+            }}
+          />
+          
+          {/* Image verso (effet livre ouvert) */}
+          {listing.images && listing.images.length > 1 ? (
+            <img
+              src={listing.images[1]}
+              alt={`${title} - autre vue`}
+              className="h-full w-full object-cover absolute backface-hidden transition-transform duration-500 rounded-xl"
+              style={{ transform: "rotateY(180deg)" }}
+              onError={(e) => {
+                e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+              }}
+            />
+          ) : (
+            <div 
+              className="h-full w-full object-cover absolute backface-hidden flex items-center justify-center bg-gray-100 rounded-xl"
+              style={{ transform: "rotateY(180deg)" }}
+            >
+              <BookOpen className="h-16 w-16 text-gray-400" />
+            </div>
+          )}
+        </motion.div>
         
         <div className="absolute top-4 right-4 flex gap-2 z-10">
           <motion.button
@@ -164,17 +210,21 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
         </div>
       </div>
 
-      <div className="mt-4 px-1 space-y-1">
+      <div className="mt-3 space-y-1">
         <div className="flex justify-between items-start">
-          <h3 className="font-medium text-lg">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
           <div className="flex items-center">
-            <Star className="h-4 w-4 text-black fill-black mr-1" />
+            <h3 className="font-medium text-base">{neighborhood}</h3>
+            <span className="text-gray-500 mx-1">·</span>
+            <span className="text-gray-500 text-sm">{location.includes(',') ? location.split(',')[1].trim() : ''}</span>
+          </div>
+          <div className="flex items-center">
+            <Star className="h-3.5 w-3.5 text-black fill-black mr-1" />
             <span className="text-sm font-medium">{rating || "Nouveau"}</span>
           </div>
         </div>
         <p className="text-sm text-gray-500">Séjournez chez {hostName}</p>
         <p className="text-sm text-gray-500">{dates}</p>
-        <p className="font-medium mt-2 text-base">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
+        <p className="font-medium text-base mt-1">{priceFCFA.toLocaleString('fr-FR')} FCFA <span className="font-normal">par nuit</span></p>
       </div>
     </Link>
   );

@@ -19,7 +19,7 @@ const badgeVariants = cva(
         success:
           "border-transparent bg-green-500 text-white hover:bg-green-600",
         favorite:
-          "border-transparent bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-medium shadow-sm",
+          "border-transparent bg-gradient-to-r from-amber-400 to-orange-500 text-white font-medium shadow-sm",
         jobcenter:
           "border-transparent bg-gradient-to-r from-sholom-primary to-sholom-accent text-white font-medium shadow-sm",
       },
