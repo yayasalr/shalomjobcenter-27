@@ -14,17 +14,12 @@ export const NavbarLogo = () => {
         whileTap={{ scale: 0.95 }}
         className="relative"
       >
-        <img 
-          src={settings.logo} 
-          alt={settings.siteName}
-          className="h-10 sm:h-12 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
-          onError={(e) => {
-            e.currentTarget.src = "/placeholder.svg";
-          }}
-        />
+        <div className="h-10 sm:h-12 w-auto flex items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg p-2 shadow-md">
+          <span className="text-white font-bold text-xl">SJC</span>
+        </div>
       </motion.div>
       <motion.span 
-        className="text-xl sm:text-2xl font-bold site-name hidden xs:block elegant-title" 
+        className="text-xl sm:text-2xl font-bold site-name hidden xs:block font-serif tracking-wide" 
         style={{ color: "var(--navbar-text-color)" }}
         whileHover={{ scale: 1.05 }}
       >

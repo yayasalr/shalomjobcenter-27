@@ -7,10 +7,20 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #FF385Caa);
+  filter: drop-shadow(0 0 2em #8B5CF6aa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.site-name {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #8B5CF6, #6D28D9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
 }
 
 @keyframes logo-spin {

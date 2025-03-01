@@ -9,13 +9,7 @@ export const NavbarSearchBar = () => {
   
   return (
     <div className="hidden md:flex lg:flex items-center h-12 lg:h-14 rounded-full border border-gray-200 px-5 py-2 bg-white/95 shadow-md transition-all border-gray-300 hover:shadow-lg">
-      <span className="border-r border-gray-300 pr-4 lg:pr-5 font-medium text-base lg:text-lg">
-        Partout
-      </span>
-      <span className="border-r border-gray-300 px-4 lg:px-5 font-medium text-base lg:text-lg">
-        Semaine
-      </span>
-      <span className="pl-4 lg:pl-5 pr-3 text-gray-600 text-base lg:text-lg">Qui?</span>
+      <span className="pl-4 lg:pl-5 pr-3 text-gray-600 text-base lg:text-lg">Rechercher</span>
       <motion.div 
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}

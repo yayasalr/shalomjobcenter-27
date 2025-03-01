@@ -38,14 +38,29 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
     <Card>
       <CardHeader className="text-center">
         <div className="mx-auto relative mb-4 group">
-          <ImageUploader
-            currentImage={avatar}
-            onImageUpload={handleImageUpload}
-            isUploading={isUploading}
-            variant="avatar"
-            label="Photo de profil"
-            maxSizeMB={5}
-          />
+          <Avatar className="h-24 w-24 mx-auto border-4 border-white shadow-md">
+            <AvatarImage 
+              src={avatar} 
+              alt={user?.name || "Utilisateur"}
+              onError={(e) => {
+                // Si l'image échoue à charger, utiliser AvatarFallback
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <AvatarFallback className="bg-sholom-primary/10 text-sholom-primary text-xl">
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </AvatarFallback>
+          </Avatar>
+          <div className="absolute -bottom-2 right-1/3 bg-white rounded-full p-1 shadow-sm">
+            <ImageUploader
+              currentImage={avatar}
+              onImageUpload={handleImageUpload}
+              isUploading={isUploading}
+              variant="avatar"
+              label="Photo de profil"
+              maxSizeMB={5}
+            />
+          </div>
         </div>
         <CardTitle>{user?.name || "Utilisateur"}</CardTitle>
         <CardDescription>Membre depuis {new Date().toLocaleDateString()}</CardDescription>

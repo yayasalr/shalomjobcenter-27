@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Globe, LogIn, Menu } from "lucide-react";
+import { Globe, LogIn, Menu, User } from "lucide-react";
 import { motion } from "framer-motion";
 import useAuth from "@/hooks/useAuth";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -44,17 +44,25 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
               className="flex items-center border border-gray-200 rounded-full px-3 py-1.5 gap-2 bg-white hover:shadow-md cursor-pointer relative"
             >
               <Menu className="h-4 w-4" />
-              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 overflow-hidden">
-                <img 
-                  src={user.avatar || "/placeholder.svg"} 
-                  alt={user.name}
-                  className="h-full w-full object-cover" 
-                />
+              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                {user.avatar ? (
+                  <img 
+                    src={user.avatar} 
+                    alt={user.name}
+                    className="h-full w-full object-cover" 
+                    onError={(e) => {
+                      // Si l'image échoue à charger, afficher un fallback
+                      e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
+                    }}
+                  />
+                ) : (
+                  <User className="h-5 w-5 text-gray-500" />
+                )}
               </div>
               <div className="h-2 w-2 absolute top-1 right-2 rounded-full bg-red-500"></div>
             </motion.div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 bg-white shadow-md">
             <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
