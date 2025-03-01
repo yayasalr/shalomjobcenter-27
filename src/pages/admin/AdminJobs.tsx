@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ListingFormDialog } from '@/components/admin/listings/ListingFormDialog';
 import { ListingsTable } from '@/components/admin/listings/ListingsTable';
-import { Search, Plus, Filter, RefreshCw, Download, FileText } from 'lucide-react';
+import { Search, Plus, Filter, RefreshCw, Download, FileText, PlusCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
@@ -216,7 +216,7 @@ const AdminJobs = () => {
                       variant="outline" 
                       size="sm"
                       onClick={() => exportToCSV(filteredJobs, 'jobs')}
-                      className="gap-2"
+                      className="gap-2 bg-white border-gray-300"
                     >
                       <Download className="h-4 w-4" />
                       Exporter
@@ -228,7 +228,7 @@ const AdminJobs = () => {
                       variant="outline" 
                       size="sm"
                       onClick={() => exportToCSV(filteredListings, 'listings')}
-                      className="gap-2"
+                      className="gap-2 bg-white border-gray-300"
                     >
                       <Download className="h-4 w-4" />
                       Exporter
@@ -236,27 +236,29 @@ const AdminJobs = () => {
                   )}
                   
                   {activeTab === 'jobs' && (
-                    <JobFormDialog
-                      onSave={isEditing ? handleUpdateJob : handleSaveJob}
-                      selectedJob={selectedJob}
-                      isEditing={isEditing}
-                      onCancel={() => {
+                    <Button 
+                      onClick={() => {
                         setSelectedJob(null);
                         setIsEditing(false);
                       }}
-                    />
+                      className="bg-sholom-primary hover:bg-sholom-primary/90 text-white flex items-center gap-2"
+                    >
+                      <PlusCircle size={18} />
+                      Ajouter une offre
+                    </Button>
                   )}
                   
                   {activeTab === 'listings' && (
-                    <ListingFormDialog
-                      selectedListing={selectedListing}
-                      isEditing={isEditing}
-                      onSave={isEditing ? handleUpdateListing : handleSaveListing}
-                      onCancel={() => {
+                    <Button 
+                      onClick={() => {
                         setSelectedListing(null);
                         setIsEditing(false);
                       }}
-                    />
+                      className="bg-sholom-primary hover:bg-sholom-primary/90 text-white flex items-center gap-2"
+                    >
+                      <PlusCircle size={18} />
+                      Ajouter un logement
+                    </Button>
                   )}
                 </div>
               </div>
@@ -280,19 +282,19 @@ const AdminJobs = () => {
                         placeholder="Rechercher..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-9 h-9 w-[200px] lg:w-[300px]"
+                        className="pl-9 h-9 w-[200px] lg:w-[300px] bg-white"
                       />
                     </div>
                     
                     {activeTab === 'jobs' && (
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="gap-2">
+                          <Button variant="outline" size="sm" className="gap-2 bg-white border-gray-300">
                             <Filter className="h-4 w-4" />
                             Filtres
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-80">
+                        <PopoverContent className="w-80 bg-white z-50 shadow-lg border border-gray-200">
                           <div className="space-y-4">
                             <h4 className="font-medium">Filtres</h4>
                             
@@ -340,7 +342,7 @@ const AdminJobs = () => {
                                   setDomainFilter('all');
                                   setShowExpired(false);
                                 }}
-                                className="gap-2"
+                                className="gap-2 bg-white"
                               >
                                 <RefreshCw className="h-3 w-3" />
                                 Réinitialiser
@@ -441,6 +443,27 @@ const AdminJobs = () => {
                 </TabsContent>
               </Tabs>
             </div>
+
+            {/* Formulaires de dialogue (non visibles jusqu'à ce qu'ils soient activés) */}
+            <JobFormDialog
+              onSave={isEditing ? handleUpdateJob : handleSaveJob}
+              selectedJob={selectedJob}
+              isEditing={isEditing}
+              onCancel={() => {
+                setSelectedJob(null);
+                setIsEditing(false);
+              }}
+            />
+            
+            <ListingFormDialog
+              selectedListing={selectedListing}
+              isEditing={isEditing}
+              onSave={isEditing ? handleUpdateListing : handleSaveListing}
+              onCancel={() => {
+                setSelectedListing(null);
+                setIsEditing(false);
+              }}
+            />
           </main>
         </div>
       </div>

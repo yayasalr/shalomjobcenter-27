@@ -16,12 +16,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Listing } from "@/types/listing";
 import { LOME_NEIGHBORHOODS } from "@/hooks/useListings";
 import { toast } from "sonner";
+import { PlusCircle, Upload, X } from "lucide-react";
 
 interface ListingFormDialogProps {
   selectedListing: Listing | null;
   isEditing: boolean;
   onSave: (formData: any) => void;
   onCancel: () => void;
+  isOpen?: boolean;
+  setIsOpen?: (isOpen: boolean) => void;
 }
 
 export const ListingFormDialog = ({
@@ -29,6 +32,8 @@ export const ListingFormDialog = ({
   isEditing,
   onSave,
   onCancel,
+  isOpen,
+  setIsOpen
 }: ListingFormDialogProps) => {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -39,6 +44,10 @@ export const ListingFormDialog = ({
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+
+  // Utiliser isOpen du props s'il est fourni
+  const dialogOpen = isOpen !== undefined ? isOpen : open;
+  const setDialogOpen = setIsOpen || setOpen;
 
   // Charger les données du logement sélectionné
   useEffect(() => {
@@ -70,11 +79,8 @@ export const ListingFormDialog = ({
       } else {
         setImagePreviews([]);
       }
-      
-      setOpen(true);
     } else if (!isEditing) {
       resetForm();
-      setOpen(false);
     }
   }, [selectedListing, isEditing]);
 
@@ -134,7 +140,7 @@ export const ListingFormDialog = ({
       description,
       price: parseFloat(price),
       location,
-      mapLocation: mapLocation // Nouveau champ pour la localisation sur la carte
+      mapLocation: mapLocation
     };
 
     // Si on modifie un logement existant
@@ -160,31 +166,22 @@ export const ListingFormDialog = ({
 
     onSave(formData);
     resetForm();
-    setOpen(false);
+    setDialogOpen(false);
   };
 
   return (
     <>
-      <Dialog open={open} onOpenChange={(isOpen) => {
-        setOpen(isOpen);
+      <Dialog open={dialogOpen} onOpenChange={(isOpen) => {
+        setDialogOpen(isOpen);
         if (!isOpen) onCancel();
       }}>
-        <DialogTrigger asChild>
-          <Button
-            onClick={() => {
-              resetForm();
-              setOpen(true);
-            }}
-          >
-            Ajouter un logement
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
+        {/* Supprimé le DialogTrigger, nous contrôlons l'ouverture via le state */}
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white">
+          <DialogHeader className="bg-white">
+            <DialogTitle className="text-xl font-semibold text-gray-900">
               {isEditing ? "Modifier un logement" : "Ajouter un logement"}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-gray-600">
               {isEditing
                 ? "Mettez à jour les informations du logement"
                 : "Remplissez le formulaire pour ajouter un nouveau logement"}
@@ -194,47 +191,50 @@ export const ListingFormDialog = ({
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Titre</Label>
+                <Label htmlFor="title" className="text-gray-700 font-medium">Titre</Label>
                 <Input
                   id="title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Titre du logement"
+                  className="bg-white border-gray-300"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="price">Prix (en €)</Label>
+                <Label htmlFor="price" className="text-gray-700 font-medium">Prix (en FCFA)</Label>
                 <Input
                   id="price"
                   type="number"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  placeholder="Prix par nuit en euros"
+                  placeholder="Prix par nuit en FCFA"
                   min="0"
                   step="0.01"
+                  className="bg-white border-gray-300"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description" className="text-gray-700 font-medium">Description</Label>
               <Textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Description du logement"
                 rows={4}
+                className="bg-white border-gray-300"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="neighborhood">Quartier</Label>
+                <Label htmlFor="neighborhood" className="text-gray-700 font-medium">Quartier</Label>
                 <select
                   id="neighborhood"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={neighborhood}
                   onChange={handleNeighborhoodChange}
                   required
@@ -248,24 +248,26 @@ export const ListingFormDialog = ({
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="location">Localisation complète</Label>
+                <Label htmlFor="location" className="text-gray-700 font-medium">Localisation complète</Label>
                 <Input
                   id="location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Ex: Tokoin, Lomé, Togo"
+                  className="bg-white border-gray-300"
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="mapLocation">Lien de la carte Google Maps</Label>
+              <Label htmlFor="mapLocation" className="text-gray-700 font-medium">Lien de la carte Google Maps</Label>
               <Input
                 id="mapLocation"
                 value={mapLocation}
                 onChange={(e) => setMapLocation(e.target.value)}
                 placeholder="Ex: https://www.google.com/maps/embed?pb=..."
+                className="bg-white border-gray-300"
               />
               <p className="text-sm text-gray-500">
                 Comment obtenir un lien d'intégration Google Maps:
@@ -279,15 +281,24 @@ export const ListingFormDialog = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="images">Images</Label>
-              <Input
-                id="images"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="cursor-pointer"
-              />
+              <Label htmlFor="images" className="text-gray-700 font-medium">Images</Label>
+              <div className="flex items-center gap-2">
+                <label 
+                  htmlFor="images" 
+                  className="cursor-pointer flex items-center gap-2 bg-gray-50 border border-gray-300 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-100 transition-colors"
+                >
+                  <Upload size={18} />
+                  Sélectionner des images
+                </label>
+                <Input
+                  id="images"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </div>
               <p className="text-xs text-gray-500">
                 Vous pouvez sélectionner plusieurs images. La première image sera utilisée comme aperçu.
               </p>
@@ -305,10 +316,10 @@ export const ListingFormDialog = ({
                     />
                     <button
                       type="button"
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
                       onClick={() => removeImage(index)}
                     >
-                      &times;
+                      <X size={14} />
                     </button>
                   </div>
                 ))}
@@ -316,11 +327,18 @@ export const ListingFormDialog = ({
             )}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={onCancel}>
+          <DialogFooter className="bg-gray-50 p-4 rounded-b-lg">
+            <Button 
+              variant="outline" 
+              onClick={onCancel}
+              className="bg-white border-gray-300 hover:bg-gray-50 text-gray-700"
+            >
               Annuler
             </Button>
-            <Button onClick={handleSubmit}>
+            <Button 
+              onClick={handleSubmit}
+              className="bg-sholom-primary hover:bg-sholom-primary/90 text-white"
+            >
               {isEditing ? "Mettre à jour" : "Ajouter"}
             </Button>
           </DialogFooter>

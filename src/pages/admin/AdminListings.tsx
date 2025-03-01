@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
@@ -9,7 +8,7 @@ import { Listing } from '@/types/listing';
 import { useListings } from '@/hooks/useListings';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, PlusCircle } from "lucide-react";
 
 const AdminListings = () => {
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
@@ -73,16 +72,17 @@ const AdminListings = () => {
           <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-semibold">Gestion des logements</h1>
-              <ListingFormDialog
-                selectedListing={selectedListing}
-                isEditing={isEditing}
-                onSave={handleSave}
-                onCancel={() => {
-                  setIsDialogOpen(false);
+              <Button 
+                onClick={() => {
+                  setIsDialogOpen(true);
                   setIsEditing(false);
                   setSelectedListing(null);
                 }}
-              />
+                className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium flex items-center gap-2"
+              >
+                <PlusCircle size={18} />
+                Ajouter un logement
+              </Button>
             </div>
 
             <div className="mb-6 space-y-4">
@@ -100,6 +100,7 @@ const AdminListings = () => {
                 <Button
                   variant="outline"
                   onClick={() => setShowFilters(!showFilters)}
+                  className="bg-white border-gray-300"
                 >
                   <SlidersHorizontal className="mr-2 h-4 w-4" />
                   Filtres
