@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -22,6 +22,15 @@ const AdminConversationView: React.FC<AdminConversationViewProps> = ({
   setNewMessage,
   handleSendMessage
 }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation?.messages]);
+
   if (!conversation) {
     return <EmptyConversation />;
   }
@@ -32,7 +41,7 @@ const AdminConversationView: React.FC<AdminConversationViewProps> = ({
       <div className="p-4 border-b flex justify-between items-center">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src={conversation.with.avatar} />
+            <AvatarImage src={conversation.with.avatar || '/placeholder.svg'} />
             <AvatarFallback>{conversation.with.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
@@ -63,26 +72,23 @@ const AdminConversationView: React.FC<AdminConversationViewProps> = ({
             >
               {message.sender !== 'admin' && (
                 <Avatar className="h-8 w-8 mr-2 mt-1">
-                  <AvatarImage src={conversation.with.avatar} />
+                  <AvatarImage src={conversation.with.avatar || '/placeholder.svg'} />
                   <AvatarFallback>{conversation.with.name.charAt(0)}</AvatarFallback>
                 </Avatar>
               )}
               <div 
-                className={`max-w-[70%] p-3 rounded-lg ${
-                  message.sender === 'admin' 
-                    ? 'bg-primary text-white rounded-tr-none' 
-                    : 'bg-gray-100 text-gray-900 rounded-tl-none'
-                }`}
+                className={message.sender === 'admin' 
+                  ? 'user-message-bubble max-w-[70%] p-3 rounded-lg' 
+                  : 'admin-message-bubble max-w-[70%] p-3 rounded-lg'}
               >
                 <p>{message.content}</p>
-                <p className={`text-xs mt-1 ${
-                  message.sender === 'admin' ? 'text-primary-foreground/70' : 'text-gray-500'
-                }`}>
+                <p className={message.sender === 'admin' ? 'user-message-time' : 'admin-message-time'}>
                   {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                 </p>
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
       

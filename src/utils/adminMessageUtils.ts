@@ -13,10 +13,10 @@ export const transformToAdminConversation = (
     id: `admin-${userId}`,
     with: {
       id: userId,
-      name: userData.name,
-      email: userData.email,
+      name: userData.name || 'Unknown User',
+      email: userData.email || '',
       avatar: userData.avatar || '/placeholder.svg',
-      role: userData.role,
+      role: userData.role || 'user',
     },
     lastMessage: {
       ...adminConv.lastMessage,
@@ -50,14 +50,13 @@ export const loadAdminConversations = (): Conversation[] => {
         
         // Filtrer pour trouver les conversations avec l'admin
         const adminConvs = userConversations.filter((conv: any) => 
-          conv.with.id === 'admin'
+          conv.with && conv.with.id === 'admin'
         );
         
         if (adminConvs.length > 0) {
           // Trouver les informations de l'utilisateur
-          const userData = JSON.parse(localStorage.getItem('users') || '[]').find(
-            (u: any) => u.id === userId
-          );
+          const usersData = JSON.parse(localStorage.getItem('users') || '[]');
+          const userData = usersData.find((u: any) => u.id === userId);
           
           if (userData) {
             // Transformer la conversation pour le point de vue de l'admin
@@ -85,36 +84,70 @@ export const loadAdminConversations = (): Conversation[] => {
 export const updateUserConversation = (userId: string, updatedConversation: Conversation) => {
   try {
     const key = `conversations_${userId}`;
-    const userConversations = JSON.parse(localStorage.getItem(key) || '[]', (k, v) => {
-      if (k === 'timestamp' && typeof v === 'string') {
-        return new Date(v);
-      }
-      return v;
-    });
+    let userConversations = [];
     
-    // Trouver et mettre à jour la conversation avec l'admin
-    const updatedUserConversations = userConversations.map((conv: any) => {
-      if (conv.with.id === 'admin') {
-        // Créer une version transformée pour l'utilisateur
-        return {
-          ...conv,
-          lastMessage: {
-            content: updatedConversation.lastMessage.content,
-            timestamp: updatedConversation.lastMessage.timestamp,
-            read: false, // Toujours marquer comme non lu pour l'utilisateur
-            sender: updatedConversation.lastMessage.sender === 'admin' ? 'admin' : 'user',
-          },
-          messages: updatedConversation.messages.map(msg => ({
-            ...msg,
-            sender: msg.sender === 'admin' ? 'admin' : 'user',
-            read: msg.sender === 'user', // Les messages de l'utilisateur sont lus, ceux de l'admin non
-          })),
-        };
+    try {
+      const storedConversations = localStorage.getItem(key);
+      if (storedConversations) {
+        userConversations = JSON.parse(storedConversations, (k, v) => {
+          if (k === 'timestamp' && typeof v === 'string') {
+            return new Date(v);
+          }
+          return v;
+        });
       }
-      return conv;
-    });
+    } catch (error) {
+      console.error("Erreur lors de la lecture des conversations de l'utilisateur:", error);
+      userConversations = [];
+    }
     
-    localStorage.setItem(key, JSON.stringify(updatedUserConversations));
+    // Check if the admin conversation exists
+    const adminConvIndex = userConversations.findIndex((conv: any) => 
+      conv.with && conv.with.id === 'admin'
+    );
+    
+    if (adminConvIndex >= 0) {
+      // Update existing admin conversation
+      userConversations[adminConvIndex] = {
+        ...userConversations[adminConvIndex],
+        lastMessage: {
+          content: updatedConversation.lastMessage.content,
+          timestamp: updatedConversation.lastMessage.timestamp,
+          read: false, // Mark as unread for the user
+          sender: updatedConversation.lastMessage.sender === 'admin' ? 'admin' : 'user',
+        },
+        messages: updatedConversation.messages.map(msg => ({
+          ...msg,
+          sender: msg.sender === 'admin' ? 'admin' : 'user',
+          read: msg.sender === 'user', // User messages are read, admin messages are unread
+        })),
+      };
+    } else {
+      // Create new admin conversation for the user
+      userConversations.push({
+        id: `admin-${Date.now()}`,
+        with: {
+          id: 'admin',
+          name: 'Administrateur',
+          avatar: '/placeholder.svg',
+          role: 'admin',
+        },
+        lastMessage: {
+          content: updatedConversation.lastMessage.content,
+          timestamp: updatedConversation.lastMessage.timestamp,
+          read: false,
+          sender: updatedConversation.lastMessage.sender === 'admin' ? 'admin' : 'user',
+        },
+        messages: updatedConversation.messages.map(msg => ({
+          ...msg,
+          sender: msg.sender === 'admin' ? 'admin' : 'user',
+          read: msg.sender === 'user',
+        })),
+      });
+    }
+    
+    localStorage.setItem(key, JSON.stringify(userConversations));
+    console.log(`Conversation mise à jour pour l'utilisateur ${userId}`);
   } catch (error) {
     console.error("Erreur lors de la mise à jour des conversations:", error);
   }
@@ -134,4 +167,23 @@ export const getTotalUnreadCount = (conversations: Conversation[]): number => {
   return conversations.reduce((count, conv) => {
     return count + getUnreadCount(conv);
   }, 0);
+};
+
+/**
+ * Mark all messages in a conversation as read
+ */
+export const markConversationAsRead = (conversation: Conversation): Conversation => {
+  if (!conversation) return conversation;
+  
+  return {
+    ...conversation,
+    messages: conversation.messages.map(msg => ({
+      ...msg,
+      read: true
+    })),
+    lastMessage: {
+      ...conversation.lastMessage,
+      read: true
+    }
+  };
 };

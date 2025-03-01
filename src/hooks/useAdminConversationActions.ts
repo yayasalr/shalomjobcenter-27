@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
-import { updateUserConversation } from '@/utils/adminMessageUtils';
+import { updateUserConversation, markConversationAsRead } from '@/utils/adminMessageUtils';
 import { toast } from 'sonner';
 
 export const useAdminConversationActions = (
@@ -12,75 +12,90 @@ export const useAdminConversationActions = (
   newMessage: string,
   setNewMessage: React.Dispatch<React.SetStateAction<string>>
 ) => {
+  const [sendingMessage, setSendingMessage] = useState(false);
+
+  // Send a message as admin
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation) return;
-    
-    const updatedMessage: Message = {
-      id: `m${Date.now()}`,
-      content: newMessage,
-      sender: 'admin',
-      timestamp: new Date(),
-      read: true,
-    };
-    
-    // Mettre à jour la conversation sélectionnée
-    const updatedSelectedConversation: Conversation = {
-      ...selectedConversation,
-      messages: [...selectedConversation.messages, updatedMessage],
-      lastMessage: {
+    setSendingMessage(true);
+
+    try {
+      // Create the new message
+      const messageToSend: Message = {
+        id: `admin-${Date.now()}`,
         content: newMessage,
         timestamp: new Date(),
         read: true,
         sender: 'admin',
-      },
-    };
-    
-    // Mettre à jour l'état des conversations
-    const updatedConversations: Conversation[] = conversations.map(conv => 
-      conv.id === selectedConversation.id ? updatedSelectedConversation : conv
-    );
-    
-    setConversations(updatedConversations);
-    setSelectedConversation(updatedSelectedConversation);
-    setNewMessage('');
-    
-    // Mettre à jour la conversation de l'utilisateur dans le localStorage
-    updateUserConversation(selectedConversation.with.id, updatedSelectedConversation);
-    
-    toast.success("Message envoyé avec succès");
+      };
+
+      // Update the selected conversation
+      const updatedSelectedConversation = {
+        ...selectedConversation,
+        messages: [...selectedConversation.messages, messageToSend],
+        lastMessage: {
+          content: newMessage,
+          timestamp: new Date(),
+          read: true,
+          sender: 'admin',
+        },
+      };
+
+      // Update all conversations
+      const updatedConversations = conversations.map(conv => 
+        conv.id === selectedConversation.id
+          ? updatedSelectedConversation
+          : conv
+      );
+
+      // Update state
+      setConversations(updatedConversations);
+      setSelectedConversation(updatedSelectedConversation);
+      setNewMessage('');
+
+      // Update user's conversation in localStorage
+      const userId = selectedConversation.with.id;
+      updateUserConversation(userId, updatedSelectedConversation);
+
+      toast.success("Message envoyé avec succès");
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message:", error);
+      toast.error("Erreur lors de l'envoi du message");
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
-  // Marquer les messages comme lus lorsqu'une conversation est sélectionnée
+  // Select a conversation and mark its messages as read
   const handleSelectConversation = (conversation: Conversation) => {
-    // Marquer tous les messages utilisateur comme lus
-    const updatedMessages = conversation.messages.map(msg => ({
-      ...msg,
-      read: true
-    }));
-    
-    const updatedConversation: Conversation = {
-      ...conversation,
-      messages: updatedMessages,
-      lastMessage: {
-        ...conversation.lastMessage,
-        read: true
-      }
-    };
-    
-    // Mettre à jour l'état des conversations
-    const updatedConversations: Conversation[] = conversations.map(conv => 
-      conv.id === conversation.id ? updatedConversation : conv
-    );
-    
-    setConversations(updatedConversations);
-    setSelectedConversation(updatedConversation);
-    
-    // Mettre à jour dans le localStorage
-    updateUserConversation(conversation.with.id, updatedConversation);
+    try {
+      // Mark messages as read
+      const updatedConversation = markConversationAsRead(conversation);
+      
+      // Update all conversations
+      const updatedConversations = conversations.map(conv => 
+        conv.id === conversation.id
+          ? updatedConversation
+          : conv
+      );
+      
+      // Update state
+      setConversations(updatedConversations);
+      setSelectedConversation(updatedConversation);
+      
+      // Also update the user's conversation in localStorage to mark these as read
+      const userId = conversation.with.id;
+      updateUserConversation(userId, updatedConversation);
+    } catch (error) {
+      console.error("Erreur lors de la sélection de conversation:", error);
+      // Fallback to just selecting without marking as read
+      setSelectedConversation(conversation);
+    }
   };
 
   return {
     handleSendMessage,
-    handleSelectConversation
+    handleSelectConversation,
+    sendingMessage
   };
 };
