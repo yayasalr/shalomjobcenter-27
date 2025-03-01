@@ -22,10 +22,10 @@ export const NavbarLogo = () => {
         whileTap={{ scale: 0.95 }}
         className="relative"
       >
-        <div className="h-10 sm:h-12 w-auto flex items-center justify-center rounded-full overflow-hidden">
+        <div className="h-10 sm:h-12 w-auto flex items-center justify-center overflow-hidden rounded-full">
           {!logoError ? (
             <img 
-              src={settings.logo} 
+              src={settings.logo || "/placeholder.svg"} 
               alt={settings.siteName}
               className="w-auto h-full object-contain"
               onLoad={() => setLogoLoaded(true)}
@@ -35,13 +35,16 @@ export const NavbarLogo = () => {
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <span className="text-white font-bold text-xl">SJC</span>
+            <div className="h-full w-10 sm:w-12 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-white font-bold text-xl">
+                {settings.siteName.substring(0, 2)}
+              </span>
+            </div>
           )}
         </div>
       </motion.div>
       <motion.span 
         className="text-xl sm:text-2xl font-bold site-name hidden xs:block font-serif tracking-wide" 
-        style={{ color: "var(--navbar-text-color)" }}
         whileHover={{ scale: 1.05 }}
       >
         {settings.siteName}

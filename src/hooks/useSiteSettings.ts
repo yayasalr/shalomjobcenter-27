@@ -203,6 +203,15 @@ export const useSiteSettings = () => {
     localStorage.setItem('siteSettings', JSON.stringify(settings));
   }, [settings]);
 
+  // Gérer le mode sombre
+  useEffect(() => {
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.darkMode]);
+
   const updateSettings = useCallback((newSettings: Partial<SiteSettings>) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
@@ -218,8 +227,34 @@ export const useSiteSettings = () => {
   const applySettingsToDOM = useCallback(() => {
     document.documentElement.style.setProperty('--primary', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
-    document.documentElement.style.setProperty('--background', '#F1F0FB'); // Couleur de fond (gris clair)
-    document.documentElement.style.setProperty('--foreground', '#1A1F2C'); // Couleur du texte (noir profond)
+    
+    // Couleurs pour le mode clair (par défaut)
+    if (!settings.darkMode) {
+      document.documentElement.style.setProperty('--background', '#F1F0FB'); // Couleur de fond (gris clair)
+      document.documentElement.style.setProperty('--foreground', '#1A1F2C'); // Couleur du texte (noir profond)
+      document.documentElement.style.setProperty('--card', '#FFFFFF');
+      document.documentElement.style.setProperty('--card-foreground', '#1A1F2C');
+      document.documentElement.style.setProperty('--popover', '#FFFFFF');
+      document.documentElement.style.setProperty('--popover-foreground', '#1A1F2C');
+      document.documentElement.style.setProperty('--muted', '#F1F5F9');
+      document.documentElement.style.setProperty('--muted-foreground', '#64748B');
+      document.documentElement.style.setProperty('--border', '#E2E8F0');
+      document.documentElement.style.setProperty('--input', '#E2E8F0');
+    } 
+    // Couleurs pour le mode sombre
+    else {
+      document.documentElement.style.setProperty('--background', '#1A1F2C'); // Fond sombre
+      document.documentElement.style.setProperty('--foreground', '#F8FAFC'); // Texte clair
+      document.documentElement.style.setProperty('--card', '#222222');
+      document.documentElement.style.setProperty('--card-foreground', '#F8FAFC');
+      document.documentElement.style.setProperty('--popover', '#222222');
+      document.documentElement.style.setProperty('--popover-foreground', '#F8FAFC');
+      document.documentElement.style.setProperty('--muted', '#333333');
+      document.documentElement.style.setProperty('--muted-foreground', '#94A3B8');
+      document.documentElement.style.setProperty('--border', '#333333');
+      document.documentElement.style.setProperty('--input', '#333333');
+    }
+    
     document.documentElement.style.setProperty('--accent', '#D946EF'); // Couleur d'accent (magenta)
     console.log('Paramètres appliqués au DOM:', settings);
   }, [settings]);

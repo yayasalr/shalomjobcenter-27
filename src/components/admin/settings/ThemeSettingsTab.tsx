@@ -15,8 +15,8 @@ interface ThemeSettingsTabProps {
   logoUploading: boolean;
   faviconUrl: string;
   faviconUploading: boolean;
-  handleLogoUpload: () => void;
-  handleFaviconUpload: () => void;
+  handleLogoUpload: (file: File) => void;
+  handleFaviconUpload: (file: File) => void;
   handleThemeColorChange: (type: 'primaryColor' | 'secondaryColor', color: string) => void;
   handleInputChange: (field: keyof SiteSettings, value: any) => void;
 }
@@ -124,7 +124,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
             <Input
               type="text"
               id="fontFamily"
-              defaultValue={settings.fontFamily}
+              value={settings.fontFamily}
               onChange={(e) => handleInputChange('fontFamily', e.target.value)}
             />
           </div>
@@ -133,7 +133,7 @@ export const ThemeSettingsTab: React.FC<ThemeSettingsTabProps> = ({
             <select
               id="borderRadius"
               className="w-full border rounded-md p-2"
-              defaultValue={settings.borderRadius}
+              value={settings.borderRadius}
               onChange={(e) => handleInputChange('borderRadius', e.target.value as any)}
             >
               <option value="small">Petit</option>

@@ -29,24 +29,45 @@ const AdminSettings = () => {
     setFaviconUrl(settings.favicon || "/favicon.ico");
   }, [settings.logo, settings.favicon]);
 
-  const handleLogoUpload = () => {
+  const handleLogoUpload = (file: File) => {
     setLogoUploading(true);
+    
+    // Create a preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setLogoUrl(previewUrl);
+    
+    // Simulate upload (in a real app, you would upload to a server)
     setTimeout(() => {
+      // In a real application, you would get the URL from your backend
       const newLogoUrl = "/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png";
       setLogoUrl(newLogoUrl);
       updateSettings({ logo: newLogoUrl });
       setLogoUploading(false);
+      
+      // Clean up the object URL to avoid memory leaks
+      URL.revokeObjectURL(previewUrl);
+      
       toast.success("Logo mis à jour avec succès");
     }, 1500);
   };
 
-  const handleFaviconUpload = () => {
+  const handleFaviconUpload = (file: File) => {
     setFaviconUploading(true);
+    
+    // Create a preview URL
+    const previewUrl = URL.createObjectURL(file);
+    setFaviconUrl(previewUrl);
+    
+    // Simulate upload
     setTimeout(() => {
       const newFaviconUrl = "/lovable-uploads/740ff73c-9223-468f-941b-578d7b960c2d.png";
       setFaviconUrl(newFaviconUrl);
       updateSettings({ favicon: newFaviconUrl });
       setFaviconUploading(false);
+      
+      // Clean up the object URL
+      URL.revokeObjectURL(previewUrl);
+      
       toast.success("Favicon mis à jour avec succès");
     }, 1500);
   };
