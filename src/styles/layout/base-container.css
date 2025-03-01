@@ -66,7 +66,8 @@
 @media (min-width: var(--breakpoint-2xl)) {
   .navbar-container {
     padding: 0 var(--padding-large);
+    width: 100%;
     max-width: 100%;
-    margin: 0 auto;
+    margin: 0;
   }
 }

@@ -27,22 +27,27 @@
 @media (min-width: 900px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-lg), 1fr);
-  }
-}
-
-@media (min-width: var(--breakpoint-xl)) {
-  .airbnb-grid {
-    grid-template-columns: repeat(var(--grid-cols-xl), 1fr);
     padding: 0 var(--padding-desktop);
   }
 }
 
-@media (min-width: var(--breakpoint-2xl)) {
+@media (min-width: 1280px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(var(--grid-cols-xl), 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
   .airbnb-grid {
     grid-template-columns: repeat(var(--grid-cols-2xl), 1fr);
     padding: 0 var(--padding-large);
-    max-width: 100%;
-    margin: 0 auto;
+  }
+}
+
+/* Forced 6 columns for large screens */
+@media (min-width: 1800px) {
+  .airbnb-grid {
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 
@@ -75,13 +80,20 @@
   }
 }
 
-@media (min-width: var(--breakpoint-xl)) {
+@media (min-width: 1280px) {
   .featured-grid {
     grid-template-columns: repeat(5, 1fr);
   }
 }
 
-@media (min-width: var(--breakpoint-2xl)) {
+@media (min-width: 1440px) {
+  .featured-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Forced 6 columns for large screens */
+@media (min-width: 1800px) {
   .featured-grid {
     grid-template-columns: repeat(6, 1fr);
   }

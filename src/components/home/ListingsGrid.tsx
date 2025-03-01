@@ -68,7 +68,7 @@ export const ListingsGrid = ({
   if (visibleListings.length === 0) {
     return (
       <div className="full-width-container">
-        <div className="content-container">
+        <div className="px-4">
           <div className="text-center py-16 border border-dashed rounded-lg bg-white">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
               <Search className="h-8 w-8 text-gray-400" />
@@ -108,7 +108,6 @@ export const ListingsGrid = ({
         <div className="flex justify-center mt-12 mb-10">
           <Button 
             onClick={loadMoreListings}
-            variant="primary"
             className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-8 py-6 shadow-md font-medium"
           >
             Voir plus de logements
