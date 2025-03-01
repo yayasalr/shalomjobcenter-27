@@ -1,24 +1,24 @@
 
 /* Container and layout styles */
 #root {
-  max-width: 100%; /* Full width to match the reference image */
+  max-width: 100%; /* Full width to maximize screen space */
   margin: 0;
-  padding: 0; /* Remove padding to match the reference image layout */
-  text-align: left; /* Left align text to match reference */
+  padding: 0; /* Remove padding for full-screen effect */
+  text-align: left; /* Left align text for better readability */
   overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
-/* Airbnb-style card grid spacing with reduced margins */
+/* Improved Airbnb-style card grid spacing */
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
+  gap: 32px 24px; /* Vertical and horizontal gap */
   width: 100%;
   max-width: 100%;
   padding: 0 24px; /* Add horizontal padding for mobile */
 }
 
-/* Responsive grid layout matching featured listings breakpoints */
+/* Responsive grid layout with smoother breakpoints */
 @media (min-width: 550px) {
   .airbnb-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -49,6 +49,8 @@
   .airbnb-grid {
     grid-template-columns: repeat(6, 1fr);
     padding: 0 64px; /* Increase padding for large desktop */
+    max-width: 1800px; /* Prevent excessive stretching on ultra-wide screens */
+    margin: 0 auto;
   }
 }
 
@@ -57,8 +59,12 @@
   aspect-ratio: 4/3;
   width: 100%;
   object-fit: cover;
-  border-radius: 12px; /* Slightly more rounded corners */
-  transition: transform 0.3s ease;
+  border-radius: 14px; /* More rounded corners */
+  transition: transform 0.4s ease;
+}
+
+.listing-card-container:hover .listing-card-image {
+  transform: scale(1.05);
 }
 
 /* Assurer que les images s'étendent correctement */
@@ -128,6 +134,8 @@
 @media (min-width: 1440px) {
   .content-container {
     padding: 0 64px;
+    max-width: 1800px;
+    margin: 0 auto;
   }
 }
 
@@ -137,9 +145,16 @@
 .support-image {
   aspect-ratio: 16/9;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 14px;
   max-width: 100%;
   height: auto;
+  transition: transform 0.3s ease;
+}
+
+.about-image:hover,
+.contact-image:hover,
+.support-image:hover {
+  transform: scale(1.02);
 }
 
 .team-member-image {
@@ -148,6 +163,13 @@
   border-radius: 50%;
   width: 120px;
   height: 120px;
+  transition: transform 0.3s ease;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.team-member-image:hover {
+  transform: scale(1.05);
 }
 
 /* Typographie élégante et minimaliste */
@@ -184,5 +206,30 @@
 @media (min-width: 1440px) {
   .navbar-container {
     padding: 0 64px;
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+}
+
+/* Conteneur immersif pour les sections à fond plein */
+.immersive-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 80px 24px;
+}
+
+@media (min-width: 744px) {
+  .immersive-section {
+    padding: 100px 32px;
+  }
+}
+
+@media (min-width: 1128px) {
+  .immersive-section {
+    padding: 120px 48px;
   }
 }

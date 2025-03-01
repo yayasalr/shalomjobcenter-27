@@ -22,10 +22,36 @@
 
 /* Hover lift effect for listing cards */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  will-change: transform;
 }
 
 .hover-lift:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Refined card design */
+.refined-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: all 0.35s ease;
+}
+
+.refined-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Image container for consistent aspect ratio */
+.card-image-container {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 14px;
+  position: relative;
+}
+
+/* Enhanced card content spacing */
+.card-content {
+  padding: 1.25rem 0.5rem 0.75rem;
 }

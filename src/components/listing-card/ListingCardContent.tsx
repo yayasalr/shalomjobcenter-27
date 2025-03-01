@@ -15,14 +15,14 @@ export const ListingCardContent = ({ listing }: ListingCardContentProps) => {
   // Extraction et affichage du quartier depuis la localisation
   const neighborhood = location ? location.split(',')[0].trim() : 'Lomé';
   
-  // Utiliser des hôtes avec photos réelles pour un design plus authentique comme Airbnb
+  // Utiliser des hôtes avec photos réelles pour un design plus authentique
   const hostName = host?.name || "Hôte";
 
   return (
-    <div className="mt-3 space-y-1">
+    <div className="mt-3 space-y-1.5">
       <div className="flex justify-between items-start">
         <div className="flex items-center">
-          <h3 className="font-medium text-base">{neighborhood}</h3>
+          <h3 className="font-medium text-base text-gray-800">{neighborhood}</h3>
           <span className="text-gray-500 mx-1">·</span>
           <span className="text-gray-500 text-sm">{location.includes(',') ? location.split(',')[1].trim() : ''}</span>
         </div>

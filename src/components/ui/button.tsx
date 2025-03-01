@@ -22,6 +22,7 @@ const buttonVariants = cva(
         airbnb: "bg-airbnb-red text-white hover:bg-airbnb-red/90 hover:-translate-y-[2px]",
         primary: "bg-sholom-primary text-white hover:bg-sholom-primary-dark hover:-translate-y-[2px]",
         accent: "bg-sholom-accent text-white hover:bg-sholom-accent/90 hover:-translate-y-[2px]",
+        modern: "bg-white border border-gray-200 text-gray-800 hover:border-gray-300 hover:shadow-lg hover:-translate-y-[2px]",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -30,6 +31,7 @@ const buttonVariants = cva(
         xl: "h-14 rounded-md px-10 text-lg",
         icon: "h-10 w-10",
         wide: "h-10 px-6 py-2 w-full",
+        pill: "h-10 px-6 py-2 rounded-full",
       },
     },
     defaultVariants: {

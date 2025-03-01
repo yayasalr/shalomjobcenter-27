@@ -8,7 +8,7 @@ export const NavbarLogo = () => {
   const { settings } = useSiteSettings();
   
   return (
-    <Link to="/" className="flex items-center gap-3">
+    <Link to="/" className="flex items-center gap-4">
       <motion.div 
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }}
@@ -17,14 +17,14 @@ export const NavbarLogo = () => {
         <img 
           src={settings.logo} 
           alt={settings.siteName}
-          className="h-9 sm:h-12 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
+          className="h-10 sm:h-12 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
           onError={(e) => {
             e.currentTarget.src = "/placeholder.svg";
           }}
         />
       </motion.div>
       <motion.span 
-        className="text-lg sm:text-2xl font-bold site-name hidden xs:block elegant-title" 
+        className="text-xl sm:text-2xl font-bold site-name hidden xs:block elegant-title" 
         style={{ color: "var(--navbar-text-color)" }}
         whileHover={{ scale: 1.05 }}
       >
