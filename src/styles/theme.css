@@ -1,0 +1,54 @@
+
+/* SHALOM theme utility classes */
+.bg-sholom-primary {
+  background-color: hsl(var(--sholom-primary));
+}
+.bg-sholom-primary-dark {
+  background-color: hsl(var(--sholom-primary-dark));
+}
+.bg-sholom-secondary {
+  background-color: hsl(var(--sholom-secondary));
+}
+.bg-sholom-accent {
+  background-color: hsl(var(--sholom-accent));
+}
+.bg-sholom-dark {
+  background-color: hsl(var(--sholom-dark));
+}
+.bg-sholom-light {
+  background-color: hsl(var(--sholom-light));
+}
+
+.text-sholom-primary {
+  color: hsl(var(--sholom-primary));
+}
+.text-sholom-secondary {
+  color: hsl(var(--sholom-secondary));
+}
+.text-sholom-accent {
+  color: hsl(var(--sholom-accent));
+}
+.text-sholom-dark {
+  color: hsl(var(--sholom-dark));
+}
+.text-sholom-light {
+  color: hsl(var(--sholom-light));
+}
+.text-sholom-muted {
+  color: hsl(var(--sholom-muted));
+}
+
+.border-sholom-primary {
+  border-color: hsl(var(--sholom-primary));
+}
+.border-sholom-secondary {
+  border-color: hsl(var(--sholom-secondary));
+}
+.border-sholom-accent {
+  border-color: hsl(var(--sholom-accent));
+}
+
+/* Font weight utilities */
+.font-serif {
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
