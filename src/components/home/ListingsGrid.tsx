@@ -53,7 +53,7 @@ export const ListingsGrid = ({
         <div className="airbnb-grid">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
-              <div className="bg-gray-200 animate-pulse h-0 pb-[75%] relative shimmer"></div>
+              <div className="bg-gray-200 animate-pulse h-0 pb-[56.25%] relative shimmer"></div>
               <div className="p-4">
                 <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-2"></div>
                 <div className="h-4 w-1/2 bg-gray-200 animate-pulse shimmer"></div>

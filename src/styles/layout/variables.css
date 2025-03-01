@@ -9,17 +9,17 @@
   --breakpoint-2xl: 1440px;
   
   /* Spacing */
-  --spacing-xs: 8px;
-  --spacing-sm: 12px; /* Réduit pour permettre plus d'éléments */
+  --spacing-xs: 6px;
+  --spacing-sm: 10px; /* Réduit pour permettre plus d'éléments */
   --spacing-md: 20px;
   --spacing-lg: 28px;
   --spacing-xl: 36px;
   
   /* Padding - réduit pour utiliser plus d'espace */
-  --padding-mobile: 4px;
-  --padding-tablet: 8px;
-  --padding-desktop: 12px;
-  --padding-large: 16px;
+  --padding-mobile: 2px;
+  --padding-tablet: 4px;
+  --padding-desktop: 6px;
+  --padding-large: 8px;
   
   /* Border radius */
   --radius-sm: 8px;

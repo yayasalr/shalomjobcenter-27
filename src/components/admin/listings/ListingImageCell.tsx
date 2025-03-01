@@ -15,7 +15,7 @@ export const ListingImageCell: React.FC<ListingImageCellProps> = ({
 }) => {
   return (
     <div 
-      className="relative w-24 h-18 cursor-pointer group rounded-lg overflow-hidden aspect-[4/3] shadow-sm"
+      className="relative w-24 h-18 cursor-pointer group rounded-lg overflow-hidden aspect-[16/9] shadow-sm"
       onClick={() => onShowDetails(listing)}
     >
       <img

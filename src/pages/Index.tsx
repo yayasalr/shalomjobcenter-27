@@ -131,6 +131,8 @@ const Index = () => {
             filteredListings={filteredListings}
             loadMoreListings={loadMoreListings}
           />
+          
+          {!searchTerm && <PopularNeighborhoods setSearchTerm={setSearchTerm} />}
         </div>
       </div>
 

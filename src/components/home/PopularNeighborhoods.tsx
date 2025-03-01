@@ -11,7 +11,7 @@ export const PopularNeighborhoods = ({ setSearchTerm }: PopularNeighborhoodsProp
   const neighborhoods = ['Tokoin', 'Bè', 'Adidogomé', 'Agoè', 'Kodjoviakopé', 'Nyékonakpoè', 'Hédzranawoé', 'Baguida'];
   
   return (
-    <div className="mt-16 mb-20">
+    <div className="mt-16 mb-20 max-w-7xl mx-auto px-4">
       <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-6">
         Quartiers populaires à Lomé
       </h2>
