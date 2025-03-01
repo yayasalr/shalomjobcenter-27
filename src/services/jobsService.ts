@@ -1,7 +1,7 @@
 
 import { MOCK_JOBS } from "@/data/mockJobs";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { Job } from "@/types/job";
+import { Job, ApplicationStatus } from "@/types/job";
 import { JobApplicationFormData } from "@/types/jobApplications";
 
 // Service pour les opérations sur les offres d'emploi
@@ -52,7 +52,7 @@ export const useJobsService = () => {
       throw new Error("Offre d'emploi introuvable");
     }
     
-    // Création d'un nouvel objet d'application
+    // Création d'un nouvel objet d'application avec le type approprié pour status
     const newApplication = {
       id: Math.random().toString(36).substr(2, 9),
       jobId: applicationData.jobId,
@@ -61,7 +61,7 @@ export const useJobsService = () => {
       phone: applicationData.phone,
       resume: applicationData.resume,
       coverLetter: applicationData.coverLetter,
-      status: "pending",
+      status: "pending" as ApplicationStatus, // Utilisation d'une assertion de type pour s'assurer que status est de type ApplicationStatus
       submittedAt: new Date().toISOString()
     };
     
