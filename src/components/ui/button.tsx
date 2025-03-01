@@ -20,12 +20,16 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
         airbnb: "bg-airbnb-red text-white hover:bg-airbnb-red/90 hover:-translate-y-[2px]",
+        primary: "bg-sholom-primary text-white hover:bg-sholom-primary-dark hover:-translate-y-[2px]",
+        accent: "bg-sholom-accent text-white hover:bg-sholom-accent/90 hover:-translate-y-[2px]",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
+        lg: "h-12 rounded-md px-8 text-base",
+        xl: "h-14 rounded-md px-10 text-lg",
         icon: "h-10 w-10",
+        wide: "h-10 px-6 py-2 w-full",
       },
     },
     defaultVariants: {

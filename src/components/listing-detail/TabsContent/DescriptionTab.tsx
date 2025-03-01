@@ -7,10 +7,10 @@ interface DescriptionTabProps {
 }
 
 const DescriptionTab = ({ description }: DescriptionTabProps) => (
-  <TabsContent value="description" className="animate-fade-in pt-4">
-    <div className="prose max-w-none">
-      <p className="text-gray-700 whitespace-pre-line">
-        {description || "Aucune description disponible."}
+  <TabsContent value="description" className="animate-fade-in pt-6">
+    <div className="prose prose-lg max-w-none">
+      <p className="text-gray-700 whitespace-pre-line text-base md:text-lg leading-relaxed">
+        {description || "Aucune description disponible pour ce logement."}
       </p>
     </div>
   </TabsContent>
