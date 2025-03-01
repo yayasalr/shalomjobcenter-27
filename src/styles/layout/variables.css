@@ -1,0 +1,28 @@
+
+/* Common breakpoint variables */
+:root {
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 744px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1128px;
+  --breakpoint-2xl: 1440px;
+  
+  /* Spacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 40px;
+  
+  /* Padding */
+  --padding-mobile: var(--spacing-sm);
+  --padding-tablet: var(--spacing-md);
+  --padding-desktop: var(--spacing-lg);
+  --padding-large: var(--spacing-xl);
+  
+  /* Border radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+}

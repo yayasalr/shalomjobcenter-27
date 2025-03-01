@@ -1,5 +1,6 @@
 
 /* Main container file that imports all sub-files */
+@import './variables.css';
 @import './base-container.css';
 @import './grid.css';
 @import './responsive-spacing.css';

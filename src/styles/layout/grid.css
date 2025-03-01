@@ -3,10 +3,10 @@
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 24px 20px; /* Reduced vertical and horizontal gap */
+  gap: var(--spacing-md) var(--spacing-md); /* Consistent gap */
   width: 100%;
   max-width: 100%;
-  padding: 0 16px; /* Reduced horizontal padding for mobile */
+  padding: 0 var(--padding-mobile);
 }
 
 /* Responsive grid layout with smoother breakpoints */
@@ -16,10 +16,10 @@
   }
 }
 
-@media (min-width: 744px) {
+@media (min-width: var(--breakpoint-md)) {
   .airbnb-grid {
     grid-template-columns: repeat(3, 1fr);
-    padding: 0 24px; /* Reduced padding for tablet */
+    padding: 0 var(--padding-tablet);
   }
 }
 
@@ -29,17 +29,17 @@
   }
 }
 
-@media (min-width: 1128px) {
+@media (min-width: var(--breakpoint-xl)) {
   .airbnb-grid {
     grid-template-columns: repeat(5, 1fr);
-    padding: 0 32px; /* Reduced padding for desktop */
+    padding: 0 var(--padding-desktop);
   }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: var(--breakpoint-2xl)) {
   .airbnb-grid {
     grid-template-columns: repeat(6, 1fr);
-    padding: 0 40px; /* Reduced padding for large desktop */
+    padding: 0 var(--padding-large);
     max-width: 1920px; /* Prevent excessive stretching on ultra-wide screens */
     margin: 0 auto;
   }
