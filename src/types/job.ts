@@ -57,6 +57,8 @@ export interface Job {
   bedrooms?: number;
   bathrooms?: number;
   isHousingOffer?: boolean;
+  // Ajout de la propriété image pour l'image principale
+  image?: string;
 }
 
 export interface JobFilters {
