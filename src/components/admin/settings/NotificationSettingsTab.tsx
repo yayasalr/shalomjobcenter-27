@@ -6,7 +6,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormControl, FormItem, FormDescription } from "@/components/ui/form";
 
 interface NotificationSettingsTabProps {
   settings: SiteSettings;
@@ -29,43 +28,39 @@ export const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = (
         <div className="grid gap-4">
           <h3 className="text-lg font-medium">Notifications par email</h3>
           
-          <FormItem className="flex items-center justify-between space-x-2 rounded-lg border p-4">
+          <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">
             <div className="space-y-0.5">
               <Label className="text-base">Activer les notifications par email</Label>
-              <FormDescription>
+              <p className="text-sm text-gray-500">
                 Envoyer des notifications par email pour les événements importants
-              </FormDescription>
+              </p>
             </div>
-            <FormControl>
-              <Switch
-                checked={settings.notificationSettings?.emailNotifications || false}
-                onCheckedChange={(checked) => 
-                  handleNestedChange('notificationSettings', 'emailNotifications', checked)
-                }
-              />
-            </FormControl>
-          </FormItem>
+            <Switch
+              checked={settings.notificationSettings?.emailNotifications || false}
+              onCheckedChange={(checked) => 
+                handleNestedChange('notificationSettings', 'emailNotifications', checked)
+              }
+            />
+          </div>
         </div>
         
         <div className="grid gap-4">
           <h3 className="text-lg font-medium">Formulaires de contact</h3>
           
-          <FormItem className="flex items-center justify-between space-x-2 rounded-lg border p-4">
+          <div className="flex items-center justify-between space-x-2 rounded-lg border p-4">
             <div className="space-y-0.5">
               <Label className="text-base">Alerte de nouveau formulaire</Label>
-              <FormDescription>
+              <p className="text-sm text-gray-500">
                 Recevoir une notification par email quand un nouveau formulaire de contact est soumis
-              </FormDescription>
+              </p>
             </div>
-            <FormControl>
-              <Switch
-                checked={settings.notificationSettings?.newContactFormAlert || false}
-                onCheckedChange={(checked) => 
-                  handleNestedChange('notificationSettings', 'newContactFormAlert', checked)
-                }
-              />
-            </FormControl>
-          </FormItem>
+            <Switch
+              checked={settings.notificationSettings?.newContactFormAlert || false}
+              onCheckedChange={(checked) => 
+                handleNestedChange('notificationSettings', 'newContactFormAlert', checked)
+              }
+            />
+          </div>
           
           <div className="space-y-2">
             <Label htmlFor="contactFormEmailTemplate">Modèle d'email pour formulaire de contact</Label>
