@@ -3,7 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin, Star } from 'lucide-react';
 import { Listing } from '@/types/listing';
-import { FALLBACK_IMAGES } from '@/hooks/useListings';
+import { FALLBACK_IMAGES } from '@/constants/images';
+import { getValidImageUrl } from '@/utils/imageUtils';
 
 interface FeaturedListingsProps {
   listings: Listing[];
