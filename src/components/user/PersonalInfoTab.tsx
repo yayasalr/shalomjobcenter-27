@@ -32,6 +32,8 @@ export const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ user }) => {
   };
 
   const saveProfile = () => {
+    // Sauvegarder les données du profil
+    localStorage.setItem('userProfileData', JSON.stringify(formData));
     toast.success("Profil mis à jour avec succès");
   };
 
@@ -101,7 +103,7 @@ export const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ user }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button onClick={saveProfile}>
+        <Button onClick={saveProfile} className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium">
           <Save className="h-4 w-4 mr-2" />
           Enregistrer les modifications
         </Button>

@@ -10,9 +10,10 @@ import { toast } from 'sonner';
 
 interface ProfileSidebarProps {
   user: UserType | null;
+  onAvatarChange?: (avatarUrl: string) => void;
 }
 
-export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
+export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarChange }) => {
   const [avatar, setAvatar] = useState(user?.avatar || "/placeholder.svg");
   const [isUploading, setIsUploading] = useState(false);
   const [avatarKey, setAvatarKey] = useState(Date.now()); // Clé unique pour forcer le rechargement de l'image
@@ -32,15 +33,19 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
           setAvatar(previewUrl);
           setIsUploading(false);
           setAvatarKey(Date.now()); // Générer une nouvelle clé pour forcer le rechargement
-          toast.success("Photo de profil mise à jour avec succès");
           
           // Dans une application réelle, vous stockeriez cette URL dans la base de données
-          // et/ou dans le localStorage pour la persistance
           try {
             localStorage.setItem('userAvatar', previewUrl);
+            // Notifier le composant parent du changement d'avatar
+            if (onAvatarChange) {
+              onAvatarChange(previewUrl);
+            }
           } catch (error) {
             console.error("Erreur lors du stockage de l'avatar:", error);
           }
+          
+          toast.success("Photo de profil mise à jour avec succès");
         }, 1500);
       }
     };
@@ -53,11 +58,15 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user }) => {
       const storedAvatar = localStorage.getItem('userAvatar');
       if (storedAvatar) {
         setAvatar(storedAvatar);
+        // Notifier le composant parent du changement d'avatar au chargement
+        if (onAvatarChange) {
+          onAvatarChange(storedAvatar);
+        }
       }
     } catch (error) {
       console.error("Erreur lors de la récupération de l'avatar:", error);
     }
-  }, []);
+  }, [onAvatarChange]);
 
   return (
     <Card>

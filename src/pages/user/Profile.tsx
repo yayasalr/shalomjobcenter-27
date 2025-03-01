@@ -1,18 +1,36 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 import useAuth from '@/hooks/useAuth';
-import { toast } from 'sonner';
 import { ProfileSidebar } from '@/components/user/ProfileSidebar';
 import { PersonalInfoTab } from '@/components/user/PersonalInfoTab';
 import { SecurityTab } from '@/components/user/SecurityTab';
 import { PreferencesTab } from '@/components/user/PreferencesTab';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateUserAvatar } = useAuth();
+  const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
+  
+  // Charger l'avatar depuis le localStorage au chargement du composant
+  useEffect(() => {
+    const storedAvatar = localStorage.getItem('userAvatar');
+    if (storedAvatar) {
+      setUserAvatar(storedAvatar);
+      if (updateUserAvatar) {
+        updateUserAvatar(storedAvatar);
+      }
+    }
+  }, [updateUserAvatar]);
+  
+  const handleAvatarChange = (avatarUrl: string) => {
+    setUserAvatar(avatarUrl);
+    if (updateUserAvatar) {
+      updateUserAvatar(avatarUrl);
+    }
+  };
+  
+  const updatedUser = user ? { ...user, avatar: userAvatar } : null;
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -22,7 +40,10 @@ const Profile = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <ProfileSidebar user={user} />
+            <ProfileSidebar 
+              user={updatedUser}
+              onAvatarChange={handleAvatarChange}
+            />
           </div>
           
           <div className="lg:col-span-2">
@@ -34,7 +55,7 @@ const Profile = () => {
               </TabsList>
               
               <TabsContent value="infos">
-                <PersonalInfoTab user={user} />
+                <PersonalInfoTab user={updatedUser} />
               </TabsContent>
               
               <TabsContent value="security">

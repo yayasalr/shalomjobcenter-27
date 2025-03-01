@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Globe, LogIn, Menu, User } from "lucide-react";
 import { motion } from "framer-motion";
@@ -25,6 +25,17 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
 }) => {
   const { user } = useAuth();
   const { settings } = useSiteSettings();
+  const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
+  
+  // Charger l'avatar depuis le localStorage
+  useEffect(() => {
+    const storedAvatar = localStorage.getItem('userAvatar');
+    if (storedAvatar) {
+      setUserAvatar(storedAvatar);
+    } else if (user?.avatar) {
+      setUserAvatar(user.avatar);
+    }
+  }, [user]);
   
   return (
     <div className="flex items-center gap-4">
@@ -45,9 +56,9 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
             >
               <Menu className="h-4 w-4" />
               <div className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 overflow-hidden border border-gray-200">
-                {user.avatar ? (
+                {userAvatar ? (
                   <img 
-                    src={user.avatar} 
+                    src={userAvatar} 
                     alt={user.name}
                     className="h-full w-full object-cover" 
                     onError={(e) => {
@@ -62,7 +73,7 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
               <div className="h-2 w-2 absolute top-1 right-2 rounded-full bg-red-500"></div>
             </motion.div>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white shadow-md">
+          <DropdownMenuContent align="end" className="w-56 bg-white shadow-md z-50">
             <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>

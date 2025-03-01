@@ -33,13 +33,22 @@ const AdminSettings = () => {
     handleFooterChange,
     handleCompanyInfoChange,
     handleSocialLinkChange,
-    handleReset
+    handleReset,
+    goBackToDashboard
   } = useAdminSettings();
   
   return (
     <div className="container mx-auto px-4 py-24">
-      <BackButton />
-      <h1 className="text-3xl font-bold mb-8">Paramètres du site</h1>
+      <div className="mb-6">
+        <Button
+          variant="outline"
+          onClick={goBackToDashboard}
+          className="mb-4"
+        >
+          Retour au tableau de bord
+        </Button>
+        <h1 className="text-3xl font-bold">Paramètres du site</h1>
+      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="mb-4 flex flex-wrap gap-2">

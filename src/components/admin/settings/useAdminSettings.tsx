@@ -2,6 +2,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSiteSettings, SiteSettings } from '@/hooks/useSiteSettings';
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 export function useAdminSettings() {
   const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
@@ -11,6 +12,7 @@ export function useAdminSettings() {
   const [logoUploading, setLogoUploading] = useState(false);
   const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon || "/favicon.ico");
   const [faviconUploading, setFaviconUploading] = useState(false);
+  const navigate = useNavigate();
   
   // Synchronize local state with settings when they change
   useEffect(() => {
@@ -25,48 +27,63 @@ export function useAdminSettings() {
   const handleLogoUpload = useCallback((file: File) => {
     setLogoUploading(true);
     
-    // Create a preview URL
-    const previewUrl = URL.createObjectURL(file);
-    setLogoUrl(previewUrl);
+    // Create a preview URL and apply it immediately to see the change
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const result = e.target?.result as string;
+      
+      if (result) {
+        // Update locally and in settings immediately
+        setLogoUrl(result);
+        updateSettings({ logo: result });
+        
+        // Then simulate the server upload for persistent storage
+        setTimeout(() => {
+          // Store in localStorage for persistence
+          try {
+            localStorage.setItem('site_logo', result);
+          } catch (error) {
+            console.error("Error storing logo:", error);
+          }
+          
+          setLogoUploading(false);
+          toast.success("Logo mis à jour avec succès");
+        }, 1000);
+      }
+    };
     
-    // Simulate upload (in a real app, you would upload to a server)
-    setTimeout(() => {
-      // In a real application, you would get the URL from your backend
-      const newLogoUrl = "/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png";
-      
-      // Update state and settings
-      setLogoUrl(newLogoUrl);
-      updateSettings({ logo: newLogoUrl });
-      setLogoUploading(false);
-      
-      // Clean up the object URL to avoid memory leaks
-      URL.revokeObjectURL(previewUrl);
-      
-      toast.success("Logo mis à jour avec succès");
-    }, 1500);
+    fileReader.readAsDataURL(file);
   }, [updateSettings]);
 
   const handleFaviconUpload = useCallback((file: File) => {
     setFaviconUploading(true);
     
-    // Create a preview URL
-    const previewUrl = URL.createObjectURL(file);
-    setFaviconUrl(previewUrl);
+    // Create a preview URL and apply it immediately
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const result = e.target?.result as string;
+      
+      if (result) {
+        // Update locally and in settings immediately
+        setFaviconUrl(result);
+        updateSettings({ favicon: result });
+        
+        // Then simulate the server upload
+        setTimeout(() => {
+          // Store in localStorage for persistence
+          try {
+            localStorage.setItem('site_favicon', result);
+          } catch (error) {
+            console.error("Error storing favicon:", error);
+          }
+          
+          setFaviconUploading(false);
+          toast.success("Favicon mis à jour avec succès");
+        }, 1000);
+      }
+    };
     
-    // Simulate upload
-    setTimeout(() => {
-      const newFaviconUrl = "/lovable-uploads/740ff73c-9223-468f-941b-578d7b960c2d.png";
-      
-      // Update state and settings
-      setFaviconUrl(newFaviconUrl);
-      updateSettings({ favicon: newFaviconUrl });
-      setFaviconUploading(false);
-      
-      // Clean up the object URL
-      URL.revokeObjectURL(previewUrl);
-      
-      toast.success("Favicon mis à jour avec succès");
-    }, 1500);
+    fileReader.readAsDataURL(file);
   }, [updateSettings]);
 
   const handleImportClick = useCallback(() => {
@@ -136,6 +153,10 @@ export function useAdminSettings() {
     setFaviconUrl(settings.favicon || "/favicon.ico");
     toast.success("Paramètres réinitialisés avec succès");
   }, [resetSettings, settings.logo, settings.favicon]);
+  
+  const goBackToDashboard = useCallback(() => {
+    navigate('/admin');
+  }, [navigate]);
 
   return {
     settings,
@@ -156,6 +177,7 @@ export function useAdminSettings() {
     handleFooterChange,
     handleCompanyInfoChange,
     handleSocialLinkChange,
-    handleReset
+    handleReset,
+    goBackToDashboard
   };
 }
