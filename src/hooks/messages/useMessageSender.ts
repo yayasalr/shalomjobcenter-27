@@ -22,7 +22,7 @@ export const useMessageSender = (
       content: newMessage,
       timestamp: new Date(),
       read: true,
-      sender: 'user',
+      sender: 'user' as const,
     };
     
     // Mettre à jour la conversation sélectionnée et la liste des conversations
@@ -61,7 +61,7 @@ export const useMessageSender = (
             : "Merci de votre intérêt pour nos services. Notre équipe est là pour vous aider !",
           timestamp: new Date(),
           read: false,
-          sender: autoResponseSender,
+          sender: autoResponseSender as "admin" | "system",
         };
         
         // Ajouter la réponse automatique à la conversation locale
@@ -72,7 +72,7 @@ export const useMessageSender = (
             content: autoResponse.content,
             timestamp: autoResponse.timestamp,
             read: false,
-            sender: autoResponseSender,
+            sender: autoResponseSender as "admin" | "system",
           },
         };
         
@@ -208,3 +208,4 @@ export const useMessageSender = (
     handleSendMessage
   };
 };
+
