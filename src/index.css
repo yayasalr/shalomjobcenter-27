@@ -91,7 +91,7 @@
     @apply transition-shadow duration-300 hover:shadow-lg;
   }
   .hover-glow {
-    @apply transition-all duration-300 hover:shadow-lg hover:shadow-sholom-primary/20;
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/20;
   }
   
   /* Effets de bordure et background */
@@ -99,7 +99,7 @@
     @apply relative;
     &::before {
       content: "";
-      @apply absolute inset-0 rounded-[inherit] p-[2px] bg-gradient-to-r from-sholom-primary to-sholom-secondary -z-10;
+      @apply absolute inset-0 rounded-[inherit] p-[2px] bg-gradient-to-r from-primary to-secondary -z-10;
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: exclude;
     }
@@ -121,6 +121,153 @@
       animation: shimmer 2s infinite;
     }
   }
+  
+  /* Nouvelles animations et transitions inspirées d'Airbnb */
+  .fade-in {
+    @apply opacity-0 animate-fade-in;
+  }
+  
+  .slide-in-bottom {
+    @apply opacity-0 translate-y-4 animate-fade-in-up;
+  }
+  
+  .slide-in-top {
+    @apply opacity-0 -translate-y-4 animate-fade-in-down;
+  }
+  
+  .scale-in {
+    @apply opacity-0 scale-95 animate-scale-in;
+  }
+  
+  /* Micro-interactions pour les boutons */
+  .btn-effect {
+    @apply relative overflow-hidden transition-all duration-300;
+    &::after {
+      content: '';
+      @apply absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300;
+    }
+    &:hover::after {
+      @apply opacity-100;
+    }
+    &:active {
+      @apply transform scale-95 transition-transform duration-100;
+    }
+  }
+  
+  /* Animation pour les cartes de logement */
+  .card-hover-effect {
+    @apply transition-all duration-300;
+    &:hover {
+      @apply shadow-xl -translate-y-1;
+    }
+  }
+  
+  /* Animation pour le contenu qui apparaît au scroll */
+  .scroll-reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+    &.revealed {
+      @apply opacity-100 translate-y-0;
+    }
+  }
+  
+  /* Effet d'ondulation au clic (ripple) */
+  .ripple-effect {
+    @apply relative overflow-hidden;
+    &::after {
+      content: '';
+      @apply absolute rounded-full bg-white/30 scale-0 opacity-0;
+      transform-origin: center;
+      animation: ripple 0.6s ease-out;
+    }
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  
+  /* Animation de pulse pour les notifications */
+  .pulse-animation {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  /* Animation de notification */
+  .notification-pop {
+    animation: notification-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  @keyframes notification-pop {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Animation pour le loader */
+  .loader-spin {
+    animation: loader-spin 1s linear infinite;
+  }
+  
+  @keyframes loader-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Animation pour les transitions de page */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+  }
+  
+  .page-transition-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .page-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 300ms, transform 300ms;
+  }
+  
+  /* Animation pour les éléments de recherche */
+  .search-expand {
+    @apply transition-all duration-300 ease-in-out;
+    width: 200px;
+  }
+  
+  .search-expand:focus {
+    width: 300px;
+  }
 }
 
 /* Couleurs Airbnb */
@@ -138,6 +285,22 @@
 
 .border-airbnb-red {
   border-color: #FF385C;
+}
+
+.bg-airbnb-gray-100 {
+  background-color: #F7F7F7;
+}
+
+.bg-airbnb-gray-200 {
+  background-color: #DDDDDD;
+}
+
+.text-airbnb-gray-300 {
+  color: #717171;
+}
+
+.text-airbnb-gray-400 {
+  color: #222222;
 }
 
 /* Animations spécifiques */
@@ -164,3 +327,11 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
+
+/* Animations keyframes */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
