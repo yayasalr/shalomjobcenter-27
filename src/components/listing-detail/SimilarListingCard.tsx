@@ -16,7 +16,7 @@ interface SimilarListingCardProps {
 }
 
 const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) => (
-  <Link to={`/logement/${item.id}`} className="group block m-1">
+  <Link to={`/logement/${item.id}`} className="group block m-4">
     <div className="aspect-square overflow-hidden rounded-xl">
       <img
         src={item.image}
@@ -28,7 +28,7 @@ const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) 
         }}
       />
     </div>
-    <div className="mt-2 px-1">
+    <div className="mt-3 px-1">
       <div className="flex justify-between">
         <h3 className="font-medium line-clamp-1 minimal-text">{item.location}</h3>
         <div className="flex items-center">

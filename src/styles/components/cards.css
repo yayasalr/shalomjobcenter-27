@@ -2,10 +2,10 @@
 /* Card styles optimized for edge-to-edge display */
 .card {
   padding: 15px; /* Added padding inside cards */
-  margin: 10px; /* Added margin around cards */
+  margin: 20px; /* Increased margin around cards */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: calc(100% - 20px); /* Adjust width to account for margin */
-  height: calc(100% - 20px); /* Adjust height to account for margin */
+  width: calc(100% - 40px); /* Adjust width to account for margin */
+  height: calc(100% - 40px); /* Adjust height to account for margin */
   box-sizing: border-box;
 }
 
@@ -17,9 +17,9 @@
 /* Card hover state */
 .card-hover {
   transition: all 0.3s ease;
-  width: calc(100% - 20px); /* Adjust width to account for margin */
-  margin: 10px; /* Added margin */
-  height: calc(100% - 20px); /* Adjust height to account for margin */
+  width: calc(100% - 40px); /* Adjust width to account for margin */
+  margin: 20px; /* Increased margin */
+  height: calc(100% - 40px); /* Adjust height to account for margin */
   box-sizing: border-box;
 }
 
@@ -32,9 +32,9 @@
 .hover-lift {
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   will-change: transform;
-  width: calc(100% - 20px); /* Adjust width to account for margin */
-  margin: 10px; /* Added margin */
-  height: calc(100% - 20px); /* Adjust height to account for margin */
+  width: calc(100% - 40px); /* Adjust width to account for margin */
+  margin: 20px; /* Increased margin */
+  height: calc(100% - 40px); /* Adjust height to account for margin */
   box-sizing: border-box;
 }
 
@@ -49,9 +49,9 @@
   overflow: hidden;
   background: #ffffff;
   transition: all 0.35s ease;
-  width: calc(100% - 20px); /* Adjust width to account for margin */
-  margin: 10px; /* Added margin */
-  height: calc(100% - 20px); /* Adjust height to account for margin */
+  width: calc(100% - 40px); /* Adjust width to account for margin */
+  margin: 20px; /* Increased margin */
+  height: calc(100% - 40px); /* Adjust height to account for margin */
   box-sizing: border-box;
 }
 
@@ -61,7 +61,7 @@
 
 /* Image container for consistent aspect ratio */
 .card-image-container {
-  aspect-ratio: 16/9;
+  aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 12px;
   position: relative;

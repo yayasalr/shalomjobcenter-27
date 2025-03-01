@@ -20,8 +20,8 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-2 mb-4">
-      {/* Image principale - plus carrée pour correspondre aux autres éléments */}
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+      {/* Image principale - exactement carrée */}
       <div className="relative overflow-hidden rounded-lg md:col-span-8 aspect-square">
         <img
           src={images[selectedImageIndex] || images[0]}
@@ -38,8 +38,8 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
         </Button>
       </div>
       
-      {/* Grille d'images secondaires - maintenant plus carrées */}
-      <div className="grid grid-cols-2 gap-2 md:col-span-4">
+      {/* Grille d'images secondaires - toutes carrées */}
+      <div className="grid grid-cols-2 gap-4 md:col-span-4">
         {images
           .slice(1, 5)
           .map((image, index) => (

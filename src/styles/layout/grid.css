@@ -3,7 +3,7 @@
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
-  gap: 8px;
+  gap: 20px;
   width: 100vw;
   max-width: 100%;
   padding: 0;
@@ -67,7 +67,7 @@
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 8px;
+  gap: 20px;
   width: 100vw;
   max-width: 100%;
   margin: 0;
