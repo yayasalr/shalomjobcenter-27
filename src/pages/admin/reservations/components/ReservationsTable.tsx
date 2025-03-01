@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ClockIcon, DotsHorizontalIcon, Check, Clock, X } from "@radix-ui/react-icons";
+import { Clock, MoreHorizontal, Check, X } from 'lucide-react';
 
 interface ReservationsTableProps {
   reservations: Reservation[];
@@ -43,7 +43,7 @@ const ReservationsTable: React.FC<ReservationsTableProps> = ({
     return (
       <div className="bg-white p-8 rounded-lg shadow text-center">
         <div className="mb-4 text-gray-400">
-          <ClockIcon className="h-12 w-12 mx-auto" />
+          <Clock className="h-12 w-12 mx-auto" />
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-1">Aucune réservation trouvée</h3>
         <p className="text-gray-500">Il n'y a pas de réservations correspondant à vos critères.</p>
@@ -143,7 +143,7 @@ const ReservationsTable: React.FC<ReservationsTableProps> = ({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
-                        <DotsHorizontalIcon className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

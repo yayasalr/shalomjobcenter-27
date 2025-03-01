@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { FileText, DotsHorizontalIcon, Check, Clock, X, MapPin, Phone } from 'lucide-react';
+import { FileText, MoreHorizontal, Check, Clock, X, MapPin, Phone } from 'lucide-react';
 import { JobApplication, Job } from '@/types/job';
 
 interface ApplicationsTableProps {
@@ -131,7 +131,7 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
-                        <DotsHorizontalIcon className="h-4 w-4" />
+                        <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
