@@ -9,19 +9,26 @@ export function useAdminSettings() {
   const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState("general");
-  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/placeholder.svg");
+  const [logoUrl, setLogoUrl] = useState<string>(settings.logo === 'stored_separately' ? localStorage.getItem('site_logo') || "/placeholder.svg" : settings.logo || "/placeholder.svg");
   const [logoUploading, setLogoUploading] = useState(false);
-  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon || "/favicon.ico");
+  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon === 'stored_separately' ? localStorage.getItem('site_favicon') || "/favicon.ico" : settings.favicon || "/favicon.ico");
   const [faviconUploading, setFaviconUploading] = useState(false);
   const navigate = useNavigate();
   
   // Synchronize local state with settings when they change
   useEffect(() => {
     if (settings.logo) {
-      setLogoUrl(settings.logo);
+      const logoSrc = settings.logo === 'stored_separately' 
+        ? localStorage.getItem('site_logo') || "/placeholder.svg" 
+        : settings.logo;
+      setLogoUrl(logoSrc);
     }
+    
     if (settings.favicon) {
-      setFaviconUrl(settings.favicon);
+      const faviconSrc = settings.favicon === 'stored_separately' 
+        ? localStorage.getItem('site_favicon') || "/favicon.ico" 
+        : settings.favicon;
+      setFaviconUrl(faviconSrc);
     }
   }, [settings.logo, settings.favicon]);
 
@@ -34,19 +41,15 @@ export function useAdminSettings() {
       const result = e.target?.result as string;
       
       if (result) {
-        // Update locally and in settings immediately
+        // Update locally for UI
         setLogoUrl(result);
+        
+        // Store in settings and explicitly in localStorage
         updateSettings({ logo: result });
+        localStorage.setItem('site_logo', result);
         
         // Then simulate the server upload for persistent storage
         setTimeout(() => {
-          // Store in localStorage for persistence
-          try {
-            localStorage.setItem('site_logo', result);
-          } catch (error) {
-            console.error("Error storing logo:", error);
-          }
-          
           setLogoUploading(false);
           toast.success("Logo mis à jour avec succès");
         }, 1000);
@@ -65,19 +68,15 @@ export function useAdminSettings() {
       const result = e.target?.result as string;
       
       if (result) {
-        // Update locally and in settings immediately
+        // Update locally for UI
         setFaviconUrl(result);
+        
+        // Store in settings and explicitly in localStorage
         updateSettings({ favicon: result });
+        localStorage.setItem('site_favicon', result);
         
         // Then simulate the server upload
         setTimeout(() => {
-          // Store in localStorage for persistence
-          try {
-            localStorage.setItem('site_favicon', result);
-          } catch (error) {
-            console.error("Error storing favicon:", error);
-          }
-          
           setFaviconUploading(false);
           toast.success("Favicon mis à jour avec succès");
         }, 1000);
@@ -150,10 +149,15 @@ export function useAdminSettings() {
 
   const handleReset = useCallback(() => {
     resetSettings();
-    setLogoUrl(settings.logo || "/placeholder.svg");
-    setFaviconUrl(settings.favicon || "/favicon.ico");
+    
+    // Synchronize local state with reset settings
+    const defaultLogo = "/placeholder.svg";
+    const defaultFavicon = "/favicon.ico";
+    setLogoUrl(defaultLogo);
+    setFaviconUrl(defaultFavicon);
+    
     toast.success("Paramètres réinitialisés avec succès");
-  }, [resetSettings, settings.logo, settings.favicon]);
+  }, [resetSettings]);
   
   const goBackToDashboard = useCallback(() => {
     navigate('/admin');

@@ -8,12 +8,20 @@ export const NavbarLogo = () => {
   const { settings } = useSiteSettings();
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [logoError, setLogoError] = useState(false);
-  const [currentLogo, setCurrentLogo] = useState(settings.logo || "/placeholder.svg");
+  const [currentLogo, setCurrentLogo] = useState(
+    settings.logo === 'stored_separately' 
+      ? localStorage.getItem('site_logo') || "/placeholder.svg" 
+      : settings.logo || "/placeholder.svg"
+  );
   
   // Update currentLogo when settings.logo changes
   useEffect(() => {
     if (settings.logo) {
-      setCurrentLogo(settings.logo);
+      const logoSrc = settings.logo === 'stored_separately' 
+        ? localStorage.getItem('site_logo') || "/placeholder.svg" 
+        : settings.logo;
+      
+      setCurrentLogo(logoSrc);
       setLogoLoaded(false);
       setLogoError(false);
     }

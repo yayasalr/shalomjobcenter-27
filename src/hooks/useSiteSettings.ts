@@ -39,15 +39,56 @@ const defaultSettings: Partial<SiteSettings> = {
 export const useSiteSettings = () => {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings as SiteSettings);
 
+  // Charger les paramètres au démarrage
   useEffect(() => {
-    const storedSettings = localStorage.getItem('siteSettings');
-    if (storedSettings) {
-      setSettings(JSON.parse(storedSettings));
+    try {
+      // Récupérer les paramètres principaux
+      const storedSettings = localStorage.getItem('siteSettings');
+      let parsedSettings = storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+      
+      // Vérifier si les images sont stockées séparément et les récupérer
+      const storedLogo = localStorage.getItem('site_logo');
+      if (storedLogo) {
+        parsedSettings.logo = storedLogo;
+      }
+      
+      const storedFavicon = localStorage.getItem('site_favicon');
+      if (storedFavicon) {
+        parsedSettings.favicon = storedFavicon;
+      }
+      
+      setSettings(parsedSettings as SiteSettings);
+    } catch (error) {
+      console.error("Erreur lors du chargement des paramètres:", error);
+      setSettings(defaultSettings as SiteSettings);
     }
   }, []);
 
+  // Sauvegarder les paramètres à chaque modification
   useEffect(() => {
-    localStorage.setItem('siteSettings', JSON.stringify(settings));
+    try {
+      // Créer une copie des paramètres pour éviter de stocker les grandes data URLs directement
+      const settingsToStore = { ...settings };
+      
+      // Ne pas stocker les grandes data URLs dans l'objet principal
+      if (settingsToStore.logo && settingsToStore.logo.startsWith('data:')) {
+        // Stocker séparément
+        localStorage.setItem('site_logo', settingsToStore.logo);
+        // Remplacer par un indicateur dans l'objet principal
+        settingsToStore.logo = 'stored_separately';
+      }
+      
+      if (settingsToStore.favicon && settingsToStore.favicon.startsWith('data:')) {
+        // Stocker séparément
+        localStorage.setItem('site_favicon', settingsToStore.favicon);
+        // Remplacer par un indicateur dans l'objet principal
+        settingsToStore.favicon = 'stored_separately';
+      }
+      
+      localStorage.setItem('siteSettings', JSON.stringify(settingsToStore));
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde des paramètres:", error);
+    }
   }, [settings]);
 
   const updateSettings = (newSettings: Partial<SiteSettings>) => {
@@ -68,12 +109,29 @@ export const useSiteSettings = () => {
 
   // Add the missing functions
   const resetSettings = () => {
+    // Supprimer également les images stockées séparément
+    localStorage.removeItem('site_logo');
+    localStorage.removeItem('site_favicon');
+    
     setSettings(defaultSettings as SiteSettings);
   };
 
   const exportSettings = () => {
     try {
-      const dataStr = JSON.stringify(settings, null, 2);
+      // Récupérer les images stockées séparément pour l'export
+      let exportSettings = { ...settings };
+      
+      const storedLogo = localStorage.getItem('site_logo');
+      if (storedLogo && settings.logo === 'stored_separately') {
+        exportSettings.logo = storedLogo;
+      }
+      
+      const storedFavicon = localStorage.getItem('site_favicon');
+      if (storedFavicon && settings.favicon === 'stored_separately') {
+        exportSettings.favicon = storedFavicon;
+      }
+      
+      const dataStr = JSON.stringify(exportSettings, null, 2);
       const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
       
       const exportFileDefaultName = 'site-settings.json';
@@ -100,6 +158,15 @@ export const useSiteSettings = () => {
         throw new Error("Invalid settings file");
       }
       
+      // Gérer les images importées
+      if (newSettings.logo && newSettings.logo.startsWith('data:')) {
+        localStorage.setItem('site_logo', newSettings.logo);
+      }
+      
+      if (newSettings.favicon && newSettings.favicon.startsWith('data:')) {
+        localStorage.setItem('site_favicon', newSettings.favicon);
+      }
+      
       setSettings(newSettings);
       return true;
     } catch (error) {
@@ -113,15 +180,26 @@ export const useSiteSettings = () => {
     document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
     document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
     
+    // Récupérer le favicon réel si nécessaire
+    let faviconSrc = settings.favicon;
+    if (faviconSrc === 'stored_separately') {
+      const storedFavicon = localStorage.getItem('site_favicon');
+      if (storedFavicon) {
+        faviconSrc = storedFavicon;
+      } else {
+        faviconSrc = '/favicon.ico'; // Fallback
+      }
+    }
+    
     // Set the favicon dynamically
-    if (settings.favicon) {
+    if (faviconSrc) {
       const faviconLink = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
       if (faviconLink) {
-        faviconLink.href = settings.favicon;
+        faviconLink.href = faviconSrc;
       } else {
         const newFaviconLink = document.createElement('link');
         newFaviconLink.rel = 'icon';
-        newFaviconLink.href = settings.favicon;
+        newFaviconLink.href = faviconSrc;
         document.head.appendChild(newFaviconLink);
       }
     }
