@@ -63,6 +63,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     bathrooms,
     setBathrooms,
     images,
+    setImages, // This is now correctly included from the hook
     isPublished,
     setIsPublished,
     featuredImage,
