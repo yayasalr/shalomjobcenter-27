@@ -1,0 +1,31 @@
+
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+
+export const NavbarLogo = () => {
+  const { settings } = useSiteSettings();
+  
+  return (
+    <Link to="/" className="flex items-center gap-2">
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <img 
+          src={settings.logo} 
+          alt={settings.siteName}
+          className="h-10 w-auto site-logo bg-white rounded-md p-1 shadow-sm" 
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder.svg";
+          }}
+        />
+      </motion.div>
+      <motion.span 
+        className="text-xl font-bold site-name hidden md:block font-serif" 
+        style={{ color: "var(--navbar-text-color)" }}
+        whileHover={{ scale: 1.05 }}
+      >
+        {settings.siteName}
+      </motion.span>
+    </Link>
+  );
+};
