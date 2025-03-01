@@ -49,8 +49,8 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="w-full px-2 py-3">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-4">
+      <div className="w-full px-4 py-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
               <div className="bg-gray-200 animate-pulse aspect-square relative shimmer"></div>
@@ -67,7 +67,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-full px-2 py-3">
+      <div className="w-full px-4 py-4">
         <div className="text-center py-8 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-gray-100">
             <Search className="h-6 w-6 text-gray-400" />
@@ -87,9 +87,9 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="w-full px-2 py-3">
+    <div className="w-full px-4 py-4">
       <motion.div 
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"

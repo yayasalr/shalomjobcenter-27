@@ -17,8 +17,8 @@ interface SimilarListingCardProps {
 }
 
 const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) => (
-  <Link to={`/logement/${item.id}`} className="block">
-    <Card className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300">
+  <Link to={`/logement/${item.id}`} className="block h-full">
+    <Card className="overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-300 h-full">
       <div className="aspect-square overflow-hidden">
         <img
           src={item.image}
