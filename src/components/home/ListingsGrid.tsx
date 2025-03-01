@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Search, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ListingCard } from '@/components/ListingCard';
+import { ListingCard } from '@/components/listing-card';
 import { Listing } from '@/types/listing';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
