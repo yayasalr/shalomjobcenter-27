@@ -8,7 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, MapPin, Calendar, Camera, Upload, Check, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Calendar, Camera, Save, Lock, Check } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import useAuth from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
@@ -278,7 +279,7 @@ const Profile = () => {
                           <h3 className="font-medium">Notifications par email</h3>
                           <p className="text-sm text-gray-500">Recevoir des notifications sur les réservations</p>
                         </div>
-                        <Switch id="email-notifications" />
+                        <Switch />
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -286,7 +287,7 @@ const Profile = () => {
                           <h3 className="font-medium">Notifications push</h3>
                           <p className="text-sm text-gray-500">Recevoir des notifications sur votre navigateur</p>
                         </div>
-                        <Switch id="push-notifications" defaultChecked />
+                        <Switch defaultChecked />
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -294,7 +295,7 @@ const Profile = () => {
                           <h3 className="font-medium">Mode sombre</h3>
                           <p className="text-sm text-gray-500">Utiliser le thème sombre pour l'interface</p>
                         </div>
-                        <Switch id="dark-mode" />
+                        <Switch />
                       </div>
                     </div>
                   </CardContent>
