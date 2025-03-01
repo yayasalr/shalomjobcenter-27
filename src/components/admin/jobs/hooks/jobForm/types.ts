@@ -28,3 +28,27 @@ export interface JobFormState {
   isPublished: boolean;
   featuredImage: string;
 }
+
+export interface FormStateSetters {
+  setIsOpen: (value: boolean) => void;
+  setIsSubmitting: (value: boolean) => void;
+  setIsUploading: (value: boolean) => void;
+  setTitle: (value: string) => void;
+  setDomain: (value: JobDomain) => void;
+  setDescription: (value: string) => void;
+  setRequirements: (value: string) => void;
+  setContract: (value: JobContract) => void;
+  setLocation: (value: string) => void;
+  setSalary: (value: number) => void;
+  setPositions: (value: number) => void;
+  setDeadline: (value: string) => void;
+  setIsHousingOffer: (value: boolean) => void;
+  setPrice: (value: number) => void;
+  setBedrooms: (value: number) => void;
+  setBathrooms: (value: number) => void;
+  setImages: (value: string[]) => void;
+  setIsPublished: (value: boolean) => void;
+  setFeaturedImage: (value: string) => void;
+}
+
+export type JobFormStateWithSetters = JobFormState & FormStateSetters;

@@ -1,27 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { JobDomain, JobContract } from '@/types/job';
-import { UseJobFormProps, JobFormState } from './types';
+import { UseJobFormProps, JobFormState, JobFormStateWithSetters } from './types';
 
-export const useFormState = ({ selectedJob }: UseJobFormProps): JobFormState & {
-  setIsOpen: (value: boolean) => void;
-  setTitle: (value: string) => void;
-  setDomain: (value: JobDomain) => void;
-  setDescription: (value: string) => void;
-  setRequirements: (value: string) => void;
-  setContract: (value: JobContract) => void;
-  setLocation: (value: string) => void;
-  setSalary: (value: number) => void;
-  setPositions: (value: number) => void;
-  setDeadline: (value: string) => void;
-  setIsHousingOffer: (value: boolean) => void;
-  setPrice: (value: number) => void;
-  setBedrooms: (value: number) => void;
-  setBathrooms: (value: number) => void;
-  setImages: (value: string[]) => void;
-  setIsPublished: (value: boolean) => void;
-  setFeaturedImage: (value: string) => void;
-} => {
+export const useFormState = ({ selectedJob }: UseJobFormProps): JobFormStateWithSetters => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -69,42 +51,42 @@ export const useFormState = ({ selectedJob }: UseJobFormProps): JobFormState & {
 
   return {
     isOpen,
-    setIsOpen,
     isSubmitting,
-    setIsSubmitting,
     isUploading,
-    setIsUploading,
     title,
-    setTitle,
     domain,
-    setDomain,
     description,
-    setDescription,
     requirements,
-    setRequirements,
     contract,
-    setContract,
     location,
-    setLocation,
     salary,
-    setSalary,
     positions,
-    setPositions,
     deadline,
-    setDeadline,
     isHousingOffer,
-    setIsHousingOffer,
     price,
-    setPrice,
     bedrooms,
-    setBedrooms,
     bathrooms,
-    setBathrooms,
     images,
-    setImages,
     isPublished,
-    setIsPublished,
     featuredImage,
+    setIsOpen,
+    setIsSubmitting,
+    setIsUploading,
+    setTitle,
+    setDomain,
+    setDescription,
+    setRequirements,
+    setContract,
+    setLocation,
+    setSalary,
+    setPositions,
+    setDeadline,
+    setIsHousingOffer,
+    setPrice,
+    setBedrooms,
+    setBathrooms,
+    setImages,
+    setIsPublished,
     setFeaturedImage
   };
 };

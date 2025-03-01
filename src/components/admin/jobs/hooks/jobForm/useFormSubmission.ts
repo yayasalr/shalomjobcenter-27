@@ -1,13 +1,10 @@
 
 import { useState } from 'react';
 import { toast } from "sonner";
-import { JobFormState } from './types';
+import { JobFormState, JobFormStateWithSetters, UseJobFormProps } from './types';
 import { JobDomain, JobContract } from '@/types/job';
-import { UseJobFormProps } from './types';
 
-export interface UseFormSubmissionParams extends JobFormState {
-  setIsSubmitting: (value: boolean) => void;
-  setIsOpen: (value: boolean) => void;
+export interface UseFormSubmissionParams extends JobFormStateWithSetters {
   onSave: UseJobFormProps['onSave'];
   onCancel: UseJobFormProps['onCancel'];
 }

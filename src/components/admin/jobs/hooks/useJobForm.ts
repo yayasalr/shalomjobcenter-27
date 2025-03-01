@@ -36,8 +36,6 @@ export const useJobForm = (props: UseJobFormProps) => {
   // Setup form submission
   const formSubmission = useFormSubmission({
     ...formState,
-    setIsSubmitting,
-    setIsOpen,
     onSave: props.onSave,
     onCancel: props.onCancel
   });
