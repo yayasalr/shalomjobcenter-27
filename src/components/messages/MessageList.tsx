@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Conversation } from './types';
@@ -9,6 +9,15 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scrolling automatique vers le dernier message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation.messages]);
+
   return (
     <ScrollArea className="flex-1 p-4">
       <div className="space-y-4">
@@ -49,6 +58,7 @@ const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
             </div>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
     </ScrollArea>
   );

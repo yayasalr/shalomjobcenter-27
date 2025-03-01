@@ -16,48 +16,41 @@ export const useMessageSender = (
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation || !userId) return;
     
+    // Créer le nouveau message
     const updatedMessage: Message = {
-      id: `m${Date.now()}`,
+      id: `user-${Date.now()}`,
       content: newMessage,
       timestamp: new Date(),
       read: true,
       sender: 'user',
     };
     
-    const updatedConversations: Conversation[] = conversations.map(conv => {
-      if (conv.id === selectedConversation.id) {
-        return {
-          ...conv,
-          messages: [...conv.messages, updatedMessage],
-          lastMessage: {
-            content: newMessage,
-            timestamp: new Date(),
-            read: true,
-            sender: 'user',
-          },
-        };
-      }
-      return conv;
-    });
+    // Mettre à jour la conversation sélectionnée et la liste des conversations
+    const updatedSelectedConversation = {
+      ...selectedConversation,
+      messages: [...selectedConversation.messages, updatedMessage],
+      lastMessage: {
+        content: newMessage,
+        timestamp: new Date(),
+        read: true,
+        sender: 'user',
+      },
+    };
+    
+    const updatedConversations = conversations.map(conv => 
+      conv.id === selectedConversation.id ? updatedSelectedConversation : conv
+    );
     
     setConversations(updatedConversations);
-    setSelectedConversation(prev => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        messages: [...prev.messages, updatedMessage],
-        lastMessage: {
-          content: newMessage,
-          timestamp: new Date(),
-          read: true,
-          sender: 'user',
-        },
-      };
-    });
+    setSelectedConversation(updatedSelectedConversation);
     
+    // Sauvegarder dans localStorage pour persister les changements
+    localStorage.setItem(`conversations_${userId}`, JSON.stringify(updatedConversations));
+    
+    // Réinitialiser le champ de message
     setNewMessage('');
     
-    // Simulate auto-response after 1-3 seconds
+    // Pour les conversations avec admin ou bot d'accueil, mettre à jour aussi leur côté
     if (selectedConversation.with.id === 'admin' || selectedConversation.with.id === 'welcome-bot') {
       setTimeout(() => {
         const autoResponse: Message = {
@@ -70,39 +63,141 @@ export const useMessageSender = (
           sender: selectedConversation.with.id === 'admin' ? 'admin' : 'system',
         };
         
-        const updatedWithResponse: Conversation[] = conversations.map(conv => {
-          if (conv.id === selectedConversation.id) {
-            return {
-              ...conv,
-              messages: [...conv.messages, updatedMessage, autoResponse],
-              lastMessage: {
-                content: autoResponse.content,
-                timestamp: autoResponse.timestamp,
-                read: autoResponse.read,
-                sender: autoResponse.sender,
-              },
-            };
-          }
-          return conv;
-        });
+        // Ajouter la réponse automatique à la conversation locale
+        const convWithResponse = {
+          ...updatedSelectedConversation,
+          messages: [...updatedSelectedConversation.messages, autoResponse],
+          lastMessage: {
+            content: autoResponse.content,
+            timestamp: autoResponse.timestamp,
+            read: false,
+            sender: autoResponse.sender,
+          },
+        };
         
-        setConversations(updatedWithResponse);
-        setSelectedConversation(prev => {
-          if (!prev) return null;
-          return {
-            ...prev,
-            messages: [...prev.messages, autoResponse],
-            lastMessage: {
-              content: autoResponse.content,
-              timestamp: autoResponse.timestamp,
-              read: autoResponse.read,
-              sender: autoResponse.sender,
-            },
-          };
-        });
+        // Mettre à jour l'état local
+        const finalConversations = updatedConversations.map(conv => 
+          conv.id === selectedConversation.id ? convWithResponse : conv
+        );
+        
+        setConversations(finalConversations);
+        setSelectedConversation(convWithResponse);
+        
+        // Mettre à jour dans localStorage
+        localStorage.setItem(`conversations_${userId}`, JSON.stringify(finalConversations));
+        
+        // Si c'est l'admin, mettre à jour également le localStorage côté admin
+        if (selectedConversation.with.id === 'admin') {
+          try {
+            // Récupération des données utilisateur
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const currentUser = users.find((u: any) => u.id === userId);
+            
+            if (currentUser) {
+              // Mettre à jour la conversation admin dans le stockage admin
+              updateAdminConversation(userId, updatedMessage, autoResponse, currentUser);
+            }
+          } catch (error) {
+            console.error("Erreur lors de la mise à jour de la conversation admin:", error);
+          }
+        }
         
         toast.success("Nouveau message reçu");
-      }, Math.random() * 2000 + 1000); // Between 1 and 3 seconds
+      }, Math.random() * 2000 + 1000); // Entre 1 et 3 secondes
+    }
+  };
+
+  // Fonction d'aide pour mettre à jour la conversation côté admin
+  const updateAdminConversation = (
+    userId: string, 
+    userMessage: Message, 
+    adminResponse: Message,
+    userData: any
+  ) => {
+    // Charger toutes les conversations admin
+    const adminConversations = loadAdminConversations();
+    
+    // Rechercher la conversation avec cet utilisateur
+    const adminConvIndex = adminConversations.findIndex(conv => 
+      conv.with.id === userId
+    );
+    
+    if (adminConvIndex >= 0) {
+      // Mettre à jour la conversation existante
+      const updatedAdminConv = {
+        ...adminConversations[adminConvIndex],
+        messages: [
+          ...adminConversations[adminConvIndex].messages,
+          // Ajouter le message utilisateur et la réponse admin
+          {
+            ...userMessage,
+            read: false,  // Non lu par l'admin
+            sender: 'user',
+          },
+          {
+            ...adminResponse,
+            read: true,   // Lu par l'admin qui l'a envoyé
+            sender: 'admin',
+          }
+        ],
+        lastMessage: {
+          content: adminResponse.content,
+          timestamp: adminResponse.timestamp,
+          read: true,
+          sender: 'admin',
+        },
+      };
+      
+      adminConversations[adminConvIndex] = updatedAdminConv;
+    } else {
+      // Créer une nouvelle conversation admin si elle n'existe pas encore
+      adminConversations.push({
+        id: `admin-${userId}`,
+        with: {
+          id: userId,
+          name: userData.name || 'Utilisateur inconnu',
+          email: userData.email || '',
+          avatar: userData.avatar || '/placeholder.svg',
+          role: userData.role || 'user',
+        },
+        messages: [
+          {
+            ...userMessage,
+            read: false,
+            sender: 'user',
+          },
+          {
+            ...adminResponse,
+            read: true,
+            sender: 'admin',
+          }
+        ],
+        lastMessage: {
+          content: adminResponse.content,
+          timestamp: adminResponse.timestamp,
+          read: true,
+          sender: 'admin',
+        },
+      });
+    }
+    
+    // Sauvegarder les conversations admin mises à jour dans localStorage
+    // On simule ici que ces conversations sont stockées comme dans la vraie implémentation
+    localStorage.setItem('admin_conversations', JSON.stringify(adminConversations));
+  };
+
+  // Fonction d'aide pour charger les conversations admin
+  const loadAdminConversations = (): Conversation[] => {
+    try {
+      return JSON.parse(localStorage.getItem('admin_conversations') || '[]', (k, v) => {
+        if (k === 'timestamp' && typeof v === 'string') {
+          return new Date(v);
+        }
+        return v;
+      });
+    } catch (error) {
+      console.error("Erreur lors du chargement des conversations admin:", error);
+      return [];
     }
   };
 

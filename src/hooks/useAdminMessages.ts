@@ -17,13 +17,33 @@ export const useAdminMessages = () => {
   
   // Charger les conversations depuis le localStorage
   useEffect(() => {
-    const allUserConversations = loadAdminConversations();
-    setConversations(allUserConversations);
+    const loadAndRefreshConversations = () => {
+      const allUserConversations = loadAdminConversations();
+      setConversations(allUserConversations);
+      
+      if (allUserConversations.length > 0 && !selectedConversation) {
+        setSelectedConversation(allUserConversations[0]);
+      } else if (selectedConversation) {
+        // Si une conversation est déjà sélectionnée, mettre à jour ses données
+        const updatedSelectedConv = allUserConversations.find(
+          conv => conv.id === selectedConversation.id
+        );
+        if (updatedSelectedConv) {
+          setSelectedConversation(updatedSelectedConv);
+        }
+      }
+    };
     
-    if (allUserConversations.length > 0) {
-      setSelectedConversation(allUserConversations[0]);
-    }
-  }, []);
+    // Charger les conversations au démarrage
+    loadAndRefreshConversations();
+    
+    // Configurer un intervalle pour vérifier périodiquement les nouveaux messages
+    const interval = setInterval(() => {
+      loadAndRefreshConversations();
+    }, 10000); // Vérifier toutes les 10 secondes
+    
+    return () => clearInterval(interval);
+  }, [selectedConversation]);
 
   const { handleSendMessage, handleSelectConversation } = useAdminConversationActions(
     conversations,
