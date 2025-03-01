@@ -3,7 +3,8 @@ import React, { useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { ImageUploader } from '@/components/shared/image-uploader';
-import { compressImage, cleanupImageUrls } from '@/utils/imageUtils';
+import { useUploadImage } from '@/hooks/useUploadImage';
+import { useToast } from '@/hooks/use-toast';
 
 interface ImageUploadSectionProps {
   imagePreviews: string[];
@@ -16,41 +17,38 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
   onImageChange,
   removeImage
 }) => {
-  // Clean up blob URLs when component unmounts to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      cleanupImageUrls(imagePreviews);
-    };
-  }, [imagePreviews]);
+  const { toast } = useToast();
+  const { handleSingleImageUpload } = useUploadImage({
+    maxFileSize: 10,
+    maxWidth: 1200,
+    maxHeight: 1200,
+    quality: 0.8,
+    allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+  });
 
   // Convert the file input handler to be compatible with ImageUploader
-  const handleImageUpload = useCallback((file: File) => {
-    // Use the utility function for image compression
-    compressImage(file, 1200, 1200, 0.75)
-      .then(compressedFile => {
+  const handleImageUpload = useCallback(async (file: File) => {
+    try {
+      const result = await handleSingleImageUpload(file);
+      if (result) {
         // Create the mock event with the compressed file
         const mockEvent = {
           target: {
-            files: [compressedFile] as unknown as FileList
+            files: [result.compressedFile] as unknown as FileList
           }
         } as React.ChangeEvent<HTMLInputElement>;
         
         onImageChange(mockEvent);
-      })
-      .catch(error => {
-        console.error('Error compressing image:', error);
+      }
+    } catch (error) {
+      console.error('Error handling image upload:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de téléchargement",
+        description: "Une erreur s'est produite lors du traitement de l'image"
       });
-  }, [onImageChange]);
-
-  // Memoize the removal function to prevent recreating on every render
-  const handleRemoveImage = useCallback((index: number) => {
-    // If it's a blob URL, revoke it before removal
-    const preview = imagePreviews[index];
-    if (preview && preview.startsWith('blob:')) {
-      URL.revokeObjectURL(preview);
     }
-    removeImage(index);
-  }, [imagePreviews, removeImage]);
+  }, [handleSingleImageUpload, onImageChange, toast]);
 
   return (
     <div className="space-y-2">
@@ -83,7 +81,7 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
               <button
                 type="button"
                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-md"
-                onClick={() => handleRemoveImage(index)}
+                onClick={() => removeImage(index)}
                 aria-label={`Supprimer l'image ${index + 1}`}
               >
                 <X size={14} />

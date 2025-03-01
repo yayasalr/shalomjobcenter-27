@@ -1,11 +1,11 @@
 
 import React, { useState, useRef } from 'react';
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { AvatarUploader } from './AvatarUploader';
 import { ButtonUploader } from './ButtonUploader';
 import { CardUploader } from './CardUploader';
 import { FeaturedUploader } from './FeaturedUploader';
-import { cleanupImageUrls } from '@/utils/imageUtils';
+import { cleanupImageUrls, compressImage } from '@/utils/imageUtils';
 
 export interface ImageUploaderProps {
   currentImage?: string;
@@ -38,6 +38,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 }) => {
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(currentImage);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   // Cleanup preview URL on unmount
   React.useEffect(() => {
@@ -52,32 +53,53 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     // File validation
     if (!allowedTypes.includes(file.type)) {
-      toast.error(`Type de fichier non supporté. Formats acceptés: ${allowedTypes.map(type => type.replace('image/', '.')).join(', ')}`);
+      toast({
+        variant: "destructive",
+        title: "Type de fichier non supporté",
+        description: `Formats acceptés: ${allowedTypes.map(type => type.replace('image/', '.')).join(', ')}`
+      });
       return;
     }
 
     if (file.size > maxSizeMB * 1024 * 1024) {
-      toast.error(`L'image est trop volumineuse. La taille maximale est de ${maxSizeMB} MB`);
+      toast({
+        variant: "destructive",
+        title: "Fichier trop volumineux",
+        description: `La taille maximale est de ${maxSizeMB} MB`
+      });
       return;
     }
 
-    // Cleanup previous preview URL if it exists
-    if (previewUrl && previewUrl.startsWith('blob:')) {
-      URL.revokeObjectURL(previewUrl);
+    try {
+      // Compress the image before uploading
+      const compressedFile = await compressImage(file, 1200, 1200, 0.8);
+      
+      // Cleanup previous preview URL if it exists
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+
+      // Create a preview URL
+      const objectUrl = URL.createObjectURL(compressedFile);
+      setPreviewUrl(objectUrl);
+
+      // Call the parent component's upload handler
+      onImageUpload(compressedFile);
+      
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de traitement",
+        description: "Une erreur s'est produite lors du traitement de l'image"
+      });
     }
-
-    // Create a preview URL
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
-
-    // Call the parent component's upload handler
-    onImageUpload(file);
 
     // Reset the input value to allow selecting the same file again
     e.target.value = '';
