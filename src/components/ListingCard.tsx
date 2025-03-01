@@ -118,9 +118,24 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   // Extraction et affichage du quartier depuis la localisation
   const neighborhood = location ? location.split(',')[0].trim() : 'Lomé';
 
+  // Utiliser des hôtes avec photos réelles pour un design plus authenticque comme Airbnb
+  const hostName = host?.name || "Hôte";
+  const hostDefaultImage = "https://a0.muscache.com/im/pictures/user/c6e8bdf0-5a52-4be9-959b-bb4357d13b4a.jpg?aki_policy=profile_medium";
+  const hostImage = host?.image && !host.image.includes('placeholder') ? host.image : hostDefaultImage;
+
   return (
-    <Link to={`/logement/${id}`} className="group relative block hover-lift hover-shadow transition-all duration-300 rounded-xl overflow-hidden bg-white">
-      <div className="aspect-square w-full overflow-hidden bg-gray-200 relative">
+    <Link to={`/logement/${id}`} className="group relative block hover-lift transition-all duration-300 rounded-xl overflow-hidden">
+      {/* Badge "Coup de coeur voyageurs" */}
+      <div className="absolute top-3 left-3 z-10">
+        <Badge 
+          variant="outline" 
+          className="px-2 py-1 bg-white text-xs font-medium text-black border-none shadow-sm flex items-center gap-1"
+        >
+          <span className="text-amber-400">★</span> Coup de cœur voyageurs
+        </Badge>
+      </div>
+
+      <div className="aspect-square w-full overflow-hidden relative">
         <img
           src={imageUrl}
           alt={title}
@@ -131,25 +146,8 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
             e.currentTarget.src = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        
-        {/* Badge "SHALOM JOB CENTER" avec style doré */}
-        <div className="absolute top-3 left-3 z-10">
-          <Badge 
-            variant="outline" 
-            className="px-3 py-1.5 shadow-md bg-gradient-to-r from-amber-300 to-yellow-500 text-white font-semibold border-amber-400"
-          >
-            SHALOM JOB CENTER
-          </Badge>
-        </div>
         
         <div className="absolute top-3 right-3 flex gap-2 z-10">
-          <motion.div 
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <CompareButton listingId={id} />
-          </motion.div>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -159,37 +157,25 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
             <Heart
               className={`h-5 w-5 ${
                 isFavorite
-                  ? "fill-sholom-primary text-sholom-primary animate-heart-beat"
+                  ? "fill-red-500 text-red-500 animate-heart-beat"
                   : "stroke-gray-600"
               }`}
             />
           </motion.button>
         </div>
-        
-        {/* Badge de prix en FCFA */}
-        <div 
-          className="absolute bottom-3 left-3 px-3 py-1 rounded-full text-white font-medium text-sm bg-sholom-primary shadow-md backdrop-blur-sm"
-        >
-          {priceFCFA.toLocaleString('fr-FR')} FCFA
-        </div>
       </div>
 
-      <div className="p-4">
+      <div className="mt-3">
         <div className="flex justify-between items-start">
           <div>
-            <div className="flex items-center text-sholom-muted mb-1">
-              <MapPin className="h-4 w-4 mr-1 text-sholom-primary" />
-              <span className="text-sm font-medium">{neighborhood}</span>
-            </div>
-            <h3 className="text-lg font-medium text-sholom-dark transition-colors group-hover:text-sholom-primary">{title}</h3>
-            <p className="text-sm text-sholom-muted mt-1">
-              Séjournez chez {host?.name || "l'hôte"}
-            </p>
-            <p className="text-sm text-sholom-muted mt-0.5">{dates}</p>
+            <h3 className="font-medium">{neighborhood}, {location.includes(',') ? location.split(',')[1].trim() : ''}</h3>
+            <p className="text-sm text-gray-500 mt-1">Séjournez chez {hostName}</p>
+            <p className="text-sm text-gray-500 mt-0.5">{dates}</p>
+            <p className="font-medium mt-1">{priceFCFA.toLocaleString('fr-FR')} FCFA par nuit</p>
           </div>
-          <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-md">
-            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-            <span className="text-sm font-medium text-sholom-dark">{rating || "Nouveau"}</span>
+          <div className="flex items-center mt-1">
+            <Star className="h-4 w-4 text-black fill-black mr-1" />
+            <span className="text-sm font-medium">{rating || "Nouveau"}</span>
           </div>
         </div>
       </div>

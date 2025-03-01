@@ -59,7 +59,7 @@ const Index = () => {
     if (!searchTerm.trim()) {
       // Si aucun terme de recherche, afficher tous les listings
       setFilteredListings(processedListings);
-      setVisibleListings(processedListings.slice(0, 8)); // Afficher seulement les 8 premiers par défaut
+      setVisibleListings(processedListings.slice(0, 12)); // Afficher 12 premiers par défaut (6x2 comme l'image de référence)
     } else {
       // Filtrer par terme de recherche
       const filtered = processedListings.filter(listing => 
@@ -80,7 +80,7 @@ const Index = () => {
   // Charger plus de logements
   const loadMoreListings = () => {
     if (visibleListings.length < filteredListings.length) {
-      setVisibleListings(filteredListings.slice(0, visibleListings.length + 4));
+      setVisibleListings(filteredListings.slice(0, visibleListings.length + 6)); // Charger 6 de plus (une rangée complète)
     }
   };
 
@@ -88,37 +88,32 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      <HeroSection />
-
       <div className="pt-6">
-        <CategoryFiltersSimplified />
+        <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 mx-auto">
+          <CategoryFiltersSimplified />
+        </div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <JobsBanner />
-          
-          <FeaturedListings 
-            listings={featuredListings} 
-            formatPriceFCFA={formatPriceFCFA} 
-          />
-
+        <div className="py-4">
           <SearchBar 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             primaryColor={settings.primaryColor} 
           />
 
-          <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-6">
-            {searchTerm 
-              ? `Résultats pour "${searchTerm}"` 
-              : settings.siteName || "Tous nos logements"}
-          </h2>
-          
-          {/* Affichage des résultats de recherche */}
-          {searchTerm && (
-            <p className="mb-6 text-sholom-muted">
-              {filteredListings.length} résultat(s) trouvé(s)
-            </p>
-          )}
+          <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 mt-4">
+            <h2 className="text-2xl font-medium text-sholom-dark">
+              {searchTerm 
+                ? `Résultats pour "${searchTerm}"` 
+                : "Logements en Afrique et partout dans le monde"}
+            </h2>
+            
+            {/* Affichage des résultats de recherche */}
+            {searchTerm && (
+              <p className="mb-4 text-sholom-muted">
+                {filteredListings.length} résultat(s) trouvé(s)
+              </p>
+            )}
+          </div>
           
           <ListingsGrid 
             isLoading={isLoading}
@@ -128,10 +123,6 @@ const Index = () => {
             filteredListings={filteredListings}
             loadMoreListings={loadMoreListings}
           />
-          
-          <FeaturesSection />
-          
-          <PopularNeighborhoods setSearchTerm={setSearchTerm} />
         </div>
       </div>
 

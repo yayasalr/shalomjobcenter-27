@@ -50,10 +50,10 @@ export const ListingsGrid = ({
   if (isLoading) {
     return (
       <div className="container-wide py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
-              <div className="bg-gray-200 animate-pulse h-52 shimmer"></div>
+              <div className="bg-gray-200 animate-pulse h-72 shimmer"></div>
               <CardContent className="p-3">
                 <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-2"></div>
                 <div className="h-4 w-1/2 bg-gray-200 animate-pulse shimmer"></div>
@@ -87,9 +87,9 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="container-wide py-8">
+    <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 py-8 w-full max-w-full mx-auto">
       <motion.div 
-        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
