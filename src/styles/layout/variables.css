@@ -10,18 +10,18 @@
   --breakpoint-3xl: 1920px;
   
   /* Spacing - eliminated to maximize available space */
-  --spacing-xs: 0px; 
-  --spacing-sm: 2px;
-  --spacing-md: 6px;
-  --spacing-lg: 12px;
-  --spacing-xl: 18px;
+  --spacing-xs: 0; 
+  --spacing-sm: 0;
+  --spacing-md: 0;
+  --spacing-lg: 0;
+  --spacing-xl: 0;
   
   /* Padding - eliminated to use maximum available space */
-  --padding-mobile: 0px;
-  --padding-tablet: 0px;
-  --padding-desktop: 0px;
-  --padding-large: 0px;
-  --padding-xlarge: 0px;
+  --padding-mobile: 0;
+  --padding-tablet: 0;
+  --padding-desktop: 0;
+  --padding-large: 0;
+  --padding-xlarge: 0;
   
   /* Border radius */
   --radius-sm: 8px;

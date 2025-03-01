@@ -2,10 +2,11 @@
 /* Card styles optimized for edge-to-edge display */
 .card {
   padding: 0;
+  margin: 0;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
-  margin: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .card:hover {
@@ -19,6 +20,7 @@
   width: 100%;
   margin: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .card-hover:hover {
@@ -33,6 +35,7 @@
   width: 100%;
   margin: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .hover-lift:hover {
@@ -49,6 +52,7 @@
   width: 100%;
   margin: 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .refined-card:hover {
@@ -62,10 +66,12 @@
   border-radius: 12px;
   position: relative;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* Enhanced card content spacing */
 .card-content {
   padding: 0.6rem 0.4rem 0.4rem;
   width: 100%;
+  box-sizing: border-box;
 }

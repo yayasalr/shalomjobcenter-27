@@ -7,6 +7,7 @@
   padding: 0;
   text-align: left;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Full-width container styles - eliminates all width limitations */
@@ -16,6 +17,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* Content container fully optimized to take entire available width */
@@ -25,6 +27,8 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  left: 0;
+  right: 0;
 }
 
 /* Navbar container optimized */
@@ -34,4 +38,6 @@
   max-width: 100%;
   margin: 0;
   box-sizing: border-box;
+  left: 0;
+  right: 0;
 }

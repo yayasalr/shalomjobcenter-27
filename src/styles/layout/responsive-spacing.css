@@ -7,43 +7,51 @@
 
 /* Immersive section for full-width content - optimized to truly span full width */
 .immersive-section {
-  width: 100%;
+  width: 100vw;
+  max-width: 100%;
   position: relative;
   left: 0;
   right: 0;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 @media (min-width: var(--breakpoint-md)) {
   .immersive-section {
     padding: 0;
+    width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-xl)) {
   .immersive-section {
     padding: 0;
+    width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-2xl)) {
   .immersive-section {
     padding: 0;
+    width: 100vw;
   }
 }
 
 @media (min-width: var(--breakpoint-3xl)) {
   .immersive-section {
     padding: 0;
+    width: 100vw;
   }
 }
 
 /* Full width container - for elements that must take full width */
 .full-width {
-  width: 100%;
+  width: 100vw;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
