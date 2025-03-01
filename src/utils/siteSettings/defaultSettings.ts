@@ -1,4 +1,3 @@
-
 import { SiteSettings } from '@/types/siteSettings';
 
 export const defaultSettings: SiteSettings = {
@@ -29,7 +28,8 @@ export const defaultSettings: SiteSettings = {
     address: '123 Rue Principale, Lomé, Togo',
     phone: '+228 12 34 56 78',
     email: 'info@shalomjobcenter.tg',
-    registrationNumber: 'RCCM TG-LOM-2023-B-12345'
+    registrationNumber: 'RCCM TG-LOM-2023-B-12345',
+    mapLocation: '6.1317,1.2232' // Added Lomé, Togo coordinates
   },
   siteDescription: 'Plateforme de location de logements et de recherche d\'emploi',
   adminEmail: 'admin@shalomjobcenter.fr',
@@ -71,5 +71,6 @@ export const defaultSettings: SiteSettings = {
   linkedinUrl: 'https://linkedin.com/company/shalomjobcenter',
   youtubeUrl: '',
   enableSocialLogin: true,
-  enableSocialSharing: true
+  enableSocialSharing: true,
+  logoUrl: '/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png'
 };
