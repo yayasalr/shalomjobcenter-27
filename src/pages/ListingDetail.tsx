@@ -1,11 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useListings } from "@/hooks/useListings";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import useAuth from "@/hooks/useAuth";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
@@ -13,16 +10,8 @@ import { useReviews } from "@/hooks/useReviews";
 
 // Imported components
 import ListingNotFound from "@/components/listing-detail/ListingNotFound";
-import ImageGallery from "@/components/listing-detail/ImageGallery";
-import ListingTitle from "@/components/listing-detail/ListingTitle";
-import HostInfo from "@/components/listing-detail/HostInfo";
-import ReservationCard from "@/components/listing-detail/ReservationCard";
-import SimilarListingCard from "@/components/listing-detail/SimilarListingCard";
+import ListingDetailContainer from "@/components/listing-detail/ListingDetailContainer";
 import LoadingSkeleton from "@/components/listing-detail/LoadingSkeleton";
-import DescriptionTab from "@/components/listing-detail/TabsContent/DescriptionTab";
-import EquipmentTab from "@/components/listing-detail/TabsContent/EquipmentTab";
-import LocationTab from "@/components/listing-detail/TabsContent/LocationTab";
-import ReviewsTab from "@/components/listing-detail/TabsContent/ReviewsTab";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +30,7 @@ const ListingDetail = () => {
 
   const listing = listings?.find((listing) => listing.id === id);
 
-  // Traitement des images
+  // Process images
   useEffect(() => {
     if (listing) {
       const fallbackImages = [
@@ -70,7 +59,7 @@ const ListingDetail = () => {
     }
   }, [listing]);
 
-  // Vérifier si le logement est dans les favoris
+  // Check if listing is in favorites
   useEffect(() => {
     if (id) {
       const favorites = localStorage.getItem("favorites");
@@ -81,14 +70,14 @@ const ListingDetail = () => {
     }
   }, [id]);
 
-  // Charger les avis pour ce logement
+  // Load reviews for this listing
   useEffect(() => {
     if (id && reviews) {
       const filteredReviews = reviews.filter(
         (review) => review.listingId === id && review.status === "approved"
       );
 
-      // Si aucun avis n'est trouvé, ajouter des avis fictifs pour la démo
+      // Add demo reviews if none found
       if (filteredReviews.length === 0) {
         setListingReviews([
           {
@@ -127,29 +116,29 @@ const ListingDetail = () => {
       return;
     }
 
-    // Convertir les dates en objets Date
+    // Convert dates to Date objects
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    // Vérifier si les dates sont valides
+    // Validate dates
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       toast.error("Dates invalides");
       return;
     }
 
-    // Vérifier si la date de début est avant la date de fin
+    // Ensure start date is before end date
     if (start >= end) {
       toast.error("La date de départ doit être après la date d'arrivée");
       return;
     }
 
-    // Calcul du nombre de jours
+    // Calculate number of days
     const diffTime = Math.abs(end.getTime() - start.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (!listing) return;
 
-    // Créer l'objet de réservation
+    // Create reservation object
     const reservation = {
       listingId: listing.id,
       userId: user.id,
@@ -160,7 +149,7 @@ const ListingDetail = () => {
       status: "pending",
     };
 
-    // Envoyer la réservation
+    // Submit reservation
     addReservation.mutate(reservation, {
       onSuccess: () => {
         toast.success("Réservation effectuée avec succès !");
@@ -196,7 +185,7 @@ const ListingDetail = () => {
         toast.success("Votre avis a été soumis pour modération");
         setReviewText("");
 
-        // Ajouter temporairement l'avis à la liste locale
+        // Add review temporarily to local list
         setListingReviews((prev) => [
           {
             id: Math.random().toString(36).substring(7),
@@ -239,13 +228,13 @@ const ListingDetail = () => {
     setIsFavorite(!isFavorite);
   };
 
-  // Affichage du prix en FCFA
+  // Format price in FCFA
   const formatPriceFCFA = (priceEUR: number): string => {
     const priceFCFA = Math.round(priceEUR * 655.957);
     return priceFCFA.toLocaleString("fr-FR");
   };
 
-  // Calcul de la note moyenne
+  // Calculate average rating
   const averageRating =
     listingReviews.reduce((acc, review) => acc + review.rating, 0) /
     (listingReviews.length || 1);
@@ -275,90 +264,30 @@ const ListingDetail = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="pt-20 sm:pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Bouton retour */}
-        <Link
-          to="/"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4 group transition-colors"
-        >
-          <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-1 transition-transform" />
-          <span>Retour aux logements</span>
-        </Link>
-
-        {/* Titre et localisation */}
-        <ListingTitle title={listing.title} location={listing.location} />
-
-        {/* Galerie d'images */}
-        <ImageGallery images={processedImages} title={listing.title} />
-
-        {/* Contenu principal */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Informations et description */}
-          <div className="lg:col-span-2">
-            <HostInfo host={listing.host} />
-
-            <Tabs defaultValue="description" className="space-y-6">
-              <TabsList className="w-full grid grid-cols-4 sm:w-auto md:inline-flex">
-                <TabsTrigger value="description">Description</TabsTrigger>
-                <TabsTrigger value="equipment">Équipements</TabsTrigger>
-                <TabsTrigger value="location">Localisation</TabsTrigger>
-                <TabsTrigger value="reviews">Avis ({listingReviews.length})</TabsTrigger>
-              </TabsList>
-
-              <DescriptionTab description={listing.description} />
-              <EquipmentTab />
-              <LocationTab mapLocation={listing.mapLocation} />
-              <ReviewsTab
-                averageRating={averageRating}
-                reviewCount={listingReviews.length}
-                listingReviews={listingReviews}
-                reviewText={reviewText}
-                setReviewText={setReviewText}
-                reviewRating={reviewRating}
-                setReviewRating={setReviewRating}
-                isAuthenticated={!!user}
-                handleSubmitReview={handleSubmitReview}
-              />
-            </Tabs>
-          </div>
-
-          {/* Carte de réservation */}
-          <div className="lg:sticky lg:top-24 h-fit">
-            <ReservationCard
-              price={formatPriceFCFA(listing.price)}
-              averageRating={averageRating}
-              reviewCount={listingReviews.length}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              guestCount={guestCount}
-              setGuestCount={setGuestCount}
-              handleReservation={handleReservation}
-              isFavorite={isFavorite}
-              toggleFavorite={toggleFavorite}
-              primaryColor={settings.primaryColor}
-            />
-          </div>
-        </div>
-
-        {/* Logements similaires */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold mb-8">Logements similaires</h2>
-          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {listings
-              .filter((item) => item.id !== listing.id)
-              .slice(0, 4)
-              .map((item) => (
-                <SimilarListingCard
-                  key={item.id}
-                  item={item}
-                  formatPriceFCFA={formatPriceFCFA}
-                />
-              ))}
-          </div>
-        </div>
-      </div>
+      <ListingDetailContainer
+        listing={listing}
+        processedImages={processedImages}
+        listings={listings}
+        averageRating={averageRating}
+        listingReviews={listingReviews}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        guestCount={guestCount}
+        setGuestCount={setGuestCount}
+        handleReservation={handleReservation}
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        primaryColor={settings.primaryColor}
+        reviewText={reviewText}
+        setReviewText={setReviewText}
+        reviewRating={reviewRating}
+        setReviewRating={setReviewRating}
+        isAuthenticated={!!user}
+        handleSubmitReview={handleSubmitReview}
+        formatPriceFCFA={formatPriceFCFA}
+      />
     </div>
   );
 };
