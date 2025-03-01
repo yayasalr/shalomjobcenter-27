@@ -30,6 +30,7 @@ import AdminPayments from './pages/admin/AdminPayments';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSupport from './pages/admin/AdminSupport';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminMessages from './pages/admin/AdminMessages';
 
 // Import components
 import { CompareListings } from './components/CompareListings';
@@ -73,6 +74,7 @@ function App() {
             <Route path="/admin/utilisateurs" element={<AdminUsers />} />
             <Route path="/admin/support" element={<AdminSupport />} />
             <Route path="/admin/parametres" element={<AdminSettings />} />
+            <Route path="/admin/messages" element={<AdminMessages />} />
             
             {/* 404 */}
             <Route path="*" element={<NotFound />} />
