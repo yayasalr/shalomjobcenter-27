@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
-import { BasicInfoSection } from "./form/BasicInfoSection";
+import { BasicInfoSection, ValidationErrors } from "./form/BasicInfoSection";
 import { LocationSection } from "./form/LocationSection";
 import { ImageUploadSection } from "./form/ImageUploadSection";
 import { DialogActions } from "./form/DialogActions";
@@ -24,16 +23,6 @@ interface ListingFormDialogProps {
   setIsOpen?: (isOpen: boolean) => void;
 }
 
-// Define validation errors interface
-interface ValidationErrors {
-  title?: string;
-  description?: string;
-  price?: string;
-  location?: string;
-  neighborhood?: string;
-  images?: string;
-}
-
 export const ListingFormDialog = ({
   selectedListing,
   isEditing,
@@ -42,7 +31,6 @@ export const ListingFormDialog = ({
   isOpen,
   setIsOpen
 }: ListingFormDialogProps) => {
-  // State declarations
   const [formState, setFormState] = useState({
     title: "",
     description: "",
@@ -57,11 +45,9 @@ export const ListingFormDialog = ({
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Use isOpen from props if provided
   const dialogOpen = isOpen !== undefined ? isOpen : open;
   const setDialogOpen = setIsOpen || setOpen;
 
-  // Load selected listing data when editing
   useEffect(() => {
     if (selectedListing && isEditing) {
       loadListingData(selectedListing);
@@ -70,7 +56,6 @@ export const ListingFormDialog = ({
     }
   }, [selectedListing, isEditing]);
 
-  // Load listing data from the selected listing
   const loadListingData = (listing: Listing) => {
     setFormState({
       title: listing.title,
@@ -81,7 +66,6 @@ export const ListingFormDialog = ({
       mapLocation: listing.mapLocation || ""
     });
     
-    // Reset images and set previews
     setImages([]);
     
     if (listing.images && listing.images.length > 0) {
@@ -92,33 +76,27 @@ export const ListingFormDialog = ({
       setImagePreviews([]);
     }
 
-    // Clear any previous errors
     setErrors({});
   };
 
-  // Extract neighborhood from location string
   const extractNeighborhood = (location: string): string => {
     const parts = location.split(',');
     return parts.length > 0 ? parts[0].trim() : "";
   };
 
-  // Form state updaters
   const updateFormState = (field: string, value: string) => {
     setFormState(prev => ({ ...prev, [field]: value }));
     
-    // Clear error for this field when user starts typing
     if (errors[field as keyof ValidationErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
-  // Update neighborhood and location together
   const handleNeighborhoodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newNeighborhood = e.target.value;
     updateFormState("neighborhood", newNeighborhood);
     updateFormState("location", `${newNeighborhood}, Lomé, Togo`);
     
-    // Clear neighborhood and location errors
     setErrors(prev => ({ 
       ...prev, 
       neighborhood: undefined,
@@ -126,7 +104,6 @@ export const ListingFormDialog = ({
     }));
   };
 
-  // Reset the form to initial state
   const resetForm = () => {
     setFormState({
       title: "",
@@ -142,7 +119,6 @@ export const ListingFormDialog = ({
     setIsSubmitting(false);
   };
 
-  // Handle image changes
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
@@ -151,27 +127,22 @@ export const ListingFormDialog = ({
       const newPreviews = filesArray.map(file => URL.createObjectURL(file));
       setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
       
-      // Clear image error if any
       if (errors.images) {
         setErrors(prev => ({ ...prev, images: undefined }));
       }
     }
   };
 
-  // Remove an image
   const removeImage = (index: number) => {
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
-    // Revoke the URL to prevent memory leaks
     URL.revokeObjectURL(imagePreviews[index]);
     setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
   };
 
-  // Validate form
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
     
-    // Title validation
     if (!formState.title.trim()) {
       newErrors.title = "Le titre est obligatoire";
     } else if (formState.title.length < 3) {
@@ -180,12 +151,10 @@ export const ListingFormDialog = ({
       newErrors.title = "Le titre ne doit pas dépasser 100 caractères";
     }
     
-    // Description validation - optional but with min length if provided
     if (formState.description && formState.description.length < 10) {
       newErrors.description = "La description doit contenir au moins 10 caractères";
     }
     
-    // Price validation
     if (!formState.price) {
       newErrors.price = "Le prix est obligatoire";
     } else {
@@ -199,17 +168,14 @@ export const ListingFormDialog = ({
       }
     }
     
-    // Location validation
     if (!formState.location.trim()) {
       newErrors.location = "La localisation est obligatoire";
     }
     
-    // Neighborhood validation
     if (!formState.neighborhood.trim()) {
       newErrors.neighborhood = "Le quartier est obligatoire";
     }
     
-    // Images validation - only required for new listings
     if (!isEditing && imagePreviews.length === 0) {
       newErrors.images = "Au moins une image est requise";
     }
@@ -218,7 +184,6 @@ export const ListingFormDialog = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // Form submission handler
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
@@ -237,25 +202,22 @@ export const ListingFormDialog = ({
         mapLocation: formState.mapLocation.trim()
       };
 
-      // If editing an existing listing
       if (selectedListing && isEditing) {
         formData.id = selectedListing.id;
         formData.rating = selectedListing.rating;
         formData.dates = selectedListing.dates;
         formData.host = selectedListing.host;
         
-        // Preserve existing images if no new images are added
         if (images.length === 0) {
           formData.image = selectedListing.image;
           formData.images = selectedListing.images;
         }
       }
 
-      // Process new images
       if (images.length > 0) {
         const imageUrls = images.map(file => URL.createObjectURL(file));
-        formData.image = imageUrls[0]; // First image as main image
-        formData.images = imageUrls; // All images in an array
+        formData.image = imageUrls[0];
+        formData.images = imageUrls;
       }
 
       await onSave(formData);
@@ -288,7 +250,6 @@ export const ListingFormDialog = ({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {/* Section des informations de base */}
           <BasicInfoSection 
             title={formState.title}
             description={formState.description}
@@ -299,7 +260,6 @@ export const ListingFormDialog = ({
             errors={errors}
           />
 
-          {/* Section de localisation */}
           <LocationSection 
             neighborhood={formState.neighborhood}
             location={formState.location}
@@ -310,7 +270,6 @@ export const ListingFormDialog = ({
             errors={errors}
           />
 
-          {/* Section d'upload d'images */}
           <ImageUploadSection 
             imagePreviews={imagePreviews} 
             onImageChange={handleImageChange}

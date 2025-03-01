@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-interface ValidationErrors {
+// Updated ValidationErrors interface with index signature
+export interface ValidationErrors {
   title?: string;
   description?: string;
   price?: string;
@@ -95,3 +96,4 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
     </>
   );
 };
+
