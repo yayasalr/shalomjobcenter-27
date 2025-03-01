@@ -11,33 +11,90 @@ export const LOME_NEIGHBORHOODS = [
   "Akodésséwa", "Gbényédji", "Ablogamé", "Abobo", "Aflao"
 ];
 
+// Images de secours fiables pour Lomé
+export const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", // Villa moderne
+  "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800", // Maison élégante
+  "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800", // Appartement contemporain
+  "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800", // Logement lumineux
+  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"  // Intérieur moderne
+];
+
+// Fonction pour obtenir une image valide à partir d'une URL
+const getValidImageUrl = (imageUrl: string, index: number = 0): string => {
+  if (!imageUrl) return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+  
+  if (imageUrl.startsWith('blob:')) {
+    return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+  }
+  
+  if (imageUrl.startsWith('http')) {
+    return imageUrl;
+  }
+  
+  if (imageUrl.startsWith('/') && (imageUrl === '/placeholder.svg' || imageUrl.includes('lovable-uploads'))) {
+    return imageUrl;
+  }
+  
+  return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
+};
+
+// Fonction pour normaliser un tableau d'images
+const normalizeImages = (images: string[] | undefined): string[] => {
+  if (!images || images.length === 0) {
+    return [FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)]];
+  }
+  
+  return images.map((img, index) => getValidImageUrl(img, index));
+};
+
+// Fonction pour normaliser un objet listing
+const normalizeListing = (listing: Listing): Listing => {
+  // Normaliser les images
+  const normalizedImages = normalizeImages(listing.images);
+  
+  // Assurer que l'image principale existe et est valide
+  const mainImage = getValidImageUrl(listing.image || normalizedImages[0], 0);
+  
+  // Assurer que chaque listing a une propriété host
+  const host = listing.host || { name: "Hôte", image: "/placeholder.svg" };
+  
+  // Assurer que c'est à Lomé avec un quartier spécifique
+  const location = listing.location.includes("Lomé") 
+    ? listing.location 
+    : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
+  
+  return {
+    ...listing,
+    image: mainImage,
+    images: normalizedImages,
+    host,
+    location
+  };
+};
+
 // Fonction pour charger les listings depuis le localStorage ou utiliser les données mock par défaut
 const loadListings = (): Listing[] => {
   const savedListings = localStorage.getItem('listings');
   if (savedListings) {
     const parsedListings = JSON.parse(savedListings);
-    // S'assurer que chaque listing a une propriété host et localisation à Lomé
-    return parsedListings.map((listing: Listing) => {
-      // Assurer que c'est à Lomé
-      const location = listing.location.includes("Lomé") 
-        ? listing.location 
-        : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
-      
-      return {
-        ...listing,
-        location,
-        host: listing.host || { name: "Hôte", image: "/placeholder.svg" }
-      };
-    });
+    // S'assurer que chaque listing a les propriétés requises
+    return parsedListings.map(normalizeListing);
   }
   
   // Si aucune donnée n'existe dans le localStorage, adapter les données mock pour Lomé
-  const loméListings = MOCK_LISTINGS.map(listing => ({
-    ...listing,
-    location: `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`,
-    // Prix adapté au marché de Lomé (conversion approximative en considérant le marché local)
-    price: Math.round((listing.price / 2) * 655.957) / 655.957, // Prix en euros divisé par 2 pour être plus réaliste
-  }));
+  const loméListings = MOCK_LISTINGS.map(listing => {
+    // Prix adapté au marché de Lomé
+    const price = Math.round((listing.price / 2) * 655.957) / 655.957; // Prix en euros divisé par 2 pour être plus réaliste
+    
+    const baseListing = {
+      ...listing,
+      location: `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`,
+      price
+    };
+    
+    return normalizeListing(baseListing);
+  });
   
   localStorage.setItem('listings', JSON.stringify(loméListings));
   return loméListings;
@@ -79,16 +136,20 @@ export const useListings = () => {
   const addListing = useMutation({
     mutationFn: async (newListing: Omit<Listing, "id">) => {
       const currentListings = loadListings();
-      const listing = {
+      
+      // Créer un ID unique pour le nouveau listing
+      const id = Math.random().toString(36).substr(2, 9);
+      
+      // Préparer le listing avec toutes les propriétés nécessaires
+      const listing = normalizeListing({
         ...newListing,
-        id: Math.random().toString(36).substr(2, 9),
+        id,
         rating: 0,
         dates: new Date().toLocaleDateString(),
-        // S'assurer que chaque nouveau listing a un hôte
         host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
-      };
+      });
       
-      // Assurez-vous que l'image principale est définie
+      // Assurer que l'image principale est définie
       if (listing.images && listing.images.length > 0 && !listing.image) {
         listing.image = listing.images[0];
       }
@@ -114,17 +175,13 @@ export const useListings = () => {
       const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
       
       if (index !== -1) {
-        // Assurez-vous que l'image principale est définie
-        if (updatedListing.images && updatedListing.images.length > 0 && !updatedListing.image) {
-          updatedListing.image = updatedListing.images[0];
-        }
+        // Normaliser le listing avant de le sauvegarder
+        const normalizedListing = normalizeListing(updatedListing);
         
-        // S'assurer que le listing mis à jour a un hôte
-        updatedListing.host = updatedListing.host || { name: "Hôte", image: "/placeholder.svg" };
-        
-        currentListings[index] = updatedListing;
+        currentListings[index] = normalizedListing;
         saveListings(currentListings);
-        console.log("Listing mis à jour:", updatedListing);
+        console.log("Listing mis à jour:", normalizedListing);
+        return normalizedListing;
       }
       return updatedListing;
     },

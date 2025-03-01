@@ -29,7 +29,8 @@ export const ListingsGrid = ({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
+        delayChildren: 0.1
       },
     },
   };
@@ -40,14 +41,14 @@ export const ListingsGrid = ({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
+        duration: 0.4,
       },
     },
   };
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
         {[...Array(12)].map((_, index) => (
           <div
             key={index}
@@ -80,13 +81,13 @@ export const ListingsGrid = ({
   return (
     <>
       <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {visibleListings.map((listing) => (
-          <motion.div key={listing.id} variants={itemVariants}>
+          <motion.div key={listing.id} variants={itemVariants} layout>
             <ListingCard listing={listing} />
           </motion.div>
         ))}

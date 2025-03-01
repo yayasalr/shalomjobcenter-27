@@ -1,15 +1,50 @@
+
 import React from 'react';
 import { Briefcase, Home, Building, Shield, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
+  
+  // Fonction pour rediriger vers la page principale avec le filtre actif
+  const handleFindListing = () => {
+    navigate('/', { state: { focusSearch: true } });
+  };
+  
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        duration: 0.5
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="lg:w-1/2 space-y-6">
+        <motion.div 
+          className="flex flex-col lg:flex-row items-center justify-between gap-12"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div className="lg:w-1/2 space-y-6" variants={itemVariants}>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-sholom-dark leading-tight">
               Découvrez votre nouveau <span className="text-sholom-primary italic">chez-vous</span> à Lomé
             </h1>
@@ -20,6 +55,7 @@ export const HeroSection = () => {
               <Button 
                 size="lg" 
                 className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium"
+                onClick={handleFindListing}
               >
                 Trouver un logement
               </Button>
@@ -35,8 +71,27 @@ export const HeroSection = () => {
               </Link>
             </div>
             
+            {/* Quartiers populaires */}
+            <div className="pt-8">
+              <p className="text-sholom-dark font-medium mb-3">Quartiers populaires:</p>
+              <div className="flex flex-wrap gap-2">
+                {LOME_NEIGHBORHOODS.slice(0, 5).map((neighborhood, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    className="bg-white/70 hover:bg-sholom-primary/10"
+                    onClick={() => navigate('/', { state: { searchTerm: neighborhood } })}
+                  >
+                    <MapPin className="h-3.5 w-3.5 mr-1 text-sholom-primary" />
+                    {neighborhood}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
             {/* Benefits */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
               {[
                 { icon: <Home className="h-5 w-5" />, text: "Logements vérifiés" },
                 { icon: <Shield className="h-5 w-5" />, text: "Paiements sécurisés" },
@@ -48,9 +103,9 @@ export const HeroSection = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
           
-          <div className="lg:w-1/2 relative">
+          <motion.div className="lg:w-1/2 relative" variants={itemVariants}>
             <div className="absolute -top-8 -left-8 w-24 h-24 bg-sholom-accent/20 rounded-full blur-2xl"></div>
             <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-sholom-primary/20 rounded-full blur-2xl"></div>
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
@@ -74,8 +129,8 @@ export const HeroSection = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

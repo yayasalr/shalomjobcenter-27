@@ -32,35 +32,53 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
   // Amélioration de la gestion des images
   useEffect(() => {
     const processImageUrl = () => {
-      // Vérification du type d'image et traitement approprié
+      // Vérification si les images dans le listing sont des tableaux vides
+      if (listing.images && listing.images.length === 0) {
+        console.log(`Listing ${id}: images est un tableau vide, utilisant une image de secours`);
+        setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
+        return;
+      }
+
+      // Si "images" existe et contient des éléments non vides, utiliser le premier
+      if (listing.images && listing.images.length > 0 && listing.images[0]) {
+        const firstNonEmptyImage = listing.images.find(img => img && img.length > 0);
+        if (firstNonEmptyImage) {
+          console.log(`Listing ${id}: utilisation de la première image non vide du tableau images`);
+          setImageUrl(firstNonEmptyImage);
+          return;
+        }
+      }
+
+      // Vérification du type d'image principale et traitement approprié
       if (!image) {
-        // Pas d'image => utiliser une image de secours
+        console.log(`Listing ${id}: pas d'image principale, utilisant une image de secours`);
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
       } else if (image.startsWith('blob:')) {
         // Les URLs blob ne sont pas persistantes après rafraîchissement de la page
         const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
-        console.log(`Image blob détectée (${image}), utilisation d'une alternative: ${randomFallback}`);
+        console.log(`Listing ${id}: Image blob détectée (${image}), utilisation d'une alternative: ${randomFallback}`);
         setImageUrl(randomFallback);
       } else if (image.startsWith('http')) {
-        // URL HTTP normale
+        console.log(`Listing ${id}: URL HTTP normale: ${image}`);
         setImageUrl(image);
       } else if (image.startsWith('/')) {
         // Chemin relatif - S'assurer que l'image existe
         if (image === '/placeholder.svg' || image.includes('lovable-uploads')) {
+          console.log(`Listing ${id}: Chemin relatif valide: ${image}`);
           setImageUrl(image);
         } else {
-          console.warn(`Image relative problématique: ${image}, utilisation d'une alternative`);
+          console.warn(`Listing ${id}: Image relative problématique: ${image}, utilisation d'une alternative`);
           setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
         }
       } else {
         // Type d'URL inconnu, utiliser une image de secours
-        console.warn(`Format d'image non reconnu: ${image}, utilisation d'une alternative`);
+        console.warn(`Listing ${id}: Format d'image non reconnu: ${image}, utilisation d'une alternative`);
         setImageUrl(fallbackImages[Math.floor(Math.random() * fallbackImages.length)]);
       }
     };
     
     processImageUrl();
-  }, [image]);
+  }, [image, id, listing.images]);
 
   // Vérification si le logement est déjà dans les favoris
   useEffect(() => {
@@ -96,6 +114,9 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
 
   // Conversion du prix en FCFA
   const priceFCFA = Math.round(price * 655.957); // Conversion d'euros en FCFA
+
+  // Extraction et affichage du quartier depuis la localisation
+  const neighborhood = location ? location.split(',')[0].trim() : 'Lomé';
 
   return (
     <Link to={`/logement/${id}`} className="group relative block hover-lift hover-shadow transition-all duration-300 rounded-xl overflow-hidden bg-white">
@@ -158,7 +179,7 @@ export const ListingCard = ({ listing }: ListingCardProps) => {
           <div>
             <div className="flex items-center text-sholom-muted mb-1">
               <MapPin className="h-4 w-4 mr-1 text-sholom-primary" />
-              <span className="text-sm">{location}</span>
+              <span className="text-sm font-medium">{neighborhood}</span>
             </div>
             <h3 className="text-lg font-medium text-sholom-dark transition-colors group-hover:text-sholom-primary">{title}</h3>
             <p className="text-sm text-sholom-muted mt-1">
