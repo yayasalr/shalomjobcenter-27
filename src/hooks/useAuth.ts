@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -176,12 +177,23 @@ const useAuth = () => {
     },
   });
 
+  // Add the updateUserAvatar function
+  const updateUserAvatar = (avatarUrl: string) => {
+    if (currentUser) {
+      const updatedUser = { ...currentUser, avatar: avatarUrl };
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      localStorage.setItem("userAvatar", avatarUrl);
+      queryClient.setQueryData(["auth-user"], updatedUser);
+    }
+  };
+
   return {
     user: currentUser,
     isLoading,
     login,
     register,
     logout,
+    updateUserAvatar,
   };
 };
 
