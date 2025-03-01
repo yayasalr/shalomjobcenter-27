@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
-import { ListingCard } from '@/components/ListingCard';
+import { ListingCard } from '@/components/listing-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
