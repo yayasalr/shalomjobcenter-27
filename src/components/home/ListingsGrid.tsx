@@ -1,12 +1,11 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search, Star } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ListingCard } from '@/components/listing-card';
 import { Listing } from '@/types/listing';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface ListingsGridProps {
   isLoading: boolean;
@@ -50,11 +49,11 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="w-full mx-auto max-w-[2520px] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+      <div className="w-full mx-auto max-w-full px-2 sm:px-4 md:px-5 lg:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-5 lg:gap-6">
           {[...Array(12)].map((_, index) => (
             <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
-              <div className="bg-gray-200 animate-pulse h-72 shimmer"></div>
+              <div className="bg-gray-200 animate-pulse h-48 aspect-[4/3] shimmer"></div>
               <div className="p-4">
                 <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-2"></div>
                 <div className="h-4 w-1/2 bg-gray-200 animate-pulse shimmer"></div>
@@ -68,7 +67,7 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-full mx-auto max-w-[2520px] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24">
+      <div className="w-full mx-auto max-w-full px-2 sm:px-4 md:px-5 lg:px-6">
         <div className="text-center py-16 border border-dashed rounded-lg bg-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
             <Search className="h-8 w-8 text-gray-400" />
@@ -88,9 +87,9 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="w-full mx-auto max-w-[2520px]">
+    <div className="w-full mx-auto max-w-full">
       <motion.div 
-        className="airbnb-grid px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 2xl:px-24"
+        className="airbnb-grid px-2 sm:px-4 md:px-5 lg:px-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -104,7 +103,7 @@ export const ListingsGrid = ({
       
       {/* "Voir plus" button */}
       {!searchTerm && visibleListings.length < filteredListings.length && (
-        <div className="flex justify-center mt-16 mb-12">
+        <div className="flex justify-center mt-12 mb-10">
           <Button 
             onClick={loadMoreListings}
             variant="outline"

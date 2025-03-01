@@ -7,14 +7,16 @@
   text-align: left; /* Left align text to match reference */
 }
 
-/* Airbnb-style card grid spacing */
+/* Airbnb-style card grid spacing with reduced margins */
 .airbnb-grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 16px;
+  width: 100%;
+  max-width: 100%;
 }
 
-/* Responsive grid layout exactly matching Airbnb's breakpoints */
+/* Responsive grid layout matching featured listings breakpoints */
 @media (min-width: 550px) {
   .airbnb-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -41,10 +43,17 @@
   }
 }
 
-@media (min-width: 1640px) {
+@media (min-width: 1440px) {
   .airbnb-grid {
     grid-template-columns: repeat(6, 1fr);
   }
+}
+
+/* Style spécifique pour les images des logements */
+.listing-card-image {
+  aspect-ratio: 4/3;
+  width: 100%;
+  object-fit: cover;
 }
 
 /* Assurer que les images s'étendent correctement */
@@ -66,19 +75,19 @@
   }
 }
 
-/* Classes d'espacement réactives */
+/* Classes d'espacement réactives avec marges réduites */
 .responsive-spacing {
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 @media (min-width: 640px) {
   .responsive-spacing {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   .responsive-spacing {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 }

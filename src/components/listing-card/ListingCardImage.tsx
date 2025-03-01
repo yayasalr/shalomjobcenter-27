@@ -59,7 +59,7 @@ export const ListingCardImage = ({
   };
 
   return (
-    <div className="aspect-square w-full overflow-hidden relative rounded-xl">
+    <div className="aspect-[4/3] w-full overflow-hidden relative rounded-xl">
       <motion.div
         className="h-full w-full"
         initial="closed"

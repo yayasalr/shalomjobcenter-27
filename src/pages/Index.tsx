@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -52,7 +53,7 @@ const Index = () => {
     
     if (!searchTerm.trim()) {
       setFilteredListings(processedListings);
-      setVisibleListings(processedListings.slice(0, 10));
+      setVisibleListings(processedListings.slice(0, 12)); // Afficher plus de logements initialement
     } else {
       const filtered = processedListings.filter(listing => 
         listing.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,7 +71,7 @@ const Index = () => {
 
   const loadMoreListings = () => {
     if (visibleListings.length < filteredListings.length) {
-      setVisibleListings(filteredListings.slice(0, visibleListings.length + 5));
+      setVisibleListings(filteredListings.slice(0, visibleListings.length + 6)); // Charger 6 logements supplémentaires
     }
   };
 
@@ -80,7 +81,7 @@ const Index = () => {
       
       <HeroSection />
       
-      <div className="w-full max-w-[1760px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-12">
+      <div className="w-full max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6 py-10">
         <JobsBanner />
         
         {featuredListings.length > 0 && (
@@ -91,8 +92,8 @@ const Index = () => {
         )}
       </div>
       
-      <div className="pt-6 w-full">
-        <div className="max-w-[1760px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10">
+      <div className="pt-4 w-full">
+        <div className="max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6">
           <CategoryFiltersSimplified />
         </div>
         
@@ -103,7 +104,7 @@ const Index = () => {
             primaryColor={settings.primaryColor} 
           />
 
-          <div className="max-w-[1760px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 mt-6 mb-8">
+          <div className="max-w-full mx-auto px-2 sm:px-4 md:px-5 lg:px-6 mt-4 mb-6">
             <h2 className="text-2xl font-medium text-sholom-dark">
               {searchTerm 
                 ? `Résultats pour "${searchTerm}"` 
@@ -111,7 +112,7 @@ const Index = () => {
             </h2>
             
             {searchTerm && (
-              <p className="mb-6 text-sholom-muted">
+              <p className="mb-4 text-sholom-muted">
                 {filteredListings.length} résultat(s) trouvé(s)
               </p>
             )}
