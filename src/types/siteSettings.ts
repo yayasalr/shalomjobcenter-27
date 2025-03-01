@@ -72,4 +72,9 @@ export interface SiteSettings {
   enableSocialLogin: boolean;
   enableSocialSharing: boolean;
   logoUrl: string;
+  notificationSettings: {
+    emailNotifications: boolean;
+    newContactFormAlert: boolean;
+    contactFormEmailTemplate: string;
+  };
 }

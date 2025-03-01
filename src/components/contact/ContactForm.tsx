@@ -55,6 +55,12 @@ const ContactForm = () => {
     // Save updated submissions to localStorage
     localStorage.setItem('contactFormSubmissions', JSON.stringify(updatedSubmissions));
     
+    // Send notification email to admin if enabled
+    if (settings.notificationSettings?.newContactFormAlert && settings.adminEmail) {
+      console.log('Sending notification email to admin:', settings.adminEmail);
+      // Dans une application réelle, nous utiliserions une API pour envoyer l'email
+    }
+    
     // Show success message
     setTimeout(() => {
       toast.success('Votre message a été envoyé avec succès!', {

@@ -1,28 +1,29 @@
+
 import { SiteSettings } from '@/types/siteSettings';
 
 export const defaultSettings: SiteSettings = {
-  siteName: 'SHALOM JOB CENTER',
+  siteName: 'Shalom Job Center',
   logo: '/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png',
-  primaryColor: '#FF385C', // Rouge Airbnb
-  secondaryColor: '#222222', // Gris foncé
+  primaryColor: '#e41d48',
+  secondaryColor: '#1d4ed8',
   language: 'fr',
   footer: {
-    contact: 'Contactez-nous à contact@shalomjobcenter.fr',
-    about: 'SHALOM JOB CENTER est une plateforme de location de logements et d\'emploi.',
-    terms: 'Conditions d\'utilisation de la plateforme SHALOM JOB CENTER.',
-    policy: 'Politique de confidentialité de SHALOM JOB CENTER.'
+    contact: 'Contactez-nous pour toute question concernant nos services de location ou nos offres d\'emploi.',
+    about: 'Shalom Job Center est une plateforme dédiée à la mise en relation des candidats avec des opportunités d\'emploi et de logement au Togo.',
+    terms: 'En utilisant notre service, vous acceptez nos conditions générales d\'utilisation et notre politique de confidentialité.',
+    policy: 'Nous respectons votre vie privée et protégeons vos données personnelles conformément aux lois en vigueur.',
   },
   socialLinks: {
-    facebook: 'https://facebook.com',
-    twitter: 'https://twitter.com',
-    instagram: 'https://instagram.com',
-    linkedin: 'https://linkedin.com'
+    facebook: 'https://facebook.com/shalomjobcenter',
+    twitter: 'https://twitter.com/shalomjobcenter',
+    instagram: 'https://instagram.com/shalomjobcenter',
+    linkedin: 'https://linkedin.com/company/shalomjobcenter',
   },
   reservationSettings: {
     minStay: 1,
-    maxStay: 30,
-    advanceBookingDays: 90,
-    instantBooking: true
+    maxStay: 90,
+    advanceBookingDays: 365,
+    instantBooking: true,
   },
   companyInfo: {
     address: '123 Rue Principale, Lomé, Togo',
@@ -34,37 +35,37 @@ export const defaultSettings: SiteSettings = {
   siteDescription: 'Plateforme de location de logements et de recherche d\'emploi',
   adminEmail: 'admin@shalomjobcenter.fr',
   supportEmail: 'support@shalomjobcenter.fr',
-  phoneNumber: '+228 90 123 456',
-  address: 'Lomé, Togo',
+  phoneNumber: '+228 12 34 56 78',
+  address: '123 Rue Principale, Lomé, Togo',
   favicon: '/favicon.ico',
-  fontFamily: 'Inter',
+  fontFamily: 'Inter, sans-serif',
   borderRadius: 'medium',
   darkMode: false,
   defaultLanguage: 'fr',
   defaultCurrency: 'XOF',
-  dateFormat: 'DD/MM/YYYY',
+  dateFormat: 'dd/MM/yyyy',
   timeFormat: '24h',
   timezone: 'Africa/Lome',
-  maxFileSize: 5,
-  allowedFileTypes: 'jpg,jpeg,png,gif,pdf',
+  maxFileSize: 5, // MB
+  allowedFileTypes: 'image/jpeg,image/png,image/gif',
   imageCompression: 'medium',
   watermarkEnabled: false,
-  watermarkOpacity: 50,
-  watermarkImage: '/placeholder.svg',
+  watermarkOpacity: 0.5,
+  watermarkImage: '',
   mailProvider: 'smtp',
   smtpHost: 'smtp.example.com',
   smtpPort: '587',
   smtpUser: 'user@example.com',
-  smtpPassword: '',
-  senderName: 'SHALOM JOB CENTER',
-  senderEmail: 'no-reply@shalomjobcenter.fr',
+  smtpPassword: 'password',
+  senderName: 'Shalom Job Center',
+  senderEmail: 'no-reply@shalomjobcenter.tg',
   currency: 'XOF',
   stripeLiveKey: '',
   stripeTestKey: '',
   paypalClientId: '',
   testMode: true,
-  commissionRate: 5,
-  minWithdrawalAmount: 1000,
+  commissionRate: 10,
+  minWithdrawalAmount: 10000,
   facebookUrl: 'https://facebook.com/shalomjobcenter',
   twitterUrl: 'https://twitter.com/shalomjobcenter',
   instagramUrl: 'https://instagram.com/shalomjobcenter',
@@ -72,5 +73,23 @@ export const defaultSettings: SiteSettings = {
   youtubeUrl: '',
   enableSocialLogin: true,
   enableSocialSharing: true,
-  logoUrl: '/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png'
+  logoUrl: '/lovable-uploads/be3553b7-65a1-46ed-a1cf-4ad67b03a0c2.png',
+  notificationSettings: {
+    emailNotifications: true,
+    newContactFormAlert: true,
+    contactFormEmailTemplate: `Cher administrateur,
+
+Un nouveau formulaire de contact a été soumis sur votre site.
+
+Nom: {name}
+Email: {email}
+Département: {department}
+Sujet: {subject}
+
+Message:
+{message}
+
+Cordialement,
+L'équipe Shalom Job Center`
+  }
 };
