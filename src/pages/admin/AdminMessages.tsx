@@ -5,10 +5,11 @@ import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, User } from 'lucide-react';
+import { Users, User, MessageSquare } from 'lucide-react';
 import ConversationList from '@/components/admin/messages/ConversationList';
 import AdminConversationView from '@/components/admin/messages/AdminConversationView';
 import SystemMessagesTab from '@/components/admin/messages/SystemMessagesTab';
+import ContactSubmissionsTab from '@/components/admin/messages/ContactSubmissionsTab';
 import { useAdminMessages } from '@/hooks/useAdminMessages';
 
 const AdminMessages: React.FC = () => {
@@ -52,6 +53,10 @@ const AdminMessages: React.FC = () => {
                 <User className="h-4 w-4" />
                 Messages système
               </TabsTrigger>
+              <TabsTrigger value="contact" className="flex gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Formulaires de contact
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="messages" className="space-y-4">
@@ -84,6 +89,10 @@ const AdminMessages: React.FC = () => {
             
             <TabsContent value="system" className="space-y-4">
               <SystemMessagesTab />
+            </TabsContent>
+            
+            <TabsContent value="contact" className="space-y-4">
+              <ContactSubmissionsTab />
             </TabsContent>
           </Tabs>
         </main>

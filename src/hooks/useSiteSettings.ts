@@ -1,69 +1,67 @@
+import { useState, useEffect } from 'react';
 
-import { useState, useEffect, useCallback } from 'react';
-import { SiteSettings } from '@/types/siteSettings';
-import { defaultSettings } from '@/utils/siteSettings/defaultSettings';
-import { validateSettings } from '@/utils/siteSettings/validateSettings';
-import { applySettingsToDOM } from '@/utils/siteSettings/domUtils';
-import { exportSettings as exportSettingsUtil, importSettings as importSettingsUtil } from '@/utils/siteSettings/exportImport';
+export interface SiteSettings {
+  primaryColor: string;
+  secondaryColor: string;
+  logoUrl: string;
+  facebookUrl: string;
+  twitterUrl: string;
+  instagramUrl: string;
+  linkedinUrl: string;
+  companyInfo: {
+    address: string;
+    phone: string;
+    email: string;
+    registrationNumber: string;
+    mapLocation?: string; // Add this new field
+  };
+}
 
-export type { SiteSettings } from '@/types/siteSettings';
+const defaultSettings: SiteSettings = {
+  primaryColor: '#007BFF',
+  secondaryColor: '#6C757D',
+  logoUrl: '/logo.png',
+  facebookUrl: 'https://facebook.com',
+  twitterUrl: 'https://twitter.com',
+  instagramUrl: 'https://instagram.com',
+  linkedinUrl: 'https://linkedin.com',
+  companyInfo: {
+    address: '123 Main Street, Anytown',
+    phone: '+15551234567',
+    email: 'info@example.com',
+    registrationNumber: '123456789',
+  },
+};
 
 export const useSiteSettings = () => {
-  const [settings, setSettings] = useState<SiteSettings>(() => {
-    const savedSettings = localStorage.getItem('siteSettings');
-    if (savedSettings) {
-      try {
-        const parsedSettings = JSON.parse(savedSettings);
-        console.log('Loading site settings:', parsedSettings);
-        return validateSettings(parsedSettings);
-      } catch (e) {
-        console.error('Error loading settings:', e);
-        return defaultSettings;
-      }
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+
+  useEffect(() => {
+    const storedSettings = localStorage.getItem('siteSettings');
+    if (storedSettings) {
+      setSettings(JSON.parse(storedSettings));
     }
-    return defaultSettings;
-  });
-
-  // Apply settings to DOM on first load
-  useEffect(() => {
-    applySettingsToDOM(settings);
   }, []);
 
-  // Apply settings to DOM on each change and save to localStorage
   useEffect(() => {
-    applySettingsToDOM(settings);
     localStorage.setItem('siteSettings', JSON.stringify(settings));
-    console.log('Settings updated and saved:', settings);
   }, [settings]);
 
-  const updateSettings = useCallback((newSettings: Partial<SiteSettings>) => {
-    setSettings(prev => {
-      const updated = { ...prev, ...newSettings };
-      return updated;
-    });
-  }, []);
-
-  const resetSettings = useCallback(() => {
-    setSettings(defaultSettings);
-    localStorage.setItem('siteSettings', JSON.stringify(defaultSettings));
-  }, []);
-
-  // Export settings function
-  const exportSettingsWrapper = useCallback(() => {
-    return exportSettingsUtil(settings);
-  }, [settings]);
-
-  // Import settings function
-  const importSettingsWrapper = useCallback(async (file: File): Promise<boolean> => {
-    return importSettingsUtil(file, setSettings);
-  }, []);
-
-  return {
-    settings,
-    updateSettings,
-    resetSettings,
-    applySettingsToDOM: useCallback(() => applySettingsToDOM(settings), [settings]),
-    exportSettings: exportSettingsWrapper,
-    importSettings: importSettingsWrapper
+  const updateSettings = (newSettings: Partial<SiteSettings>) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      ...newSettings,
+    }));
   };
+
+  const handleCompanyInfoChange = (field: keyof SiteSettings['companyInfo'], value: string) => {
+    updateSettings({
+      companyInfo: {
+        ...settings.companyInfo,
+        [field]: value,
+      },
+    });
+  };
+
+  return { settings, updateSettings, handleCompanyInfoChange };
 };
