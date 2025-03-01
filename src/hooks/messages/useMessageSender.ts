@@ -33,7 +33,7 @@ export const useMessageSender = (
         content: newMessage,
         timestamp: new Date(),
         read: true,
-        sender: 'user',
+        sender: 'user' as const,
       },
     };
     
@@ -53,6 +53,7 @@ export const useMessageSender = (
     // Pour les conversations avec admin ou bot d'accueil, mettre à jour aussi leur côté
     if (selectedConversation.with.id === 'admin' || selectedConversation.with.id === 'welcome-bot') {
       setTimeout(() => {
+        const autoResponseSender = selectedConversation.with.id === 'admin' ? 'admin' : 'system';
         const autoResponse: Message = {
           id: `auto-${Date.now()}`,
           content: selectedConversation.with.id === 'admin' 
@@ -60,7 +61,7 @@ export const useMessageSender = (
             : "Merci de votre intérêt pour nos services. Notre équipe est là pour vous aider !",
           timestamp: new Date(),
           read: false,
-          sender: selectedConversation.with.id === 'admin' ? 'admin' : 'system',
+          sender: autoResponseSender,
         };
         
         // Ajouter la réponse automatique à la conversation locale
@@ -71,7 +72,7 @@ export const useMessageSender = (
             content: autoResponse.content,
             timestamp: autoResponse.timestamp,
             read: false,
-            sender: autoResponse.sender,
+            sender: autoResponseSender,
           },
         };
         
@@ -132,19 +133,19 @@ export const useMessageSender = (
           {
             ...userMessage,
             read: false,  // Non lu par l'admin
-            sender: 'user',
+            sender: 'user' as const,
           },
           {
             ...adminResponse,
             read: true,   // Lu par l'admin qui l'a envoyé
-            sender: 'admin',
+            sender: 'admin' as const,
           }
         ],
         lastMessage: {
           content: adminResponse.content,
           timestamp: adminResponse.timestamp,
           read: true,
-          sender: 'admin',
+          sender: 'admin' as const,
         },
       };
       
@@ -164,19 +165,19 @@ export const useMessageSender = (
           {
             ...userMessage,
             read: false,
-            sender: 'user',
+            sender: 'user' as const,
           },
           {
             ...adminResponse,
             read: true,
-            sender: 'admin',
+            sender: 'admin' as const,
           }
         ],
         lastMessage: {
           content: adminResponse.content,
           timestamp: adminResponse.timestamp,
           read: true,
-          sender: 'admin',
+          sender: 'admin' as const,
         },
       });
     }
