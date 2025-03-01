@@ -88,6 +88,19 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
+      <HeroSection />
+      
+      <div className="container-wide px-8 md:px-12 lg:px-16 xl:px-20 2xl:px-24 mx-auto py-12">
+        <JobsBanner />
+        
+        {featuredListings.length > 0 && (
+          <FeaturedListings 
+            listings={featuredListings} 
+            formatPriceFCFA={formatPriceFCFA} 
+          />
+        )}
+      </div>
+      
       <div className="pt-6">
         <div className="px-8 md:px-10 lg:px-20 xl:px-24 2xl:px-40 mx-auto">
           <CategoryFiltersSimplified />
