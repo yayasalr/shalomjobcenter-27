@@ -41,7 +41,7 @@ export const ListingCardImage = ({
   };
 
   return (
-    <div className="relative overflow-hidden rounded-xl aspect-[16/9] mb-3">
+    <div className="relative overflow-hidden rounded-xl aspect-square mb-2">
       <img
         src={imageUrl}
         alt={title}
@@ -55,7 +55,7 @@ export const ListingCardImage = ({
       {/* Favorite heart button */}
       <button
         onClick={toggleFavorite}
-        className="absolute top-3 right-3 p-2 rounded-full bg-white/90 shadow-md z-10 transition-opacity"
+        className="absolute top-2 right-2 p-2 rounded-full bg-white/90 shadow-md z-10 transition-opacity"
         aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
       >
         <Heart
@@ -67,13 +67,13 @@ export const ListingCardImage = ({
       
       {/* Image navigation dots for listings with multiple images */}
       {listing.images && listing.images.length > 1 && (
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
           {listing.images.slice(0, 5).map((_, index) => (
             <div
               key={index}
               className={`h-1.5 w-1.5 rounded-full transition-all ${
                 isHovered && index === 0
-                  ? "w-6 bg-white"
+                  ? "w-5 bg-white"
                   : "bg-white/70"
               }`}
             />

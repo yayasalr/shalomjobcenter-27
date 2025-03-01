@@ -1,8 +1,8 @@
 
 /* Responsive spacing utilities fully optimized */
 .responsive-spacing {
-  padding: var(--spacing-md);
-  margin: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  margin: var(--spacing-xs);
 }
 
 /* Immersive section for full-width content - optimized to truly span full width */
@@ -12,7 +12,7 @@
   position: relative;
   left: 0;
   right: 0;
-  margin: var(--spacing-md) 0;
+  margin: var(--spacing-sm) 0;
   padding: 0 var(--padding-mobile);
   box-sizing: border-box;
   overflow-x: hidden;
@@ -50,7 +50,7 @@
 .full-width {
   width: 100vw;
   max-width: 100%;
-  margin: var(--spacing-md) 0;
+  margin: var(--spacing-sm) 0;
   padding: 0 var(--padding-mobile);
   box-sizing: border-box;
   overflow-x: hidden;

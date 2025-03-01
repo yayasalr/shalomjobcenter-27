@@ -49,13 +49,13 @@ export const ListingsGrid = ({
 
   if (isLoading) {
     return (
-      <div className="w-screen px-4 py-6">
-        <div className="airbnb-grid gap-6">
+      <div className="w-full px-1 py-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-2">
           {[...Array(12)].map((_, index) => (
-            <Card key={index} className="overflow-hidden hover-shadow transition duration-300 h-full">
-              <div className="bg-gray-200 animate-pulse h-0 pb-[56.25%] relative shimmer"></div>
-              <div className="p-4">
-                <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-2"></div>
+            <Card key={index} className="overflow-hidden hover-shadow transition duration-300">
+              <div className="bg-gray-200 animate-pulse aspect-square relative shimmer"></div>
+              <div className="p-2">
+                <div className="h-5 w-3/4 bg-gray-200 animate-pulse shimmer mb-1"></div>
                 <div className="h-4 w-1/2 bg-gray-200 animate-pulse shimmer"></div>
               </div>
             </Card>
@@ -67,16 +67,16 @@ export const ListingsGrid = ({
 
   if (visibleListings.length === 0) {
     return (
-      <div className="w-screen px-4 py-6">
-        <div className="text-center py-16 border border-dashed rounded-lg bg-white">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-gray-100">
-            <Search className="h-8 w-8 text-gray-400" />
+      <div className="w-full px-1 py-2">
+        <div className="text-center py-8 border border-dashed rounded-lg bg-white">
+          <div className="inline-flex items-center justify-center w-12 h-12 mb-3 rounded-full bg-gray-100">
+            <Search className="h-6 w-6 text-gray-400" />
           </div>
-          <p className="text-xl text-gray-500 mb-4 minimal-text">Aucun logement ne correspond à votre recherche</p>
+          <p className="text-lg text-gray-500 mb-3 minimal-text">Aucun logement ne correspond à votre recherche</p>
           {searchTerm && (
             <Button 
               onClick={() => setSearchTerm("")}
-              className="mt-2 bg-sholom-primary text-white hover:bg-sholom-primary-dark font-medium"
+              className="mt-1 bg-sholom-primary text-white hover:bg-sholom-primary-dark font-medium"
             >
               Voir tous les logements
             </Button>
@@ -87,15 +87,15 @@ export const ListingsGrid = ({
   }
 
   return (
-    <div className="w-screen px-4 py-6">
+    <div className="w-full px-1 py-2">
       <motion.div 
-        className="airbnb-grid gap-6"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-2"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         {visibleListings.map((listing) => (
-          <motion.div key={listing.id} variants={itemVariants} layout className="hover-lift h-full">
+          <motion.div key={listing.id} variants={itemVariants} layout className="hover-lift">
             <ListingCard listing={listing} />
           </motion.div>
         ))}
@@ -103,10 +103,10 @@ export const ListingsGrid = ({
       
       {/* "Voir plus" button avec meilleure visibilité */}
       {!searchTerm && visibleListings.length < filteredListings.length && (
-        <div className="flex justify-center mt-10 mb-8">
+        <div className="flex justify-center mt-6 mb-4">
           <Button 
             onClick={loadMoreListings}
-            className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-8 py-6 shadow-md font-medium"
+            className="bg-sholom-primary text-white hover:bg-sholom-primary-dark text-lg px-6 py-4 shadow-md font-medium"
           >
             Voir plus de logements
           </Button>

@@ -16,8 +16,8 @@ interface SimilarListingCardProps {
 }
 
 const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) => (
-  <Link to={`/logement/${item.id}`} className="group block m-2">
-    <div className="aspect-video overflow-hidden rounded-xl">
+  <Link to={`/logement/${item.id}`} className="group block m-1">
+    <div className="aspect-square overflow-hidden rounded-xl">
       <img
         src={item.image}
         alt={item.title}
@@ -28,7 +28,7 @@ const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) 
         }}
       />
     </div>
-    <div className="mt-4 px-2">
+    <div className="mt-2 px-1">
       <div className="flex justify-between">
         <h3 className="font-medium line-clamp-1 minimal-text">{item.location}</h3>
         <div className="flex items-center">
@@ -37,7 +37,7 @@ const SimilarListingCard = ({ item, formatPriceFCFA }: SimilarListingCardProps) 
         </div>
       </div>
       <p className="text-gray-500 text-sm line-clamp-1 minimal-text mt-1">{item.title}</p>
-      <p className="font-medium mt-2">{formatPriceFCFA(item.price)} FCFA</p>
+      <p className="font-medium mt-1">{formatPriceFCFA(item.price)} FCFA</p>
     </div>
   </Link>
 );
