@@ -7,24 +7,25 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
+  type ToastProps
 } from "@/components/ui/toast"
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts, dismiss } = useToast()
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, ...props }) {
+      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
         return (
-          <Toast key={id} {...props} className="notification-pop border-l-4 border-sholom-primary shadow-lg">
+          <Toast key={id} variant={variant} className="notification-pop border-l-4 border-sholom-primary shadow-lg">
             <div className="grid gap-1">
-              {title && <ToastTitle className="font-semibold">{title}</ToastTitle>}
+              {title && <ToastTitle>{title}</ToastTitle>}
               {description && (
-                <ToastDescription className="text-sm">{description}</ToastDescription>
+                <ToastDescription>{description}</ToastDescription>
               )}
             </div>
             {action}
-            <ToastClose />
+            <ToastClose onClick={() => dismiss(id)} />
           </Toast>
         )
       })}

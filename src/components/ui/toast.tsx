@@ -1,22 +1,24 @@
 
 import React from 'react';
 
-interface ToastProps {
+interface ToastRootProps {
   children: React.ReactNode;
+  className?: string;
+  variant?: "default" | "destructive";
 }
 
-export const Toast: React.FC<ToastProps> = ({ children }) => {
+export const Toast: React.FC<ToastRootProps> = ({ children, className = "", variant = "default" }) => {
   return (
-    <div className="fixed bottom-4 right-4 bg-white shadow-lg rounded-lg p-4 z-50 animate-in fade-in slide-in-from-bottom-5">
+    <div className={`fixed bottom-4 right-4 bg-white shadow-lg rounded-lg p-4 z-50 animate-in fade-in slide-in-from-bottom-5 ${className}`}>
       {children}
     </div>
   );
 };
 
-export const ToastProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const ToastViewport = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-export const ToastTitle = ({ children }: { children: React.ReactNode }) => <div className="font-medium">{children}</div>;
-export const ToastDescription = ({ children }: { children: React.ReactNode }) => <div className="text-sm text-gray-500">{children}</div>;
+export const ToastProvider = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <div className={className}>{children}</div>;
+export const ToastViewport = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <div className={className}>{children}</div>;
+export const ToastTitle = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <div className={`font-medium ${className}`}>{children}</div>;
+export const ToastDescription = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => <div className={`text-sm text-gray-500 ${className}`}>{children}</div>;
 export const ToastClose = ({ onClick }: { onClick: () => void }) => (
   <button 
     onClick={onClick}
@@ -29,11 +31,14 @@ export const ToastClose = ({ onClick }: { onClick: () => void }) => (
   </button>
 );
 
-export type ToastProps = {
+export type ToastActionElement = React.ReactElement;
+
+export interface ToastProps {
+  id: string;
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
   variant?: "default" | "destructive";
-};
-
-export type ToastActionElement = React.ReactElement;
+  onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+}
