@@ -8,6 +8,7 @@ import {
   CardContent,
   CardHeader,
 } from "@/components/ui/card";
+import DateRangePicker from "@/components/shared/DateRangePicker";
 
 interface ReservationCardProps {
   price: string;
@@ -56,42 +57,28 @@ const ReservationCard = ({
       </div>
     </CardHeader>
     <CardContent className="space-y-4">
-      <div className="border rounded-lg overflow-hidden">
-        <div className="grid grid-cols-2 divide-x">
-          <div className="p-3">
-            <label className="block text-xs text-gray-500 mb-1">ARRIVÉE</label>
-            <input
-              type="date"
-              className="w-full focus:outline-none text-sm"
-              onChange={(e) => setStartDate(e.target.value)}
-              min={new Date().toISOString().split("T")[0]}
-            />
-          </div>
-          <div className="p-3">
-            <label className="block text-xs text-gray-500 mb-1">DÉPART</label>
-            <input
-              type="date"
-              className="w-full focus:outline-none text-sm"
-              onChange={(e) => setEndDate(e.target.value)}
-              min={startDate || new Date().toISOString().split("T")[0]}
-            />
-          </div>
-        </div>
-        <Separator />
-        <div className="p-3">
-          <label className="block text-xs text-gray-500 mb-1">VOYAGEURS</label>
-          <select
-            className="w-full focus:outline-none text-sm"
-            value={guestCount}
-            onChange={(e) => setGuestCount(Number(e.target.value))}
-          >
-            {[1, 2, 3, 4, 5].map((num) => (
-              <option key={num} value={num}>
-                {num} voyageur{num > 1 ? "s" : ""}
-              </option>
-            ))}
-          </select>
-        </div>
+      <DateRangePicker
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+      />
+      
+      <Separator />
+      
+      <div className="p-3 border rounded-lg">
+        <label className="block text-xs text-gray-500 mb-1">VOYAGEURS</label>
+        <select
+          className="w-full focus:outline-none text-sm"
+          value={guestCount}
+          onChange={(e) => setGuestCount(Number(e.target.value))}
+        >
+          {[1, 2, 3, 4, 5].map((num) => (
+            <option key={num} value={num}>
+              {num} voyageur{num > 1 ? "s" : ""}
+            </option>
+          ))}
+        </select>
       </div>
 
       <Button
