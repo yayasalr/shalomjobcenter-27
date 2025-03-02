@@ -30,7 +30,7 @@ export function Toaster() {
         )
       })}
       <ToastViewport className="p-6">
-        {/* Toast viewport content */}
+        <div></div>
       </ToastViewport>
     </ToastProvider>
   )
