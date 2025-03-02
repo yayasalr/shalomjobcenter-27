@@ -10,6 +10,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { MagicBook } from "@/components/ui/magic-book";
+import { toast } from "sonner";
 
 interface ImageGalleryProps {
   images: string[];
@@ -36,6 +38,16 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
         >
           <Share2 className="h-4 w-4" />
         </Button>
+        
+        {/* Livre magique flottant */}
+        <div className="absolute bottom-14 right-4">
+          <MagicBook 
+            title="Guide Magique"
+            onClick={() => toast.success("Découvrez la magie de ce lieu unique!", {
+              description: "Ce lieu a quelque chose de spécial qui enchante tous les voyageurs."
+            })}
+          />
+        </div>
       </div>
       
       {/* Grille d'images secondaires - toutes carrées */}
