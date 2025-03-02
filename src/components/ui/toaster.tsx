@@ -29,7 +29,9 @@ export function Toaster() {
           </Toast>
         )
       })}
-      <ToastViewport className="p-6" />
+      <ToastViewport className="p-6">
+        {/* Toast viewport content */}
+      </ToastViewport>
     </ToastProvider>
   )
 }
