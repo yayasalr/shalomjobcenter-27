@@ -1,5 +1,5 @@
 
-import { FALLBACK_IMAGES } from '@/hooks/useListings';
+import { FALLBACK_IMAGES } from '@/constants/images';
 import { compressImage, cleanupImageUrls } from '@/hooks/upload';
 
 // Fonction pour obtenir une image valide à partir d'une URL
@@ -33,3 +33,13 @@ export const normalizeImages = (images: string[] | undefined): string[] => {
 // Re-export the image utility functions from the new location
 export { compressImage, cleanupImageUrls };
 
+// Fonction pour obtenir une image d'avatar pour les propriétaires
+export const getHostAvatar = (avatarUrl: string | undefined): string => {
+  if (!avatarUrl) return "/placeholder.svg";
+  
+  if (avatarUrl.startsWith('blob:') || !avatarUrl) {
+    return "/placeholder.svg";
+  }
+  
+  return avatarUrl;
+};

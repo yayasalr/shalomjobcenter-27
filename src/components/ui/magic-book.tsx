@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { Trophy } from "lucide-react";
 
 interface MagicBookProps {
   className?: string;
@@ -10,7 +11,7 @@ interface MagicBookProps {
 
 export const MagicBook: React.FC<MagicBookProps> = ({ 
   className = "",
-  title = "Guide du voyageur",
+  title = "Coup de cœur voyageurs",
   onClick
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,78 +37,59 @@ export const MagicBook: React.FC<MagicBookProps> = ({
       }}
     >
       <motion.div
-        className="relative w-28 h-36 rounded-md overflow-hidden"
+        className="relative w-28 h-36 bg-white rounded-md shadow-xl overflow-hidden"
         animate={{
-          y: [0, -8, 0],
-          rotate: [0, 2, 0, -2, 0],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        {/* Livre */}
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-700 to-amber-900 rounded-md shadow-xl">
-          {/* Couverture */}
-          <div className="absolute inset-0 p-2">
-            <div className="h-full w-full border-2 border-amber-500/30 rounded-sm flex items-center justify-center">
-              <div className="text-amber-200 text-xs font-serif text-center px-1">
-                {title}
-              </div>
-            </div>
-          </div>
-          
-          {/* Tranche dorée */}
-          <div className="absolute right-0 top-0 bottom-0 w-1 bg-amber-300"></div>
-        </div>
-        
-        {/* Pages qui tournent */}
-        {isOpen && (
-          <>
-            <motion.div
-              className="absolute top-2 left-2 right-5 bottom-2 bg-white rounded-sm shadow-md"
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 30 }}
-              transition={{ duration: 0.5 }}
-            ></motion.div>
-            <motion.div
-              className="absolute top-3 left-3 right-7 bottom-3 bg-white/90 rounded-sm"
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 20 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            ></motion.div>
-          </>
-        )}
-        
-        {/* Aura lumineuse */}
-        <motion.div
-          className="absolute inset-0 bg-amber-300/20 rounded-md blur-md"
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 3,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        ></motion.div>
-      </motion.div>
-      
-      {/* Lueur */}
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-amber-200/30 rounded-full blur-xl -z-10"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3],
+          y: [0, -5, 0],
         }}
         transition={{
           duration: 4,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-      ></motion.div>
+      >
+        {/* Livre */}
+        <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
+          {/* Bannière supérieure avec le trophée */}
+          <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
+            <Trophy className="h-4 w-4 text-amber-500" />
+            <div className="text-black text-[10px] font-medium overflow-hidden">
+              {title}
+            </div>
+          </div>
+          
+          {/* Image de profil */}
+          <div className="flex-grow flex items-center justify-center p-2">
+            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+              <img 
+                src="/public/lovable-uploads/e3037485-6218-4d0a-a5ec-734b9943c37d.png" 
+                alt="Host" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800";
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        
+        {/* Pages qui tournent */}
+        {isOpen && (
+          <>
+            <motion.div
+              className="absolute top-8 left-2 right-5 bottom-2 bg-white rounded-sm shadow-md"
+              initial={{ rotateY: 0 }}
+              animate={{ rotateY: pageCount * 30 }}
+              transition={{ duration: 0.5 }}
+            ></motion.div>
+            <motion.div
+              className="absolute top-10 left-3 right-7 bottom-3 bg-white/90 rounded-sm"
+              initial={{ rotateY: 0 }}
+              animate={{ rotateY: pageCount * 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            ></motion.div>
+          </>
+        )}
+      </motion.div>
     </div>
   );
 };

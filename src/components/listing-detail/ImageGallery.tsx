@@ -34,17 +34,27 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
           variant="outline"
           size="icon"
           className="absolute bottom-2 right-2 bg-white/80 backdrop-blur-sm"
-          onClick={() => setSelectedImageIndex(0)}
+          onClick={() => {
+            // Create a temporary input element to copy the URL
+            const input = document.createElement('input');
+            input.value = window.location.href;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            toast.success("Lien copié!", {
+              description: "Vous pouvez maintenant partager ce logement"
+            });
+          }}
         >
           <Share2 className="h-4 w-4" />
         </Button>
         
-        {/* Livre magique flottant */}
-        <div className="absolute bottom-14 right-4">
+        {/* Livre "Coup de cœur voyageurs" */}
+        <div className="absolute top-2 left-2">
           <MagicBook 
-            title="Guide Magique"
-            onClick={() => toast.success("Découvrez la magie de ce lieu unique!", {
-              description: "Ce lieu a quelque chose de spécial qui enchante tous les voyageurs."
+            onClick={() => toast.success("Coup de cœur voyageurs!", {
+              description: "Ce logement est particulièrement apprécié des voyageurs pour son confort et son emplacement."
             })}
           />
         </div>

@@ -74,3 +74,23 @@
   height: 100%;
   object-fit: cover;
 }
+
+/* Style pour le livre "Coup de cœur voyageurs" */
+.magic-book-container {
+  position: absolute;
+  z-index: 10;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  transform-origin: top left;
+}
+
+.magic-book {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.magic-book:hover {
+  transform: scale(1.05) translateY(-5px);
+}
