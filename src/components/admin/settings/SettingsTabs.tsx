@@ -11,6 +11,7 @@ import { CompanySettingsTab } from './CompanySettingsTab';
 import { SocialSettingsTab } from './SocialSettingsTab';
 import { ImportExportTab } from './ImportExportTab';
 import { NotificationSettingsTab } from './NotificationSettingsTab';
+import { ContentSettingsTab } from './ContentSettingsTab';
 
 // Import the hook for settings management
 import { useTabsManagement } from './hooks/useTabsManagement';
@@ -39,13 +40,14 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ settings }) => {
 
   return (
     <Tabs defaultValue="general">
-      <TabsList className="grid md:grid-cols-7 grid-cols-2 md:grid-rows-1 grid-rows-4 h-auto mb-2">
+      <TabsList className="grid md:grid-cols-8 grid-cols-2 md:grid-rows-1 grid-rows-4 h-auto mb-2">
         <TabsTrigger value="general">Général</TabsTrigger>
         <TabsTrigger value="theme">Apparence</TabsTrigger>
         <TabsTrigger value="company">Entreprise</TabsTrigger>
         <TabsTrigger value="footer">Pied de page</TabsTrigger>
         <TabsTrigger value="social">Réseaux sociaux</TabsTrigger>
         <TabsTrigger value="notification">Notifications</TabsTrigger>
+        <TabsTrigger value="content">Contenu</TabsTrigger>
         <TabsTrigger value="import-export">Import/Export</TabsTrigger>
       </TabsList>
       
@@ -97,6 +99,10 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({ settings }) => {
           handleChange={handleInputChange} 
           handleNestedChange={handleNestedChange}
         />
+      </TabsContent>
+      
+      <TabsContent value="content">
+        <ContentSettingsTab />
       </TabsContent>
       
       <TabsContent value="import-export">
