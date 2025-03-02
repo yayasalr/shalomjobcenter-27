@@ -2,7 +2,7 @@
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 
-interface DescriptionTabProps {
+export interface DescriptionTabProps {
   description: string | undefined;
 }
 

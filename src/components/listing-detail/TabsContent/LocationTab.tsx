@@ -4,7 +4,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface LocationTabProps {
+export interface LocationTabProps {
   mapLocation?: string;
 }
 

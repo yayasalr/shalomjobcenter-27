@@ -2,10 +2,12 @@
 import React from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HostInfo from "./HostInfo";
-import DescriptionTab from "./TabsContent/DescriptionTab";
-import EquipmentTab from "./TabsContent/EquipmentTab";
-import LocationTab from "./TabsContent/LocationTab";
-import ReviewsTab from "./TabsContent/ReviewsTab";
+import { 
+  DescriptionTab, 
+  EquipmentTab, 
+  LocationTab, 
+  ReviewsTab 
+} from "./TabsContent";
 
 interface MainContentProps {
   host?: {

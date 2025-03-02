@@ -3,7 +3,11 @@ import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { Users, Calendar, Check } from "lucide-react";
 
-const EquipmentTab = () => (
+export interface EquipmentTabProps {
+  // Empty props interface for consistency
+}
+
+const EquipmentTab = ({}: EquipmentTabProps = {}) => (
   <TabsContent value="equipment" className="animate-fade-in pt-4">
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div className="flex items-center space-x-2 p-3 rounded-md hover:bg-gray-100 transition-colors">

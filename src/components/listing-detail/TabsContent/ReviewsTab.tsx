@@ -5,7 +5,7 @@ import { Star, Info } from "lucide-react";
 import ReviewForm from "../ReviewForm";
 import ReviewItem from "../ReviewItem";
 
-interface Review {
+export interface Review {
   id: string;
   author: string;
   avatar?: string;
@@ -15,7 +15,7 @@ interface Review {
   status?: string;
 }
 
-interface ReviewsTabProps {
+export interface ReviewsTabProps {
   averageRating: number;
   reviewCount: number;
   listingReviews: Review[];
