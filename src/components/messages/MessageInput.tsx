@@ -152,6 +152,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         ref={inputRef}
         contentEditable 
         className="whatsapp-input" 
+        dir="ltr" // Force left-to-right text direction
         data-placeholder="Saisissez votre message..."
         onInput={(e) => {
           const text = e.currentTarget.textContent || '';

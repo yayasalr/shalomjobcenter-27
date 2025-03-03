@@ -72,6 +72,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         <div 
           contentEditable 
           className="whatsapp-input" 
+          dir="ltr" // Force left-to-right text direction
           onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {

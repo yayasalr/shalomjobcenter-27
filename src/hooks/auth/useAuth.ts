@@ -14,10 +14,18 @@ const useAuth = () => {
     queryFn: async () => {
       const savedUser = localStorage.getItem("currentUser");
       if (savedUser) {
-        return JSON.parse(savedUser) as User;
+        try {
+          return JSON.parse(savedUser) as User;
+        } catch (error) {
+          console.error("Error parsing user data:", error);
+          localStorage.removeItem("currentUser");
+          return null;
+        }
       }
       return null;
     },
+    staleTime: Infinity, // Keep the data fresh and avoid unnecessary refetches
+    cacheTime: Infinity, // Keep data in cache indefinitely
   });
 
   const login = useMutation({

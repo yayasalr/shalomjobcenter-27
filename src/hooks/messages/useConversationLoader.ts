@@ -23,8 +23,20 @@ export const useConversationLoader = (userId: string | undefined) => {
           
           setConversations(parsedConversations);
           
-          if (parsedConversations.length > 0) {
+          // Retrieve selected conversation from session storage if available
+          const lastSelectedId = sessionStorage.getItem(`selected_conversation_${userId}`);
+          
+          if (lastSelectedId) {
+            const lastSelected = parsedConversations.find(c => c.id === lastSelectedId);
+            if (lastSelected) {
+              setSelectedConversation(lastSelected);
+            } else if (parsedConversations.length > 0) {
+              setSelectedConversation(parsedConversations[0]);
+              sessionStorage.setItem(`selected_conversation_${userId}`, parsedConversations[0].id);
+            }
+          } else if (parsedConversations.length > 0) {
             setSelectedConversation(parsedConversations[0]);
+            sessionStorage.setItem(`selected_conversation_${userId}`, parsedConversations[0].id);
           }
         } catch (error) {
           console.error("Erreur lors de la lecture des conversations:", error);
@@ -43,6 +55,13 @@ export const useConversationLoader = (userId: string | undefined) => {
       localStorage.setItem(`conversations_${userId}`, JSON.stringify(conversations));
     }
   }, [conversations, userId]);
+  
+  // Remember selected conversation
+  useEffect(() => {
+    if (userId && selectedConversation) {
+      sessionStorage.setItem(`selected_conversation_${userId}`, selectedConversation.id);
+    }
+  }, [selectedConversation, userId]);
 
   // Initialize default conversations for a new user
   const initializeDefaultConversations = (userId: string) => {
@@ -93,6 +112,10 @@ export const useConversationLoader = (userId: string | undefined) => {
 
     setConversations(initialConversations);
     setSelectedConversation(initialConversations[0]);
+    
+    // Save to localStorage immediately
+    localStorage.setItem(`conversations_${userId}`, JSON.stringify(initialConversations));
+    sessionStorage.setItem(`selected_conversation_${userId}`, initialConversations[0].id);
   };
 
   return {

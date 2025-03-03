@@ -83,6 +83,13 @@
   body {
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease-in-out;
+    direction: ltr; /* Force left-to-right text direction */
+  }
+  
+  /* Message content should always display left-to-right */
+  .message-content, .whatsapp-input, [contenteditable] {
+    direction: ltr;
+    text-align: left;
   }
   
   /* Make all images properly rendered */
