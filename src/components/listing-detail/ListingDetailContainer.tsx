@@ -1,3 +1,4 @@
+
 import React from "react";
 import ImageGallery from "./ImageGallery";
 import MainContent from "./MainContent";
