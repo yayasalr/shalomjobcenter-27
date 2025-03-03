@@ -36,6 +36,7 @@ export const useMediaHandling = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const imagePreview = reader.result as string;
+      console.log("Image preview created:", imagePreview.substring(0, 50) + "...");
       setMediaPreview(imagePreview);
       setMediaType('image');
     };

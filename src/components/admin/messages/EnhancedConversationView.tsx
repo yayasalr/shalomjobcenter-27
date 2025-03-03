@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Conversation } from '@/components/messages/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import AdminMessageInput from './AdminMessageInput';
-import { ArrowLeft, MoreVertical, Phone, Video, Check } from 'lucide-react';
+import { ArrowLeft, Phone, Video, Check, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface EnhancedConversationViewProps {
@@ -46,7 +45,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
     const conversationView = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:last-child');
     
     if (conversationList && conversationView && window.innerWidth < 768) {
-      conversationList.classList.add('active');
+      conversationList.classList.remove('hidden');
       conversationView.classList.add('hidden');
     }
   };
@@ -119,7 +118,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
               </div>
               {conversation.with.role && (
                 <Badge variant="outline" className="text-xs bg-emerald-700 text-white border-emerald-600">
-                  {conversation.with.role}
+                  {conversation.with.role === 'admin' ? 'Administrateur' : conversation.with.role}
                 </Badge>
               )}
             </div>
@@ -132,9 +131,6 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
           </Button>
           <Button variant="ghost" size="icon" className="text-white touch-manipulation">
             <Phone className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-white touch-manipulation">
-            <MoreVertical className="h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -164,15 +160,18 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
                 {message.sender === 'admin' && <div className="whatsapp-tail-out"></div>}
                 {message.sender !== 'admin' && <div className="whatsapp-tail-in"></div>}
                 
-                <p className="whitespace-pre-wrap">
-                  {message.content.startsWith('image-message:') ? (
+                {message.content.startsWith('image-message:') ? (
+                  <div className="message-image-container">
                     <img 
                       src={message.content.replace('image-message:', '').trim()} 
                       alt="Message Image" 
-                      className="message-image mt-1 mb-2" 
+                      className="message-image rounded-md max-w-full" 
                     />
-                  ) : message.content}
-                </p>
+                    <Image className="image-icon absolute bottom-2 right-2 text-white h-4 w-4" />
+                  </div>
+                ) : (
+                  <p className="whitespace-pre-wrap">{message.content}</p>
+                )}
                 
                 <div className="whatsapp-message-time">
                   {formatTime(new Date(message.timestamp))}

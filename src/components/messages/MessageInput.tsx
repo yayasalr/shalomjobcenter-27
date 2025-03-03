@@ -67,12 +67,15 @@ const MessageInput: React.FC<MessageInputProps> = ({
       try {
         handleSendMessage();
         // Clear media preview after sending
+        if (mediaPreview) {
+          console.log("Message with media sent:", messageContent.substring(0, 50) + "...");
+        }
         cancelMediaPreview();
         setNewMessage('');
       } finally {
         setIsSending(false);
       }
-    }, 200); // Very short delay for near-instant feel
+    }, 300); // Slightly longer delay to ensure content is processed
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

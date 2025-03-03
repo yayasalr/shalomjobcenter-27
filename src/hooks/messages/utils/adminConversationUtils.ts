@@ -40,7 +40,7 @@ export const updateAdminConversation = (
     {
       ...userMessage,
       read: false,  // Non lu par l'admin
-      sender: "user",
+      sender: "user" as const,
     }
   ];
   
@@ -49,7 +49,7 @@ export const updateAdminConversation = (
     messagesToAdd.push({
       ...adminResponse,
       read: true,   // Lu par l'admin qui l'a envoyé
-      sender: "admin",
+      sender: "admin" as const,
     });
   }
   
