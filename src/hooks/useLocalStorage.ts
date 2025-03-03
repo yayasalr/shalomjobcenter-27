@@ -58,12 +58,42 @@ const useLocalStorage = () => {
     }
   };
 
+  // New method to check if an item exists
+  const hasItem = (key: string): boolean => {
+    return localStorage.getItem(key) !== null;
+  };
+
+  // New method to get session storage
+  const getSessionItem = <T>(key: string, defaultValue: T): T => {
+    try {
+      const item = sessionStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.error(`Erreur lors de la récupération de la session ${key}:`, error);
+      return defaultValue;
+    }
+  };
+
+  // New method to set session storage
+  const setSessionItem = <T>(key: string, value: T): boolean => {
+    try {
+      sessionStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      console.error(`Erreur lors de l'enregistrement de la session ${key}:`, error);
+      return false;
+    }
+  };
+
   return {
     loadData,
     saveData,
     getItem,
     setItem,
-    removeItem
+    removeItem,
+    hasItem,
+    getSessionItem,
+    setSessionItem
   };
 };
 

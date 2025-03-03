@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2, Eye, Paperclip, Smile, Mic } from 'lucide-react';
@@ -38,9 +38,28 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
   sendFromPreview,
   cancelPreview
 }) => {
+  const inputRef = useRef<HTMLDivElement>(null);
+
+  // Cette fonction gère l'envoi du message
   const sendMessage = () => {
     if (!newMessage.trim() || isSending) return;
     handleSendMessage();
+  };
+
+  // Effet pour maintenir le contenu et le curseur à la bonne position
+  useEffect(() => {
+    if (inputRef.current) {
+      // S'assurer que le contenu reflète toujours newMessage
+      if (inputRef.current.textContent !== newMessage) {
+        inputRef.current.textContent = newMessage;
+      }
+    }
+  }, [newMessage]);
+
+  // Fonction pour gérer les changements de texte manuellement
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const text = e.currentTarget.textContent || '';
+    setNewMessage(text);
   };
 
   return (
@@ -70,10 +89,11 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         </Button>
         
         <div 
+          ref={inputRef}
           contentEditable 
           className="whatsapp-input" 
           dir="ltr" // Force left-to-right text direction
-          onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
+          onInput={handleInput}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -83,9 +103,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
             }
           }}
           suppressContentEditableWarning={true}
-        >
-          {newMessage}
-        </div>
+        ></div>
         
         <Button
           variant="outline"

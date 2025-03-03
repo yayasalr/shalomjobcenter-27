@@ -88,8 +88,9 @@
   
   /* Message content should always display left-to-right */
   .message-content, .whatsapp-input, [contenteditable] {
-    direction: ltr;
-    text-align: left;
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: plaintext;
   }
   
   /* Make all images properly rendered */
