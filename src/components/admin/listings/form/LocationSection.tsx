@@ -3,7 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LOME_NEIGHBORHOODS } from "@/constants/locations";
-import { InfoCircled } from "@radix-ui/react-icons";
+import { InfoIcon } from "lucide-react";
 
 interface ValidationErrors {
   neighborhood?: string;
@@ -97,7 +97,7 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
         />
         <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800 border border-blue-100 mt-2">
           <div className="flex items-start">
-            <InfoCircled className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+            <InfoIcon className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium mb-1">Formats acceptés pour la carte :</p>
               <ol className="list-decimal pl-5 space-y-1">
