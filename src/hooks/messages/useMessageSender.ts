@@ -56,26 +56,9 @@ export const useMessageSender = (
     const users = JSON.parse(localStorage.getItem('users') || '[]');
     const currentUser = users.find((u: any) => u.id === userId);
     
-    // Pour les conversations avec admin ou bot d'accueil, mettre à jour aussi leur côté
+    // Pour les conversations avec admin ou bot d'accueil
     if (selectedConversation.with.id === 'admin') {
-      // Directement mettre à jour la conversation admin
-      updateAdminConversation(
-        userId, 
-        updatedMessage,
-        { 
-          id: `admin-${Date.now()}`,
-          content: "Votre message a été transmis à l'administrateur.", 
-          timestamp: new Date(Date.now() + 1000), // Add 1 second for proper ordering
-          read: false,
-          sender: 'admin' as const
-        },
-        currentUser || { id: userId, name: 'Utilisateur', avatar: '/placeholder.svg' }
-      );
-      
-      // Afficher une notification à l'utilisateur
-      toast.success("Message envoyé à l'administrateur");
-      
-      // Ajouter une réponse automatique après un certain délai
+      // Gérer la réponse automatique qui ne sera envoyée qu'au premier message
       handleAutoResponse(
         userId,
         selectedConversation,
@@ -84,6 +67,9 @@ export const useMessageSender = (
         setConversations,
         setSelectedConversation
       );
+      
+      // Afficher une notification à l'utilisateur
+      toast.success("Message envoyé à l'administrateur");
     } else if (selectedConversation.with.id === 'welcome-bot') {
       // Pour le bot d'accueil, simplement ajouter une réponse automatique
       handleAutoResponse(

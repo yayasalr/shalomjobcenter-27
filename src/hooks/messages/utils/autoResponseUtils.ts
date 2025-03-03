@@ -4,8 +4,18 @@ import { toast } from 'sonner';
 import { updateAdminConversation } from './adminConversationUtils';
 
 /**
+ * Checks if this is the first message from user to admin
+ */
+const isFirstMessageToAdmin = (conversation: Conversation): boolean => {
+  // Filter messages to only those sent by the user
+  const userMessages = conversation.messages.filter(msg => msg.sender === 'user');
+  // If there's only one user message, it's the first message
+  return userMessages.length === 1;
+};
+
+/**
  * Generates and handles automatic responses for system or admin conversations
- * with a realistic delay
+ * with a realistic delay, but only for first-time messages to admin
  */
 export const handleAutoResponse = (
   userId: string,
@@ -15,6 +25,38 @@ export const handleAutoResponse = (
   setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>,
   setSelectedConversation: React.Dispatch<React.SetStateAction<Conversation | null>>
 ): void => {
+  // Only auto-respond for welcome-bot OR for first message to admin
+  const shouldAutoRespond = 
+    selectedConversation.with.id === 'welcome-bot' || 
+    (selectedConversation.with.id === 'admin' && isFirstMessageToAdmin(updatedConversation));
+  
+  if (!shouldAutoRespond) {
+    // For non-first messages to admin, just store in admin's notifications
+    if (selectedConversation.with.id === 'admin') {
+      try {
+        // Get user data
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const currentUser = users.find((u: any) => u.id === userId);
+        
+        if (currentUser) {
+          // Get the last user message to notify admin
+          const userMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
+          
+          // Update admin conversation in admin storage WITHOUT an auto-response
+          updateAdminConversation(
+            userId, 
+            userMessage, 
+            null, // No auto-response
+            currentUser
+          );
+        }
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour de la conversation admin:", error);
+      }
+    }
+    return;
+  }
+  
   // Add a realistic typing delay between 3-7 seconds
   const typingDelay = Math.random() * 4000 + 3000;
   

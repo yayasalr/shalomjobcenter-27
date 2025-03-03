@@ -24,7 +24,7 @@ export const loadAdminConversations = (): Conversation[] => {
 export const updateAdminConversation = (
   userId: string, 
   userMessage: Message,
-  adminResponse: Message,
+  adminResponse: Message | null, // Now accepts null for no auto-response
   userData: any
 ): void => {
   // Charger toutes les conversations admin
@@ -35,30 +35,46 @@ export const updateAdminConversation = (
     conv.with.id === userId
   );
   
+  // Prepare messages to add (always include user message, conditionally add admin response)
+  const messagesToAdd = [
+    {
+      ...userMessage,
+      read: false,  // Non lu par l'admin
+      sender: 'user' as const,
+    }
+  ];
+  
+  // Only add admin response if it exists
+  if (adminResponse) {
+    messagesToAdd.push({
+      ...adminResponse,
+      read: true,   // Lu par l'admin qui l'a envoyé
+      sender: 'admin' as const,
+    });
+  }
+  
+  // Determine the last message (either admin response or user message)
+  const lastMessage = adminResponse ? {
+    content: adminResponse.content,
+    timestamp: adminResponse.timestamp,
+    read: true,
+    sender: 'admin' as const,
+  } : {
+    content: userMessage.content,
+    timestamp: userMessage.timestamp,
+    read: false,
+    sender: 'user' as const,
+  };
+  
   if (adminConvIndex >= 0) {
     // Mettre à jour la conversation existante
     const updatedAdminConv = {
       ...adminConversations[adminConvIndex],
       messages: [
         ...adminConversations[adminConvIndex].messages,
-        // Ajouter le message utilisateur et la réponse admin
-        {
-          ...userMessage,
-          read: false,  // Non lu par l'admin
-          sender: 'user' as const,
-        },
-        {
-          ...adminResponse,
-          read: true,   // Lu par l'admin qui l'a envoyé
-          sender: 'admin' as const,
-        }
+        ...messagesToAdd
       ],
-      lastMessage: {
-        content: adminResponse.content,
-        timestamp: adminResponse.timestamp,
-        read: true,
-        sender: 'admin' as const,
-      },
+      lastMessage: lastMessage,
     };
     
     adminConversations[adminConvIndex] = updatedAdminConv;
@@ -73,24 +89,8 @@ export const updateAdminConversation = (
         avatar: userData.avatar || '/placeholder.svg',
         role: userData.role || 'user',
       },
-      messages: [
-        {
-          ...userMessage,
-          read: false,
-          sender: 'user' as const,
-        },
-        {
-          ...adminResponse,
-          read: true,
-          sender: 'admin' as const,
-        }
-      ],
-      lastMessage: {
-        content: adminResponse.content,
-        timestamp: adminResponse.timestamp,
-        read: true,
-        sender: 'admin' as const,
-      },
+      messages: messagesToAdd,
+      lastMessage: lastMessage,
     });
   }
   
