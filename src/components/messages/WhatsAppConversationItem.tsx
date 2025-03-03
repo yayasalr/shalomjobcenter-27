@@ -64,12 +64,13 @@ const WhatsAppConversationItem: React.FC<WhatsAppConversationItemProps> = ({
     >
       <div className="relative">
         <Avatar>
-          <AvatarImage src={conversation.with.avatar} />
+          <AvatarImage src={conversation.with.avatar || '/placeholder.svg'} />
           <AvatarFallback>
             {conversation.with.name.charAt(0)}
           </AvatarFallback>
         </Avatar>
         {isOnline && <div className="whatsapp-online-indicator"></div>}
+        {!isOnline && <div className="whatsapp-offline-indicator"></div>}
       </div>
       
       <div className="whatsapp-conversation-content">

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import useAuth from '@/hooks/useAuth';
@@ -13,6 +13,7 @@ import NotAuthenticated from '@/components/messages/NotAuthenticated';
 
 const Messages = () => {
   const { user } = useAuth();
+  const [showMobileConversation, setShowMobileConversation] = useState(false);
   
   // Use the messages hook for all messaging functionality
   const {
@@ -27,6 +28,17 @@ const Messages = () => {
     getUnreadCount,
     onlineUsers
   } = useMessages(user?.id);
+
+  // Handle selecting a conversation on mobile
+  const handleMobileSelectConversation = (conversation: any) => {
+    handleSelectConversation(conversation);
+    setShowMobileConversation(true);
+  };
+
+  // Handle back button on mobile
+  const handleMobileBack = () => {
+    setShowMobileConversation(false);
+  };
 
   // Check if user is authenticated
   if (!user) {
@@ -46,29 +58,36 @@ const Messages = () => {
         
         <Card className="h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-            {/* Conversation List */}
-            <ConversationList 
-              conversations={conversations}
-              selectedConversation={selectedConversation}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              handleSelectConversation={handleSelectConversation}
-              getUnreadCount={getUnreadCount}
-            />
-            
-            {/* Conversation View */}
-            {selectedConversation ? (
-              <ConversationView 
-                conversation={selectedConversation}
-                newMessage={newMessage}
-                setNewMessage={setNewMessage}
-                handleSendMessage={handleSendMessage}
-                isOnline={onlineUsers && selectedConversation 
-                  ? onlineUsers[selectedConversation.with.id] 
-                  : false}
+            {/* Conversation List - Hide on mobile when viewing a conversation */}
+            <div className={`${showMobileConversation ? 'hidden md:block' : 'block'}`}>
+              <ConversationList 
+                conversations={conversations}
+                selectedConversation={selectedConversation}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                handleSelectConversation={handleMobileSelectConversation}
+                getUnreadCount={getUnreadCount}
               />
+            </div>
+            
+            {/* Conversation View - Show on mobile only when a conversation is selected */}
+            {selectedConversation ? (
+              <div className={`col-span-2 ${!showMobileConversation ? 'hidden md:block' : 'block'}`}>
+                <ConversationView 
+                  conversation={selectedConversation}
+                  newMessage={newMessage}
+                  setNewMessage={setNewMessage}
+                  handleSendMessage={handleSendMessage}
+                  isOnline={onlineUsers && selectedConversation 
+                    ? onlineUsers[selectedConversation.with.id] 
+                    : false}
+                  onBack={handleMobileBack}
+                />
+              </div>
             ) : (
-              <EmptyConversation />
+              <div className="col-span-2 hidden md:block">
+                <EmptyConversation />
+              </div>
             )}
           </div>
         </Card>
