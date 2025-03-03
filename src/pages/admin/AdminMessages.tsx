@@ -12,6 +12,7 @@ import { useAdminMessages } from '@/hooks/useAdminMessages';
 import { EnhancedConversationList } from '@/components/admin/messages/EnhancedConversationList';
 import { EnhancedConversationView } from '@/components/admin/messages/EnhancedConversationView';
 import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
+import { Conversation, Message } from '@/components/messages/types';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -56,9 +57,15 @@ const AdminMessages: React.FC = () => {
     setNewMessage
   );
   
+  // Ensure onlineUsers is correctly typed as a Record<string, boolean>
+  const typedOnlineUsers: Record<string, boolean> = onlineUsers as Record<string, boolean>;
+  
+  // Type for search results
+  type SearchResult = { conversation: Conversation; message: Message };
+  
   // Recherche avancée - résultats
-  const searchResults = advancedSearchQuery 
-    ? performAdvancedSearch(advancedSearchQuery)
+  const searchResults: SearchResult[] = advancedSearchQuery 
+    ? (performAdvancedSearch(advancedSearchQuery) as unknown as SearchResult[])
     : [];
 
   return (
@@ -106,7 +113,7 @@ const AdminMessages: React.FC = () => {
                       setFilter={(value) => setFilter(value as any)}
                       handleSelectConversation={handleSelectConversation}
                       getUnreadCount={getUnreadCount}
-                      onlineUsers={onlineUsers}
+                      onlineUsers={typedOnlineUsers}
                       markedImportant={markedImportant}
                       toggleImportant={toggleImportant}
                       isAdvancedSearchOpen={isAdvancedSearchOpen}
@@ -114,7 +121,7 @@ const AdminMessages: React.FC = () => {
                       advancedSearchQuery={advancedSearchQuery}
                       setAdvancedSearchQuery={setAdvancedSearchQuery}
                       searchResults={searchResults}
-                      performAdvancedSearch={performAdvancedSearch}
+                      performAdvancedSearch={performAdvancedSearch as any}
                     />
                     
                     {/* Vue de conversation améliorée */}
@@ -124,7 +131,7 @@ const AdminMessages: React.FC = () => {
                       setNewMessage={setNewMessage}
                       handleSendMessage={handleSendMessage}
                       isSending={sendingMessage}
-                      isOnline={selectedConversation ? onlineUsers[selectedConversation.with.id] || false : false}
+                      isOnline={selectedConversation ? typedOnlineUsers[selectedConversation.with.id] || false : false}
                       quickResponses={quickResponses}
                       onQuickResponseSelect={applyQuickResponse}
                       onAddQuickResponse={addQuickResponse}
