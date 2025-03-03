@@ -39,6 +39,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
   cancelPreview
 }) => {
   const inputRef = useRef<HTMLDivElement>(null);
+  const [selectionPosition, setSelectionPosition] = useState<number | null>(null);
 
   // Cette fonction gère l'envoi du message
   const sendMessage = () => {
@@ -51,14 +52,43 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
     if (inputRef.current) {
       // S'assurer que le contenu reflète toujours newMessage
       if (inputRef.current.textContent !== newMessage) {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        
+        // Sauvegarder la position du curseur avant de modifier le contenu
+        const previousPosition = range?.startOffset || 0;
+        
+        // Mettre à jour le contenu
         inputRef.current.textContent = newMessage;
+        
+        // Restaurer la position du curseur seulement si on vient de taper du texte
+        if (selectionPosition !== null) {
+          const newRange = document.createRange();
+          newRange.setStart(inputRef.current.firstChild || inputRef.current, 
+                           Math.min(selectionPosition, newMessage.length));
+          newRange.collapse(true);
+          
+          selection?.removeAllRanges();
+          selection?.addRange(newRange);
+          
+          // Réinitialiser pour éviter de repositionner lors d'autres rendus
+          setSelectionPosition(null);
+        }
       }
     }
-  }, [newMessage]);
+  }, [newMessage, selectionPosition]);
 
   // Fonction pour gérer les changements de texte manuellement
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     const text = e.currentTarget.textContent || '';
+    
+    // Enregistrer la position actuelle du curseur
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const position = selection.getRangeAt(0).startOffset;
+      setSelectionPosition(position);
+    }
+    
     setNewMessage(text);
   };
 

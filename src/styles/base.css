@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,6 +90,14 @@
     direction: ltr !important;
     text-align: left !important;
     unicode-bidi: plaintext;
+    caret-color: var(--primary); /* Make cursor more visible */
+  }
+  
+  /* Fix cursor behavior for contenteditable divs */
+  [contenteditable] {
+    position: relative;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
   
   /* Make all images properly rendered */

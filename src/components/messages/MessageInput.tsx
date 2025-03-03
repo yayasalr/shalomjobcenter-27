@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRecording } from './input/hooks/useRecording';
 import { useMediaHandling } from './input/hooks/useMediaHandling';
 import EmojiPicker from './input/EmojiPicker';
@@ -25,6 +25,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
+  const [selectionPosition, setSelectionPosition] = useState<number | null>(null);
 
   // Use custom hooks for recording and media handling
   const {
@@ -44,6 +45,41 @@ const MessageInput: React.FC<MessageInputProps> = ({
     handleAudioPreview,
     cancelMediaPreview
   } = useMediaHandling();
+
+  // Effet pour maintenir le contenu et le curseur à la bonne position
+  useEffect(() => {
+    if (inputRef.current) {
+      // S'assurer que le contenu reflète toujours newMessage
+      if (inputRef.current.textContent !== newMessage) {
+        const selection = window.getSelection();
+        const range = selection?.getRangeAt(0);
+        
+        // Sauvegarder la position du curseur avant de modifier le contenu
+        const previousPosition = range?.startOffset || 0;
+        
+        // Mettre à jour le contenu
+        inputRef.current.textContent = newMessage;
+        
+        // Restaurer la position du curseur seulement si on vient de taper du texte
+        if (selectionPosition !== null) {
+          try {
+            const newRange = document.createRange();
+            newRange.setStart(inputRef.current.firstChild || inputRef.current, 
+                             Math.min(selectionPosition, newMessage.length));
+            newRange.collapse(true);
+            
+            selection?.removeAllRanges();
+            selection?.addRange(newRange);
+          } catch (e) {
+            console.log("Erreur de positionnement du curseur:", e);
+          }
+          
+          // Réinitialiser pour éviter de repositionner lors d'autres rendus
+          setSelectionPosition(null);
+        }
+      }
+    }
+  }, [newMessage, selectionPosition]);
 
   const sendMessage = () => {
     if ((!newMessage.trim() && !mediaPreview) || isSending) return;
@@ -114,6 +150,19 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    const text = e.currentTarget.textContent || '';
+    
+    // Enregistrer la position actuelle du curseur
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const position = selection.getRangeAt(0).startOffset;
+      setSelectionPosition(position);
+    }
+    
+    setNewMessage(text);
+  };
+
   return (
     <div className="whatsapp-input-area">
       <input 
@@ -154,15 +203,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
         className="whatsapp-input" 
         dir="ltr" // Force left-to-right text direction
         data-placeholder="Saisissez votre message..."
-        onInput={(e) => {
-          const text = e.currentTarget.textContent || '';
-          setNewMessage(text);
-        }}
+        onInput={handleInput}
         onKeyDown={handleKeyDown}
         suppressContentEditableWarning={true}
-      >
-        {newMessage}
-      </div>
+      ></div>
       
       <VoiceRecorder 
         isRecording={isRecording}
