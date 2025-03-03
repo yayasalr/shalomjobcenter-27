@@ -14,6 +14,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
   const hasMultipleImages = images.length > 1;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isBookHovered, setIsBookHovered] = useState(false);
 
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -120,11 +121,19 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
           </div>
         )}
         
-        {/* Add the magic book */}
-        <MagicBook 
-          position="bottom-left" 
-          className="opacity-90 hover:opacity-100"
-        />
+        {/* Add the magic book with enhanced animation */}
+        <div 
+          className="absolute left-6 bottom-6 z-10"
+          onMouseEnter={() => setIsBookHovered(true)}
+          onMouseLeave={() => setIsBookHovered(false)}
+        >
+          <MagicBook 
+            position="bottom-left" 
+            className={`transition-all duration-500 ${isBookHovered ? 'scale-110 -translate-y-2' : ''}`}
+            title="Coup de cœur voyageurs"
+            isOpen={isBookHovered}
+          />
+        </div>
       </div>
 
       {/* Lightbox for viewing images */}

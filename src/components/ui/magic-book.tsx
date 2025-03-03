@@ -8,27 +8,34 @@ interface MagicBookProps {
   title?: string;
   onClick?: () => void;
   position?: "bottom-left" | "bottom-right" | "top-left" | "top-right";
+  isOpen?: boolean;
 }
 
 export const MagicBook: React.FC<MagicBookProps> = ({ 
   className = "",
   title = "Coup de cœur voyageurs",
   onClick,
-  position = "bottom-left"
+  position = "bottom-left",
+  isOpen = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [pageCount, setPageCount] = useState(0);
+  const [localIsOpen, setLocalIsOpen] = useState(isOpen);
   
-  // Effect to automatically turn pages
+  // Effect for controlling internal state based on prop
+  useEffect(() => {
+    setLocalIsOpen(isOpen);
+  }, [isOpen]);
+  
+  // Effect to automatically turn pages when open
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isOpen) {
+      if (localIsOpen) {
         setPageCount((prev) => (prev + 1) % 5);
       }
-    }, 3000);
+    }, 1500); // Faster page turning
     
     return () => clearInterval(interval);
-  }, [isOpen]);
+  }, [localIsOpen]);
 
   // Determine position classes
   const getPositionClasses = () => {
@@ -53,17 +60,20 @@ export const MagicBook: React.FC<MagicBookProps> = ({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
       onClick={() => {
-        setIsOpen((prev) => !prev);
+        setLocalIsOpen((prev) => !prev);
         if (onClick) onClick();
       }}
+      onMouseEnter={() => setLocalIsOpen(true)}
+      onMouseLeave={() => !isOpen && setLocalIsOpen(false)}
     >
       <motion.div
         className="relative w-20 h-28 md:w-24 md:h-32 bg-white rounded-md shadow-xl overflow-hidden"
         animate={{
           y: [0, -5, 0],
+          rotate: localIsOpen ? [0, 2, 0, -2, 0] : 0,
         }}
         transition={{
-          duration: 4,
+          duration: localIsOpen ? 3 : 4,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -72,7 +82,12 @@ export const MagicBook: React.FC<MagicBookProps> = ({
         <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
           {/* Top banner with trophy */}
           <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
-            <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
+            <motion.div
+              animate={{ rotate: localIsOpen ? 360 : 0 }}
+              transition={{ duration: 2, repeat: localIsOpen ? Infinity : 0, ease: "linear" }}
+            >
+              <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
+            </motion.div>
             <div className="text-black text-[8px] md:text-[10px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
               {title}
             </div>
@@ -80,7 +95,11 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           
           {/* Profile image */}
           <div className="flex-grow flex items-center justify-center p-2">
-            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-gray-200">
+            <motion.div 
+              className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-gray-200"
+              animate={{ scale: localIsOpen ? [1, 1.05, 1] : 1 }}
+              transition={{ duration: 2, repeat: localIsOpen ? Infinity : 0, ease: "easeInOut" }}
+            >
               <img 
                 src="/lovable-uploads/e3037485-6218-4d0a-a5ec-734b9943c37d.png" 
                 alt="Host" 
@@ -89,24 +108,30 @@ export const MagicBook: React.FC<MagicBookProps> = ({
                   e.currentTarget.src = getRandomFallbackImage();
                 }}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
         
         {/* Pages turning */}
-        {isOpen && (
+        {localIsOpen && (
           <>
             <motion.div
               className="absolute top-8 left-2 right-5 bottom-2 bg-white rounded-sm shadow-md"
               initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 30 }}
+              animate={{ rotateY: pageCount * 40 }}
               transition={{ duration: 0.5 }}
             ></motion.div>
             <motion.div
               className="absolute top-10 left-3 right-7 bottom-3 bg-white/90 rounded-sm"
               initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 20 }}
+              animate={{ rotateY: pageCount * 25 }}
               transition={{ duration: 0.5, delay: 0.1 }}
+            ></motion.div>
+            <motion.div
+              className="absolute top-12 left-4 right-9 bottom-4 bg-white/80 rounded-sm"
+              initial={{ rotateY: 0 }}
+              animate={{ rotateY: pageCount * 15 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             ></motion.div>
           </>
         )}
