@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useFormState } from "./formState";
 import { useImageHandlers } from "./imageHandlers";
 import { useDialogHandlers } from "./dialogHandlers";
@@ -25,13 +26,14 @@ export const useListingForm = ({
   isOpen,
   setIsOpen
 }: UseListingFormProps) => {
+  // Set up isSubmitting state in the main hook
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   // Form state management
   const {
     formState,
     errors,
-    isSubmitting,
     setErrors,
-    setIsSubmitting,
     updateFormState,
     handleNeighborhoodChange,
     resetForm
@@ -43,8 +45,7 @@ export const useListingForm = ({
     imagePreviews,
     handleImageChange,
     removeImage,
-    resetImages,
-    loadImagesFromListing
+    resetImages
   } = useImageHandlers();
 
   // Dialog management
@@ -60,26 +61,22 @@ export const useListingForm = ({
 
   // Form submission
   const {
-    validateForm,
     handleSubmit
-  } = useFormSubmission(
+  } = useFormSubmission({
     formState,
     images,
     imagePreviews,
+    errors,
     setErrors,
+    isSubmitting,
     setIsSubmitting,
     resetForm,
     resetImages,
-    setIsOpen || (() => {}),
+    setDialogOpen: setIsOpen || (() => {}),
     onSave,
     selectedListing,
     isEditing
-  );
-
-  // Load images when listing changes
-  if (selectedListing && isEditing) {
-    loadImagesFromListing(selectedListing);
-  }
+  });
 
   return {
     formState,
