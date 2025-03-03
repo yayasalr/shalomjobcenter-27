@@ -10,18 +10,18 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-primary text-white hover:bg-primary/90 border border-primary",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 border border-destructive",
         outline:
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-secondary",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        airbnb: "bg-airbnb-red text-white hover:bg-airbnb-red/90 hover:-translate-y-[2px]",
-        primary: "bg-sholom-primary text-white hover:bg-sholom-primary-dark hover:-translate-y-[2px]",
-        accent: "bg-sholom-accent text-white hover:bg-sholom-accent/90 hover:-translate-y-[2px]",
+        airbnb: "bg-airbnb-red text-white hover:bg-airbnb-red/90 hover:-translate-y-[2px] border border-airbnb-red",
+        primary: "bg-sholom-primary text-white hover:bg-sholom-primary-dark hover:-translate-y-[2px] border border-sholom-primary",
+        accent: "bg-sholom-accent text-white hover:bg-sholom-accent/90 hover:-translate-y-[2px] border border-sholom-accent",
         modern: "bg-white border border-gray-200 text-gray-800 hover:border-gray-300 hover:shadow-lg hover:-translate-y-[2px]",
       },
       size: {

@@ -22,7 +22,7 @@ const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="whatsapp-back-button"
+          className="whatsapp-back-button text-white"
           onClick={onBack}
         >
           <ArrowLeft className="h-5 w-5" />
@@ -32,9 +32,9 @@ const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
       <div className="flex items-center flex-1">
         <div className="relative">
           <Avatar className="whatsapp-user-avatar">
-            <AvatarImage src={conversation.with.avatar} />
+            <AvatarImage src={conversation.with.avatar || '/placeholder.svg'} />
             <AvatarFallback>
-              {conversation.with.name.charAt(0)}
+              {conversation.with.name ? conversation.with.name.charAt(0) : 'U'}
             </AvatarFallback>
           </Avatar>
           {isOnline && <div className="whatsapp-online-indicator"></div>}

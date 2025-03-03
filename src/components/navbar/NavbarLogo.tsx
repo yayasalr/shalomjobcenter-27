@@ -34,7 +34,7 @@ export const NavbarLogo = () => {
         whileTap={{ scale: 0.95 }}
         className="relative"
       >
-        <div className="h-10 sm:h-12 w-auto flex items-center justify-center overflow-hidden rounded-full">
+        <div className="h-10 sm:h-12 w-auto flex items-center justify-center overflow-hidden">
           {!logoError ? (
             <img 
               src={currentLogo} 
@@ -52,7 +52,7 @@ export const NavbarLogo = () => {
           {(!logoLoaded || logoError) && (
             <div className="h-full w-10 sm:w-12 rounded-full bg-primary flex items-center justify-center">
               <span className="text-white font-bold text-xl">
-                {settings.siteName.substring(0, 2)}
+                {settings.siteName ? settings.siteName.substring(0, 2) : 'SJ'}
               </span>
             </div>
           )}
@@ -62,7 +62,7 @@ export const NavbarLogo = () => {
         className="text-xl sm:text-2xl font-bold site-name hidden xs:block font-serif tracking-wide" 
         whileHover={{ scale: 1.05 }}
       >
-        {settings.siteName}
+        {settings.siteName || 'Shalom Job Center'}
       </motion.span>
     </Link>
   );
