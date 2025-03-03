@@ -51,3 +51,20 @@
     animation: logo-spin infinite 20s linear;
   }
 }
+
+/* Amélioration affichage du site-name sur mobile */
+@media (max-width: 480px) {
+  .site-name {
+    max-width: 120px;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+}
+
+/* Mode paysage sur mobile */
+@media (max-width: 896px) and (orientation: landscape) {
+  .site-name {
+    display: block !important;
+    max-width: none !important;
+  }
+}
