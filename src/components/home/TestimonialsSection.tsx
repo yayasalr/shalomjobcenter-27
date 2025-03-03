@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UserCircle2, Star, Quote } from 'lucide-react';
+import { UserCircle2, Star, Quote, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Testimonial {
@@ -42,19 +42,19 @@ export const TestimonialsSection = () => {
     return Array(5).fill(0).map((_, i) => (
       <Star 
         key={i} 
-        className={`w-4 h-4 ${i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+        className={`w-4 h-4 ${i < rating ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}`} 
       />
     ));
   };
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 py-16 w-full">
+    <div className="bg-white py-16 w-full">
       <div className="content-container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-semibold text-sholom-dark mb-4 elegant-title">
+          <h2 className="text-3xl font-semibold mb-4 text-gray-900">
             Ce que nos utilisateurs disent
           </h2>
-          <p className="text-sholom-muted max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Découvrez les expériences de personnes qui ont utilisé notre plateforme pour trouver un logement ou un emploi.
           </p>
         </div>
@@ -63,11 +63,11 @@ export const TestimonialsSection = () => {
           {testimonials.map((testimonial) => (
             <div 
               key={testimonial.id} 
-              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col"
+              className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 flex flex-col h-full"
             >
               <div className="relative">
-                <Quote className="absolute -top-2 -left-2 w-8 h-8 text-sholom-primary-lighter opacity-20" />
-                <p className="text-gray-600 mb-4 pt-4 italic">"{testimonial.content}"</p>
+                <Quote className="absolute -top-2 -left-2 w-8 h-8 text-airbnb-red opacity-20" />
+                <p className="text-gray-700 mb-4 pt-4 italic">"{testimonial.content}"</p>
               </div>
               
               <div className="mt-auto">
@@ -86,7 +86,7 @@ export const TestimonialsSection = () => {
                   )}
                   <div>
                     <p className="font-medium text-gray-900">{testimonial.name}</p>
-                    <p className="text-sholom-muted text-sm">{testimonial.role}</p>
+                    <p className="text-gray-500 text-sm">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
@@ -95,9 +95,30 @@ export const TestimonialsSection = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="primary" size="lg" className="hover:-translate-y-1 transition-transform duration-300">
-            Rejoignez notre communauté
-          </Button>
+          <div className="flex justify-center gap-4">
+            <Button 
+              variant="outline" 
+              className="rounded-full p-2 h-10 w-10"
+              aria-label="Témoignage précédent"
+            >
+              <ArrowLeft className="h-5 w-5 text-gray-700" />
+            </Button>
+            <Button 
+              variant="outline" 
+              className="rounded-full p-2 h-10 w-10"
+              aria-label="Témoignage suivant"
+            >
+              <ArrowRight className="h-5 w-5 text-gray-700" />
+            </Button>
+          </div>
+          <div className="mt-8">
+            <Button 
+              variant="default" 
+              className="bg-airbnb-red hover:bg-airbnb-red/90 text-white px-6 py-2 rounded-lg font-medium"
+            >
+              Rejoignez notre communauté
+            </Button>
+          </div>
         </div>
       </div>
     </div>
