@@ -7,17 +7,19 @@ interface MagicBookProps {
   className?: string;
   title?: string;
   onClick?: () => void;
+  position?: "bottom-left" | "bottom-right" | "top-left" | "top-right";
 }
 
 export const MagicBook: React.FC<MagicBookProps> = ({ 
   className = "",
   title = "Coup de cœur voyageurs",
-  onClick
+  onClick,
+  position = "bottom-left"
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [pageCount, setPageCount] = useState(0);
   
-  // Effet pour tourner les pages automatiquement
+  // Effect to automatically turn pages
   useEffect(() => {
     const interval = setInterval(() => {
       if (isOpen) {
@@ -27,17 +29,36 @@ export const MagicBook: React.FC<MagicBookProps> = ({
     
     return () => clearInterval(interval);
   }, [isOpen]);
+
+  // Determine position classes
+  const getPositionClasses = () => {
+    switch (position) {
+      case "bottom-left":
+        return "left-3 bottom-3";
+      case "bottom-right":
+        return "right-3 bottom-3";
+      case "top-left":
+        return "left-3 top-3";
+      case "top-right":
+        return "right-3 top-3";
+      default:
+        return "left-3 bottom-3";
+    }
+  };
   
   return (
-    <div 
-      className={`relative cursor-pointer ${className}`}
+    <motion.div 
+      className={`absolute ${getPositionClasses()} z-10 cursor-pointer shadow-lg ${className}`}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
       onClick={() => {
         setIsOpen((prev) => !prev);
         if (onClick) onClick();
       }}
     >
       <motion.div
-        className="relative w-24 h-32 md:w-28 md:h-36 bg-white rounded-md shadow-xl overflow-hidden"
+        className="relative w-20 h-28 md:w-24 md:h-32 bg-white rounded-md shadow-xl overflow-hidden"
         animate={{
           y: [0, -5, 0],
         }}
@@ -47,19 +68,19 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           ease: "easeInOut",
         }}
       >
-        {/* Livre */}
+        {/* Book */}
         <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
-          {/* Bannière supérieure avec le trophée */}
+          {/* Top banner with trophy */}
           <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
             <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
-            <div className="text-black text-[8px] md:text-[10px] font-medium overflow-hidden">
+            <div className="text-black text-[8px] md:text-[10px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
               {title}
             </div>
           </div>
           
-          {/* Image de profil */}
+          {/* Profile image */}
           <div className="flex-grow flex items-center justify-center p-2">
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-gray-200">
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-gray-200">
               <img 
                 src="/lovable-uploads/e3037485-6218-4d0a-a5ec-734b9943c37d.png" 
                 alt="Host" 
@@ -72,7 +93,7 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           </div>
         </div>
         
-        {/* Pages qui tournent */}
+        {/* Pages turning */}
         {isOpen && (
           <>
             <motion.div
@@ -90,7 +111,7 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           </>
         )}
       </motion.div>
-    </div>
+    </motion.div>
   );
 };
 

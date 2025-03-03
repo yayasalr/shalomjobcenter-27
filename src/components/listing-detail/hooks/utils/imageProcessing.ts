@@ -1,5 +1,6 @@
 
 import { Listing } from "@/types/listing";
+import { MagicBook } from "@/components/ui/magic-book";
 
 /**
  * Process and validate listing images
@@ -16,7 +17,7 @@ export const processListingImages = (listing: Listing | undefined): string[] => 
   ];
 
   const validateImage = (url: string, index: number): string => {
-    if (!url || url.startsWith("blob:")) {
+    if (!url || url.startsWith("blob:") || url.trim() === "") {
       return fallbackImages[index % fallbackImages.length];
     }
     return url;
@@ -24,7 +25,7 @@ export const processListingImages = (listing: Listing | undefined): string[] => 
 
   // Process images array if available
   if (listing.images && listing.images.length > 0) {
-    return listing.images.map((img, idx) => validateImage(img, idx));
+    return listing.images.map((img, idx) => validateImage(img, idx)).filter(Boolean);
   }
   
   // Fall back to single image if available
@@ -34,4 +35,22 @@ export const processListingImages = (listing: Listing | undefined): string[] => 
   
   // Last resort - use first fallback image
   return [fallbackImages[0]];
+};
+
+/**
+ * Add the MagicBook component to a listing image container
+ */
+export const addMagicBookToListing = (container: HTMLElement | null): void => {
+  if (!container) return;
+  
+  // Create MagicBook element if it doesn't exist yet
+  const bookId = "listing-magic-book";
+  if (!document.getElementById(bookId)) {
+    const bookElement = document.createElement("div");
+    bookElement.id = bookId;
+    bookElement.className = "magic-book-container";
+    container.appendChild(bookElement);
+    
+    // The element will be styled and positioned with CSS
+  }
 };

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface MessageInputProps {
   newMessage: string;
@@ -18,14 +19,23 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const [isSending, setIsSending] = useState(false);
 
   const sendMessage = () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || isSending) return;
     
     setIsSending(true);
-    try {
-      handleSendMessage();
-    } finally {
-      setIsSending(false);
-    }
+    const sendingToast = toast.loading("Envoi du message...");
+    
+    // Add a small delay to simulate network latency
+    setTimeout(() => {
+      try {
+        handleSendMessage();
+        toast.dismiss(sendingToast);
+      } catch (error) {
+        toast.dismiss(sendingToast);
+        toast.error("Erreur lors de l'envoi du message");
+      } finally {
+        setIsSending(false);
+      }
+    }, Math.random() * 1000 + 500); // 0.5-1.5 second delay
   };
 
   return (

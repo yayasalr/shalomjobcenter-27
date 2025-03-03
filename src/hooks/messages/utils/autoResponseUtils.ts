@@ -5,6 +5,7 @@ import { updateAdminConversation } from './adminConversationUtils';
 
 /**
  * Generates and handles automatic responses for system or admin conversations
+ * with a realistic delay
  */
 export const handleAutoResponse = (
   userId: string,
@@ -14,7 +15,21 @@ export const handleAutoResponse = (
   setConversations: React.Dispatch<React.SetStateAction<Conversation[]>>,
   setSelectedConversation: React.Dispatch<React.SetStateAction<Conversation | null>>
 ): void => {
+  // Add a realistic typing delay between 3-7 seconds
+  const typingDelay = Math.random() * 4000 + 3000;
+  
+  // Show a "typing" indicator or notification
+  const typingNotification = toast.loading(
+    selectedConversation.with.id === 'admin' 
+      ? "L'administrateur est en train d'écrire..."
+      : "Le système prépare une réponse...",
+    { duration: typingDelay }
+  );
+  
   setTimeout(() => {
+    // Dismiss the typing notification
+    toast.dismiss(typingNotification);
+    
     const autoResponseSender = selectedConversation.with.id === 'admin' ? 'admin' : 'system';
     const autoResponse: Message = {
       id: `auto-${Date.now()}`,
@@ -26,7 +41,7 @@ export const handleAutoResponse = (
       sender: autoResponseSender as "admin" | "system",
     };
     
-    // Ajouter la réponse automatique à la conversation locale
+    // Add the automatic response to the local conversation
     const convWithResponse = {
       ...updatedConversation,
       messages: [...updatedConversation.messages, autoResponse],
@@ -38,7 +53,7 @@ export const handleAutoResponse = (
       },
     };
     
-    // Mettre à jour l'état local
+    // Update local state
     const finalConversations = updatedConversations.map(conv => 
       conv.id === selectedConversation.id ? convWithResponse : conv
     );
@@ -46,13 +61,13 @@ export const handleAutoResponse = (
     setConversations(finalConversations);
     setSelectedConversation(convWithResponse);
     
-    // Mettre à jour dans localStorage
+    // Update localStorage
     localStorage.setItem(`conversations_${userId}`, JSON.stringify(finalConversations));
     
-    // Si c'est l'admin, mettre à jour également le localStorage côté admin
+    // If admin, also update admin-side localStorage
     if (selectedConversation.with.id === 'admin') {
       try {
-        // Récupération des données utilisateur
+        // Get user data
         const users = JSON.parse(localStorage.getItem('users') || '[]');
         const currentUser = users.find((u: any) => u.id === userId);
         
@@ -60,7 +75,7 @@ export const handleAutoResponse = (
           // Get the last user message to use with the auto-response
           const userMessage = updatedConversation.messages[updatedConversation.messages.length - 1];
           
-          // Mettre à jour la conversation admin dans le stockage admin
+          // Update admin conversation in admin storage
           updateAdminConversation(userId, userMessage, autoResponse, currentUser);
         }
       } catch (error) {
@@ -69,5 +84,5 @@ export const handleAutoResponse = (
     }
     
     toast.success("Nouveau message reçu");
-  }, Math.random() * 2000 + 1000); // Entre 1 et 3 secondes
+  }, typingDelay); // Use the typing delay
 };

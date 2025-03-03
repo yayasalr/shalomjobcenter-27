@@ -14,56 +14,64 @@ export const useAdminConversationActions = (
 ) => {
   const [sendingMessage, setSendingMessage] = useState(false);
 
-  // Send a message as admin
+  // Send a message as admin with added delay
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation) return;
     setSendingMessage(true);
-
-    try {
-      // Create the new message
-      const messageToSend: Message = {
-        id: `admin-${Date.now()}`,
-        content: newMessage,
-        timestamp: new Date(),
-        read: true,
-        sender: 'admin',
-      };
-
-      // Update the selected conversation
-      const updatedSelectedConversation: Conversation = {
-        ...selectedConversation,
-        messages: [...selectedConversation.messages, messageToSend],
-        lastMessage: {
+    
+    // Show a loading notification to indicate message is being sent
+    const sendingToast = toast.loading("Envoi du message en cours...");
+    
+    // Add a small delay to simulate network latency (1-3 seconds)
+    setTimeout(() => {
+      try {
+        // Create the new message
+        const messageToSend: Message = {
+          id: `admin-${Date.now()}`,
           content: newMessage,
           timestamp: new Date(),
           read: true,
-          sender: 'admin' as const,
-        },
-      };
+          sender: 'admin',
+        };
 
-      // Update all conversations
-      const updatedConversations = conversations.map(conv => 
-        conv.id === selectedConversation.id
-          ? updatedSelectedConversation
-          : conv
-      );
+        // Update the selected conversation
+        const updatedSelectedConversation: Conversation = {
+          ...selectedConversation,
+          messages: [...selectedConversation.messages, messageToSend],
+          lastMessage: {
+            content: newMessage,
+            timestamp: new Date(),
+            read: true,
+            sender: 'admin' as const,
+          },
+        };
 
-      // Update state
-      setConversations(updatedConversations);
-      setSelectedConversation(updatedSelectedConversation);
-      setNewMessage('');
+        // Update all conversations
+        const updatedConversations = conversations.map(conv => 
+          conv.id === selectedConversation.id
+            ? updatedSelectedConversation
+            : conv
+        );
 
-      // Update user's conversation in localStorage
-      const userId = selectedConversation.with.id;
-      updateUserConversation(userId, updatedSelectedConversation);
+        // Update state
+        setConversations(updatedConversations);
+        setSelectedConversation(updatedSelectedConversation);
+        setNewMessage('');
 
-      toast.success("Message envoyé avec succès");
-    } catch (error) {
-      console.error("Erreur lors de l'envoi du message:", error);
-      toast.error("Erreur lors de l'envoi du message");
-    } finally {
-      setSendingMessage(false);
-    }
+        // Update user's conversation in localStorage
+        const userId = selectedConversation.with.id;
+        updateUserConversation(userId, updatedSelectedConversation);
+
+        toast.dismiss(sendingToast);
+        toast.success("Message envoyé avec succès");
+      } catch (error) {
+        console.error("Erreur lors de l'envoi du message:", error);
+        toast.dismiss(sendingToast);
+        toast.error("Erreur lors de l'envoi du message");
+      } finally {
+        setSendingMessage(false);
+      }
+    }, Math.random() * 2000 + 1000); // 1-3 second delay
   };
 
   // Select a conversation and mark its messages as read
