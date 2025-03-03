@@ -14,35 +14,35 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 265 83% 63%;
-    --primary-foreground: 355.7 100% 97.3%;
+    --primary: 348 100% 61%;
+    --primary-foreground: 0 0% 100%;
  
-    --secondary: 210 40% 96.1%;
+    --secondary: 0 0% 98%;
     --secondary-foreground: 222.2 47.4% 11.2%;
  
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --accent: 24 95% 53%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 348 100% 61%;
+    --accent-foreground: 0 0% 100%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 265 83% 63%;
+    --ring: 348 100% 61%;
  
     --radius: 0.5rem;
     
     /* SHALOM variables */
-    --sholom-primary: 265 83% 63%;
-    --sholom-primary-dark: 265 94% 58%;
-    --sholom-secondary: 253 88% 94%;
-    --sholom-accent: 24 95% 53%;
-    --sholom-dark: 222 25% 14%;
-    --sholom-light: 255 65% 96%;
-    --sholom-muted: 216 10% 47%;
+    --sholom-primary: 348 100% 61%;
+    --sholom-primary-dark: 348 83% 47%;
+    --sholom-secondary: 0 0% 98%;
+    --sholom-accent: 348 100% 61%;
+    --sholom-dark: 0 0% 13%;
+    --sholom-light: 0 0% 98%;
+    --sholom-muted: 0 0% 45%;
   }
  
   .dark {
@@ -55,8 +55,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
  
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 348 100% 61%;
+    --primary-foreground: 0 0% 100%;
  
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -64,15 +64,15 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
  
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 348 100% 61%;
+    --accent-foreground: 0 0% 100%;
  
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
  
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 348 100% 61%;
   }
 }
  
@@ -82,11 +82,26 @@
   }
   body {
     @apply bg-background text-foreground;
+    transition: background-color 0.3s ease-in-out;
   }
   
   /* Make all images properly rendered */
   img {
     max-width: 100%;
     height: auto;
+  }
+  
+  /* Smooth transitions for all interactive elements */
+  a, button, input, select, textarea, .transition-element {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Airbnb-style hover states */
+  a:hover, button:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  
+  button:active:not(:disabled) {
+    transform: translateY(1px);
   }
 }

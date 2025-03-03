@@ -1,24 +1,25 @@
 
-/* Animations for page transitions */
+/* Page transitions animations */
 .page-enter {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
 }
 
 .page-enter-active {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
 }
 
 .page-exit {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .page-exit-active {
   opacity: 0;
-  transform: translateY(-20px);
-  transition: opacity 300ms, transform 300ms;
+  transform: translateY(-10px);
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 
 /* Loading animation */
@@ -32,7 +33,7 @@
 .loading-dots div {
   width: 6px;
   height: 6px;
-  background-color: white;
+  background-color: #FF385C;
   border-radius: 50%;
   animation: loading 1.4s infinite ease-in-out both;
 }
@@ -56,14 +57,17 @@
 
 /* Notification pop animation */
 .notification-pop {
-  animation: pop 0.3s ease-out;
-  transform-origin: top right;
+  animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center;
 }
 
 @keyframes pop {
   0% {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
   }
   100% {
     transform: scale(1);
@@ -76,6 +80,7 @@
   position: relative;
   overflow: hidden;
 }
+
 .shimmer::after {
   position: absolute;
   top: 0;
@@ -89,6 +94,7 @@
     rgba(255,255,255,0) 100%);
   animation: shimmer 1.5s infinite;
 }
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -100,17 +106,17 @@
 
 /* Animation pour les sections d'info */
 .info-section {
-  animation: slideIn 0.5s ease-out;
+  animation: fadeInUp 0.6s ease-out;
 }
 
-@keyframes slideIn {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
@@ -121,10 +127,127 @@
 }
 
 .tab-content-animation {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Airbnb animations */
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button press animation */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Card reveal animation */
+.card-reveal {
+  animation: reveal 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Like heart animation */
+.heart-beat {
+  animation: heartbeat 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Image fade in */
+.img-fade-in {
+  opacity: 0;
+  animation: imgFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes imgFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Smooth section appearance */
+.section-appear {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: sectionAppear 0.7s ease-out forwards;
+}
+
+@keyframes sectionAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered list item appearance */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.stagger-item-visible {
+  animation: staggerAppear 0.5s ease-out forwards;
+}
+
+@keyframes staggerAppear {
   from {
     opacity: 0;
     transform: translateY(10px);

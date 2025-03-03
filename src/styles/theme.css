@@ -1,28 +1,28 @@
 
 /* SHALOM theme utility classes */
 :root {
-  --sholom-primary-lighter: hsl(265, 93%, 73%);
-  --sholom-primary-lightest: hsl(265, 93%, 83%);
-  --sholom-secondary-darker: hsl(253, 88%, 84%);
-  --sholom-accent-darker: hsl(24, 95%, 43%);
-  --sholom-dark-lighter: hsl(222, 25%, 34%);
+  --sholom-primary-lighter: hsl(348, 100%, 75%);
+  --sholom-primary-lightest: hsl(348, 100%, 85%);
+  --sholom-secondary-darker: hsl(0, 0%, 90%);
+  --sholom-accent-darker: hsl(348, 100%, 50%);
+  --sholom-dark-lighter: hsl(0, 0%, 33%);
   --sholom-error: hsl(0, 84%, 60%);
   --sholom-success: hsl(142, 76%, 36%);
   --sholom-warning: hsl(45, 100%, 51%);
   --sholom-info: hsl(210, 100%, 51%);
 
-  /* Improved text color variables for better readability */
-  --text-dark: #1A1F2C;
-  --text-medium: #4A5568;
+  /* Airbnb text color variables */
+  --text-dark: #222222;
+  --text-medium: #717171;
   --text-light: #FFFFFF;
   
-  /* Improved button color variables */
-  --button-primary: #8B5CF6;
-  --button-primary-hover: #7C3AED;
-  --button-secondary: #F1F5F9;
-  --button-secondary-hover: #E2E8F0;
-  --button-accent: #F97316;
-  --button-accent-hover: #EA580C;
+  /* Airbnb button color variables */
+  --button-primary: #FF385C;
+  --button-primary-hover: #D90B63;
+  --button-secondary: #F7F7F7;
+  --button-secondary-hover: #EBEBEB;
+  --button-accent: #FF385C;
+  --button-accent-hover: #D90B63;
 }
 
 /* Background colors */
@@ -155,24 +155,29 @@
   background-color: var(--button-primary);
   color: var(--text-light);
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-weight: 500;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-solid:hover {
   background-color: var(--button-primary-hover);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .btn-outline {
   background-color: transparent;
   color: var(--text-dark);
-  border: 2px solid var(--button-primary);
+  border: 1px solid var(--text-medium);
   font-weight: 500;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-outline:hover {
+  border-color: var(--text-dark);
   background-color: var(--button-secondary);
+  transform: translateY(-1px);
 }
 
 /* Additional utility classes for text readability */
@@ -193,5 +198,32 @@
 
 /* Font weight utilities */
 .font-serif {
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: 'Circular', 'Georgia', 'Times New Roman', serif;
+}
+
+/* Airbnb specific utility classes */
+.airbnb-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.airbnb-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.airbnb-btn {
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.airbnb-btn:hover {
+  transform: translateY(-1px);
+}
+
+.airbnb-btn:active {
+  transform: translateY(1px);
 }

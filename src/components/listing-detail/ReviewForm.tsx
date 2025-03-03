@@ -35,8 +35,8 @@ const ReviewForm = ({
   };
 
   return (
-    <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-      <h3 className="text-lg font-medium mb-4">Laisser un avis</h3>
+    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md">
+      <h3 className="text-lg font-medium mb-4 text-airbnb-gray-400">Laisser un avis</h3>
       <div className="flex items-center mb-4">
         <div className="flex mr-4">
           {[1, 2, 3, 4, 5].map((rating) => (
@@ -44,7 +44,7 @@ const ReviewForm = ({
               key={rating}
               type="button"
               onClick={() => isAuthenticated && setReviewRating(rating)}
-              className={`focus:outline-none transition-transform ${isAuthenticated ? 'hover:scale-110' : 'cursor-not-allowed opacity-80'}`}
+              className={`focus:outline-none transition-all duration-200 ${isAuthenticated ? 'hover:scale-110' : 'cursor-not-allowed opacity-80'}`}
               disabled={!isAuthenticated}
             >
               <Star
@@ -52,18 +52,19 @@ const ReviewForm = ({
                   rating <= reviewRating
                     ? "text-yellow-400 fill-yellow-400"
                     : "text-gray-300"
-                }`}
+                } ${isAuthenticated && rating <= reviewRating ? 'animate-bounce-sm' : ''}`}
+                style={{ animationDelay: `${rating * 100}ms` }}
               />
             </button>
           ))}
         </div>
-        <span className="text-sm text-gray-500">{reviewRating} sur 5</span>
+        <span className="text-sm text-airbnb-gray-300">{reviewRating} sur 5</span>
       </div>
       <Textarea
         placeholder={
           isAuthenticated ? "Partagez votre expérience..." : "Connectez-vous pour laisser un avis"
         }
-        className="mb-4 border-gray-300 focus:border-primary"
+        className="mb-4 border-gray-300 focus:border-airbnb-gray-400 focus:ring-airbnb-red transition-all duration-200"
         value={reviewText}
         onChange={(e) => setReviewText(e.target.value)}
         disabled={!isAuthenticated}
@@ -71,7 +72,7 @@ const ReviewForm = ({
       <Button
         onClick={handleSubmitReview}
         disabled={!isAuthenticated || reviewText.trim() === ""}
-        className="w-full sm:w-auto bg-airbnb-red hover:bg-airbnb-red/90"
+        className="w-full sm:w-auto bg-airbnb-red hover:bg-airbnb-red/90 transition-all duration-300 hover:-translate-y-[2px]"
       >
         {isAuthenticated ? "Publier" : "Connectez-vous pour publier"}
       </Button>

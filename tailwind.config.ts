@@ -23,9 +23,9 @@ export default {
         'xs': '480px',
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Circular", "Inter", "system-ui", "sans-serif"],
         serif: ["Playfair Display", "Georgia", "serif"],
-        display: ["Montserrat", "system-ui", "sans-serif"],
+        display: ["Circular", "Montserrat", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
@@ -40,22 +40,22 @@ export default {
         },
         // Palette de couleurs modernisée et plus vibrante
         sholom: {
-          primary: "#8B5CF6", // Violet vibrant
-          secondary: "#F1F0FB", // Gris très clair
-          accent: "#F97316", // Orange vif
-          dark: "#403E43", // Gris foncé
-          light: "#F8FAFC", // Blanc cassé
-          muted: "#6B7280", // Gris moyen
+          primary: "#FF385C", // Rouge Airbnb
+          secondary: "#F7F7F7", // Gris très clair
+          accent: "#FF385C", // Rouge Airbnb
+          dark: "#222222", // Gris foncé
+          light: "#FFFFFF", // Blanc
+          muted: "#717171", // Gris moyen
           surface: "#FFFFFF", // Surface
-          "surface-hover": "#F1F5F9", // Surface avec hover
-          success: "#10B981", // Vert émeraude
-          warning: "#F59E0B", // Ambre
-          error: "#EF4444", // Rouge
+          "surface-hover": "#F7F7F7", // Surface avec hover
+          success: "#00A699", // Turquoise Airbnb
+          warning: "#FFB400", // Jaune Airbnb
+          error: "#FF385C", // Rouge
           "on-primary": "#FFFFFF", // Texte sur primaire
-          "on-secondary": "#403E43", // Texte sur secondaire
+          "on-secondary": "#222222", // Texte sur secondaire
           "on-accent": "#FFFFFF", // Texte sur accent
           "on-dark": "#FFFFFF", // Texte sur dark
-          "on-light": "#403E43", // Texte sur light
+          "on-light": "#222222", // Texte sur light
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -162,6 +162,14 @@ export default {
             transform: "translateX(100%)",
           },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-5px)" },
+        },
+        "bounce-sm": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-4px)" },
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -177,6 +185,8 @@ export default {
         "slide-in": "slide-in 0.3s ease-out",
         "slide-out": "slide-out 0.3s ease-out",
         shimmer: "shimmer 1.5s infinite",
+        "float": "float 3s ease-in-out infinite",
+        "bounce-sm": "bounce-sm 2s ease-in-out infinite"
       },
       transitionProperty: {
         height: "height",
@@ -185,6 +195,9 @@ export default {
       transitionDuration: {
         '0': '0ms',
         '2000': '2000ms',
+      },
+      transitionTimingFunction: {
+        'airbnb': 'cubic-bezier(0.2, 0, 0.2, 1)',
       },
     },
   },
