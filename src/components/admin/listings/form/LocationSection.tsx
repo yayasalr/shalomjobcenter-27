@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LOME_NEIGHBORHOODS } from "@/constants/locations";
+import { InfoCircled } from "@radix-ui/react-icons";
 
 interface ValidationErrors {
   neighborhood?: string;
@@ -91,18 +92,23 @@ export const LocationSection: React.FC<LocationSectionProps> = ({
           id="mapLocation"
           value={mapLocation}
           onChange={(e) => setMapLocation(e.target.value)}
-          placeholder="Ex: https://www.google.com/maps/embed?pb=..."
+          placeholder="Ex: https://www.google.com/maps/embed?pb=... ou 6.1796825,1.1272278"
           className="bg-white border-gray-300"
         />
-        <p className="text-sm text-gray-500">
-          Comment obtenir un lien d'intégration Google Maps:
-          <ol className="list-decimal pl-5 mt-1 text-xs">
-            <li>Recherchez le lieu sur Google Maps</li>
-            <li>Cliquez sur "Partager"</li>
-            <li>Sélectionnez "Intégrer une carte"</li>
-            <li>Copiez le lien qui commence par "https://www.google.com/maps/embed"</li>
-          </ol>
-        </p>
+        <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800 border border-blue-100 mt-2">
+          <div className="flex items-start">
+            <InfoCircled className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-medium mb-1">Formats acceptés pour la carte :</p>
+              <ol className="list-decimal pl-5 space-y-1">
+                <li>Coordonnées GPS directes : <span className="font-mono bg-blue-100 px-1 rounded">6.1796825,1.1272278</span></li>
+                <li>Lien d'intégration Google Maps : <span className="font-mono bg-blue-100 px-1 rounded">https://www.google.com/maps/embed?pb=...</span></li>
+                <li>Lien Google Maps standard : <span className="font-mono bg-blue-100 px-1 rounded">https://www.google.com/maps?q=...</span></li>
+                <li>Lien de lieu Google Maps : <span className="font-mono bg-blue-100 px-1 rounded">https://www.google.com/maps/place/...</span></li>
+              </ol>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

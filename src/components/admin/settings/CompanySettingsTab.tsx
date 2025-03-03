@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { MapPin, Share2 } from 'lucide-react';
+import { MapPin, Share2, Link, Info } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface CompanySettingsTabProps {
@@ -18,6 +18,7 @@ export const CompanySettingsTab: React.FC<CompanySettingsTabProps> = ({
   handleCompanyInfoChange
 }) => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   
   const handleGetCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -57,9 +58,21 @@ export const CompanySettingsTab: React.FC<CompanySettingsTabProps> = ({
       return;
     }
     
-    // Create Google Maps URL from coordinates
-    const [lat, lng] = settings.companyInfo.mapLocation.split(',');
-    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+    // Déterminer si c'est des coordonnées simples
+    const coordsRegex = /^(-?\d+\.\d+),(-?\d+\.\d+)$/;
+    let mapsUrl;
+    
+    if (coordsRegex.test(settings.companyInfo.mapLocation)) {
+      // C'est des coordonnées simples
+      const [lat, lng] = settings.companyInfo.mapLocation.split(',');
+      mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+    } else if (settings.companyInfo.mapLocation.startsWith('http')) {
+      // C'est déjà une URL
+      mapsUrl = settings.companyInfo.mapLocation;
+    } else {
+      // Fallback - utiliser comme terme de recherche
+      mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.companyInfo.mapLocation)}`;
+    }
     
     // Copy to clipboard
     navigator.clipboard.writeText(mapsUrl)
@@ -70,6 +83,19 @@ export const CompanySettingsTab: React.FC<CompanySettingsTabProps> = ({
         console.error("Erreur lors de la copie:", err);
         toast.error("Impossible de copier le lien");
       });
+  };
+  
+  const handlePasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        handleCompanyInfoChange('mapLocation', text);
+        toast.success("Lien de localisation collé depuis le presse-papiers");
+      }
+    } catch (err) {
+      console.error("Erreur lors de la lecture du presse-papiers:", err);
+      toast.error("Impossible de lire le presse-papiers");
+    }
   };
 
   return (
@@ -125,19 +151,31 @@ export const CompanySettingsTab: React.FC<CompanySettingsTabProps> = ({
             Les utilisateurs pourront suivre cette localisation pour trouver votre entreprise
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 items-start">
-            <div className="flex-1">
-              <Label htmlFor="mapLocation">Coordonnées de localisation</Label>
-              <Input
-                type="text"
-                id="mapLocation"
-                value={settings.companyInfo.mapLocation || ''}
-                readOnly
-                placeholder="Aucune localisation définie"
-                className="bg-white"
-              />
+          <div className="flex flex-col gap-3 items-start">
+            <div className="flex w-full gap-2">
+              <div className="flex-1">
+                <Label htmlFor="mapLocation" className="block mb-1">Coordonnées de localisation</Label>
+                <div className="flex">
+                  <Input
+                    id="mapLocation"
+                    value={settings.companyInfo.mapLocation || ''}
+                    onChange={(e) => handleCompanyInfoChange('mapLocation', e.target.value)}
+                    placeholder="Ex: 6.1796825,1.1272278 ou URL Google Maps"
+                    className="bg-white rounded-r-none"
+                  />
+                  <Button 
+                    variant="outline" 
+                    className="rounded-l-none border-l-0"
+                    onClick={handlePasteFromClipboard}
+                    title="Coller depuis le presse-papiers"
+                  >
+                    <Link className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="flex gap-2">
+            
+            <div className="flex flex-wrap gap-2">
               <Button 
                 variant="default" 
                 onClick={handleGetCurrentLocation}
@@ -153,7 +191,28 @@ export const CompanySettingsTab: React.FC<CompanySettingsTabProps> = ({
                 <Share2 className="h-4 w-4 mr-2" />
                 Partager
               </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setShowHelp(!showHelp)}
+                size="sm"
+                className="ml-auto text-xs"
+              >
+                <Info className="h-4 w-4 mr-1" />
+                Aide
+              </Button>
             </div>
+            
+            {showHelp && (
+              <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800 border border-blue-100 w-full mt-2">
+                <p className="font-medium mb-2">Formats acceptés pour la localisation :</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Coordonnées GPS : <code className="bg-blue-100 px-1 rounded">6.1796825,1.1272278</code></li>
+                  <li>Lien Google Maps : <code className="bg-blue-100 px-1 rounded text-xs">https://www.google.com/maps?q=Lomé</code></li>
+                  <li>URL de place : <code className="bg-blue-100 px-1 rounded text-xs">https://maps.app.goo.gl/...</code></li>
+                </ul>
+                <p className="mt-2 text-xs">Astuce : Utilisez le bouton "Définir ma position" si vous êtes actuellement sur le lieu de votre entreprise.</p>
+              </div>
+            )}
           </div>
         </div>
       </CardContent>

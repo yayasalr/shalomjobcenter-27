@@ -9,40 +9,71 @@ export interface LocationTabProps {
 }
 
 const LocationTab = ({ mapLocation }: LocationTabProps) => {
-  // Fonction pour valider et formater l'URL Google Maps
+  // Fonction améliorée pour valider et formater l'URL Google Maps
   const getValidMapUrl = (url?: string) => {
     if (!url) return null;
     
-    // S'assurer que l'URL commence par https et provient de Google Maps
-    if (!url.startsWith('https://')) {
-      url = 'https://' + url.replace(/^http:\/\//, '');
-    }
-    
-    // Vérifier si c'est une URL Google Maps
-    if (url.includes('google.com/maps') || url.includes('goo.gl/maps')) {
-      // Si c'est un lien de partage, on le transforme en embed
-      if (!url.includes('embed')) {
-        // Extraire les coordonnées si possible
-        const coordinates = url.match(/[?&]q=([^&]+)/);
-        if (coordinates) {
-          return `https://www.google.com/maps/embed?q=${coordinates[1]}`;
-        }
-        
-        // Sinon, essayons de transformer un lien de partage standard en lien embed
-        if (url.includes('maps/place/')) {
-          return url.replace('maps/place/', 'maps/embed/v1/place?key=YOUR_API_KEY&q=');
-        }
-        
-        // Fallback: utiliser l'URL telle quelle mais en format embed
-        return `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${encodeURIComponent(url)}`;
+    try {
+      // S'assurer que l'URL commence par https
+      if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        url = 'https://' + url;
       }
+      
+      // Si c'est déjà une URL d'iframe, la retourner directement
+      if (url.includes('maps/embed')) {
+        return url;
+      }
+      
+      // Si c'est un lien Google Maps standard, le convertir en iframe
+      if (url.includes('google.com/maps') || url.includes('goo.gl/maps')) {
+        // Pour les liens de partage courts (goo.gl)
+        if (url.includes('goo.gl/maps')) {
+          // Ne pas essayer de transformer, utiliser tel quel
+          return `https://maps.google.com/maps?q=${encodeURIComponent(url)}&output=embed`;
+        }
+        
+        // Pour les liens avec place/
+        if (url.includes('maps/place/')) {
+          const placePart = url.split('maps/place/')[1].split('/')[0];
+          if (placePart) {
+            return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(placePart)}`;
+          }
+        }
+        
+        // Pour les liens avec des coordonnées @
+        if (url.includes('@')) {
+          const coordPart = url.split('@')[1].split(',')[0] + ',' + url.split('@')[1].split(',')[1];
+          return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d${coordPart.split(',')[1]}!3d${coordPart.split(',')[0]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM!5e0!3m2!1sen!2sus!4v1695234567890!5m2!1sen!2sus`;
+        }
+        
+        // Pour les liens avec query parameter q=
+        const queryMatch = url.match(/[?&]q=([^&]+)/);
+        if (queryMatch) {
+          return `https://www.google.com/maps/embed?q=${queryMatch[1]}`;
+        }
+      }
+      
+      // Si c'est un lien sans format reconnu mais qui semble être des coordonnées
+      const coordsRegex = /^(-?\d+\.\d+),(-?\d+\.\d+)$/;
+      if (coordsRegex.test(url)) {
+        const [lat, lng] = url.split(',');
+        return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d500!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM!5e0!3m2!1sen!2sus!4v1695234567890!5m2!1sen!2sus`;
+      }
+      
+      // Fallback - utiliser l'URL comme terme de recherche
+      return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(url)}`;
+    } catch (error) {
+      console.error("Erreur lors du traitement de l'URL Maps:", error);
+      // En cas d'erreur, essayer d'utiliser l'URL comme terme de recherche
+      if (url) {
+        return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(url)}`;
+      }
+      return null;
     }
-    
-    // Si l'URL est déjà correcte, la retourner
-    return url;
   };
 
   const validMapUrl = getValidMapUrl(mapLocation);
+  const originalMapUrl = mapLocation || '';
 
   return (
     <TabsContent value="location" className="animate-fade-in pt-4">
@@ -78,7 +109,18 @@ const LocationTab = ({ mapLocation }: LocationTabProps) => {
             variant="outline" 
             size="sm" 
             className="mt-2 text-xs"
-            onClick={() => window.open(mapLocation, '_blank')}
+            onClick={() => {
+              // Construire une URL Google Maps valide pour ouvrir dans un nouvel onglet
+              let openUrl = originalMapUrl;
+              
+              // Si c'est des coordonnées simples, les formater correctement
+              const coordsRegex = /^(-?\d+\.\d+),(-?\d+\.\d+)$/;
+              if (coordsRegex.test(originalMapUrl)) {
+                openUrl = `https://www.google.com/maps?q=${originalMapUrl}`;
+              }
+              
+              window.open(openUrl, '_blank');
+            }}
           >
             <ExternalLink className="h-3 w-3 mr-1" />
             Ouvrir dans Google Maps

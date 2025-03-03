@@ -12,10 +12,12 @@ import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { Footer } from '@/components/home/Footer';
+import { useLocation } from 'react-router-dom';
 
 const Index = () => {
   const { listings, isLoading } = useListings();
   const { settings } = useSiteSettings();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
   const [visibleListings, setVisibleListings] = useState<Listing[]>([]);
@@ -28,6 +30,15 @@ const Index = () => {
     "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800", // Intérieur moderne
     "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800"  // Appartement contemporain
   ];
+
+  // Récupérer le terme de recherche de l'URL
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const searchParam = queryParams.get('search');
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
+  }, [location.search]);
 
   const getValidImageUrl = (imageUrl: string, index: number) => {
     if (!imageUrl || imageUrl.startsWith('blob:')) {
@@ -81,11 +92,11 @@ const Index = () => {
     <div className="min-h-screen bg-white w-screen p-0 m-0">
       <Navbar />
       
-      <HeroSection />
+      {!searchTerm && <HeroSection />}
       
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
-          <FeaturesSection />
+          {!searchTerm && <FeaturesSection />}
         </div>
       </div>
       
@@ -126,8 +137,7 @@ const Index = () => {
           
           {!searchTerm && <PopularNeighborhoods setSearchTerm={setSearchTerm} />}
           
-          {/* Ajout de la nouvelle section de témoignages */}
-          <TestimonialsSection />
+          {!searchTerm && <TestimonialsSection />}
         </div>
       </div>
 
