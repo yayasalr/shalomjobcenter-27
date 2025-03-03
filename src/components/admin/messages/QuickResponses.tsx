@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Plus, Send, Lightning } from 'lucide-react';
+import { Trash2, Plus, Send, Zap } from 'lucide-react';
 
 interface QuickResponsesProps {
   responses: string[];
@@ -33,7 +33,7 @@ export const QuickResponses: React.FC<QuickResponsesProps> = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="flex gap-1">
-          <Lightning className="h-4 w-4" />
+          <Zap className="h-4 w-4" />
           <span className="hidden sm:inline">Réponses rapides</span>
         </Button>
       </PopoverTrigger>

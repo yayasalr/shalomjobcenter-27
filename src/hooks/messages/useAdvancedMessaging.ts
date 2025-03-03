@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
 import { toast } from 'sonner';
@@ -52,7 +51,7 @@ export const useAdvancedMessaging = (
     setOnlineUsers(initialOnlineUsers);
     
     return () => clearInterval(interval);
-  }, [conversations]);
+  });
   
   // Recherche avancée dans les messages
   const performAdvancedSearch = (query: string) => {

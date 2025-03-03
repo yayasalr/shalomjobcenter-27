@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, Loader2, Eye, Lightning } from 'lucide-react';
+import { Send, Loader2, Eye } from 'lucide-react';
 import { QuickResponses } from './QuickResponses';
 import { MessagePreview } from './MessagePreview';
 import { Conversation } from '@/components/messages/types';
