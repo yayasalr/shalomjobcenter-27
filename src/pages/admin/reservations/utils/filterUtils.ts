@@ -1,5 +1,5 @@
 
-import { Reservation } from "@/hooks/useReservations";
+import { Reservation } from "@/hooks/reservations"; // Updated import path
 import { Job, JobApplication } from '@/types/job';
 
 // Filtrer les réservations

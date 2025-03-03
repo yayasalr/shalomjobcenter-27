@@ -9,6 +9,7 @@ import { SocialSettingsTab } from './SocialSettingsTab';
 import { ThemeSettingsTab } from './ThemeSettingsTab';
 import { FooterSettingsTab } from './FooterSettingsTab';
 import { ImportExportTab } from './ImportExportTab';
+import { useTabsManagement } from './hooks/useTabsManagement';
 
 export interface SettingsTabsProps {
   settings: SiteSettings;

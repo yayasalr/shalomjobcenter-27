@@ -1,5 +1,5 @@
 
-import { Reservation } from "@/hooks/useReservations";
+import { Reservation } from "@/hooks/reservations"; // Updated import path
 import { toast } from "sonner";
 
 // Format date strings to locale format
