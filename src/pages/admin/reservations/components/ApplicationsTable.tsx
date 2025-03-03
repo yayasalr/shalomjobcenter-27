@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { FileText, MoreHorizontal, Check, Clock, X, MapPin, Phone } from 'lucide-react';
+import { FileText, MoreHorizontal, Check, Clock, X, MapPin, Phone, Eye } from 'lucide-react';
 import { JobApplication, Job } from '@/types/job';
 
 interface ApplicationsTableProps {
@@ -51,8 +51,105 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
     );
   }
 
-  return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
+  // Affichage pour mobile
+  const renderMobileView = () => (
+    <div className="space-y-4 lg:hidden">
+      {applications.map((item) => (
+        <div key={item.application.id} className="bg-white rounded-lg shadow overflow-hidden border">
+          <div className="p-4 border-b">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Avatar className="h-10 w-10 mr-3">
+                  <AvatarFallback>{item.application.applicantName[0]}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-medium">{item.application.applicantName}</div>
+                  <div className="text-sm text-gray-500 truncate max-w-[180px]">{item.application.email}</div>
+                </div>
+              </div>
+              <Badge
+                className={`${
+                  item.application.status === 'approved'
+                    ? 'bg-green-100 text-green-800 border-green-200'
+                    : item.application.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                    : 'bg-red-100 text-red-800 border-red-200'
+                }`}
+              >
+                {item.application.status === 'approved' ? (
+                  <>
+                    <Check className="mr-1 h-3.5 w-3.5" />
+                    Acceptée
+                  </>
+                ) : item.application.status === 'pending' ? (
+                  <>
+                    <Clock className="mr-1 h-3.5 w-3.5" />
+                    En attente
+                  </>
+                ) : (
+                  <>
+                    <X className="mr-1 h-3.5 w-3.5" />
+                    Refusée
+                  </>
+                )}
+              </Badge>
+            </div>
+          </div>
+          <div className="p-4 border-b">
+            <div className="text-sm font-medium mb-1">{item.job.title}</div>
+            <div className="text-xs text-gray-500 flex items-center mb-2">
+              <MapPin className="h-3 w-3 mr-1" />
+              {item.job.location}
+            </div>
+            <div className="text-sm text-gray-500 flex items-center mb-2">
+              <Phone className="h-4 w-4 mr-1 text-gray-400" />
+              {item.application.phone}
+            </div>
+            <div className="text-xs text-gray-500">
+              Postuler le {formatDate(item.application.submittedAt)}
+            </div>
+          </div>
+          <div className="p-3 bg-gray-50 flex justify-between">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onSelectApplication(item.application)}
+              className="text-xs h-8"
+            >
+              <Eye className="h-3.5 w-3.5 mr-1" />
+              Détails
+            </Button>
+            <div className="flex space-x-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs text-green-600 h-8"
+                disabled={item.application.status === 'approved'}
+                onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'approved')}
+              >
+                <Check className="h-3.5 w-3.5 mr-1" />
+                Accepter
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs text-red-600 h-8"
+                disabled={item.application.status === 'rejected'}
+                onClick={() => updateApplicationStatus(item.application.id, item.job.id, 'rejected')}
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Refuser
+              </Button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Affichage pour desktop
+  const renderDesktopView = () => (
+    <div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
@@ -170,6 +267,13 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
         </table>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {renderMobileView()}
+      {renderDesktopView()}
+    </>
   );
 };
 

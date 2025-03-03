@@ -1,13 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { useReservations, Reservation } from "@/hooks/useReservations";
 import { useJobs } from "@/hooks/useJobs";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { JobApplication } from '@/types/job';
 import { toast } from "sonner";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 // Import our components
 import ReservationsTable from './reservations/components/ReservationsTable';
@@ -25,7 +25,7 @@ import { exportToCSV } from './reservations/utils/formatUtils';
 
 const AdminReservations = () => {
   const { reservations, isLoading: isLoadingReservations, updateReservationStatus } = useReservations();
-  const { jobs, isLoading: isLoadingJobs } = useJobs();
+  const { jobs, isLoading: isLoadingJobs, updateJob } = useJobs();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null);
@@ -33,6 +33,17 @@ const AdminReservations = () => {
   const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
   const [tab, setTab] = useState("all");
   const [contentTab, setContentTab] = useState("reservations");
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+
+  // Observer la largeur de l'écran
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Mettre à jour le statut d'une candidature
   const updateApplicationStatus = (applicationId: string, jobId: string, status: 'pending' | 'approved' | 'rejected') => {
@@ -58,8 +69,7 @@ const AdminReservations = () => {
     
     // Appeler la mutation pour mettre à jour le job
     try {
-      // Utiliser la fonction updateJob du hook useJobs (à implémenter)
-      // updateJob.mutate(updatedJob);
+      updateJob.mutate(updatedJob);
       
       toast.success(`Candidature ${
         status === 'approved' 
@@ -98,67 +108,69 @@ const AdminReservations = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
-      <AdminSidebar />
-      <div className="flex flex-1 flex-col">
-        <AdminTopbar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <div className="mb-6">
-            <SearchAndFilterBar
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              contentTab={contentTab}
-              setContentTab={setContentTab}
-              tab={tab}
-              setTab={setTab}
-              onExport={handleExport}
-              itemCount={
-                contentTab === 'reservations' 
-                  ? getFilteredReservations(reservations, tab, searchQuery).length 
-                  : getFilteredApplications(jobs, tab, searchQuery).length
-              }
-              itemType={contentTab === 'reservations' ? 'réservation' : 'candidature'}
-            />
-            
-            <Tabs value={contentTab} defaultValue="reservations">
-              <TabsContent value="reservations">
-                <ReservationsTable
-                  reservations={getFilteredReservations(reservations, tab, searchQuery)}
-                  handleUpdateStatus={handleUpdateStatus}
-                  onSelectReservation={handleSelectReservation}
-                  isLoading={isLoadingReservations}
-                />
-              </TabsContent>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar />
+        <div className="flex flex-1 flex-col">
+          <AdminTopbar />
+          <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
+            <div className="mb-6">
+              <SearchAndFilterBar
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                contentTab={contentTab}
+                setContentTab={setContentTab}
+                tab={tab}
+                setTab={setTab}
+                onExport={handleExport}
+                itemCount={
+                  contentTab === 'reservations' 
+                    ? getFilteredReservations(reservations, tab, searchQuery).length 
+                    : getFilteredApplications(jobs, tab, searchQuery).length
+                }
+                itemType={contentTab === 'reservations' ? 'réservation' : 'candidature'}
+              />
               
-              <TabsContent value="applications">
-                <ApplicationsTable
-                  applications={getFilteredApplications(jobs, tab, searchQuery)}
-                  updateApplicationStatus={updateApplicationStatus}
-                  onSelectApplication={handleSelectApplication}
-                  isLoading={isLoadingJobs}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </main>
-      </div>
+              <Tabs value={contentTab} defaultValue="reservations">
+                <TabsContent value="reservations" className="mt-4">
+                  <ReservationsTable
+                    reservations={getFilteredReservations(reservations, tab, searchQuery)}
+                    handleUpdateStatus={handleUpdateStatus}
+                    onSelectReservation={handleSelectReservation}
+                    isLoading={isLoadingReservations}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="applications" className="mt-4">
+                  <ApplicationsTable
+                    applications={getFilteredApplications(jobs, tab, searchQuery)}
+                    updateApplicationStatus={updateApplicationStatus}
+                    onSelectApplication={handleSelectApplication}
+                    isLoading={isLoadingJobs}
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </main>
+        </div>
 
-      {/* Modals for details */}
-      <ReservationDetailsDialog
-        isOpen={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        selectedReservation={selectedReservation}
-        handleUpdateStatus={handleUpdateStatus}
-      />
-      
-      <ApplicationDetailsDialog
-        isOpen={isApplicationDialogOpen}
-        onOpenChange={setIsApplicationDialogOpen}
-        selectedApplication={selectedApplication}
-        jobs={jobs}
-        updateApplicationStatus={updateApplicationStatus}
-      />
-    </div>
+        {/* Modals for details */}
+        <ReservationDetailsDialog
+          isOpen={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          selectedReservation={selectedReservation}
+          handleUpdateStatus={handleUpdateStatus}
+        />
+        
+        <ApplicationDetailsDialog
+          isOpen={isApplicationDialogOpen}
+          onOpenChange={setIsApplicationDialogOpen}
+          selectedApplication={selectedApplication}
+          jobs={jobs}
+          updateApplicationStatus={updateApplicationStatus}
+        />
+      </div>
+    </SidebarProvider>
   );
 };
 

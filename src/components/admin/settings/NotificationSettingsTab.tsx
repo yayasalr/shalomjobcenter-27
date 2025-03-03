@@ -19,7 +19,7 @@ export const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = (
   handleNestedChange
 }) => {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
         <CardTitle>Paramètres de notifications</CardTitle>
         <CardDescription>Configurez comment les notifications sont envoyées aux utilisateurs et administrateurs.</CardDescription>
@@ -78,7 +78,7 @@ export const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = (
             </p>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="smtpHost">Serveur SMTP</Label>
               <Input
@@ -99,7 +99,7 @@ export const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = (
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="smtpUser">Utilisateur SMTP</Label>
               <Input
@@ -121,7 +121,7 @@ export const NotificationSettingsTab: React.FC<NotificationSettingsTabProps> = (
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="senderName">Nom de l'expéditeur</Label>
               <Input
