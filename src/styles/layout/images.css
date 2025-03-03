@@ -94,3 +94,35 @@
 .magic-book:hover {
   transform: scale(1.05) translateY(-5px);
 }
+
+/* Media queries pour améliorer la compatibilité mobile */
+@media screen and (max-width: 768px) {
+  .listing-card-image,
+  .responsive-img,
+  .card-image,
+  .featured-listing-image {
+    aspect-ratio: 3/2; /* Un ratio légèrement différent pour mobile */
+  }
+  
+  .team-member-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  /* Ajuster la taille du livre magique sur mobile */
+  .magic-book-container {
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+}
+
+/* Correction pour assurer que les conteneurs ne débordent pas sur mobile */
+@media screen and (max-width: 480px) {
+  .content-container {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+}

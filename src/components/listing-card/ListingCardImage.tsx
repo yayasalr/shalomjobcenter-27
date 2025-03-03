@@ -1,8 +1,8 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Listing } from "@/types/listing";
-import { getFallbackImage } from "./utils";
+import { getValidImageUrl, getRandomFallbackImage } from "@/utils/imageUtils";
 
 interface ListingCardImageProps {
   listing: Listing;
@@ -23,6 +23,13 @@ export const ListingCardImage = ({
   setIsFavorite,
   fallbackImages,
 }: ListingCardImageProps) => {
+  const [processedImageUrl, setProcessedImageUrl] = useState<string>(imageUrl);
+  
+  // Valider l'URL de l'image au montage
+  useEffect(() => {
+    setProcessedImageUrl(getValidImageUrl(imageUrl, 0));
+  }, [imageUrl]);
+
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -43,12 +50,14 @@ export const ListingCardImage = ({
   return (
     <div className="relative overflow-hidden rounded-xl aspect-square mb-2">
       <img
-        src={imageUrl}
+        src={processedImageUrl}
         alt={title}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         onError={(e) => {
           console.log("Image load error for:", title);
-          e.currentTarget.src = getFallbackImage(fallbackImages);
+          const fallbackImage = getRandomFallbackImage();
+          e.currentTarget.src = fallbackImage;
+          setProcessedImageUrl(fallbackImage);
         }}
       />
       

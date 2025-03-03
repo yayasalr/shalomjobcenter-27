@@ -37,7 +37,7 @@ export const MagicBook: React.FC<MagicBookProps> = ({
       }}
     >
       <motion.div
-        className="relative w-28 h-36 bg-white rounded-md shadow-xl overflow-hidden"
+        className="relative w-24 h-32 md:w-28 md:h-36 bg-white rounded-md shadow-xl overflow-hidden"
         animate={{
           y: [0, -5, 0],
         }}
@@ -51,21 +51,21 @@ export const MagicBook: React.FC<MagicBookProps> = ({
         <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
           {/* Bannière supérieure avec le trophée */}
           <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
-            <Trophy className="h-4 w-4 text-amber-500" />
-            <div className="text-black text-[10px] font-medium overflow-hidden">
+            <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
+            <div className="text-black text-[8px] md:text-[10px] font-medium overflow-hidden">
               {title}
             </div>
           </div>
           
           {/* Image de profil */}
           <div className="flex-grow flex items-center justify-center p-2">
-            <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200">
+            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-gray-200">
               <img 
-                src="/public/lovable-uploads/e3037485-6218-4d0a-a5ec-734b9943c37d.png" 
+                src="/lovable-uploads/e3037485-6218-4d0a-a5ec-734b9943c37d.png" 
                 alt="Host" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800";
+                  e.currentTarget.src = getRandomFallbackImage();
                 }}
               />
             </div>
@@ -92,4 +92,14 @@ export const MagicBook: React.FC<MagicBookProps> = ({
       </motion.div>
     </div>
   );
+};
+
+// Helper function for random fallback image
+const getRandomFallbackImage = () => {
+  const fallbacks = [
+    "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+    "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
+    "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"
+  ];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
 };

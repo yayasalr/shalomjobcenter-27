@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { MagicBook } from "@/components/ui/magic-book";
 import { toast } from "sonner";
+import { getValidImageUrl, getRandomFallbackImage } from "@/utils/imageUtils";
 
 interface ImageGalleryProps {
   images: string[];
@@ -20,15 +21,33 @@ interface ImageGalleryProps {
 
 const ImageGallery = ({ images, title }: ImageGalleryProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [processedImages, setProcessedImages] = useState<string[]>([]);
+  
+  // Traiter et valider toutes les images lors du montage du composant
+  useEffect(() => {
+    // S'assurer que nous avons au moins une image valide
+    if (!images || images.length === 0) {
+      setProcessedImages([getRandomFallbackImage()]);
+      return;
+    }
+    
+    // Traiter chaque image pour s'assurer qu'elle est valide
+    const validImages = images.map((img, index) => getValidImageUrl(img, index));
+    setProcessedImages(validImages);
+  }, [images]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
       {/* Image principale - exactement carrée */}
       <div className="relative overflow-hidden rounded-lg md:col-span-8 aspect-square">
         <img
-          src={images[selectedImageIndex] || images[0]}
+          src={processedImages[selectedImageIndex] || processedImages[0] || getRandomFallbackImage()}
           alt={title}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          onError={(e) => {
+            console.log("Erreur de chargement d'image:", e);
+            e.currentTarget.src = getRandomFallbackImage();
+          }}
         />
         <Button
           variant="outline"
@@ -51,7 +70,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
         </Button>
         
         {/* Livre "Coup de cœur voyageurs" */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-2 left-2 scale-75 md:scale-100 origin-top-left">
           <MagicBook 
             onClick={() => toast.success("Coup de cœur voyageurs!", {
               description: "Ce logement est particulièrement apprécié des voyageurs pour son confort et son emplacement."
@@ -62,7 +81,7 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
       
       {/* Grille d'images secondaires - toutes carrées */}
       <div className="grid grid-cols-2 gap-4 md:col-span-4">
-        {images
+        {processedImages
           .slice(1, 5)
           .map((image, index) => (
             <div
@@ -74,26 +93,32 @@ const ImageGallery = ({ images, title }: ImageGalleryProps) => {
                 src={image}
                 alt={`${title} - ${index + 1}`}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = getRandomFallbackImage();
+                }}
               />
-              {index === 3 && images.length > 5 && (
+              {index === 3 && processedImages.length > 5 && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white hover:bg-opacity-60 transition-all">
                       <span className="text-base font-semibold">
-                        +{images.length - 5} photos
+                        +{processedImages.length - 5} photos
                       </span>
                     </div>
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl p-0 sm:p-2 md:p-3">
                     <Carousel className="w-full">
                       <CarouselContent>
-                        {images.map((image, i) => (
+                        {processedImages.map((image, i) => (
                           <CarouselItem key={i}>
                             <div className="aspect-square w-full overflow-hidden rounded-xl">
                               <img
                                 src={image}
                                 alt={`${title} - Image ${i + 1}`}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src = getRandomFallbackImage();
+                                }}
                               />
                             </div>
                           </CarouselItem>
