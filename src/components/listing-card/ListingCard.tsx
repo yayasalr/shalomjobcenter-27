@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Listing } from "@/types/listing";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { ListingCardImage } from "./ListingCardImage";
+import ListingCardImage from "./ListingCardImage"; // Fixed import
 import { ListingCardContent } from "./ListingCardContent";
 import { ListingCardBadge } from "./ListingCardBadge";
 import { getFallbackImage } from "./utils";

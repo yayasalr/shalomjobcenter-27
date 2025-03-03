@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { MagicBook } from "@/components/ui/magic-book";
 
 interface ImageGalleryProps {

@@ -1,4 +1,3 @@
-
 import React from "react";
 import ImageGallery from "./ImageGallery";
 import MainContent from "./MainContent";
@@ -64,7 +63,7 @@ const ListingDetailContainer = ({
         rating={averageRating}
       />
 
-      <ImageGallery images={processedImages} title={listing.title} />
+      <ImageGallery images={processedImages} alt={listing.title} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <MainContent
