@@ -7,6 +7,9 @@
   
   .whatsapp-message {
     max-width: 80%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
   }
   
   .message-image {
@@ -28,19 +31,24 @@
   /* Amélioration de la zone de saisie sur mobile */
   .whatsapp-input-area {
     padding: 8px 10px;
+    min-height: 60px;
+    max-height: 200px;
+    overflow-y: auto;
   }
 
   .whatsapp-input {
     font-size: 14px;
     padding: 8px 10px;
+    max-height: 100px;
+    overflow-y: auto;
   }
 
   /* Assurer que les boutons sont assez grands pour être cliquables sur mobile */
   .whatsapp-send-button, 
   [variant="ghost"][size="icon"],
   .whatsapp-header button {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,17 +62,16 @@
     margin-bottom: 6px;
   }
 
-  /* Assurer que la grille est correctement affichée en mode mobile */
-  .grid-cols-1.md\:grid-cols-3 > div:first-child {
-    display: none;
+  /* S'assurer que le message-area occupe tout l'espace disponible */
+  .whatsapp-message-area {
+    height: calc(100% - 120px);
+    overflow-y: auto;
+    padding-bottom: 16px;
   }
 
-  .grid-cols-1.md\:grid-cols-3 > div:first-child.active {
-    display: block;
-  }
-
-  .grid-cols-1.md\:grid-cols-3 > div:last-child {
-    grid-column: span 3;
+  /* Correction pour la hauteur du conteneur de conversation sur mobile */
+  .message-list-container {
+    height: calc(100vh - 240px);
   }
 }
 
@@ -101,5 +108,36 @@
   /* Fix display issues on small screens */
   .whatsapp-conversation-preview {
     max-width: 160px;
+  }
+  
+  /* Guarantee that input area is always visible */
+  .whatsapp-input-area {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    z-index: 50;
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  /* Fix for scrolling issues on small screens */
+  .whatsapp-container {
+    height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Fix for landscape mode */
+@media (max-width: 896px) and (orientation: landscape) {
+  .whatsapp-container {
+    height: calc(100vh - 80px);
+  }
+  
+  .message-list-container {
+    height: calc(100vh - 180px);
+  }
+  
+  .whatsapp-input-area {
+    min-height: 50px;
   }
 }

@@ -64,6 +64,10 @@
   
   .whatsapp-message {
     @apply max-w-[80%] text-sm;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
   }
   
   .whatsapp-message-time {
@@ -72,5 +76,73 @@
   
   .whatsapp-user-info {
     @apply max-w-[150px];
+  }
+  
+  /* Améliorations pour la vue des détails de soumission de formulaire */
+  .submission-detail-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  /* S'assurer que les zones de texte de réponse sont visibles */
+  .response-section textarea,
+  .response-section input {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  /* Boutons plus grands pour mobile */
+  .response-section button {
+    min-height: 44px;
+    padding: 8px 12px;
+    touch-action: manipulation;
+  }
+}
+
+/* Amélioration spécifique pour les vues administrateur sur mobile */
+@media (max-width: 768px) {
+  .admin-tabs {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+  
+  .submissions-list {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+  
+  .submissions-detail {
+    display: none;
+  }
+  
+  .submissions-detail.active {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 100;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  /* Garantir que les boutons d'action sont toujours accessibles */
+  .admin-action-button {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
