@@ -6,6 +6,8 @@
   padding: 10px 0;
   display: flex;
   flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
 }
 
 /* Message bubble styles */
@@ -16,6 +18,7 @@
   position: relative;
   margin-bottom: 12px;
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+  word-break: break-word;
 }
 
 .whatsapp-user-message {
@@ -98,7 +101,7 @@
 }
 
 .whatsapp-message-area::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .whatsapp-message-area::-webkit-scrollbar-thumb {
@@ -115,4 +118,33 @@
   display: flex;
   justify-content: center;
   padding: 10px;
+}
+
+/* Ensure message images display correctly */
+.whatsapp-message img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+/* Make sure buttons are easily clickable */
+.whatsapp-message-area .message-actions {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.whatsapp-message:hover .message-actions {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .whatsapp-message-area .message-actions {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  
+  /* Increase scrollbar width for better touch control */
+  .whatsapp-message-area::-webkit-scrollbar {
+    width: 8px;
+  }
 }

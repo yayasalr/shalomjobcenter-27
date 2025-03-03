@@ -75,7 +75,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleFileSelect = () => {
-    fileInputRef.current?.click();
+    // Ensure this is triggered by a user event (click/tap)
+    if (fileInputRef.current) {
+      // Add a small delay to ensure the click is registered properly on mobile
+      setTimeout(() => {
+        fileInputRef.current?.click();
+      }, 50);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,7 +231,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="text-gray-500 hover:bg-gray-200 rounded-full"
+                className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
                 onClick={() => setShowEmojiPicker(true)}
               >
                 <Smile className="h-5 w-5" />
@@ -252,7 +258,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="text-gray-500 hover:bg-gray-200 rounded-full"
+                className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
                 onClick={() => setShowStickerPicker(true)}
               >
                 <Sticker className="h-5 w-5" />
@@ -276,7 +282,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-gray-500 hover:bg-gray-200 rounded-full"
+            className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
             onClick={handleFileSelect}
           >
             <Paperclip className="h-5 w-5" />
@@ -285,7 +291,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-gray-500 hover:bg-gray-200 rounded-full"
+            className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
             onClick={handleFileSelect}
           >
             <Image className="h-5 w-5" />
@@ -311,7 +317,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-red-500 ml-2"
+            className="text-red-500 ml-2 touch-manipulation"
             onClick={stopRecording}
           >
             <StopCircle className="h-5 w-5" />
@@ -321,7 +327,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         <Button 
           onClick={newMessage.trim() || mediaPreview ? sendMessage : startRecording} 
           disabled={isSending}
-          className="whatsapp-send-button"
+          className="whatsapp-send-button touch-manipulation"
           size="icon"
         >
           {newMessage.trim() || mediaPreview ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />}

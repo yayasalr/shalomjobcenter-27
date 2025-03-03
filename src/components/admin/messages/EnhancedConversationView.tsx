@@ -1,11 +1,9 @@
 
 import React from 'react';
 import { Conversation } from '@/components/messages/types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import AdminMessageInput from './AdminMessageInput';
-import { OnlineStatusIndicator } from './OnlineStatusIndicator';
 import { ArrowLeft, MoreVertical, Phone, Video, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -42,6 +40,17 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
   sendFromPreview,
   cancelPreview
 }) => {
+  // Handler pour le bouton retour sur mobile
+  const handleBackClick = () => {
+    const conversationList = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:first-child');
+    const conversationView = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:last-child');
+    
+    if (conversationList && conversationView && window.innerWidth < 768) {
+      conversationList.classList.add('active');
+      conversationView.classList.add('hidden');
+    }
+  };
+
   if (!conversation) {
     return (
       <div className="col-span-2 flex flex-col h-full justify-center items-center border rounded-r-lg bg-gray-50">
@@ -82,6 +91,15 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
     <div className="col-span-2 flex flex-col h-full whatsapp-container">
       <div className="whatsapp-header">
         <div className="flex items-center flex-1">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="mr-2 text-white md:hidden whatsapp-back-button touch-manipulation" 
+            onClick={handleBackClick}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          
           <div className="relative">
             <Avatar className="whatsapp-user-avatar">
               <AvatarImage src={conversation.with.avatar} />
@@ -94,7 +112,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
           </div>
           
           <div className="whatsapp-user-info">
-            <h3 className="font-semibold text-white">{conversation.with.name}</h3>
+            <h3 className="font-semibold text-white truncate">{conversation.with.name}</h3>
             <div className="flex items-center gap-2">
               <div className="text-xs text-white/80">
                 {isOnline ? 'En ligne' : 'Hors ligne'}
@@ -109,20 +127,20 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="text-white">
+          <Button variant="ghost" size="icon" className="text-white touch-manipulation">
             <Video className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-white">
+          <Button variant="ghost" size="icon" className="text-white touch-manipulation">
             <Phone className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-white">
+          <Button variant="ghost" size="icon" className="text-white touch-manipulation">
             <MoreVertical className="h-5 w-5" />
           </Button>
         </div>
       </div>
       
       <div className="whatsapp-message-area">
-        <div className="space-y-1">
+        <div className="space-y-1 px-4">
           {conversation.messages.map((message) => (
             <div 
               key={message.id}
@@ -146,10 +164,18 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
                 {message.sender === 'admin' && <div className="whatsapp-tail-out"></div>}
                 {message.sender !== 'admin' && <div className="whatsapp-tail-in"></div>}
                 
-                <p className="whitespace-pre-wrap">{message.content}</p>
+                <p className="whitespace-pre-wrap">
+                  {message.content.startsWith('image-message:') ? (
+                    <img 
+                      src={message.content.replace('image-message:', '').trim()} 
+                      alt="Message Image" 
+                      className="message-image mt-1 mb-2" 
+                    />
+                  ) : message.content}
+                </p>
                 
                 <div className="whatsapp-message-time">
-                  {formatTime(message.timestamp)}
+                  {formatTime(new Date(message.timestamp))}
                   {renderMessageStatus(message)}
                   {!message.read && message.sender !== 'admin' && (
                     <span className="ml-1 font-medium text-gray-600">• Non lu</span>

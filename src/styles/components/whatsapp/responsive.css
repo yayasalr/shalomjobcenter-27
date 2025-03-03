@@ -2,7 +2,7 @@
 /* Responsive styles for mobile */
 @media (max-width: 768px) {
   .whatsapp-back-button {
-    display: flex;
+    display: flex !important;
   }
   
   .whatsapp-message {
@@ -24,6 +24,48 @@
   .whatsapp-tab {
     padding: 8px 4px;
   }
+
+  /* Amélioration de la zone de saisie sur mobile */
+  .whatsapp-input-area {
+    padding: 8px 10px;
+  }
+
+  .whatsapp-input {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  /* Assurer que les boutons sont assez grands pour être cliquables sur mobile */
+  .whatsapp-send-button, 
+  [variant="ghost"][size="icon"],
+  .whatsapp-header button {
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(1.05);
+    touch-action: manipulation;
+  }
+
+  /* Meilleur espacement des éléments de l'interface */
+  .media-preview-container {
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+
+  /* Assurer que la grille est correctement affichée en mode mobile */
+  .grid-cols-1.md\:grid-cols-3 > div:first-child {
+    display: none;
+  }
+
+  .grid-cols-1.md\:grid-cols-3 > div:first-child.active {
+    display: block;
+  }
+
+  .grid-cols-1.md\:grid-cols-3 > div:last-child {
+    grid-column: span 3;
+  }
 }
 
 /* Tablet-specific styles */
@@ -34,5 +76,30 @@
   
   .whatsapp-tabs {
     font-size: 0.8rem;
+  }
+}
+
+/* Ensure mobile styles work on very small screens */
+@media (max-width: 480px) {
+  .whatsapp-user-info {
+    max-width: 160px;
+  }
+
+  .whatsapp-header {
+    padding: 8px 10px;
+  }
+
+  .whatsapp-conversation-item {
+    padding: 8px 10px;
+  }
+
+  /* Make input buttons better spaced */
+  .whatsapp-input-area > button {
+    margin: 0 2px;
+  }
+
+  /* Fix display issues on small screens */
+  .whatsapp-conversation-preview {
+    max-width: 160px;
   }
 }
