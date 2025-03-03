@@ -6,11 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, User, MessageSquare } from 'lucide-react';
-import ConversationList from '@/components/admin/messages/ConversationList';
-import AdminConversationView from '@/components/admin/messages/AdminConversationView';
 import SystemMessagesTab from '@/components/admin/messages/SystemMessagesTab';
 import ContactSubmissionsTab from '@/components/admin/messages/contact/ContactSubmissionsTab';
 import { useAdminMessages } from '@/hooks/useAdminMessages';
+import { EnhancedConversationList } from '@/components/admin/messages/EnhancedConversationList';
+import { EnhancedConversationView } from '@/components/admin/messages/EnhancedConversationView';
+import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -25,8 +26,40 @@ const AdminMessages: React.FC = () => {
     setFilter,
     handleSendMessage,
     handleSelectConversation,
-    getUnreadCount
+    getUnreadCount,
+    sendingMessage
   } = useAdminMessages();
+  
+  // Utiliser les fonctionnalités avancées de messagerie
+  const {
+    onlineUsers,
+    advancedSearchQuery,
+    setAdvancedSearchQuery,
+    isAdvancedSearchOpen,
+    setIsAdvancedSearchOpen,
+    performAdvancedSearch,
+    quickResponses,
+    applyQuickResponse,
+    addQuickResponse,
+    removeQuickResponse,
+    markedImportant,
+    toggleImportant,
+    isPreviewMode,
+    previewMessage,
+    sendFromPreview,
+    cancelPreview
+  } = useAdvancedMessaging(
+    conversations,
+    selectedConversation,
+    handleSendMessage,
+    newMessage,
+    setNewMessage
+  );
+  
+  // Recherche avancée - résultats
+  const searchResults = advancedSearchQuery 
+    ? performAdvancedSearch(advancedSearchQuery)
+    : [];
 
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
@@ -63,24 +96,43 @@ const AdminMessages: React.FC = () => {
               <Card>
                 <CardContent className="p-6 h-[calc(100vh-280px)]">
                   <div className="grid grid-cols-1 md:grid-cols-3 h-full gap-4">
-                    {/* Liste des conversations */}
-                    <ConversationList
+                    {/* Liste des conversations améliorée */}
+                    <EnhancedConversationList
                       conversations={conversations}
                       selectedConversation={selectedConversation}
                       searchQuery={searchQuery}
                       setSearchQuery={setSearchQuery}
-                      filter={filter}
-                      setFilter={setFilter}
+                      filter={filter as 'all' | 'unread' | 'important'}
+                      setFilter={(value) => setFilter(value as any)}
                       handleSelectConversation={handleSelectConversation}
                       getUnreadCount={getUnreadCount}
+                      onlineUsers={onlineUsers}
+                      markedImportant={markedImportant}
+                      toggleImportant={toggleImportant}
+                      isAdvancedSearchOpen={isAdvancedSearchOpen}
+                      setIsAdvancedSearchOpen={setIsAdvancedSearchOpen}
+                      advancedSearchQuery={advancedSearchQuery}
+                      setAdvancedSearchQuery={setAdvancedSearchQuery}
+                      searchResults={searchResults}
+                      performAdvancedSearch={performAdvancedSearch}
                     />
                     
-                    {/* Conversation */}
-                    <AdminConversationView
+                    {/* Vue de conversation améliorée */}
+                    <EnhancedConversationView
                       conversation={selectedConversation}
                       newMessage={newMessage}
                       setNewMessage={setNewMessage}
                       handleSendMessage={handleSendMessage}
+                      isSending={sendingMessage}
+                      isOnline={selectedConversation ? onlineUsers[selectedConversation.with.id] || false : false}
+                      quickResponses={quickResponses}
+                      onQuickResponseSelect={applyQuickResponse}
+                      onAddQuickResponse={addQuickResponse}
+                      onRemoveQuickResponse={removeQuickResponse}
+                      isPreviewMode={isPreviewMode}
+                      previewMessage={previewMessage}
+                      sendFromPreview={sendFromPreview}
+                      cancelPreview={cancelPreview}
                     />
                   </div>
                 </CardContent>

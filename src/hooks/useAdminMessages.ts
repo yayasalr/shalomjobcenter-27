@@ -13,7 +13,7 @@ export const useAdminMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [filter, setFilter] = useState<'all' | 'unread' | 'important'>('all');
   
   // Charger les conversations depuis le localStorage
   useEffect(() => {
@@ -45,7 +45,11 @@ export const useAdminMessages = () => {
     return () => clearInterval(interval);
   }, [selectedConversation]);
 
-  const { handleSendMessage, handleSelectConversation } = useAdminConversationActions(
+  const { 
+    handleSendMessage, 
+    handleSelectConversation,
+    sendingMessage 
+  } = useAdminConversationActions(
     conversations,
     setConversations,
     selectedConversation,
@@ -64,6 +68,7 @@ export const useAdminMessages = () => {
     searchQuery,
     filter,
     totalUnreadCount,
+    sendingMessage,
     setNewMessage,
     setSearchQuery,
     setFilter,
