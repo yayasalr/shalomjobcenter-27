@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { useReservations, Reservation } from "@/hooks/useReservations";
+import { useReservations, Reservation } from "@/hooks/reservations";
 import { useJobs } from "@/hooks/useJobs";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { JobApplication } from '@/types/job';

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Bell, Menu, Search, Settings, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import useAuth from '@/hooks/useAuth';
-import { useReservations } from '@/hooks/useReservations';
+import { useReservations } from '@/hooks/reservations';
 
 export const AdminTopbar = () => {
   const { user, logout } = useAuth();
@@ -24,7 +23,6 @@ export const AdminTopbar = () => {
   const [notifications, setNotifications] = useState<{id: string, title: string, message: string}[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  // Générer les notifications basées sur les réservations récentes
   useEffect(() => {
     const pendingReservations = reservations.filter(r => r.status === 'pending');
     const newNotifications = pendingReservations.map(r => ({

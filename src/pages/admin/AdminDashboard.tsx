@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useListings } from '@/hooks/useListings';
 import { useJobs } from '@/hooks/useJobs';
-import { useReservations } from '@/hooks/useReservations';
+import { useReservations } from '@/hooks/reservations';
 import { useReviews } from '@/hooks/useReviews';
 import {
   AreaChart,

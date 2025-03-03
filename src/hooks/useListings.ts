@@ -2,7 +2,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
-import { loadListings, saveListings, loadReservations, saveReservations } from "./useListingStorage";
+import { loadListings, saveListings } from "./useListingStorage";
+import { loadReservations, saveReservations } from "./reservations";
 import { normalizeListing } from "@/utils/listingUtils";
 import { LOME_NEIGHBORHOODS } from "@/constants/locations";
 import { FALLBACK_IMAGES } from "@/constants/images";

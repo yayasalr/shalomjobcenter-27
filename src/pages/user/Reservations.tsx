@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useReservations, Reservation } from '@/hooks/useReservations';
+import { useReservations, Reservation } from '@/hooks/reservations';
 import { Calendar, MapPin, Users, Clock, ArrowRight, Calendar as CalendarIcon } from 'lucide-react';
 
 const ReservationCard = ({ reservation }: { reservation: Reservation }) => {

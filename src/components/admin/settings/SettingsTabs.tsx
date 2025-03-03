@@ -1,26 +1,28 @@
-
 import React from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SiteSettings } from '@/types/siteSettings';
-
-// Import all tab components
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { GeneralSettingsTab } from './GeneralSettingsTab';
+import { CompanySettingsTab } from './CompanySettingsTab';
+import { ContentSettingsTab } from './ContentSettingsTab';
+import { NotificationSettingsTab } from './NotificationSettingsTab';
+import { SocialSettingsTab } from './SocialSettingsTab';
 import { ThemeSettingsTab } from './ThemeSettingsTab';
 import { FooterSettingsTab } from './FooterSettingsTab';
-import { CompanySettingsTab } from './CompanySettingsTab';
-import { SocialSettingsTab } from './SocialSettingsTab';
 import { ImportExportTab } from './ImportExportTab';
-import { NotificationSettingsTab } from './NotificationSettingsTab';
-import { ContentSettingsTab } from './ContentSettingsTab';
 
-// Import the hook for settings management
-import { useTabsManagement } from './hooks/useTabsManagement';
-
-interface SettingsTabsProps {
+export interface SettingsTabsProps {
   settings: SiteSettings;
+  isMobileView?: boolean;
+  showTabsContent?: boolean;
+  setShowTabsContent?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SettingsTabs: React.FC<SettingsTabsProps> = ({ settings }) => {
+export const SettingsTabs: React.FC<SettingsTabsProps> = ({
+  settings,
+  isMobileView = false,
+  showTabsContent = true,
+  setShowTabsContent
+}) => {
   const {
     handleInputChange,
     handleFooterChange,
