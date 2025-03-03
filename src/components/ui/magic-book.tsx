@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
@@ -13,7 +12,7 @@ interface MagicBookProps {
 
 export const MagicBook: React.FC<MagicBookProps> = ({ 
   className = "",
-  title = "Coup de cœur voyageurs",
+  title = "Logements en Afrique et partout dans le monde",
   onClick,
   position = "bottom-left",
   isOpen = false
@@ -21,12 +20,10 @@ export const MagicBook: React.FC<MagicBookProps> = ({
   const [pageCount, setPageCount] = useState(0);
   const [localIsOpen, setLocalIsOpen] = useState(isOpen);
   
-  // Effect for controlling internal state based on prop
   useEffect(() => {
     setLocalIsOpen(isOpen);
   }, [isOpen]);
   
-  // Effect to automatically turn pages when open
   useEffect(() => {
     const interval = setInterval(() => {
       if (localIsOpen) {
@@ -37,7 +34,6 @@ export const MagicBook: React.FC<MagicBookProps> = ({
     return () => clearInterval(interval);
   }, [localIsOpen]);
 
-  // Determine position classes
   const getPositionClasses = () => {
     switch (position) {
       case "bottom-left":
@@ -78,9 +74,7 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           ease: "easeInOut",
         }}
       >
-        {/* Book */}
         <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
-          {/* Top banner with trophy */}
           <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
             <motion.div
               animate={{ rotate: localIsOpen ? 360 : 0 }}
@@ -88,12 +82,11 @@ export const MagicBook: React.FC<MagicBookProps> = ({
             >
               <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
             </motion.div>
-            <div className="text-black text-[8px] md:text-[10px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+            <div className="text-black text-[6px] md:text-[8px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
               {title}
             </div>
           </div>
           
-          {/* Profile image */}
           <div className="flex-grow flex items-center justify-center p-2">
             <motion.div 
               className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-gray-200"
@@ -112,7 +105,6 @@ export const MagicBook: React.FC<MagicBookProps> = ({
           </div>
         </div>
         
-        {/* Pages turning */}
         {localIsOpen && (
           <>
             <motion.div
@@ -140,7 +132,6 @@ export const MagicBook: React.FC<MagicBookProps> = ({
   );
 };
 
-// Helper function for random fallback image
 const getRandomFallbackImage = () => {
   const fallbacks = [
     "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",

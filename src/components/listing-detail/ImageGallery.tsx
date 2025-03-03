@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { MagicBook } from "@/components/ui/magic-book";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -130,7 +129,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
           <MagicBook 
             position="bottom-left" 
             className={`transition-all duration-500 ${isBookHovered ? 'scale-110 -translate-y-2' : ''}`}
-            title="Coup de cœur voyageurs"
+            title="Logements en Afrique et partout dans le monde"
             isOpen={isBookHovered}
           />
         </div>
