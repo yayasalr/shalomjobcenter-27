@@ -19,17 +19,19 @@ export const AdminSettingsContainer = () => {
   } = useSettingsActions();
   
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr] overflow-x-hidden">
       <AdminSidebar />
       <div className="flex flex-col">
         <AdminTopbar />
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 overflow-x-hidden">
           <SettingsHeader 
             isSaving={isSaving} 
             handleSaveSettings={handleSaveSettings} 
           />
           
-          <SettingsTabs settings={settings} />
+          <div className="overflow-x-auto">
+            <SettingsTabs settings={settings} />
+          </div>
           
           {showSuccessToast && (
             <Toast>

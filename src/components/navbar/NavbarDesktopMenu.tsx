@@ -13,7 +13,7 @@ import {
 
 export const NavbarDesktopMenu = () => {
   return (
-    <div className="hidden md:flex items-center space-x-8">
+    <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
       <Link to="/" className="font-medium hover:text-sholom-primary transition-colors">
         <div className="flex items-center">
           <Home className="mr-1 h-4 w-4" />
@@ -38,14 +38,14 @@ export const NavbarDesktopMenu = () => {
           <DropdownMenuLabel>Populaires à Lomé</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {['Tokoin', 'Bè', 'Adidogomé', 'Agoè', 'Kodjoviakopé'].map(neighborhood => (
-            <DropdownMenuItem key={neighborhood}>
+            <DropdownMenuItem key={neighborhood} className="touch-optimized">
               <Link to={`/?q=${neighborhood}`} className="w-full">
                 {neighborhood}
               </Link>
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem className="touch-optimized">
             <Link to="/" className="w-full flex items-center justify-between">
               Tous les quartiers
               <MapPin className="h-4 w-4" />
@@ -63,19 +63,19 @@ export const NavbarDesktopMenu = () => {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuItem>
+          <DropdownMenuItem className="touch-optimized">
             <Link to="/about" className="w-full flex items-center">
               <Info className="mr-2 h-4 w-4" />
               À propos de nous
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="touch-optimized">
             <Link to="/contact" className="w-full flex items-center">
               <Mail className="mr-2 h-4 w-4" />
               Nous contacter
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="touch-optimized">
             <Link to="/support" className="w-full flex items-center">
               <HelpCircle className="mr-2 h-4 w-4" />
               Support

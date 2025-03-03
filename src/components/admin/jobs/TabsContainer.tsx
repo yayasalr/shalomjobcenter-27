@@ -54,26 +54,30 @@ export const TabsContainer: React.FC<TabsContainerProps> = ({
   onCreateListing
 }) => {
   return (
-    <Tabs defaultValue="jobs" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+    <Tabs defaultValue="jobs" value={activeTab} onValueChange={setActiveTab} className="space-y-4 overflow-hidden">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-2">
-        <TabsList className="bg-white border">
-          <TabsTrigger value="jobs" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
-            Offres d'emploi
-          </TabsTrigger>
-          <TabsTrigger value="listings" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white">
-            Offres de logement
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2 w-full">
+          <TabsList className="bg-white border w-full sm:w-auto">
+            <TabsTrigger value="jobs" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-3 sm:py-2 sm:px-4">
+              Offres d'emploi
+            </TabsTrigger>
+            <TabsTrigger value="listings" className="data-[state=active]:bg-sholom-primary data-[state=active]:text-white text-xs sm:text-sm py-2 px-3 sm:py-2 sm:px-4">
+              Offres de logement
+            </TabsTrigger>
+          </TabsList>
+        </div>
         
-        <JobsFilterPanel 
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          showExpired={showExpired}
-          setShowExpired={setShowExpired}
-          domainFilter={domainFilter}
-          setDomainFilter={setDomainFilter}
-          getDomainName={getDomainName}
-        />
+        <div className="w-full sm:w-auto">
+          <JobsFilterPanel 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            showExpired={showExpired}
+            setShowExpired={setShowExpired}
+            domainFilter={domainFilter}
+            setDomainFilter={setDomainFilter}
+            getDomainName={getDomainName}
+          />
+        </div>
       </div>
 
       <TabsContent value="jobs" className="p-0 border-none">
@@ -86,13 +90,15 @@ export const TabsContainer: React.FC<TabsContainerProps> = ({
               <p className="mt-2 text-gray-500">Chargement des offres d'emploi...</p>
             </div>
           ) : filteredJobs.length > 0 ? (
-            <JobsTable
-              jobs={filteredJobs}
-              onEdit={handleEditJob}
-              onDelete={handleDeleteJob}
-            />
+            <div className="overflow-x-auto">
+              <JobsTable
+                jobs={filteredJobs}
+                onEdit={handleEditJob}
+                onDelete={handleDeleteJob}
+              />
+            </div>
           ) : (
-            <div className="p-8 text-center">
+            <div className="p-4 sm:p-8 text-center">
               <FileText className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-semibold text-gray-900">Aucune offre d'emploi</h3>
               <p className="mt-1 text-sm text-gray-500">
@@ -101,7 +107,7 @@ export const TabsContainer: React.FC<TabsContainerProps> = ({
               <div className="mt-6">
                 <Button 
                   onClick={onCreateJob}
-                  className="bg-sholom-primary hover:bg-sholom-primary/90 text-white gap-2"
+                  className="bg-sholom-primary hover:bg-sholom-primary/90 text-white gap-2 touch-optimized"
                 >
                   <Plus className="h-4 w-4" />
                   Créer une nouvelle offre
@@ -122,13 +128,15 @@ export const TabsContainer: React.FC<TabsContainerProps> = ({
               <p className="mt-2 text-gray-500">Chargement des logements...</p>
             </div>
           ) : filteredListings.length > 0 ? (
-            <ListingsTable
-              listings={filteredListings}
-              onEdit={handleEditListing}
-              onDelete={handleDeleteListing}
-            />
+            <div className="overflow-x-auto">
+              <ListingsTable
+                listings={filteredListings}
+                onEdit={handleEditListing}
+                onDelete={handleDeleteListing}
+              />
+            </div>
           ) : (
-            <div className="p-8 text-center">
+            <div className="p-4 sm:p-8 text-center">
               <FileText className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-semibold text-gray-900">Aucun logement</h3>
               <p className="mt-1 text-sm text-gray-500">
@@ -137,7 +145,7 @@ export const TabsContainer: React.FC<TabsContainerProps> = ({
               <div className="mt-6">
                 <Button 
                   onClick={onCreateListing}
-                  className="bg-sholom-primary hover:bg-sholom-primary/90 gap-2"
+                  className="bg-sholom-primary hover:bg-sholom-primary/90 gap-2 touch-optimized"
                 >
                   <Plus className="h-4 w-4" />
                   Ajouter un logement

@@ -67,7 +67,7 @@ const Messages = () => {
   const isMobile = windowWidth < 768;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 no-overflow-x">
       <Navbar />
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 pt-20">
         <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 mt-4">Messages</h1>

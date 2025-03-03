@@ -29,35 +29,34 @@ export const AdminTopbar = () => {
   };
 
   return (
-    <header className="h-16 flex items-center border-b bg-white px-4 sticky top-0 z-30">
+    <header className="h-16 flex items-center border-b bg-white px-2 sm:px-4 sticky top-0 z-30">
       <div className="flex items-center w-full">
         <div className="flex items-center md:hidden">
           {/* Use SidebarTrigger with asChild prop */}
           <SidebarTrigger asChild>
-            <Button variant="ghost" size="icon" className="mr-2">
+            <Button variant="ghost" size="icon" className="mr-2 touch-optimized">
               <Menu className="h-5 w-5" />
             </Button>
           </SidebarTrigger>
         </div>
         
-        <div className="flex-1 flex items-center justify-between">
+        <div className="flex-1 flex items-center justify-between gap-2">
           <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
               placeholder="Rechercher..."
-              className="pl-10"
+              className="pl-10 input-responsive"
             />
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <Button variant="ghost" size="icon" className="touch-optimized">
               <Bell className="h-5 w-5" />
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 rounded-full">
+                <Button variant="ghost" className="h-10 w-10 rounded-full touch-optimized">
                   <Avatar className="h-8 w-8">
-                    {/* Fix: Use avatar instead of image property */}
                     <AvatarImage src={user?.avatar || "https://github.com/shadcn.png"} alt={user?.name} />
                     <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
@@ -66,13 +65,13 @@ export const AdminTopbar = () => {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Mon profil</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/admin/settings">
+                <DropdownMenuItem asChild className="touch-optimized">
+                  <Link to="/admin/settings" className="w-full flex items-center h-10">
                     <Settings className="mr-2 h-4 w-4" />
                     Paramètres
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer touch-optimized h-10">
                   Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
