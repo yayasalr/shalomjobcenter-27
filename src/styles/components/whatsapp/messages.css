@@ -20,6 +20,8 @@
   align-self: flex-end;
   margin-left: auto;
   border-top-right-radius: 0;
+  text-align: left; /* Ensure text alignment is correct */
+  direction: ltr; /* Ensure text direction is correct */
 }
 
 /* Other messages (received from other users) */
@@ -28,6 +30,8 @@
   align-self: flex-start;
   margin-right: auto;
   border-top-left-radius: 0;
+  text-align: left; /* Ensure text alignment is correct */
+  direction: ltr; /* Ensure text direction is correct */
 }
 
 /* Message time and status indicators */
@@ -105,12 +109,15 @@
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 5px;
+  max-width: 100%;
 }
 
 .message-image {
   max-width: 250px;
+  max-height: 300px;
   border-radius: 6px;
   display: block;
+  object-fit: contain;
 }
 
 .image-icon {
@@ -120,8 +127,23 @@
 }
 
 .message-audio-container {
-  min-width: 140px;
-  padding: 5px 0;
+  min-width: 160px;
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  margin: 2px 0;
+}
+
+.audio-play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.audio-play-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Mobile optimization */
@@ -133,5 +155,10 @@
   
   .message-image {
     max-width: 200px;
+    max-height: 250px;
+  }
+
+  .message-audio-container {
+    min-width: 140px;
   }
 }

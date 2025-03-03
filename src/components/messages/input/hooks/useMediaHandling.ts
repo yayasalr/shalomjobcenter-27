@@ -48,7 +48,9 @@ export const useMediaHandling = () => {
 
   const handleAudioPreview = (recordingTime: number) => {
     if (recordingTime > 1) {
-      setMediaPreview('/placeholder.svg');
+      // Simuler un message audio avec un placeholder
+      const audioPlaceholder = '/placeholder.svg';
+      setMediaPreview(audioPlaceholder);
       setMediaType('audio');
       toast.success("Enregistrement vocal terminé");
       return true;

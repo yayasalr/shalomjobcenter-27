@@ -152,7 +152,11 @@ const MessageInput: React.FC<MessageInputProps> = ({
         ref={inputRef}
         contentEditable 
         className="whatsapp-input" 
-        onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
+        data-placeholder="Saisissez votre message..."
+        onInput={(e) => {
+          const text = e.currentTarget.textContent || '';
+          setNewMessage(text);
+        }}
         onKeyDown={handleKeyDown}
         suppressContentEditableWarning={true}
       >

@@ -19,6 +19,15 @@
   max-height: 100px;
   overflow-y: auto;
   outline: none;
+  direction: ltr; /* S'assurer que le texte s'affiche de gauche à droite */
+  text-align: left; /* S'assurer que le texte s'aligne à gauche */
+}
+
+/* Ajouter un placeholder pour l'input */
+.whatsapp-input[data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: #999;
+  pointer-events: none;
 }
 
 .whatsapp-send-button {
@@ -32,4 +41,15 @@
   justify-content: center;
   margin-left: 8px;
   cursor: pointer;
+}
+
+.media-preview-container {
+  margin-right: 8px;
+  position: relative;
+}
+
+.media-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
 }
