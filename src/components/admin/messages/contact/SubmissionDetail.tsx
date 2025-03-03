@@ -5,7 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Calendar, Send, Forward } from 'lucide-react';
+import { Mail, Calendar, Send, Forward, ChevronLeft } from 'lucide-react';
 import { ContactFormSubmission } from '@/types/contact';
 import { format } from 'date-fns';
 
@@ -18,6 +18,7 @@ interface SubmissionDetailProps {
   setForwardEmail: (email: string) => void;
   handleSendResponse: () => void;
   handleForwardSubmission: () => void;
+  onBack?: () => void; // Add the onBack prop as optional
 }
 
 export const SubmissionDetail: React.FC<SubmissionDetailProps> = ({
@@ -28,7 +29,8 @@ export const SubmissionDetail: React.FC<SubmissionDetailProps> = ({
   setResponseText,
   setForwardEmail,
   handleSendResponse,
-  handleForwardSubmission
+  handleForwardSubmission,
+  onBack
 }) => {
   if (!selectedSubmission) {
     return (
@@ -42,7 +44,10 @@ export const SubmissionDetail: React.FC<SubmissionDetailProps> = ({
 
   return (
     <div className="col-span-2 border rounded-lg overflow-hidden flex flex-col">
-      <SubmissionHeader submission={selectedSubmission} />
+      <SubmissionHeader 
+        submission={selectedSubmission} 
+        onBack={onBack}
+      />
       
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
@@ -70,11 +75,23 @@ export const SubmissionDetail: React.FC<SubmissionDetailProps> = ({
 
 interface SubmissionHeaderProps {
   submission: ContactFormSubmission;
+  onBack?: () => void;
 }
 
-const SubmissionHeader: React.FC<SubmissionHeaderProps> = ({ submission }) => {
+const SubmissionHeader: React.FC<SubmissionHeaderProps> = ({ submission, onBack }) => {
   return (
     <div className="p-4 border-b">
+      {onBack && (
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onBack} 
+          className="md:hidden mb-2 -ml-2"
+        >
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Retour
+        </Button>
+      )}
       <div className="flex justify-between items-center">
         <h2 className="font-medium text-lg">{submission.subject}</h2>
         <Badge 
