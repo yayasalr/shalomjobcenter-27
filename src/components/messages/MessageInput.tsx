@@ -1,5 +1,5 @@
 
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRecording } from './input/hooks/useRecording';
 import { useMediaHandling } from './input/hooks/useMediaHandling';
 import EmojiPicker from './input/EmojiPicker';

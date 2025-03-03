@@ -54,7 +54,7 @@ export const updateAdminConversation = (
   }
   
   // Determine the last message (either admin response or user message)
-  const lastMessage: Message['lastMessage'] = adminResponse ? {
+  const lastMessageContent = adminResponse ? {
     content: adminResponse.content,
     timestamp: adminResponse.timestamp,
     read: true,
@@ -74,7 +74,7 @@ export const updateAdminConversation = (
         ...adminConversations[adminConvIndex].messages,
         ...messagesToAdd
       ],
-      lastMessage,
+      lastMessage: lastMessageContent,
     };
     
     adminConversations[adminConvIndex] = updatedAdminConv;
@@ -90,7 +90,7 @@ export const updateAdminConversation = (
         role: userData.role || 'user',
       },
       messages: messagesToAdd,
-      lastMessage,
+      lastMessage: lastMessageContent,
     });
   }
   
