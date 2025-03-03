@@ -58,12 +58,12 @@ export const updateAdminConversation = (
     content: adminResponse.content,
     timestamp: adminResponse.timestamp,
     read: true,
-    sender: "admin",
+    sender: "admin" as const,
   } : {
     content: userMessage.content,
     timestamp: userMessage.timestamp,
     read: false,
-    sender: "user",
+    sender: "user" as const,
   };
   
   if (adminConvIndex >= 0) {
