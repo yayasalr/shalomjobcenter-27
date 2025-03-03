@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { User, LoginCredentials, RegisterData } from "./types";
@@ -25,7 +24,7 @@ const useAuth = () => {
       return null;
     },
     staleTime: Infinity, // Keep the data fresh and avoid unnecessary refetches
-    cacheTime: Infinity, // Keep data in cache indefinitely
+    gcTime: Infinity, // Keep data in cache indefinitely (renamed from cacheTime)
   });
 
   const login = useMutation({
