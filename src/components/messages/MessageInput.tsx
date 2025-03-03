@@ -76,7 +76,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleEmojiClick = (emoji: string) => {
-    setNewMessage(prev => prev + emoji);
+    // Fix: Instead of using a function to update state, concatenate the strings directly
+    setNewMessage(newMessage + emoji);
     setShowEmojiPicker(false);
   };
 
