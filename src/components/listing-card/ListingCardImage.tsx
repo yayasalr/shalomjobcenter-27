@@ -1,80 +1,83 @@
 
-import React from "react";
-import { Eye, Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { MagicBook } from "@/components/ui/magic-book";
+import React from 'react';
+import { Heart } from 'lucide-react';
+import { Listing } from '@/types/listing';
+import { getFallbackImage } from './utils';
 
-interface ListingCardImageProps {
-  image?: string;
-  alt: string;
-  rating?: number;
-  isFavorite?: boolean;
-  onFavoriteToggle?: () => void;
-  className?: string;
+export interface ListingCardImageProps {
+  imageUrl: string;
+  title: string;
+  isHovered: boolean;
+  isFavorite: boolean;
+  setIsFavorite: React.Dispatch<React.SetStateAction<boolean>>;
+  fallbackImages: string[];
+  listing?: Listing;
 }
 
-// Modify the component to include the MagicBook at the bottom left
 const ListingCardImage: React.FC<ListingCardImageProps> = ({
-  image,
-  alt,
-  rating,
+  imageUrl,
+  title,
+  isHovered,
   isFavorite,
-  onFavoriteToggle,
-  className,
+  setIsFavorite,
+  fallbackImages,
+  listing
 }) => {
-  const fallbackImage = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800";
+  // Toggle favorite status
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const listingId = listing?.id;
+    if (!listingId) return;
 
+    // Get current favorites from localStorage
+    const favorites = localStorage.getItem('favorites');
+    let favList: string[] = [];
+    
+    if (favorites) {
+      favList = JSON.parse(favorites);
+    }
+    
+    // Toggle favorite status
+    if (isFavorite) {
+      favList = favList.filter(id => id !== listingId);
+    } else {
+      favList.push(listingId);
+    }
+    
+    // Save updated favorites to localStorage
+    localStorage.setItem('favorites', JSON.stringify(favList));
+    setIsFavorite(!isFavorite);
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const randomFallback = getFallbackImage(fallbackImages);
+    e.currentTarget.src = randomFallback;
+  };
+  
   return (
-    <div className={cn("relative rounded-t-lg overflow-hidden", className)}>
-      <div className="relative aspect-[16/9] w-full h-48 bg-gray-200">
-        <img
-          src={image || fallbackImage}
-          alt={alt}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          onError={(e) => {
-            e.currentTarget.src = fallbackImage;
-          }}
+    <div className="relative overflow-hidden aspect-square bg-gray-200 rounded-xl">
+      <img
+        src={imageUrl}
+        alt={title}
+        className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+        onError={handleImageError}
+      />
+      
+      {/* Heart icon for favorites */}
+      <button
+        onClick={toggleFavorite}
+        className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm z-10 hover:bg-white transition-all"
+        aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+      >
+        <Heart
+          className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-500'}`}
         />
-        
-        {/* Action buttons at top */}
-        <div className="absolute top-2 right-2 flex space-x-1">
-          {onFavoriteToggle && (
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onFavoriteToggle();
-              }}
-              className="p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors"
-            >
-              <Heart
-                size={18}
-                className={isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}
-              />
-            </button>
-          )}
-          
-          <button
-            onClick={(e) => e.preventDefault()}
-            className="p-1.5 bg-white/80 rounded-full hover:bg-white transition-colors"
-          >
-            <Eye size={18} className="text-gray-600" />
-          </button>
-        </div>
-        
-        {/* Rating badge if available */}
-        {rating && (
-          <div className="absolute top-2 left-2 bg-white/80 px-2 py-0.5 rounded text-sm font-medium">
-            {rating.toFixed(1)} ★
-          </div>
-        )}
-        
-        {/* MagicBook component */}
-        <MagicBook 
-          position="bottom-left"
-          className="scale-75 opacity-85 hover:opacity-100"
-        />
-      </div>
+      </button>
+      
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 };

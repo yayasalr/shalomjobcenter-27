@@ -1,9 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Listing } from "@/types/listing";
 
-/**
- * Manages image uploads and previews
- */
 export const useImageHandlers = () => {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -29,21 +27,13 @@ export const useImageHandlers = () => {
 
   const resetImages = () => {
     // Clean up URL objects to prevent memory leaks
-    imagePreviews.forEach(url => URL.revokeObjectURL(url));
+    imagePreviews.forEach(url => {
+      if (url.startsWith('blob:')) {
+        URL.revokeObjectURL(url);
+      }
+    });
     setImages([]);
     setImagePreviews([]);
-  };
-
-  const loadImagesFromListing = (listing: any) => {
-    setImages([]);
-    
-    if (listing.images && listing.images.length > 0) {
-      setImagePreviews(listing.images.filter((img: string) => !img.startsWith('blob:')));
-    } else if (listing.image && !listing.image.startsWith('blob:')) {
-      setImagePreviews([listing.image]);
-    } else {
-      setImagePreviews([]);
-    }
   };
 
   return {
@@ -51,7 +41,6 @@ export const useImageHandlers = () => {
     imagePreviews,
     handleImageChange,
     removeImage,
-    resetImages,
-    loadImagesFromListing
+    resetImages
   };
 };

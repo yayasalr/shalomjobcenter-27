@@ -1,23 +1,47 @@
 
 import { toast } from "sonner";
 import { validateListingForm } from "../../utils/formValidation";
+import { ValidationErrors } from "../../form/BasicInfoSection";
+import { Listing } from "@/types/listing";
 
-/**
- * Handles form submission logic
- */
-export const useFormSubmission = (
-  formState: any,
-  images: File[],
-  imagePreviews: string[],
-  setErrors: (errors: any) => void,
-  setIsSubmitting: (isSubmitting: boolean) => void,
-  resetForm: () => void,
-  resetImages: () => void,
-  setDialogOpen: (isOpen: boolean) => void,
-  onSave: (formData: any) => void,
-  selectedListing: any,
-  isEditing: boolean
-) => {
+interface FormSubmissionProps {
+  formState: {
+    title: string;
+    description: string;
+    price: string;
+    location: string;
+    neighborhood: string;
+    mapLocation: string;
+  };
+  images: File[];
+  imagePreviews: string[];
+  errors: ValidationErrors;
+  setErrors: (errors: ValidationErrors) => void;
+  isSubmitting: boolean;
+  setIsSubmitting: (isSubmitting: boolean) => void;
+  resetForm: () => void;
+  resetImages: () => void;
+  setDialogOpen: (isOpen: boolean) => void;
+  onSave: (formData: any) => void;
+  selectedListing: Listing | null;
+  isEditing: boolean;
+}
+
+export const useFormSubmission = ({
+  formState,
+  images,
+  imagePreviews,
+  errors,
+  setErrors,
+  isSubmitting,
+  setIsSubmitting,
+  resetForm,
+  resetImages,
+  setDialogOpen,
+  onSave,
+  selectedListing,
+  isEditing
+}: FormSubmissionProps) => {
   const validateForm = (): boolean => {
     const newErrors = validateListingForm(formState, imagePreviews, isEditing);
     setErrors(newErrors);

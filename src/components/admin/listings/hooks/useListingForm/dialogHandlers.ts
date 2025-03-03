@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 interface DialogProps {
   isOpen?: boolean;
@@ -7,9 +7,6 @@ interface DialogProps {
   onCancel: () => void;
 }
 
-/**
- * Manages the dialog open/close state
- */
 export const useDialogHandlers = ({ 
   isOpen: externalIsOpen, 
   setIsOpen: externalSetIsOpen,

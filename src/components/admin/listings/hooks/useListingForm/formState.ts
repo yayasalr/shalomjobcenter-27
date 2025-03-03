@@ -1,10 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { Listing } from "@/types/listing";
+import { ValidationErrors } from "../../form/BasicInfoSection";
 
-/**
- * Hook for managing the form state
- */
 export const useFormState = (selectedListing: Listing | null, isEditing: boolean) => {
   const [formState, setFormState] = useState({
     title: "",
@@ -15,8 +13,7 @@ export const useFormState = (selectedListing: Listing | null, isEditing: boolean
     mapLocation: ""
   });
   
-  const [errors, setErrors] = useState<Record<string, string | undefined>>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
   useEffect(() => {
     if (selectedListing && isEditing) {
@@ -74,15 +71,12 @@ export const useFormState = (selectedListing: Listing | null, isEditing: boolean
       mapLocation: ""
     });
     setErrors({});
-    setIsSubmitting(false);
   };
 
   return {
     formState,
     errors,
-    isSubmitting,
     setErrors,
-    setIsSubmitting,
     updateFormState,
     handleNeighborhoodChange,
     resetForm
