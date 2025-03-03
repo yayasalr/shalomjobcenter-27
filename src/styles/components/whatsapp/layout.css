@@ -1,0 +1,55 @@
+
+/* WhatsApp layout container */
+.whatsapp-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #e5ddd5;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M11 0l5 20H6l5-20zm17 0l5 20H28l5-20zm17 0l5 20H45l5-20zm17 0l5 20H62l5-20zM0 11l20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5L0 71l20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5-20 5 20 5z'/%3E%3C/g%3E%3C/svg%3E");
+  position: relative;
+}
+
+/* Scrollbar styles */
+.scrollbar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.scrollbar-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* Tabs layout */
+.whatsapp-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: var(--whatsapp-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.whatsapp-tab {
+  padding: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.whatsapp-tab.active {
+  color: white;
+  border-bottom: 3px solid white;
+}

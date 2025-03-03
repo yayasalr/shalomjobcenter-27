@@ -1,0 +1,28 @@
+
+/* WhatsApp header */
+.whatsapp-header {
+  background-color: var(--whatsapp-primary);
+  color: white;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--whatsapp-header-height);
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.whatsapp-user-avatar {
+  width: var(--whatsapp-avatar-size);
+  height: var(--whatsapp-avatar-size);
+}
+
+.whatsapp-user-info {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+.whatsapp-back-button {
+  display: none;
+}

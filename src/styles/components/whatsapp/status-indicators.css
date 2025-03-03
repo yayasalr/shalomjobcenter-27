@@ -1,0 +1,66 @@
+
+/* Status indicators */
+.whatsapp-online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: var(--whatsapp-indicator-size);
+  height: var(--whatsapp-indicator-size);
+  background-color: var(--whatsapp-secondary);
+  border-radius: 50%;
+  border: 2px solid var(--whatsapp-primary);
+}
+
+.whatsapp-offline-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: var(--whatsapp-indicator-size);
+  height: var(--whatsapp-indicator-size);
+  background-color: #bbb;
+  border-radius: 50%;
+  border: 2px solid var(--whatsapp-primary);
+}
+
+/* Message tick marks */
+.whatsapp-tick {
+  margin-left: 2px;
+}
+
+.whatsapp-single-tick {
+  color: #a0a0a0;
+}
+
+.whatsapp-read-tick {
+  color: #53bdeb;
+}
+
+/* Recording indicator */
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.recording-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: red;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}

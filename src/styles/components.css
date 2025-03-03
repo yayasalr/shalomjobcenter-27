@@ -1,6 +1,7 @@
 
 /* Components styling */
 @import './components/admin-messages.css';
+@import './components/whatsapp/index.css';
 
 /* Buttons */
 .btn {

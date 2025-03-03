@@ -1,0 +1,35 @@
+
+/* Input area */
+.whatsapp-input-area {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #e1e1e1;
+  flex-shrink: 0;
+}
+
+.whatsapp-input {
+  flex: 1;
+  border-radius: 20px;
+  padding: 9px 12px;
+  background-color: white;
+  border: 1px solid #e1e1e1;
+  min-height: 24px;
+  max-height: 100px;
+  overflow-y: auto;
+  outline: none;
+}
+
+.whatsapp-send-button {
+  background-color: var(--whatsapp-primary);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  cursor: pointer;
+}

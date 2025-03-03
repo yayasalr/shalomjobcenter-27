@@ -1,0 +1,73 @@
+
+/* Conversation list styles */
+.whatsapp-conversation-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.whatsapp-conversation-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  position: relative;
+}
+
+.whatsapp-conversation-item:hover {
+  background-color: #f5f5f5;
+}
+
+.whatsapp-conversation-item.active {
+  background-color: #ebebeb;
+}
+
+.whatsapp-conversation-content {
+  flex: 1;
+  margin-left: 12px;
+  overflow: hidden;
+}
+
+.whatsapp-conversation-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.whatsapp-conversation-preview {
+  font-size: 0.8rem;
+  color: #667781;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.whatsapp-conversation-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 45px;
+}
+
+.whatsapp-conversation-time {
+  font-size: 0.75rem;
+  color: #667781;
+  margin-bottom: 4px;
+}
+
+.whatsapp-conversation-badge {
+  background-color: var(--whatsapp-secondary);
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  padding: 0 6px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,15 @@
+
+/* WhatsApp style variables */
+:root {
+  --whatsapp-primary: #128c7e;
+  --whatsapp-secondary: #25D366;
+  --whatsapp-light-bg: #e5ddd5;
+  --whatsapp-user-bubble: #dcf8c6;
+  --whatsapp-other-bubble: white;
+  --whatsapp-header-height: 60px;
+  --whatsapp-footer-height: 62px;
+  --whatsapp-avatar-size: 40px;
+  --whatsapp-avatar-size-small: 32px;
+  --whatsapp-border-radius: 7.5px;
+  --whatsapp-indicator-size: 12px;
+}

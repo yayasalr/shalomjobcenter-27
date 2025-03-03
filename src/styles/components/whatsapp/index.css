@@ -1,0 +1,10 @@
+
+/* Main WhatsApp styles entry point that imports all component files */
+@import './variables.css';
+@import './layout.css';
+@import './header.css';
+@import './messages.css';
+@import './conversation-list.css';
+@import './inputs.css';
+@import './status-indicators.css';
+@import './responsive.css';
