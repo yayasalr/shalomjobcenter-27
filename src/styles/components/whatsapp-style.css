@@ -69,13 +69,32 @@
   flex-direction: column;
 }
 
+/* Scrollbar styles */
+.scrollbar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.scrollbar-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
 /* Message bubble styles */
 .whatsapp-message {
   max-width: 65%;
   padding: 8px 12px;
   border-radius: 7.5px;
   position: relative;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
 }
 
@@ -153,6 +172,70 @@
   cursor: pointer;
 }
 
+/* Media preview container */
+.media-preview-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 4px;
+  margin-right: 8px;
+  position: relative;
+}
+
+.media-preview {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Recording indicator */
+.recording-indicator {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.recording-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: red;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+/* Message image and audio containers */
+.message-image-container {
+  position: relative;
+  margin: -4px -6px;
+}
+
+.message-image {
+  display: block;
+  max-width: 250px;
+  max-height: 200px;
+  width: auto;
+}
+
+.message-audio-container {
+  padding: 4px 8px;
+  width: 200px;
+  border-radius: 16px;
+}
+
 /* Conversation list styles */
 .whatsapp-tabs {
   display: grid;
@@ -182,6 +265,8 @@
 .whatsapp-conversation-list {
   display: flex;
   flex-direction: column;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 .whatsapp-conversation-item {
@@ -269,6 +354,33 @@
   }
   
   .whatsapp-message {
-    max-width: 85%;
+    max-width: 80%;
+  }
+  
+  .message-image {
+    max-width: 200px;
+  }
+  
+  .whatsapp-conversation-item {
+    padding: 10px 12px;
+  }
+  
+  .whatsapp-tabs {
+    font-size: 0.7rem;
+  }
+  
+  .whatsapp-tab {
+    padding: 8px 4px;
+  }
+}
+
+/* Tablet-specific styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .whatsapp-message {
+    max-width: 70%;
+  }
+  
+  .whatsapp-tabs {
+    font-size: 0.8rem;
   }
 }

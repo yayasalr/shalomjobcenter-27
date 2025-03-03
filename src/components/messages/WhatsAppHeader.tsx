@@ -5,6 +5,14 @@ import { ArrowLeft, MoreVertical, Phone, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Conversation } from './types';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface WhatsAppHeaderProps {
   conversation: Conversation;
@@ -22,18 +30,15 @@ const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
   const navigate = useNavigate();
 
   const handleVideoCall = () => {
-    // This would typically navigate to a video call page
-    window.alert("Fonctionnalité d'appel vidéo à venir");
+    toast.success("Fonctionnalité d'appel vidéo à venir");
   };
 
   const handleVoiceCall = () => {
-    // This would typically initiate a voice call
-    window.alert("Fonctionnalité d'appel vocal à venir");
+    toast.success("Fonctionnalité d'appel vocal à venir");
   };
 
   const handleMoreOptions = () => {
-    // This would open a dropdown with more options
-    window.alert("Plus d'options à venir");
+    // This would typically open a dropdown with more options
   };
 
   return (
@@ -51,7 +56,7 @@ const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
 
       <div 
         className="flex items-center flex-1 cursor-pointer" 
-        onClick={onViewProfile || (() => window.alert("Affichage du profil à venir"))}
+        onClick={onViewProfile || (() => toast.success("Affichage du profil à venir"))}
       >
         <div className="relative">
           <Avatar className="whatsapp-user-avatar">
@@ -79,9 +84,38 @@ const WhatsAppHeader: React.FC<WhatsAppHeaderProps> = ({
         <Button variant="ghost" size="icon" className="text-white" onClick={handleVoiceCall}>
           <Phone className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white" onClick={handleMoreOptions}>
-          <MoreVertical className="h-5 w-5" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-white">
+              <MoreVertical className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem onClick={onViewProfile}>
+              Voir le profil
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Médias partagés")}>
+              Médias, liens et docs
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Recherche")}>
+              Rechercher
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast.success("Notification")}>
+              Notifications
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Message éphémère")}>
+              Messages éphémères
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast.success("Bloquer")}>
+              Bloquer
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500" onClick={() => toast.success("Supprimer")}>
+              Supprimer la conversation
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
