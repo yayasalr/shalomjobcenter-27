@@ -1,9 +1,14 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Send, Paperclip, Mic, Smile, Image, Sticker, X, StopCircle } from 'lucide-react';
+import React, { useRef } from 'react';
+import { useRecording } from './input/hooks/useRecording';
+import { useMediaHandling } from './input/hooks/useMediaHandling';
+import EmojiPicker from './input/EmojiPicker';
+import StickerPicker from './input/StickerPicker';
+import MediaAttachmentButtons from './input/MediaAttachmentButtons';
+import MediaPreview from './input/MediaPreview';
+import VoiceRecorder from './input/VoiceRecorder';
+import SendButton from './input/SendButton';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 interface MessageInputProps {
   newMessage: string;
@@ -19,22 +24,26 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
-  const [mediaType, setMediaType] = useState<'image' | 'audio' | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const recordingTimerRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Clean up the recording timer if it exists
-    return () => {
-      if (recordingTimerRef.current) {
-        window.clearInterval(recordingTimerRef.current);
-      }
-    };
-  }, []);
+  // Use custom hooks for recording and media handling
+  const {
+    isRecording,
+    recordingTime,
+    startRecording,
+    stopRecording,
+    formatRecordingTime
+  } = useRecording();
+
+  const {
+    mediaPreview,
+    mediaType,
+    fileInputRef,
+    handleFileSelect,
+    handleFileChange,
+    handleAudioPreview,
+    cancelMediaPreview
+  } = useMediaHandling();
 
   const sendMessage = () => {
     if ((!newMessage.trim() && !mediaPreview) || isSending) return;
@@ -58,8 +67,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
       try {
         handleSendMessage();
         // Clear media preview after sending
-        setMediaPreview(null);
-        setMediaType(null);
+        cancelMediaPreview();
         setNewMessage('');
       } finally {
         setIsSending(false);
@@ -74,46 +82,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
-  const handleFileSelect = () => {
-    // Ensure this is triggered by a user event (click/tap)
-    if (fileInputRef.current) {
-      // Add a small delay to ensure the click is registered properly on mobile
-      setTimeout(() => {
-        fileInputRef.current?.click();
-      }, 50);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // File validation
-    if (!file.type.startsWith('image/')) {
-      toast.error("Seules les images sont supportées pour l'instant");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("L'image est trop volumineuse (max 5MB)");
-      return;
-    }
-
-    // Create a preview and simulate sending an image
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imagePreview = reader.result as string;
-      setMediaPreview(imagePreview);
-      setMediaType('image');
-      // Focus the input field for adding a caption
-      inputRef.current?.focus();
-    };
-    reader.readAsDataURL(file);
-
-    // Reset the input
-    e.target.value = '';
-  };
-
   const handleEmojiClick = (emoji: string) => {
     setNewMessage(newMessage + emoji);
     setShowEmojiPicker(false);
@@ -125,73 +93,23 @@ const MessageInput: React.FC<MessageInputProps> = ({
     setShowStickerPicker(false);
   };
 
-  const startRecording = () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      setIsRecording(true);
-      setRecordingTime(0);
-      
-      // Start a timer to track recording duration
-      recordingTimerRef.current = window.setInterval(() => {
-        setRecordingTime(prev => prev + 1);
-      }, 1000);
-      
-      // This would normally start actual audio recording
-      toast.success("Enregistrement vocal démarré");
-      
-      // Simulate requesting microphone access
-      navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-          // Here you would normally start recording
-          console.log('Microphone access granted, recording started');
-        })
-        .catch(err => {
-          toast.error("Impossible d'accéder au microphone");
-          stopRecording();
-        });
+  const handleSendButtonClick = () => {
+    if (newMessage.trim() || mediaPreview) {
+      sendMessage();
     } else {
-      toast.error("Votre navigateur ne supporte pas l'enregistrement audio");
+      startRecording();
     }
   };
 
-  const stopRecording = () => {
-    if (recordingTimerRef.current) {
-      clearInterval(recordingTimerRef.current);
-      recordingTimerRef.current = null;
-    }
+  const handleStopRecording = () => {
+    const duration = stopRecording();
+    const isValidRecording = handleAudioPreview(duration);
     
-    setIsRecording(false);
-    
-    // This would normally process the recorded audio
-    if (recordingTime > 1) {
-      setMediaPreview('/placeholder.svg');
-      setMediaType('audio');
-      toast.success("Enregistrement vocal terminé");
-    } else {
-      toast.error("Enregistrement trop court");
+    if (isValidRecording) {
+      // Focus the input field for adding a caption
+      inputRef.current?.focus();
     }
   };
-
-  const cancelMediaPreview = () => {
-    setMediaPreview(null);
-    setMediaType(null);
-  };
-
-  const formatRecordingTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  // Mock emojis for the demo
-  const emojis = ['😊', '😂', '❤️', '👍', '🙏', '😍', '🔥', '😢', '🎉', '🤔'];
-  
-  // Mock stickers for the demo
-  const stickers = [
-    '/placeholder.svg',
-    '/placeholder.svg',
-    '/placeholder.svg',
-    '/placeholder.svg',
-  ];
 
   return (
     <div className="whatsapp-input-area">
@@ -204,98 +122,26 @@ const MessageInput: React.FC<MessageInputProps> = ({
       />
       
       {mediaPreview ? (
-        <div className="media-preview-container">
-          <div className="media-preview">
-            {mediaType === 'image' && (
-              <img src={mediaPreview} alt="Preview" className="h-20 object-contain" />
-            )}
-            {mediaType === 'audio' && (
-              <div className="flex items-center justify-center bg-gray-100 h-20 w-20 rounded">
-                <div className="text-gray-600">Audio</div>
-              </div>
-            )}
-            <Button 
-              variant="destructive" 
-              size="icon" 
-              className="absolute top-1 right-1 h-6 w-6 rounded-full"
-              onClick={cancelMediaPreview}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        <MediaPreview 
+          mediaPreview={mediaPreview}
+          mediaType={mediaType}
+          cancelMediaPreview={cancelMediaPreview}
+        />
       ) : (
         <>
-          <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-            <DialogTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
-                onClick={() => setShowEmojiPicker(true)}
-              >
-                <Smile className="h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="p-2 w-64">
-              <div className="grid grid-cols-5 gap-2">
-                {emojis.map((emoji, index) => (
-                  <Button 
-                    key={index} 
-                    variant="ghost" 
-                    className="h-10 w-10 text-xl"
-                    onClick={() => handleEmojiClick(emoji)}
-                  >
-                    {emoji}
-                  </Button>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
+          <EmojiPicker 
+            showEmojiPicker={showEmojiPicker}
+            setShowEmojiPicker={setShowEmojiPicker}
+            onEmojiClick={handleEmojiClick}
+          />
           
-          <Dialog open={showStickerPicker} onOpenChange={setShowStickerPicker}>
-            <DialogTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
-                onClick={() => setShowStickerPicker(true)}
-              >
-                <Sticker className="h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="p-2 w-64">
-              <div className="grid grid-cols-2 gap-2">
-                {stickers.map((sticker, index) => (
-                  <div 
-                    key={index} 
-                    className="h-24 w-full border rounded cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleStickerClick(sticker)}
-                  >
-                    <img src={sticker} alt="Sticker" className="h-full w-full object-contain" />
-                  </div>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
+          <StickerPicker 
+            showStickerPicker={showStickerPicker}
+            setShowStickerPicker={setShowStickerPicker}
+            onStickerClick={handleStickerClick}
+          />
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
-            onClick={handleFileSelect}
-          >
-            <Paperclip className="h-5 w-5" />
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-gray-500 hover:bg-gray-200 rounded-full touch-manipulation"
-            onClick={handleFileSelect}
-          >
-            <Image className="h-5 w-5" />
-          </Button>
+          <MediaAttachmentButtons handleFileSelect={handleFileSelect} />
         </>
       )}
       
@@ -310,28 +156,19 @@ const MessageInput: React.FC<MessageInputProps> = ({
         {newMessage}
       </div>
       
-      {isRecording ? (
-        <div className="recording-indicator flex items-center mr-2">
-          <div className="recording-pulse mr-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          <span className="text-red-500 text-sm font-medium">{formatRecordingTime(recordingTime)}</span>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-red-500 ml-2 touch-manipulation"
-            onClick={stopRecording}
-          >
-            <StopCircle className="h-5 w-5" />
-          </Button>
-        </div>
-      ) : (
-        <Button 
-          onClick={newMessage.trim() || mediaPreview ? sendMessage : startRecording} 
-          disabled={isSending}
-          className="whatsapp-send-button touch-manipulation"
-          size="icon"
-        >
-          {newMessage.trim() || mediaPreview ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
-        </Button>
+      <VoiceRecorder 
+        isRecording={isRecording}
+        recordingTime={recordingTime}
+        stopRecording={handleStopRecording}
+        formatRecordingTime={formatRecordingTime}
+      />
+      
+      {!isRecording && (
+        <SendButton 
+          hasContent={Boolean(newMessage.trim() || mediaPreview)}
+          isSending={isSending}
+          onClick={handleSendButtonClick}
+        />
       )}
     </div>
   );

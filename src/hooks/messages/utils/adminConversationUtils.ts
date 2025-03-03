@@ -36,11 +36,11 @@ export const updateAdminConversation = (
   );
   
   // Prepare messages to add (always include user message, conditionally add admin response)
-  const messagesToAdd = [
+  const messagesToAdd: Message[] = [
     {
       ...userMessage,
       read: false,  // Non lu par l'admin
-      sender: 'user',
+      sender: "user",
     }
   ];
   
@@ -49,32 +49,32 @@ export const updateAdminConversation = (
     messagesToAdd.push({
       ...adminResponse,
       read: true,   // Lu par l'admin qui l'a envoyé
-      sender: 'admin',
+      sender: "admin",
     });
   }
   
   // Determine the last message (either admin response or user message)
-  const lastMessage = adminResponse ? {
+  const lastMessage: Message['lastMessage'] = adminResponse ? {
     content: adminResponse.content,
     timestamp: adminResponse.timestamp,
     read: true,
-    sender: 'admin',
+    sender: "admin",
   } : {
     content: userMessage.content,
     timestamp: userMessage.timestamp,
     read: false,
-    sender: 'user',
+    sender: "user",
   };
   
   if (adminConvIndex >= 0) {
     // Mettre à jour la conversation existante
-    const updatedAdminConv = {
+    const updatedAdminConv: Conversation = {
       ...adminConversations[adminConvIndex],
       messages: [
         ...adminConversations[adminConvIndex].messages,
         ...messagesToAdd
       ],
-      lastMessage: lastMessage,
+      lastMessage,
     };
     
     adminConversations[adminConvIndex] = updatedAdminConv;
@@ -90,7 +90,7 @@ export const updateAdminConversation = (
         role: userData.role || 'user',
       },
       messages: messagesToAdd,
-      lastMessage: lastMessage,
+      lastMessage,
     });
   }
   
