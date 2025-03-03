@@ -28,7 +28,7 @@ export const NavbarLogo = () => {
   }, [settings.logo]);
   
   return (
-    <Link to="/" className="flex items-center gap-2 xs:gap-4">
+    <Link to="/" className="flex items-center gap-2 xs:gap-3">
       <motion.div 
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }}
@@ -59,7 +59,7 @@ export const NavbarLogo = () => {
         </div>
       </motion.div>
       <motion.span 
-        className="text-lg sm:text-xl md:text-2xl font-bold site-name block font-serif tracking-wide truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none" 
+        className="text-lg sm:text-xl md:text-2xl font-bold site-name inline-block font-serif tracking-wide truncate max-w-[180px] xs:max-w-[180px] sm:max-w-none" 
         whileHover={{ scale: 1.05 }}
       >
         {settings.siteName || 'Shalom Job Center'}

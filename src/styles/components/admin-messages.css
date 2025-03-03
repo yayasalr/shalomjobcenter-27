@@ -50,3 +50,27 @@
 .profile-image-container:hover .image-upload-overlay {
   @apply opacity-100;
 }
+
+/* Mobile specific styles */
+@media (max-width: 640px) {
+  .message-list-container {
+    height: calc(100vh - 180px);
+    @apply p-2;
+  }
+  
+  .whatsapp-container {
+    @apply rounded-none border-0;
+  }
+  
+  .whatsapp-message {
+    @apply max-w-[80%] text-sm;
+  }
+  
+  .whatsapp-message-time {
+    @apply text-[10px];
+  }
+  
+  .whatsapp-user-info {
+    @apply max-w-[150px];
+  }
+}

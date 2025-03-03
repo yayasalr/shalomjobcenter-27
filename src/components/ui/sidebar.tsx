@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -37,7 +38,13 @@ export function SidebarProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(false);
+
+  // On mobile, start with sidebar collapsed
+  React.useEffect(() => {
+    const isMobile = window.innerWidth < 1024;
+    setExpanded(!isMobile);
+  }, []);
 
   const toggle = React.useCallback(() => {
     setExpanded((prev) => !prev);

@@ -58,10 +58,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, conversation 
   
   return (
     <div 
-      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} px-1 sm:px-2`}
     >
       {message.sender !== 'user' && (
-        <Avatar className="h-8 w-8 mr-2 mt-1">
+        <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
           <AvatarImage src={conversation.with.avatar} />
           <AvatarFallback className={
             conversation.with.role === 'admin' ? 'bg-emerald-500 text-white' : ''
@@ -71,7 +71,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, conversation 
         </Avatar>
       )}
       <div 
-        className={`whatsapp-message ${
+        className={`whatsapp-message max-w-[75%] sm:max-w-[70%] ${
           message.sender === 'user' 
             ? 'whatsapp-user-message' 
             : 'whatsapp-other-message'
@@ -81,7 +81,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message, conversation 
         {message.sender !== 'user' && <div className="whatsapp-tail-in"></div>}
         
         {messageType === 'text' && (
-          <p className="whitespace-pre-wrap">{message.content}</p>
+          <p className="whitespace-pre-wrap break-words">{message.content}</p>
         )}
         
         {messageType === 'image' && (

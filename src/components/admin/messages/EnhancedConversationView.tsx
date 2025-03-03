@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Conversation } from '@/components/messages/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -143,7 +144,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
               className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'}`}
             >
               {message.sender !== 'admin' && (
-                <Avatar className="h-8 w-8 mr-2 mt-1">
+                <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
                   <AvatarImage src={conversation.with.avatar} />
                   <AvatarFallback>
                     {conversation.with.name.charAt(0)}
@@ -151,7 +152,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
                 </Avatar>
               )}
               <div 
-                className={`whatsapp-message ${
+                className={`whatsapp-message max-w-[75%] sm:max-w-[70%] ${
                   message.sender === 'admin' 
                     ? 'whatsapp-user-message' 
                     : 'whatsapp-other-message'
@@ -170,7 +171,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
                     <Image className="image-icon absolute bottom-2 right-2 text-white h-4 w-4" />
                   </div>
                 ) : (
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  <p className="whitespace-pre-wrap break-words">{message.content}</p>
                 )}
                 
                 <div className="whatsapp-message-time">

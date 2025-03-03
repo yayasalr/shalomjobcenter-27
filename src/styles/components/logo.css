@@ -55,16 +55,17 @@
 /* Amélioration affichage du site-name sur mobile */
 @media (max-width: 480px) {
   .site-name {
-    max-width: 120px;
-    font-size: 1rem;
+    max-width: 160px !important;
+    font-size: 0.95rem;
     letter-spacing: 0;
+    display: inline-block !important;
   }
 }
 
 /* Mode paysage sur mobile */
 @media (max-width: 896px) and (orientation: landscape) {
   .site-name {
-    display: block !important;
-    max-width: none !important;
+    display: inline-block !important;
+    max-width: 200px !important;
   }
 }

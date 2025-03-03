@@ -53,13 +53,13 @@ const Messages = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container mx-auto px-4 py-24">
-        <h1 className="text-3xl font-bold mb-8 mt-8">Messages</h1>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 pt-20">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 mt-4">Messages</h1>
         
-        <Card className="h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
+        <Card className="h-[calc(80vh-6rem)] sm:h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             {/* Conversation List - Hide on mobile when viewing a conversation */}
-            <div className={`${showMobileConversation ? 'hidden md:block' : 'block'}`}>
+            <div className={`${showMobileConversation ? 'hidden md:block' : 'block'} border-r border-gray-200`}>
               <ConversationList 
                 conversations={conversations}
                 selectedConversation={selectedConversation}

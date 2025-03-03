@@ -31,6 +31,20 @@ const ContactSubmissionsTab: React.FC = () => {
     handleBulkForward
   } = useSubmissions();
 
+  const [showDetail, setShowDetail] = useState(false);
+
+  // On mobile, when a submission is selected, show the detail view
+  useEffect(() => {
+    if (selectedSubmission) {
+      setShowDetail(true);
+    }
+  }, [selectedSubmission]);
+
+  // Handler for back button on mobile
+  const handleBackToList = () => {
+    setShowDetail(false);
+  };
+
   return (
     <Card>
       <CardContent className="p-6 h-[calc(100vh-280px)]">
@@ -42,27 +56,32 @@ const ContactSubmissionsTab: React.FC = () => {
           
           <TabsContent value="submissions">
             <div className="grid grid-cols-1 md:grid-cols-3 h-full gap-4">
-              <SubmissionsList 
-                filteredSubmissions={filteredSubmissions}
-                selectedSubmission={selectedSubmission}
-                searchQuery={searchQuery}
-                filter={filter}
-                newSubmissionsCount={newSubmissionsCount}
-                setSearchQuery={setSearchQuery}
-                setFilter={setFilter}
-                handleSelectSubmission={handleSelectSubmission}
-              />
+              <div className={`${showDetail ? 'hidden md:block' : 'block'}`}>
+                <SubmissionsList 
+                  filteredSubmissions={filteredSubmissions}
+                  selectedSubmission={selectedSubmission}
+                  searchQuery={searchQuery}
+                  filter={filter}
+                  newSubmissionsCount={newSubmissionsCount}
+                  setSearchQuery={setSearchQuery}
+                  setFilter={setFilter}
+                  handleSelectSubmission={handleSelectSubmission}
+                />
+              </div>
               
-              <SubmissionDetail
-                selectedSubmission={selectedSubmission}
-                responseText={responseText}
-                forwardEmail={forwardEmail}
-                isForwarding={isForwarding}
-                setResponseText={setResponseText}
-                setForwardEmail={setForwardEmail}
-                handleSendResponse={handleSendResponse}
-                handleForwardSubmission={handleForwardSubmission}
-              />
+              <div className={`col-span-2 ${!showDetail ? 'hidden md:block' : 'block'}`}>
+                <SubmissionDetail
+                  selectedSubmission={selectedSubmission}
+                  responseText={responseText}
+                  forwardEmail={forwardEmail}
+                  isForwarding={isForwarding}
+                  setResponseText={setResponseText}
+                  setForwardEmail={setForwardEmail}
+                  handleSendResponse={handleSendResponse}
+                  handleForwardSubmission={handleForwardSubmission}
+                  onBack={handleBackToList}
+                />
+              </div>
             </div>
           </TabsContent>
           

@@ -30,13 +30,13 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
   handleSelectSubmission
 }) => {
   return (
-    <div className="border rounded-lg overflow-hidden">
-      <div className="p-4 border-b">
+    <div className="border rounded-lg overflow-hidden h-full flex flex-col">
+      <div className="p-3 sm:p-4 border-b">
         <div className="flex gap-2 mb-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input 
-              className="pl-9" 
+              className="pl-9 text-sm h-9" 
               placeholder="Rechercher..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -46,17 +46,17 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
             variant={filter === 'new' ? "default" : "outline"} 
             size="icon"
             onClick={() => setFilter(filter === 'new' ? 'all' : 'new')}
-            className="h-10 w-10"
+            className="h-9 w-9"
           >
             <Filter className="h-4 w-4" />
           </Button>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-xs sm:text-sm text-gray-500">
           {filteredSubmissions.length} message(s) {filter === 'new' ? 'non lu(s)' : ''} - {newSubmissionsCount} nouveaux
         </div>
       </div>
       
-      <ScrollArea className="h-[calc(100vh-400px)]">
+      <ScrollArea className="flex-1">
         {filteredSubmissions.length > 0 ? (
           filteredSubmissions.map((submission) => (
             <SubmissionListItem 
@@ -89,29 +89,29 @@ const SubmissionListItem: React.FC<SubmissionListItemProps> = ({
 }) => {
   return (
     <div 
-      className={`p-4 border-b hover:bg-gray-50 cursor-pointer ${
+      className={`p-3 sm:p-4 border-b hover:bg-gray-50 cursor-pointer ${
         isSelected ? 'bg-gray-50' : ''
       } ${submission.status === 'new' ? 'bg-blue-50 hover:bg-blue-100' : ''}`}
       onClick={onSelect}
     >
       <div className="flex justify-between items-baseline mb-1">
-        <h3 className="font-medium truncate">{submission.name}</h3>
-        <span className="text-xs text-gray-500">
+        <h3 className="font-medium truncate text-sm sm:text-base">{submission.name}</h3>
+        <span className="text-[10px] sm:text-xs text-gray-500">
           {format(new Date(submission.createdAt), 'dd/MM/yyyy')}
         </span>
       </div>
-      <p className="text-xs text-gray-500 mb-1">{submission.email}</p>
+      <p className="text-[10px] sm:text-xs text-gray-500 mb-1">{submission.email}</p>
       <div className="flex justify-between">
-        <p className={`text-sm truncate ${
+        <p className={`text-xs sm:text-sm truncate ${
           submission.status === 'new' ? 'font-medium' : 'text-gray-500'
         }`}>
           {submission.subject}
         </p>
         {submission.status === 'new' && (
-          <Badge variant="default" className="rounded-full">Nouveau</Badge>
+          <Badge variant="default" className="rounded-full text-[10px]">Nouveau</Badge>
         )}
         {submission.status === 'responded' && (
-          <Badge variant="outline" className="bg-green-100 text-green-800">Répondu</Badge>
+          <Badge variant="outline" className="bg-green-100 text-green-800 text-[10px]">Répondu</Badge>
         )}
       </div>
     </div>
