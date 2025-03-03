@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import AdminMessageInput from './AdminMessageInput';
 import { OnlineStatusIndicator } from './OnlineStatusIndicator';
+import { ArrowLeft, MoreVertical, Phone, Video, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface EnhancedConversationViewProps {
   conversation: Conversation | null;
@@ -53,30 +55,52 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
     );
   }
 
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
+  const renderMessageStatus = (message: any) => {
+    if (message.sender !== 'admin') return null;
+    
+    if (message.read) {
+      return (
+        <span className="whatsapp-tick whatsapp-read-tick">
+          <Check className="h-3 w-3 inline" />
+          <Check className="h-3 w-3 inline -ml-1" />
+        </span>
+      );
+    } else {
+      return (
+        <span className="whatsapp-tick whatsapp-single-tick">
+          <Check className="h-3 w-3 inline" />
+        </span>
+      );
+    }
+  };
+
   return (
-    <div className="col-span-2 flex flex-col h-full border rounded-r-lg">
-      <div className="p-4 border-b flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src={conversation.with.avatar} />
-            <AvatarFallback>
-              {conversation.with.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+    <div className="col-span-2 flex flex-col h-full whatsapp-container">
+      <div className="whatsapp-header">
+        <div className="flex items-center flex-1">
+          <div className="relative">
+            <Avatar className="whatsapp-user-avatar">
+              <AvatarImage src={conversation.with.avatar} />
+              <AvatarFallback>
+                {conversation.with.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            {isOnline && <div className="whatsapp-online-indicator"></div>}
+            {!isOnline && <div className="whatsapp-offline-indicator"></div>}
+          </div>
           
-          <div>
-            <div className="flex items-center">
-              <h3 className="font-medium">{conversation.with.name}</h3>
-              <div className="ml-2">
-                <OnlineStatusIndicator isOnline={isOnline} />
+          <div className="whatsapp-user-info">
+            <h3 className="font-semibold text-white">{conversation.with.name}</h3>
+            <div className="flex items-center gap-2">
+              <div className="text-xs text-white/80">
+                {isOnline ? 'En ligne' : 'Hors ligne'}
               </div>
-            </div>
-            <div className="flex gap-2 text-sm text-gray-500">
-              {conversation.with.email && (
-                <span>{conversation.with.email}</span>
-              )}
               {conversation.with.role && (
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs bg-emerald-700 text-white border-emerald-600">
                   {conversation.with.role}
                 </Badge>
               )}
@@ -84,21 +108,21 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
-          {isOnline ? (
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-              En ligne
-            </Badge>
-          ) : (
-            <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
-              Hors ligne
-            </Badge>
-          )}
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="text-white">
+            <Video className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="text-white">
+            <Phone className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="text-white">
+            <MoreVertical className="h-5 w-5" />
+          </Button>
         </div>
       </div>
       
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      <div className="whatsapp-message-area">
+        <div className="space-y-1">
           {conversation.messages.map((message) => (
             <div 
               key={message.id}
@@ -113,28 +137,29 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
                 </Avatar>
               )}
               <div 
-                className={`max-w-[70%] p-3 rounded-lg ${
+                className={`whatsapp-message ${
                   message.sender === 'admin' 
-                    ? 'bg-blue-100 text-blue-800 rounded-tr-none' 
-                    : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                    ? 'whatsapp-user-message' 
+                    : 'whatsapp-other-message'
                 }`}
               >
+                {message.sender === 'admin' && <div className="whatsapp-tail-out"></div>}
+                {message.sender !== 'admin' && <div className="whatsapp-tail-in"></div>}
+                
                 <p className="whitespace-pre-wrap">{message.content}</p>
-                <p className={`text-xs mt-1 ${
-                  message.sender === 'admin' 
-                    ? 'text-blue-700' 
-                    : 'text-gray-500'
-                }`}>
-                  {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                
+                <div className="whatsapp-message-time">
+                  {formatTime(message.timestamp)}
+                  {renderMessageStatus(message)}
                   {!message.read && message.sender !== 'admin' && (
-                    <span className="ml-2 font-medium">• Non lu</span>
+                    <span className="ml-1 font-medium text-gray-600">• Non lu</span>
                   )}
-                </p>
+                </div>
               </div>
             </div>
           ))}
         </div>
-      </ScrollArea>
+      </div>
       
       <AdminMessageInput
         newMessage={newMessage}

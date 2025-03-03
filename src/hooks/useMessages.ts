@@ -27,7 +27,9 @@ export const useMessages = (userId: string | undefined) => {
     searchQuery,
     setSearchQuery,
     handleSelectConversation,
-    getUnreadCount
+    getUnreadCount,
+    onlineUsers,
+    isUserOnline
   } = useConversationManager(
     conversations,
     setConversations,
@@ -40,10 +42,12 @@ export const useMessages = (userId: string | undefined) => {
     selectedConversation,
     newMessage,
     searchQuery,
+    onlineUsers,
     setNewMessage,
     setSearchQuery,
     handleSendMessage,
     handleSelectConversation,
-    getUnreadCount
+    getUnreadCount,
+    isUserOnline
   };
 };

@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Paperclip, Mic, Smile } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface MessageInputProps {
@@ -22,50 +21,58 @@ const MessageInput: React.FC<MessageInputProps> = ({
     if (!newMessage.trim() || isSending) return;
     
     setIsSending(true);
-    const sendingToast = toast.loading("Envoi du message...");
     
     // Add a small delay to simulate network latency
     setTimeout(() => {
       try {
         handleSendMessage();
-        toast.dismiss(sendingToast);
-      } catch (error) {
-        toast.dismiss(sendingToast);
-        toast.error("Erreur lors de l'envoi du message");
       } finally {
         setIsSending(false);
       }
-    }, Math.random() * 1000 + 500); // 0.5-1.5 second delay
+    }, 200); // Very short delay for near-instant feel
   };
 
   return (
-    <div className="p-4 border-t">
-      <div className="flex gap-2">
-        <Textarea 
-          placeholder="Écrivez votre message..." 
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          className="min-h-[60px] resize-none"
-          disabled={isSending}
-        />
-        <Button 
-          onClick={sendMessage} 
-          className="h-[60px]"
-          disabled={isSending || !newMessage.trim()}
-        >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
-        </Button>
+    <div className="whatsapp-input-area">
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="text-gray-500 hover:bg-gray-200 rounded-full"
+      >
+        <Smile className="h-5 w-5" />
+      </Button>
+      
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="text-gray-500 hover:bg-gray-200 rounded-full"
+      >
+        <Paperclip className="h-5 w-5" />
+      </Button>
+      
+      <div 
+        contentEditable 
+        className="whatsapp-input" 
+        onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        }}
+        suppressContentEditableWarning={true}
+      >
+        {newMessage}
       </div>
+      
+      <Button 
+        onClick={sendMessage} 
+        disabled={!newMessage.trim() || isSending}
+        className="whatsapp-send-button"
+        size="icon"
+      >
+        {newMessage.trim() ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+      </Button>
     </div>
   );
 };

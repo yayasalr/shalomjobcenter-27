@@ -15,6 +15,8 @@
 @import './styles/components/logo.css';
 @import './styles/components/misc.css';
 @import './styles/components/badges.css';
+@import './styles/components/admin-messages.css';
+@import './styles/components/whatsapp-style.css';
 
 /* Theme-specific styles */
 @import './styles/theme.css';

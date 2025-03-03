@@ -24,7 +24,8 @@ const Messages = () => {
     setSearchQuery,
     handleSendMessage,
     handleSelectConversation,
-    getUnreadCount
+    getUnreadCount,
+    onlineUsers
   } = useMessages(user?.id);
 
   // Check if user is authenticated
@@ -43,7 +44,7 @@ const Messages = () => {
       <div className="container mx-auto px-4 py-24">
         <h1 className="text-3xl font-bold mb-8 mt-8">Messages</h1>
         
-        <Card className="h-[calc(80vh-8rem)] overflow-hidden">
+        <Card className="h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             {/* Conversation List */}
             <ConversationList 
@@ -62,6 +63,9 @@ const Messages = () => {
                 newMessage={newMessage}
                 setNewMessage={setNewMessage}
                 handleSendMessage={handleSendMessage}
+                isOnline={onlineUsers && selectedConversation 
+                  ? onlineUsers[selectedConversation.with.id] 
+                  : false}
               />
             ) : (
               <EmptyConversation />

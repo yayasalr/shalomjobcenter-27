@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Check } from 'lucide-react';
 import { Conversation } from './types';
 
 interface MessageListProps {
@@ -18,9 +19,32 @@ const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
     }
   }, [conversation.messages]);
 
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
+  const renderMessageStatus = (message: any) => {
+    if (message.sender !== 'user') return null;
+    
+    if (message.read) {
+      return (
+        <span className="whatsapp-tick whatsapp-read-tick">
+          <Check className="h-3 w-3 inline" />
+          <Check className="h-3 w-3 inline -ml-1" />
+        </span>
+      );
+    } else {
+      return (
+        <span className="whatsapp-tick whatsapp-single-tick">
+          <Check className="h-3 w-3 inline" />
+        </span>
+      );
+    }
+  };
+
   return (
-    <ScrollArea className="flex-1 p-4">
-      <div className="space-y-4">
+    <div className="whatsapp-message-area">
+      <div className="space-y-1">
         {conversation.messages.map((message) => (
           <div 
             key={message.id}
@@ -30,37 +54,34 @@ const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
               <Avatar className="h-8 w-8 mr-2 mt-1">
                 <AvatarImage src={conversation.with.avatar} />
                 <AvatarFallback className={
-                  conversation.with.role === 'admin' ? 'bg-blue-500 text-white' : ''
+                  conversation.with.role === 'admin' ? 'bg-emerald-500 text-white' : ''
                 }>
                   {conversation.with.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
             )}
             <div 
-              className={`max-w-[70%] p-3 rounded-lg ${
+              className={`whatsapp-message ${
                 message.sender === 'user' 
-                  ? 'bg-primary text-white rounded-tr-none' 
-                  : message.sender === 'admin'
-                    ? 'bg-blue-100 text-blue-800 rounded-tl-none'
-                    : 'bg-gray-100 text-gray-900 rounded-tl-none'
+                  ? 'whatsapp-user-message' 
+                  : 'whatsapp-other-message'
               }`}
             >
-              <p>{message.content}</p>
-              <p className={`text-xs mt-1 ${
-                message.sender === 'user' 
-                  ? 'text-primary-foreground/70' 
-                  : message.sender === 'admin'
-                    ? 'text-blue-700'
-                    : 'text-gray-500'
-              }`}>
-                {message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-              </p>
+              {message.sender === 'user' && <div className="whatsapp-tail-out"></div>}
+              {message.sender !== 'user' && <div className="whatsapp-tail-in"></div>}
+              
+              <p className="whitespace-pre-wrap">{message.content}</p>
+              
+              <div className="whatsapp-message-time">
+                {formatTime(message.timestamp)}
+                {renderMessageStatus(message)}
+              </div>
             </div>
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 

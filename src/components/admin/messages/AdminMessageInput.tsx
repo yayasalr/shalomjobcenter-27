@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Send, Loader2, Eye } from 'lucide-react';
+import { Send, Loader2, Eye, Paperclip, Smile, Mic } from 'lucide-react';
 import { QuickResponses } from './QuickResponses';
 import { MessagePreview } from './MessagePreview';
 import { Conversation } from '@/components/messages/types';
@@ -45,57 +45,69 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
 
   return (
     <>
-      <div className="p-4 border-t">
-        <div className="flex gap-2 items-end">
-          <div className="flex-1">
-            <Textarea
-              placeholder="Écrivez votre message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  if (!isPreviewMode) {
-                    previewMessage();
-                  }
-                }
-              }}
-              className="min-h-[80px] resize-none"
-              disabled={isSending}
-            />
-            <div className="flex justify-between mt-2">
-              <QuickResponses
-                responses={quickResponses}
-                onSelectResponse={onQuickResponseSelect}
-                onAddResponse={onAddQuickResponse}
-                onRemoveResponse={onRemoveQuickResponse}
-              />
-              
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={previewMessage}
-                  disabled={isSending || !newMessage.trim()}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Aperçu
-                </Button>
-                
-                <Button
-                  onClick={sendMessage}
-                  disabled={isSending || !newMessage.trim()}
-                >
-                  {isSending ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Send className="h-4 w-4 mr-2" />
-                  )}
-                  Envoyer
-                </Button>
-              </div>
-            </div>
-          </div>
+      <div className="whatsapp-input-area">
+        <QuickResponses
+          responses={quickResponses}
+          onSelectResponse={onQuickResponseSelect}
+          onAddResponse={onAddQuickResponse}
+          onRemoveResponse={onRemoveQuickResponse}
+        />
+        
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-500 hover:bg-gray-200 rounded-full"
+        >
+          <Smile className="h-5 w-5" />
+        </Button>
+        
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-500 hover:bg-gray-200 rounded-full"
+        >
+          <Paperclip className="h-5 w-5" />
+        </Button>
+        
+        <div 
+          contentEditable 
+          className="whatsapp-input" 
+          onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              if (!isPreviewMode) {
+                previewMessage();
+              }
+            }
+          }}
+          suppressContentEditableWarning={true}
+        >
+          {newMessage}
         </div>
+        
+        <Button
+          variant="outline"
+          onClick={previewMessage}
+          disabled={isSending || !newMessage.trim()}
+          className="rounded-full mr-1"
+          size="icon"
+        >
+          <Eye className="h-4 w-4" />
+        </Button>
+        
+        <Button 
+          onClick={sendMessage} 
+          disabled={isSending || !newMessage.trim()}
+          className="whatsapp-send-button"
+          size="icon"
+        >
+          {isSending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            newMessage.trim() ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />
+          )}
+        </Button>
       </div>
       
       {/* Modal de prévisualisation du message */}
