@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { Listing } from "@/types/listing";
-import { getValidImageUrl, getRandomFallbackImage } from "@/utils/imageUtils";
+import { 
+  getValidImageUrl, 
+  getRandomFallbackImage, 
+  isImageValid 
+} from "@/utils/imageUtils";
 
 interface ListingCardImageProps {
   listing: Listing;
@@ -24,10 +28,27 @@ export const ListingCardImage = ({
   fallbackImages,
 }: ListingCardImageProps) => {
   const [processedImageUrl, setProcessedImageUrl] = useState<string>(imageUrl);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   
-  // Valider l'URL de l'image au montage
+  // Valider l'URL de l'image au montage et lors des changements
   useEffect(() => {
-    setProcessedImageUrl(getValidImageUrl(imageUrl, 0));
+    const validateAndSetImage = async () => {
+      setIsLoading(true);
+      const validatedUrl = getValidImageUrl(imageUrl, 0);
+      
+      // Vérifier si l'image est valide
+      const isValid = await isImageValid(validatedUrl);
+      
+      if (isValid) {
+        setProcessedImageUrl(validatedUrl);
+      } else {
+        setProcessedImageUrl(getRandomFallbackImage());
+      }
+      
+      setIsLoading(false);
+    };
+    
+    validateAndSetImage();
   }, [imageUrl]);
 
   const toggleFavorite = (e: React.MouseEvent) => {
@@ -49,15 +70,24 @@ export const ListingCardImage = ({
 
   return (
     <div className="relative overflow-hidden rounded-xl aspect-square mb-2">
+      {/* Skeleton loader during image validation */}
+      {isLoading && (
+        <div className="h-full w-full bg-gray-200 animate-pulse rounded-xl" />
+      )}
+      
       <img
         src={processedImageUrl}
         alt={title}
-        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+          isLoading ? 'opacity-0' : 'opacity-100'
+        }`}
+        onLoad={() => setIsLoading(false)}
         onError={(e) => {
           console.log("Image load error for:", title);
           const fallbackImage = getRandomFallbackImage();
           e.currentTarget.src = fallbackImage;
           setProcessedImageUrl(fallbackImage);
+          setIsLoading(false);
         }}
       />
       

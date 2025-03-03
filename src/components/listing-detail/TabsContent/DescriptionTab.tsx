@@ -12,7 +12,7 @@ export interface DescriptionTabProps {
 const DescriptionTab = ({ description, bookTitle = "Coup de cœur voyageurs" }: DescriptionTabProps) => (
   <TabsContent value="description" className="animate-fade-in pt-6">
     <div className="prose prose-lg max-w-none relative">
-      <div className="float-right ml-4 mb-4 hidden md:block">
+      <div className="float-right ml-6 mb-6 hidden md:block">
         <MagicBook 
           title={bookTitle}
           onClick={() => toast.success("Recommandé par l'hôte!", {
@@ -20,12 +20,21 @@ const DescriptionTab = ({ description, bookTitle = "Coup de cœur voyageurs" }: 
           })}
         />
       </div>
-      <p className="text-gray-700 whitespace-pre-line text-base md:text-lg leading-relaxed">
-        {description || "Aucune description disponible pour ce logement."}
-      </p>
+      
+      <div className="text-gray-700 whitespace-pre-line text-base md:text-lg leading-relaxed">
+        {description ? (
+          <>
+            {description.split('\n\n').map((paragraph, index) => (
+              <p key={index} className="mb-4">{paragraph}</p>
+            ))}
+          </>
+        ) : (
+          <p>Aucune description disponible pour ce logement.</p>
+        )}
+      </div>
       
       {/* Version mobile du livre magique */}
-      <div className="flex justify-center my-4 md:hidden">
+      <div className="flex justify-center my-6 md:hidden">
         <MagicBook 
           title={bookTitle}
           onClick={() => toast.success("Recommandé par l'hôte!", {

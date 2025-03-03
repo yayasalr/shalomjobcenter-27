@@ -7,12 +7,27 @@ import { useReviews } from "@/hooks/useReviews";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 
+// Import our new utility functions
+import { processListingImages } from "./utils/imageProcessing";
+import { checkIsFavorite, toggleFavoriteStatus } from "./utils/favoritesManager";
+import { 
+  calculateAverageRating, 
+  processListingReviews 
+} from "./utils/reviewsManager";
+import {
+  formatPriceFCFA,
+  validateReservationDates,
+  createReservationObject
+} from "./utils/reservationManager";
+
 export const useListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { listings, isLoading, addReservation } = useListings();
   const { settings } = useSiteSettings();
   const { reviews, addReview } = useReviews();
   const { user } = useAuth();
+  
+  // State management
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [guestCount, setGuestCount] = useState(1);
@@ -22,126 +37,54 @@ export const useListingDetail = () => {
   const [listingReviews, setListingReviews] = useState<any[]>([]);
   const [processedImages, setProcessedImages] = useState<string[]>([]);
 
+  // Get current listing
   const listing = listings?.find((listing) => listing.id === id);
 
   // Process images
   useEffect(() => {
     if (listing) {
-      const fallbackImages = [
-        "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
-        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
-        "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
-        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800",
-        "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800",
-      ];
-
-      const validateImage = (url: string, index: number) => {
-        if (!url || url.startsWith("blob:")) {
-          return fallbackImages[index % fallbackImages.length];
-        }
-        return url;
-      };
-
-      if (listing.images && listing.images.length > 0) {
-        const processed = listing.images.map((img, idx) => validateImage(img, idx));
-        setProcessedImages(processed);
-      } else if (listing.image) {
-        setProcessedImages([validateImage(listing.image, 0)]);
-      } else {
-        setProcessedImages([fallbackImages[0]]);
-      }
+      setProcessedImages(processListingImages(listing));
     }
   }, [listing]);
 
   // Check if listing is in favorites
   useEffect(() => {
     if (id) {
-      const favorites = localStorage.getItem("favorites");
-      if (favorites) {
-        const favList = JSON.parse(favorites);
-        setIsFavorite(favList.includes(id));
-      }
+      setIsFavorite(checkIsFavorite(id));
     }
   }, [id]);
 
   // Load reviews for this listing
   useEffect(() => {
     if (id && reviews) {
-      const filteredReviews = reviews.filter(
-        (review) => review.listingId === id && review.status === "approved"
-      );
-
-      // Add demo reviews if none found
-      if (filteredReviews.length === 0) {
-        setListingReviews([
-          {
-            id: "demo1",
-            author: "Michel Dupont",
-            avatar: "/placeholder.svg",
-            rating: 5,
-            date: "Mars 2024",
-            comment:
-              "Superbe logement, très bien situé. Le propriétaire est très accueillant. Je recommande vivement !",
-          },
-          {
-            id: "demo2",
-            author: "Sophie Martin",
-            avatar: "/placeholder.svg",
-            rating: 4,
-            date: "Février 2024",
-            comment:
-              "Appartement conforme aux photos, propre et fonctionnel. Un peu bruyant le soir mais globalement un bon séjour.",
-          },
-        ]);
-      } else {
-        setListingReviews(filteredReviews);
-      }
+      const processedReviews = processListingReviews(id, reviews);
+      setListingReviews(processedReviews);
     }
   }, [id, reviews]);
 
+  // Handle reservation
   const handleReservation = () => {
     if (!user) {
       toast.error("Vous devez être connecté pour réserver");
       return;
     }
 
-    if (!startDate || !endDate) {
-      toast.error("Veuillez sélectionner des dates");
+    const validation = validateReservationDates(startDate, endDate);
+    if (!validation.isValid) {
+      toast.error(validation.message);
       return;
     }
-
-    // Convert dates to Date objects
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    // Validate dates
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      toast.error("Dates invalides");
-      return;
-    }
-
-    // Ensure start date is before end date
-    if (start >= end) {
-      toast.error("La date de départ doit être après la date d'arrivée");
-      return;
-    }
-
-    // Calculate number of days
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (!listing) return;
 
-    // Create reservation object
-    const reservation = {
-      listingId: listing.id,
-      userId: user.id,
+    // Create and submit reservation
+    const reservation = createReservationObject(
+      listing,
+      user.id,
       startDate,
       endDate,
-      guestCount,
-      totalPrice: diffDays * listing.price,
-      status: "pending",
-    };
+      guestCount
+    );
 
     // Submit reservation
     addReservation.mutate(reservation, {
@@ -154,6 +97,7 @@ export const useListingDetail = () => {
     });
   };
 
+  // Submit review
   const handleSubmitReview = () => {
     if (!user) {
       toast.error("Vous devez être connecté pour laisser un avis");
@@ -202,36 +146,12 @@ export const useListingDetail = () => {
   // Toggle favorite
   const toggleFavorite = () => {
     if (!id) return;
-
-    let favorites: string[] = [];
-    const storedFavorites = localStorage.getItem("favorites");
-
-    if (storedFavorites) {
-      favorites = JSON.parse(storedFavorites);
-    }
-
-    if (isFavorite) {
-      favorites = favorites.filter((favId) => favId !== id);
-      toast.success("Retiré des favoris");
-    } else {
-      favorites.push(id);
-      toast.success("Ajouté aux favoris");
-    }
-
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    setIsFavorite(!isFavorite);
-  };
-
-  // Format price in FCFA
-  const formatPriceFCFA = (priceEUR: number): string => {
-    const priceFCFA = Math.round(priceEUR * 655.957);
-    return priceFCFA.toLocaleString("fr-FR");
+    const newStatus = toggleFavoriteStatus(id, isFavorite);
+    setIsFavorite(newStatus);
   };
 
   // Calculate average rating
-  const averageRating =
-    listingReviews.reduce((acc, review) => acc + review.rating, 0) /
-    (listingReviews.length || 1);
+  const averageRating = calculateAverageRating(listingReviews);
 
   return {
     listing,
