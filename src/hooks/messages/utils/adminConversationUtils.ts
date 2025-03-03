@@ -40,7 +40,7 @@ export const updateAdminConversation = (
     {
       ...userMessage,
       read: false,  // Non lu par l'admin
-      sender: 'user' as const,
+      sender: 'user',
     }
   ];
   
@@ -49,7 +49,7 @@ export const updateAdminConversation = (
     messagesToAdd.push({
       ...adminResponse,
       read: true,   // Lu par l'admin qui l'a envoyé
-      sender: 'admin' as const,
+      sender: 'admin',
     });
   }
   
@@ -58,12 +58,12 @@ export const updateAdminConversation = (
     content: adminResponse.content,
     timestamp: adminResponse.timestamp,
     read: true,
-    sender: 'admin' as const,
+    sender: 'admin',
   } : {
     content: userMessage.content,
     timestamp: userMessage.timestamp,
     read: false,
-    sender: 'user' as const,
+    sender: 'user',
   };
   
   if (adminConvIndex >= 0) {
