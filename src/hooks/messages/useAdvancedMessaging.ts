@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Conversation } from '@/components/messages/types';
 
@@ -30,8 +29,8 @@ export const useAdvancedMessaging = (
     "Je vous recontacte dès que possible."
   ]);
   
-  // Conversations importantes
-  const [markedImportant, setMarkedImportant] = useState<string[]>([]);
+  // Conversations importantes - change from string[] to Record<string, boolean>
+  const [markedImportant, setMarkedImportant] = useState<Record<string, boolean>>({});
   
   // Mode de prévisualisation avant envoi
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -55,14 +54,18 @@ export const useAdvancedMessaging = (
     setNewMessage(text);
   };
   
-  // Marquer une conversation comme importante
+  // Marquer une conversation comme importante - updated to use Record<string, boolean>
   const toggleImportant = (conversationId: string) => {
     setMarkedImportant(prev => {
-      if (prev.includes(conversationId)) {
-        return prev.filter(id => id !== conversationId);
-      } else {
-        return [...prev, conversationId];
+      const updated = { ...prev };
+      updated[conversationId] = !updated[conversationId];
+      
+      // Remove the key if it's false to keep the object clean
+      if (!updated[conversationId]) {
+        delete updated[conversationId];
       }
+      
+      return updated;
     });
   };
   

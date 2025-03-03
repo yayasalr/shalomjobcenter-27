@@ -71,7 +71,7 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
   const totalUnread = conversations.reduce((total, conv) => total + getUnreadCount(conv), 0);
   
   // Calculer le total des conversations importantes
-  const totalImportant = Object.values(markedImportant).filter(Boolean).length;
+  const totalImportant = Object.keys(markedImportant).length;
   
   // Ouvrir la recherche avancée
   const openAdvancedSearch = () => {
@@ -133,7 +133,7 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
               unreadCount={getUnreadCount(conversation)}
               onSelect={() => handleSelectConversation(conversation)}
               isOnline={onlineUsers[conversation.with.id] || false}
-              isImportant={markedImportant[conversation.id] || false}
+              isImportant={!!markedImportant[conversation.id]}
               onToggleImportant={() => toggleImportant(conversation.id)}
             />
           ))
