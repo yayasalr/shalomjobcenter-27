@@ -7,7 +7,8 @@ import {
   Home,
   Briefcase,
   Calendar,
-  Star,
+  StarIcon,
+  DollarSign,
 } from "lucide-react";
 
 type StatCardProps = {
@@ -25,34 +26,34 @@ const StatCard = ({ title, count, change, icon }: StatCardProps) => {
     listings: Home,
     jobs: Briefcase,
     reservations: Calendar,
-    reviews: Star,
+    reviews: StarIcon,
   }[icon];
 
   const iconColors = {
-    listings: { bg: 'bg-blue-50', text: 'text-blue-500' },
-    jobs: { bg: 'bg-purple-50', text: 'text-purple-500' },
-    reservations: { bg: 'bg-green-50', text: 'text-green-500' },
-    reviews: { bg: 'bg-yellow-50', text: 'text-yellow-500' },
+    listings: { bg: 'bg-blue-100', text: 'text-blue-600' },
+    jobs: { bg: 'bg-purple-100', text: 'text-purple-600' },
+    reservations: { bg: 'bg-green-100', text: 'text-green-600' },
+    reviews: { bg: 'bg-yellow-100', text: 'text-yellow-600' },
   }[icon];
 
   return (
     <Card>
       <CardContent className="p-6">
-        <div className="flex justify-between items-start">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-gray-500 text-sm">{title}</p>
-            <h3 className="text-2xl font-semibold mt-1">{count}</h3>
-            <div className={`flex items-center mt-1 ${change.direction === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+            <p className="text-sm text-gray-500">{title}</p>
+            <h3 className="text-2xl font-bold mt-1">{count}</h3>
+            <div className={`flex items-center text-${change.direction === 'up' ? 'green' : 'red'}-600 text-sm mt-1`}>
               {change.direction === 'up' ? (
                 <ArrowUp className="h-4 w-4 mr-1" />
               ) : (
                 <ArrowDown className="h-4 w-4 mr-1" />
               )}
-              <span className="text-sm">{change.value}% ce mois</span>
+              <span>{change.value}% ce mois</span>
             </div>
           </div>
-          <div className={`rounded-full ${iconColors.bg} p-3`}>
-            <IconComponent className={`h-5 w-5 ${iconColors.text}`} />
+          <div className={`p-3 ${iconColors.bg} rounded-full`}>
+            <IconComponent className={`h-6 w-6 ${iconColors.text}`} />
           </div>
         </div>
       </CardContent>
