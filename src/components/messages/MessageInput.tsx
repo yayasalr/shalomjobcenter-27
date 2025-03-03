@@ -41,13 +41,26 @@ const MessageInput: React.FC<MessageInputProps> = ({
     
     setIsSending(true);
     
-    // Add a small delay to simulate network latency
+    let messageContent = newMessage.trim();
+    
+    // Add a prefix for image or audio messages to identify them later
+    if (mediaPreview && mediaType === 'image') {
+      messageContent = `image-message: ${mediaPreview}`;
+    } else if (mediaPreview && mediaType === 'audio') {
+      messageContent = `audio-message: Audio recording (${recordingTime}s)`;
+    }
+    
+    // Set the message content
+    setNewMessage(messageContent);
+    
+    // Add a small delay to ensure the message content is set
     setTimeout(() => {
       try {
         handleSendMessage();
         // Clear media preview after sending
         setMediaPreview(null);
         setMediaType(null);
+        setNewMessage('');
       } finally {
         setIsSending(false);
       }
@@ -96,7 +109,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
   };
 
   const handleEmojiClick = (emoji: string) => {
-    // Fix: Instead of using a function to update state, concatenate the strings directly
     setNewMessage(newMessage + emoji);
     setShowEmojiPicker(false);
   };
@@ -119,6 +131,17 @@ const MessageInput: React.FC<MessageInputProps> = ({
       
       // This would normally start actual audio recording
       toast.success("Enregistrement vocal démarré");
+      
+      // Simulate requesting microphone access
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+          // Here you would normally start recording
+          console.log('Microphone access granted, recording started');
+        })
+        .catch(err => {
+          toast.error("Impossible d'accéder au microphone");
+          stopRecording();
+        });
     } else {
       toast.error("Votre navigateur ne supporte pas l'enregistrement audio");
     }
@@ -181,8 +204,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
               <img src={mediaPreview} alt="Preview" className="h-20 object-contain" />
             )}
             {mediaType === 'audio' && (
-              <div className="flex items-center justify-center bg-gray-100 h-20 w-full rounded">
-                <div className="text-gray-600">Message vocal</div>
+              <div className="flex items-center justify-center bg-gray-100 h-20 w-20 rounded">
+                <div className="text-gray-600">Audio</div>
               </div>
             )}
             <Button 
@@ -283,7 +306,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
       
       {isRecording ? (
         <div className="recording-indicator flex items-center mr-2">
-          <div className="recording-pulse mr-2"></div>
+          <div className="recording-pulse mr-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
           <span className="text-red-500 text-sm font-medium">{formatRecordingTime(recordingTime)}</span>
           <Button 
             variant="ghost" 

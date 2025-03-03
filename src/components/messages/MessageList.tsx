@@ -78,6 +78,17 @@ const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
     return 'text';
   };
 
+  // Extract image URL from image message
+  const extractImageUrl = (content: string): string => {
+    if (content.startsWith('data:image')) {
+      return content;
+    } else if (content.includes('image-message:')) {
+      const imageUrl = content.replace('image-message:', '').trim();
+      return imageUrl;
+    }
+    return '/placeholder.svg';
+  };
+
   return (
     <div className="whatsapp-message-area relative flex-1 overflow-hidden">
       <div 
@@ -121,7 +132,7 @@ const MessageList: React.FC<MessageListProps> = ({ conversation }) => {
                   {messageType === 'image' && (
                     <div className="message-image-container">
                       <img 
-                        src="/placeholder.svg" 
+                        src={extractImageUrl(message.content)} 
                         alt="Shared" 
                         className="message-image rounded-md max-w-full" 
                       />

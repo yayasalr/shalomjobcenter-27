@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
 import { toast } from 'sonner';
 import { handleAutoResponse } from './utils/autoResponseUtils';
+import { updateAdminConversation } from './utils/adminConversationUtils';
 
 export const useMessageSender = (
   userId: string | undefined,
@@ -51,8 +52,40 @@ export const useMessageSender = (
     // Réinitialiser le champ de message
     setNewMessage('');
     
+    // Obtenir les données de l'utilisateur pour les messages d'admin
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const currentUser = users.find((u: any) => u.id === userId);
+    
     // Pour les conversations avec admin ou bot d'accueil, mettre à jour aussi leur côté
-    if (selectedConversation.with.id === 'admin' || selectedConversation.with.id === 'welcome-bot') {
+    if (selectedConversation.with.id === 'admin') {
+      // Directement mettre à jour la conversation admin
+      updateAdminConversation(
+        userId, 
+        updatedMessage,
+        { 
+          id: `admin-${Date.now()}`,
+          content: "Votre message a été transmis à l'administrateur.", 
+          timestamp: new Date(Date.now() + 1000), // Add 1 second for proper ordering
+          read: false,
+          sender: 'admin' as const
+        },
+        currentUser || { id: userId, name: 'Utilisateur', avatar: '/placeholder.svg' }
+      );
+      
+      // Afficher une notification à l'utilisateur
+      toast.success("Message envoyé à l'administrateur");
+      
+      // Ajouter une réponse automatique après un certain délai
+      handleAutoResponse(
+        userId,
+        selectedConversation,
+        updatedSelectedConversation,
+        updatedConversations,
+        setConversations,
+        setSelectedConversation
+      );
+    } else if (selectedConversation.with.id === 'welcome-bot') {
+      // Pour le bot d'accueil, simplement ajouter une réponse automatique
       handleAutoResponse(
         userId,
         selectedConversation,

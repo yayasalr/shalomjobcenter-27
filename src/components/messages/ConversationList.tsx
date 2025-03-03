@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Search, Users, MessageCircle, Phone, User, Settings } from 'lucide-react';
+import { Search, Users, MessageCircle, Phone, User, Settings, Plus } from 'lucide-react';
 import { Conversation } from './types';
 import WhatsAppConversationItem from './WhatsAppConversationItem';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ImageUploader } from '@/components/shared/ImageUploader';
 import { toast } from 'sonner';
+import { AllUsersDialog } from './AllUsersDialog';
+import { Button } from '@/components/ui/button';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -54,6 +56,50 @@ const ConversationList: React.FC<ConversationListProps> = ({
     }, 1500);
   };
 
+  // Gérer la sélection d'un utilisateur depuis la liste des utilisateurs
+  const handleSelectUser = (user: any) => {
+    // Vérifier si une conversation avec cet utilisateur existe déjà
+    const existingConversation = conversations.find(conv => conv.with.id === user.id);
+    
+    if (existingConversation) {
+      handleSelectConversation(existingConversation);
+      return;
+    }
+    
+    // Si non, créer une nouvelle conversation avec cet utilisateur
+    const loggedUserId = JSON.parse(localStorage.getItem('currentUser') || '{}').id;
+    
+    if (!loggedUserId) {
+      toast.error("Vous devez être connecté pour démarrer une conversation");
+      return;
+    }
+    
+    const newConversation: Conversation = {
+      id: `conv-${Date.now()}`,
+      with: {
+        id: user.id,
+        name: user.name,
+        email: user.email || '',
+        avatar: user.avatar || '/placeholder.svg',
+        role: user.role || 'user',
+      },
+      messages: [],
+      lastMessage: {
+        content: "Démarrer une conversation",
+        timestamp: new Date(),
+        read: true,
+        sender: 'system',
+      },
+    };
+    
+    // Simuler une mise à jour de la liste des conversations
+    // Dans une vraie application, cela serait géré par le parent
+    toast.success(`Nouvelle conversation avec ${user.name} créée`);
+    
+    // Rediriger l'utilisateur vers une page qui peut traiter cette action
+    window.location.href = `/messages?newConversation=${encodeURIComponent(JSON.stringify(newConversation))}`;
+  };
+
   // Mock statuses for the demo
   const statuses = [
     { id: 1, user: 'John Doe', avatar: '/placeholder.svg', isViewed: false, timestamp: new Date() },
@@ -96,6 +142,10 @@ const ConversationList: React.FC<ConversationListProps> = ({
         </div>
       </div>
       
+      <div className="p-2 flex justify-end">
+        <AllUsersDialog onSelectUser={handleSelectUser} />
+      </div>
+      
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
         <TabsList className="grid grid-cols-3 whatsapp-tabs">
           <TabsTrigger value="chats" className="whatsapp-tab">
@@ -125,7 +175,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
             <div className="whatsapp-conversation-list">
               {filteredConversations.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
-                  Aucune conversation trouvée
+                  Aucune conversation trouvée. Utilisez le bouton "Nouvelle conversation" ci-dessus pour en démarrer une.
                 </div>
               ) : (
                 filteredConversations.map(conversation => (

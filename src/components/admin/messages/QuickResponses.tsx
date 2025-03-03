@@ -2,9 +2,12 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Trash2, Plus, Send, Zap } from 'lucide-react';
+import { 
+  Popover, 
+  PopoverContent, 
+  PopoverTrigger 
+} from '@/components/ui/popover';
+import { Plus, MessageSquare, X } from 'lucide-react';
 
 interface QuickResponsesProps {
   responses: string[];
@@ -20,84 +23,96 @@ export const QuickResponses: React.FC<QuickResponsesProps> = ({
   onRemoveResponse
 }) => {
   const [newResponse, setNewResponse] = useState('');
-  const [open, setOpen] = useState(false);
+  const [isAddingNew, setIsAddingNew] = useState(false);
 
   const handleAddResponse = () => {
     if (newResponse.trim()) {
-      onAddResponse(newResponse);
+      onAddResponse(newResponse.trim());
       setNewResponse('');
+      setIsAddingNew(false);
     }
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="flex gap-1">
-          <Zap className="h-4 w-4" />
-          <span className="hidden sm:inline">Réponses rapides</span>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-500 hover:bg-gray-200 rounded-full"
+        >
+          <MessageSquare className="h-5 w-5" />
         </Button>
       </PopoverTrigger>
-      
-      <PopoverContent className="w-80 p-0" align="end">
-        <div className="p-3 border-b bg-muted/50">
+      <PopoverContent className="w-80 p-4">
+        <div className="space-y-2">
           <h3 className="font-medium">Réponses rapides</h3>
-          <p className="text-xs text-muted-foreground">
-            Cliquez sur une réponse pour l'utiliser
-          </p>
-        </div>
-        
-        <ScrollArea className="h-60 overflow-y-auto">
-          {responses.length === 0 ? (
-            <div className="p-4 text-center text-muted-foreground text-sm">
-              Aucune réponse rapide. Ajoutez-en une ci-dessous.
+          <div className="max-h-60 overflow-y-auto">
+            {responses.map((response, index) => (
+              <div key={index} className="flex items-center gap-2 mb-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 h-auto justify-start p-2 text-sm text-left"
+                  onClick={() => onSelectResponse(response)}
+                >
+                  <span className="truncate">{response}</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 flex-shrink-0"
+                  onClick={() => onRemoveResponse(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {isAddingNew ? (
+            <div className="mt-2 space-y-2">
+              <Input
+                placeholder="Nouvelle réponse rapide..."
+                value={newResponse}
+                onChange={(e) => setNewResponse(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddResponse();
+                  }
+                }}
+                autoFocus
+              />
+              <div className="flex justify-end gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setNewResponse('');
+                    setIsAddingNew(false);
+                  }}
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  onClick={handleAddResponse}
+                >
+                  Ajouter
+                </Button>
+              </div>
             </div>
           ) : (
-            <div className="space-y-1 p-1">
-              {responses.map((response, index) => (
-                <div key={index} className="flex items-center p-2 hover:bg-muted rounded-md">
-                  <div 
-                    className="flex-1 cursor-pointer line-clamp-2 text-sm"
-                    onClick={() => {
-                      onSelectResponse(response);
-                      setOpen(false);
-                    }}
-                  >
-                    {response}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 ml-1 opacity-70 hover:opacity-100"
-                    onClick={() => onRemoveResponse(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              onClick={() => setIsAddingNew(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter une réponse
+            </Button>
           )}
-        </ScrollArea>
-        
-        <div className="flex items-center p-3 border-t">
-          <Input
-            placeholder="Nouvelle réponse rapide..."
-            value={newResponse}
-            onChange={(e) => setNewResponse(e.target.value)}
-            className="flex-1"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleAddResponse();
-              }
-            }}
-          />
-          <Button 
-            size="sm"
-            className="ml-2"
-            onClick={handleAddResponse}
-            disabled={!newResponse.trim()}
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
         </div>
       </PopoverContent>
     </Popover>

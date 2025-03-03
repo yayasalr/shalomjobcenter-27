@@ -1,54 +1,75 @@
 
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cva } from 'class-variance-authority';
 
 interface OnlineStatusIndicatorProps {
   isOnline: boolean;
-  lastSeen?: Date;
+  showLabel?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
+
+const indicatorStyles = cva(
+  "rounded-full inline-block", 
+  {
+    variants: {
+      size: {
+        sm: "w-2 h-2",
+        md: "w-3 h-3",
+        lg: "w-4 h-4"
+      },
+      status: {
+        online: "bg-green-500",
+        offline: "bg-gray-400"
+      }
+    },
+    defaultVariants: {
+      size: "md",
+      status: "offline"
+    }
+  }
+);
 
 export const OnlineStatusIndicator: React.FC<OnlineStatusIndicatorProps> = ({ 
   isOnline, 
-  lastSeen 
+  showLabel = false,
+  size = 'md'
 }) => {
-  const getTimeAgo = (date?: Date) => {
-    if (!date) return 'il y a longtemps';
-    
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'à l\'instant';
-    if (diffMins < 60) return `il y a ${diffMins} minute${diffMins > 1 ? 's' : ''}`;
-    
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `il y a ${diffHours} heure${diffHours > 1 ? 's' : ''}`;
-    
-    const diffDays = Math.floor(diffHours / 24);
-    return `il y a ${diffDays} jour${diffDays > 1 ? 's' : ''}`;
-  };
-
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Badge 
-            variant="outline" 
-            className={`h-2 w-2 rounded-full ${
-              isOnline ? 'bg-green-500' : 'bg-gray-300'
-            } hover:cursor-help`}
-          />
-        </TooltipTrigger>
-        <TooltipContent>
-          {isOnline 
-            ? 'En ligne maintenant' 
-            : lastSeen 
-              ? `Vu ${getTimeAgo(lastSeen)}` 
-              : 'Hors ligne'
-          }
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <div className="flex items-center gap-1.5">
+      <span 
+        className={indicatorStyles({ 
+          size, 
+          status: isOnline ? 'online' : 'offline'
+        })}
+      />
+      
+      {showLabel && (
+        <span className="text-xs">
+          {isOnline ? 'En ligne' : 'Hors ligne'}
+        </span>
+      )}
+    </div>
+  );
+};
+
+export const OnlineStatusBadge: React.FC<Omit<OnlineStatusIndicatorProps, 'size'>> = ({
+  isOnline,
+  showLabel = true
+}) => {
+  return (
+    <Badge 
+      variant="outline" 
+      className={`${isOnline ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-700'}`}
+    >
+      <div className="flex items-center gap-1.5">
+        <span 
+          className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}
+        />
+        {showLabel && (
+          <span>{isOnline ? 'En ligne' : 'Hors ligne'}</span>
+        )}
+      </div>
+    </Badge>
   );
 };
