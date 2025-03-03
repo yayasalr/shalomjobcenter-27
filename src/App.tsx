@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import { Toaster as SonnerToaster } from 'sonner';
@@ -15,15 +14,14 @@ import JobDetail from './pages/JobDetail';
 import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import Support from './pages/Support';
+import FAQ from './pages/FAQ';
 
-// User routes
 import Profile from './pages/user/Profile';
 import Favorites from './pages/user/Favorites';
 import UserReservations from './pages/user/Reservations';
 import Messages from './pages/user/Messages';
 import Notifications from './pages/user/Notifications';
 
-// Admin routes
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminListings from './pages/admin/AdminListings';
 import AdminJobs from './pages/admin/AdminJobs';
@@ -35,7 +33,6 @@ import AdminSupport from './pages/admin/AdminSupport';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminMessages from './pages/admin/AdminMessages';
 
-// Import components
 import { CompareListings } from './components/CompareListings';
 import { useEffect } from 'react';
 import { useSiteSettings } from './hooks/useSiteSettings';
@@ -43,7 +40,6 @@ import { useSiteSettings } from './hooks/useSiteSettings';
 function App() {
   const { settings, applySettingsToDOM } = useSiteSettings();
   
-  // Appliquer les paramètres du site au chargement
   useEffect(() => {
     applySettingsToDOM();
   }, [applySettingsToDOM, settings]);
@@ -62,15 +58,14 @@ function App() {
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/faq" element={<FAQ />} />
             
-            {/* User routes */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/reservations" element={<UserReservations />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/notifications" element={<Notifications />} />
             
-            {/* Admin routes */}
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/logements" element={<AdminListings />} />
             <Route path="/admin/emplois" element={<AdminJobs />} />
@@ -82,15 +77,12 @@ function App() {
             <Route path="/admin/parametres" element={<AdminSettings />} />
             <Route path="/admin/messages" element={<AdminMessages />} />
             
-            {/* 404 */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>
         
-        {/* Composant de comparaison qui sera visible sur toutes les pages */}
         <CompareListings />
         
-        {/* Toasters pour les notifications */}
         <SonnerToaster position="top-right" closeButton theme="light" 
           toastOptions={{
             classNames: {

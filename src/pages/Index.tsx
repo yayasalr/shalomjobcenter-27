@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -9,6 +10,7 @@ import { SearchBar } from '@/components/home/SearchBar';
 import { ListingsGrid } from '@/components/home/ListingsGrid';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
+import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { Footer } from '@/components/home/Footer';
 
 const Index = () => {
@@ -83,7 +85,7 @@ const Index = () => {
       
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
-          {/* JobsBanner and FeaturedListings removed */}
+          <FeaturesSection />
         </div>
       </div>
       
@@ -123,6 +125,9 @@ const Index = () => {
           />
           
           {!searchTerm && <PopularNeighborhoods setSearchTerm={setSearchTerm} />}
+          
+          {/* Ajout de la nouvelle section de témoignages */}
+          <TestimonialsSection />
         </div>
       </div>
 
