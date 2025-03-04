@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StatusMessage } from '@/components/admin/status/AdminStatusManager';
@@ -13,19 +14,24 @@ export const StatusBanner: React.FC = () => {
   // Load status messages on component mount
   useEffect(() => {
     try {
-      const messages = loadData<StatusMessage[]>('admin-status-messages', []);
-      if (Array.isArray(messages)) {
-        // Check if it's a flat array of StatusMessage objects
-        if (messages.length === 0 || (messages.length > 0 && 'id' in (messages[0] || {}))) {
-          setStatusMessages(messages as StatusMessage[]);
-        } else {
-          // Handle case where it might be nested arrays
-          console.error('Data format error: Expected StatusMessage[] but got another format', messages);
-          setStatusMessages([]);
+      const rawData = loadData<any>('admin-status-messages', []);
+      let processedMessages: StatusMessage[] = [];
+      
+      if (Array.isArray(rawData)) {
+        // Check if it's already a flat array of StatusMessage objects
+        if (rawData.length === 0 || (rawData.length > 0 && typeof rawData[0] === 'object' && rawData[0] !== null && 'id' in rawData[0])) {
+          processedMessages = rawData as StatusMessage[];
+        } 
+        // Check if it's a nested array and flatten it
+        else if (rawData.length > 0 && Array.isArray(rawData[0])) {
+          const flattened = (rawData as any[]).flat();
+          if (flattened.length > 0 && typeof flattened[0] === 'object' && flattened[0] !== null && 'id' in flattened[0]) {
+            processedMessages = flattened as StatusMessage[];
+          }
         }
-      } else {
-        setStatusMessages([]);
       }
+      
+      setStatusMessages(processedMessages);
     } catch (error) {
       console.error('Error loading status messages:', error);
       setStatusMessages([]);
