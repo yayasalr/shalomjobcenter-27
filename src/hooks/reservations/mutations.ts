@@ -19,7 +19,10 @@ export const useReservationMutations = () => {
         };
         
         currentReservations.push(reservation);
-        saveReservations(currentReservations);
+        const saved = saveReservations(currentReservations);
+        if (!saved) {
+          throw new Error("Échec de la sauvegarde de la réservation");
+        }
         console.log("Nouvelle réservation ajoutée:", reservation);
         return reservation;
       } catch (error) {
@@ -45,7 +48,10 @@ export const useReservationMutations = () => {
         
         if (index !== -1) {
           currentReservations[index].status = status;
-          saveReservations(currentReservations);
+          const saved = saveReservations(currentReservations);
+          if (!saved) {
+            throw new Error("Échec de la mise à jour du statut de réservation");
+          }
           console.log("Statut de réservation mis à jour:", { reservationId, status });
         } else {
           throw new Error(`Réservation avec ID ${reservationId} non trouvée`);

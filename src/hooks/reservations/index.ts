@@ -1,5 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Reservation } from "./types";
 import { createDemoReservationsIfEmpty } from "./demoData";
 import { useReservationMutations } from "./mutations";
@@ -9,6 +9,7 @@ export type { Reservation } from "./types";
 export { loadReservations, saveReservations } from "./storage";
 
 export const useReservations = () => {
+  const queryClient = useQueryClient();
   const { addReservation, updateReservationStatus } = useReservationMutations();
 
   const { data: reservations = [], isLoading, error, refetch } = useQuery({
@@ -19,8 +20,8 @@ export const useReservations = () => {
       console.log("Chargement des réservations:", currentReservations);
       return currentReservations;
     },
-    staleTime: 1000, // Réduire le temps de mise en cache pour des mises à jour plus fréquentes
-    gcTime: 0,
+    staleTime: 0, // Toujours recharger au montage
+    gcTime: 0, // Ne pas mettre en cache
   });
 
   return {

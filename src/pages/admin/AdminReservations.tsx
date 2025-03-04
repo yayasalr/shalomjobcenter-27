@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -29,7 +29,8 @@ const AdminReservations = () => {
   const { 
     reservations, 
     isLoading: isLoadingReservations, 
-    updateReservationStatus 
+    updateReservationStatus,
+    refetch: refetchReservations 
   } = useReservations();
   
   const { 
@@ -37,6 +38,13 @@ const AdminReservations = () => {
     isLoading: isLoadingJobs, 
     updateJob 
   } = useJobs();
+
+  // Fetch data on mount and tab change
+  useEffect(() => {
+    if (activeTab === 'reservations') {
+      refetchReservations();
+    }
+  }, [activeTab, refetchReservations]);
 
   // Handle tab change
   const handleTabChange = (value: string) => {
@@ -48,6 +56,12 @@ const AdminReservations = () => {
   // Get filtered data
   const filteredReservations = getFilteredReservations(reservations, statusFilter, searchQuery);
   const filteredApplications = getFilteredApplications(jobs, statusFilter, searchQuery);
+
+  // Log for debugging
+  useEffect(() => {
+    console.log("Admin Reservations - Current reservations:", reservations);
+    console.log("Admin Reservations - Filtered reservations:", filteredReservations);
+  }, [reservations, filteredReservations]);
 
   // Handle application selection
   const handleSelectApplication = (application: JobApplication) => {

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Reservation } from "@/hooks/reservations";
 import { 
   ReservationsDesktopTable, 
@@ -21,11 +21,15 @@ const ReservationsTable: React.FC<ReservationsTableProps> = ({
   onSelectReservation,
   isLoading
 }) => {
+  useEffect(() => {
+    console.log("Reservations table received data:", reservations);
+  }, [reservations]);
+
   if (isLoading) {
     return <LoadingState />;
   }
 
-  if (reservations.length === 0) {
+  if (!reservations || reservations.length === 0) {
     return <EmptyState />;
   }
 
