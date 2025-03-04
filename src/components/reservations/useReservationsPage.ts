@@ -33,15 +33,15 @@ export const useReservationsPage = () => {
   const handleViewDetails = useCallback((id: string) => {
     const reservation = reservations.find(r => r.id === id);
     if (reservation) {
-      // Pour l'instant, afficher un toast avec les détails
+      // Afficher un toast avec les détails de base
       toast.info(`Détails de la réservation: ${reservation.listingTitle}`, {
         description: `Du ${new Date(reservation.checkIn).toLocaleDateString()} au ${new Date(reservation.checkOut).toLocaleDateString()}`,
         duration: 5000
       });
       
-      // Optionnel: Naviguer vers la page du logement
+      // Naviguer vers la page du logement en utilisant le bon chemin
       if (reservation.listingId) {
-        navigate(`/listing/${reservation.listingId}`);
+        navigate(`/logement/${reservation.listingId}`);
       }
     }
   }, [reservations, navigate]);

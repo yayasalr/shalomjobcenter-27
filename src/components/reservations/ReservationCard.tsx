@@ -36,13 +36,13 @@ export const ReservationCard = ({
   const getStatusText = (status: Reservation['status']) => {
     switch (status) {
       case 'confirmed':
-        return t('confirmed');
+        return t('confirmed') || 'Confirmée';
       case 'pending':
-        return t('pending');
+        return t('pending') || 'En attente';
       case 'cancelled':
-        return t('cancelled');
+        return t('cancelled') || 'Annulée';
       default:
-        return t('unknown');
+        return t('unknown') || 'Inconnu';
     }
   };
 
@@ -52,7 +52,9 @@ export const ReservationCard = ({
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (onCancel) {
       onCancel(reservation.id);
     }
@@ -68,6 +70,9 @@ export const ReservationCard = ({
           src={reservation.listingImage}
           alt={reservation.listingTitle}
           className="h-full w-full object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder.svg";
+          }}
         />
       </div>
       <CardHeader className="pb-2">
@@ -89,41 +94,45 @@ export const ReservationCard = ({
           <div className="flex justify-between">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-              <span className="text-gray-500">{t('arrival')}:</span>
+              <span className="text-gray-500">{t('arrival') || 'Arrivée'}:</span>
             </div>
             <span className="font-medium">{new Date(reservation.checkIn).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-              <span className="text-gray-500">{t('departure')}:</span>
+              <span className="text-gray-500">{t('departure') || 'Départ'}:</span>
             </div>
             <span className="font-medium">{new Date(reservation.checkOut).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
             <div className="flex items-center">
               <Users className="h-4 w-4 mr-2 text-gray-500" />
-              <span className="text-gray-500">{t('travelers')}:</span>
+              <span className="text-gray-500">{t('travelers') || 'Voyageurs'}:</span>
             </div>
             <span className="font-medium">{reservation.guests}</span>
           </div>
           <div className="flex justify-between">
             <div className="flex items-center">
               <Clock className="h-4 w-4 mr-2 text-gray-500" />
-              <span className="text-gray-500">{t('reserved_on')}:</span>
+              <span className="text-gray-500">{t('reserved_on') || 'Réservé le'}:</span>
             </div>
             <span className="font-medium">{new Date(reservation.createdAt).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between pt-2 border-t">
-            <span className="font-semibold">{t('total')}</span>
+            <span className="font-semibold">{t('total') || 'Total'}</span>
             <span className="font-bold">{priceFCFA} FCFA</span>
           </div>
         </div>
       </CardContent>
       <CardFooter className="gap-2">
-        <Button variant="outline" className="w-full" onClick={handleViewDetails}>{t('details')}</Button>
-        {reservation.status === 'pending' && (
-          <Button variant="destructive" className="w-full" onClick={handleCancel}>{t('cancel')}</Button>
+        <Button variant="outline" className="w-full" onClick={handleViewDetails}>
+          {t('details') || 'Détails'}
+        </Button>
+        {reservation.status !== 'cancelled' && (
+          <Button variant="destructive" className="w-full" onClick={handleCancel}>
+            {t('cancel') || 'Annuler'}
+          </Button>
         )}
       </CardFooter>
     </Card>
