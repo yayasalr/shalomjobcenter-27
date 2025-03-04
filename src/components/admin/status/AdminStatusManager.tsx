@@ -35,8 +35,24 @@ export const AdminStatusManager = () => {
 
   // Load status messages on component mount
   useEffect(() => {
-    const messages = loadData<StatusMessage[]>('admin-status-messages', []);
-    setStatusMessages(messages || []);
+    try {
+      const messages = loadData<StatusMessage[]>('admin-status-messages', []);
+      if (Array.isArray(messages)) {
+        // Check if it's a flat array of StatusMessage objects
+        if (messages.length === 0 || (messages.length > 0 && 'id' in (messages[0] || {}))) {
+          setStatusMessages(messages as StatusMessage[]);
+        } else {
+          // Handle case where it might be nested arrays
+          console.error('Data format error: Expected StatusMessage[] but got another format', messages);
+          setStatusMessages([]);
+        }
+      } else {
+        setStatusMessages([]);
+      }
+    } catch (error) {
+      console.error('Error loading status messages:', error);
+      setStatusMessages([]);
+    }
   }, [loadData]);
 
   // Save status messages when they change
