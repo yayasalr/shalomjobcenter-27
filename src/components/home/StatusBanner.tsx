@@ -2,13 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StatusMessage } from '@/components/admin/status/AdminStatusManager';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import useLocalStorage from '@/hooks/useLocalStorage';
 import { X } from 'lucide-react';
 
 export const StatusBanner: React.FC = () => {
-  const [statusMessages] = useLocalStorage<StatusMessage[]>('admin-status-messages', []);
+  const { loadData, saveData } = useLocalStorage();
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDismissed, setIsDismissed] = useState(false);
+
+  // Load status messages on component mount
+  useEffect(() => {
+    const messages = loadData<StatusMessage[]>('admin-status-messages', []);
+    setStatusMessages(messages);
+  }, [loadData]);
 
   // Filter active statuses
   const activeMessages = statusMessages.filter(msg => msg.active);

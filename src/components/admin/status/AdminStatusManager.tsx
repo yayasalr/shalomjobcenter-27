@@ -1,14 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ImageUploader } from '@/components/shared/image-uploader/ImageUploader';
 import { useToast } from '@/hooks/use-toast';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import useLocalStorage from '@/hooks/useLocalStorage';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Megaphone, EyeIcon, Upload, LayoutTemplate, Shield } from 'lucide-react';
+import { Megaphone, EyeIcon, Shield, LayoutTemplate } from 'lucide-react';
 
 export interface StatusMessage {
   id: string;
@@ -23,7 +23,8 @@ export interface StatusMessage {
 
 export const AdminStatusManager = () => {
   const { toast } = useToast();
-  const [statusMessages, setStatusMessages] = useLocalStorage<StatusMessage[]>('admin-status-messages', []);
+  const { loadData, saveData, getItem, setItem } = useLocalStorage();
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
   const [newStatusText, setNewStatusText] = useState('');
   const [statusType, setStatusType] = useState<'announcement' | 'promotion' | 'info' | 'alert'>('announcement');
   const [statusImage, setStatusImage] = useState<string | undefined>();
@@ -31,6 +32,19 @@ export const AdminStatusManager = () => {
   const [backgroundColor, setBackgroundColor] = useState('#f97316'); // Default orange color
   const [textColor, setTextColor] = useState('#ffffff'); // Default white text
   const [isPreview, setIsPreview] = useState(false);
+
+  // Load status messages on component mount
+  useEffect(() => {
+    const messages = loadData<StatusMessage[]>('admin-status-messages', []);
+    setStatusMessages(messages);
+  }, [loadData]);
+
+  // Save status messages when they change
+  useEffect(() => {
+    if (statusMessages.length > 0) {
+      saveData('admin-status-messages', statusMessages);
+    }
+  }, [statusMessages, saveData]);
 
   const handleImageUpload = (file: File) => {
     setIsUploading(true);
