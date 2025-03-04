@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, Clock } from "lucide-react";
-import { Reservation } from '@/hooks/reservations'; // Updated import path
+import { Reservation } from '@/hooks/reservations';
 import { Badge } from '@/components/ui/badge';
 
 interface ReservationDetailsDialogProps {

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Reservation } from "@/hooks/reservations"; // Updated import path
+import { Reservation } from "@/hooks/reservations";
 import { formatDate } from "../utils/formatUtils";
 import { 
   DropdownMenu, 

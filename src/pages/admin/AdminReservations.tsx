@@ -59,6 +59,11 @@ const AdminReservations = () => {
     }
   };
 
+  // Handle reservation status update
+  const handleUpdateReservationStatus = (reservationId: string, status: 'confirmed' | 'pending' | 'cancelled') => {
+    updateReservationStatus.mutate({ reservationId, status });
+  };
+
   // Update application status
   const handleUpdateApplicationStatus = async (applicationId: string, jobId: string, status: 'pending' | 'approved' | 'rejected') => {
     try {
@@ -133,7 +138,7 @@ const AdminReservations = () => {
                   reservations={filteredReservations}
                   isLoading={isLoadingReservations}
                   onSelectReservation={setSelectedReservation}
-                  updateReservationStatus={updateReservationStatus}
+                  handleUpdateStatus={handleUpdateReservationStatus}
                 />
               </TabsContent>
 
@@ -151,13 +156,10 @@ const AdminReservations = () => {
           {/* Dialogs */}
           {selectedReservation && (
             <ReservationDetailsDialog 
-              reservation={selectedReservation}
               isOpen={!!selectedReservation}
-              onClose={() => setSelectedReservation(null)}
-              onUpdateStatus={(id, status) => {
-                updateReservationStatus(id, status);
-                setSelectedReservation(prev => prev ? {...prev, status} : null);
-              }}
+              onOpenChange={() => setSelectedReservation(null)}
+              selectedReservation={selectedReservation}
+              handleUpdateStatus={handleUpdateReservationStatus}
             />
           )}
 
