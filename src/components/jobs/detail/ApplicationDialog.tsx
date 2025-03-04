@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Mail, User, Phone, FileText } from 'lucide-react';
 import {
   Dialog,
@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 interface ApplicationDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: React.FormEvent) => Promise<void>;
   applicantData: {
     name: string;
     email: string;
@@ -42,6 +42,23 @@ const ApplicationDialog = ({
   setApplicantData,
   isHousingOffer
 }: ApplicationDialogProps) => {
+  // Handle form submission with loading state
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      await onSubmit(e);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Application submission error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
@@ -56,7 +73,7 @@ const ApplicationDialog = ({
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
               Nom complet <span className="text-red-500">*</span>
@@ -144,11 +161,15 @@ const ApplicationDialog = ({
           </div>
           
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Annuler
             </Button>
-            <Button type="submit" className="bg-sholom-primary hover:bg-sholom-primary/90">
-              {isHousingOffer ? "Réserver" : "Envoyer ma candidature"}
+            <Button 
+              type="submit" 
+              className="bg-sholom-primary hover:bg-sholom-primary/90"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Envoi en cours..." : isHousingOffer ? "Réserver" : "Envoyer ma candidature"}
             </Button>
           </DialogFooter>
         </form>

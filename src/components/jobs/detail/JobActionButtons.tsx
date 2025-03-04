@@ -2,6 +2,7 @@
 import React from 'react';
 import { Building, Send, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface JobActionButtonsProps {
   isHousingOffer: boolean;
@@ -16,6 +17,17 @@ const JobActionButtons = ({
   onApply, 
   onShare 
 }: JobActionButtonsProps) => {
+  // Enhanced share function with fallback
+  const handleShare = () => {
+    if (navigator.share) {
+      onShare();
+    } else {
+      // Fallback for browsers without navigator.share
+      toast.success("Lien copié dans le presse-papier!");
+      onShare();
+    }
+  };
+
   return (
     <div className="flex flex-wrap gap-4 mt-8">
       <Button 
@@ -35,7 +47,7 @@ const JobActionButtons = ({
           </>
         )}
       </Button>
-      <Button variant="outline" onClick={onShare}>
+      <Button variant="outline" onClick={handleShare}>
         <Share2 className="mr-2 h-5 w-5" />
         Partager
       </Button>
