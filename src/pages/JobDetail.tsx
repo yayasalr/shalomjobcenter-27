@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useJobs } from '@/hooks/useJobs';
@@ -20,6 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { SocialBar } from '@/components/social/SocialBar';
 
 const JobDetail = () => {
   const { id } = useParams();
@@ -79,7 +79,6 @@ const JobDetail = () => {
     );
   }
 
-  // Traduction du domaine
   const translateDomain = (domain: string) => {
     const domains: {[key: string]: string} = {
       'residential_security': 'Sécurité résidentielle',
@@ -95,7 +94,6 @@ const JobDetail = () => {
     return domains[domain] || domain;
   };
   
-  // Type de contrat
   const translateContract = (contract: string) => {
     const contracts: {[key: string]: string} = {
       'full_time': 'CDI',
@@ -106,17 +104,14 @@ const JobDetail = () => {
     return contracts[contract] || contract;
   };
   
-  // Affichage du prix en FCFA
   const formatPriceFCFA = (priceEUR: number): string => {
     const priceFCFA = Math.round(priceEUR * 655.957);
     return priceFCFA.toLocaleString('fr-FR');
   };
 
-  // Gérer la soumission du formulaire de candidature
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Vérification des champs obligatoires
     if (!applicantData.name || !applicantData.email || !applicantData.phone) {
       toast.error("Veuillez remplir tous les champs obligatoires.");
       return;
@@ -131,7 +126,6 @@ const JobDetail = () => {
       setIsApplyDialogOpen(false);
       toast.success("Votre candidature a été envoyée avec succès!");
       
-      // Réinitialiser le formulaire
       setApplicantData({
         name: '',
         email: '',
@@ -145,7 +139,6 @@ const JobDetail = () => {
     }
   };
 
-  // Partager l'offre
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -161,7 +154,6 @@ const JobDetail = () => {
     }
   };
 
-  // Obtenir l'image selon le domaine
   const getDomainImage = (domain: string) => {
     switch(domain) {
       case 'residential_security':
@@ -179,13 +171,14 @@ const JobDetail = () => {
     }
   };
 
+  const shareUrl = `${window.location.origin}/emploi/${job?.id}`;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       
       <div className="pt-28 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Navigation */}
           <div className="mb-6">
             <Button 
               variant="ghost" 
@@ -198,11 +191,8 @@ const JobDetail = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Contenu principal */}
             <div className="lg:col-span-2">
-              {/* En-tête */}
               <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-                {/* Image d'en-tête et titre */}
                 <div className="relative h-56 sm:h-72 md:h-96 bg-gray-200 overflow-hidden">
                   <img 
                     src={job.images?.[0] || getDomainImage(job.domain)} 
@@ -234,7 +224,15 @@ const JobDetail = () => {
                   </div>
                 </div>
                 
-                {/* Détails de l'offre */}
+                <div className="px-6 pt-4">
+                  <SocialBar 
+                    type="job" 
+                    itemId={job.id} 
+                    title={job.title}
+                    url={shareUrl}
+                  />
+                </div>
+                
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-gray-50 rounded-lg p-4 flex items-start">
@@ -276,7 +274,6 @@ const JobDetail = () => {
                     </div>
                   </div>
                   
-                  {/* Prix ou Salaire */}
                   <div className="mb-8 bg-sholom-primary/5 rounded-lg p-4 border border-sholom-primary/20">
                     <div className="flex justify-between items-center">
                       <h3 className="font-medium text-sholom-dark">
@@ -292,7 +289,6 @@ const JobDetail = () => {
                     </div>
                   </div>
                   
-                  {/* Description */}
                   <div className="mb-8">
                     <h3 className="text-xl font-bold mb-4 text-sholom-dark">Description</h3>
                     <div className="text-gray-700 space-y-4 prose max-w-none">
@@ -302,7 +298,6 @@ const JobDetail = () => {
                     </div>
                   </div>
                   
-                  {/* Exigences */}
                   <div className="mb-8">
                     <h3 className="text-xl font-bold mb-4 text-sholom-dark">
                       {job.isHousingOffer ? 'Caractéristiques' : 'Exigences'}
@@ -346,7 +341,6 @@ const JobDetail = () => {
                     </div>
                   </div>
                   
-                  {/* Galerie d'images pour les logements */}
                   {job.isHousingOffer && job.images && job.images.length > 0 && (
                     <div className="mb-8">
                       <h3 className="text-xl font-bold mb-4 text-sholom-dark">Galerie</h3>
@@ -364,7 +358,6 @@ const JobDetail = () => {
                     </div>
                   )}
                   
-                  {/* Actions */}
                   <div className="flex flex-wrap gap-4 mt-8">
                     <Button 
                       className="bg-sholom-primary hover:bg-sholom-primary/90 text-white"
@@ -392,9 +385,7 @@ const JobDetail = () => {
               </div>
             </div>
             
-            {/* Barre latérale */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Carte de l'entreprise */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center mb-4">
                   <div className="bg-gray-100 rounded-full p-3 mr-3">
@@ -425,7 +416,6 @@ const JobDetail = () => {
                 </Button>
               </div>
               
-              {/* Offres similaires */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                 <h3 className="font-bold text-sholom-dark mb-4">Offres similaires</h3>
                 <div className="space-y-4">
@@ -475,7 +465,6 @@ const JobDetail = () => {
                 </Link>
               </div>
               
-              {/* Rappel de candidature */}
               <div className="bg-gradient-to-br from-sholom-primary to-sholom-secondary rounded-xl shadow-sm p-6 text-white">
                 <h3 className="font-bold text-xl mb-2">
                   {job.isHousingOffer ? "Réservez ce logement" : "Postulez maintenant"}
@@ -498,7 +487,6 @@ const JobDetail = () => {
         </div>
       </div>
       
-      {/* Modal de candidature */}
       <Dialog open={isApplyDialogOpen} onOpenChange={setIsApplyDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>

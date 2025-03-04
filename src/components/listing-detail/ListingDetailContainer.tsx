@@ -6,6 +6,7 @@ import ReservationCard from "./ReservationCard";
 import SimilarListings from "./SimilarListings";
 import { Listing } from "@/types/listing";
 import ListingHeader from "./ListingHeader";
+import { SocialBar } from "@/components/social/SocialBar";
 
 interface ListingDetailContainerProps {
   listing: Listing;
@@ -56,6 +57,9 @@ const ListingDetailContainer = ({
   handleSubmitReview,
   formatPriceFCFA,
 }: ListingDetailContainerProps) => {
+  // URL complète pour le partage
+  const shareUrl = `${window.location.origin}/logement/${listing.id}`;
+  
   return (
     <div className="pt-20 sm:pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <ListingHeader
@@ -65,6 +69,16 @@ const ListingDetailContainer = ({
       />
 
       <ImageGallery images={processedImages} alt={listing.title} />
+
+      {/* Social Bar */}
+      <div className="my-4">
+        <SocialBar 
+          type="listing" 
+          itemId={listing.id} 
+          title={listing.title}
+          url={shareUrl}
+        />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <MainContent
