@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Briefcase, Home, Building, Shield, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,12 +10,10 @@ import { StatusBanner } from './StatusBanner';
 export const HeroSection = () => {
   const navigate = useNavigate();
   
-  // Fonction pour rediriger vers la page principale avec le filtre actif
   const handleFindListing = () => {
     navigate('/', { state: { focusSearch: true } });
   };
   
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -39,15 +36,13 @@ export const HeroSection = () => {
 
   return (
     <>
-      {/* Status Banner */}
       <StatusBanner />
       
       <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16 relative">
-        {/* Magic Book positioned at the far left */}
-        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
+        <div className="absolute right-8 bottom-8 transform z-10 hidden md:block">
           <MagicBook 
-            position="bottom-left"
-            isOpen={true}
+            position="bottom-right"
+            isOpen={false}
             title="Logements en Afrique et partout dans le monde"
           />
         </div>
@@ -86,7 +81,6 @@ export const HeroSection = () => {
                 </Link>
               </div>
               
-              {/* Quartiers populaires */}
               <div className="pt-8">
                 <p className="text-sholom-dark font-medium mb-3">Quartiers populaires:</p>
                 <div className="flex flex-wrap gap-2">
@@ -105,7 +99,6 @@ export const HeroSection = () => {
                 </div>
               </div>
               
-              {/* Benefits */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
                 {[
                   { icon: <Home className="h-5 w-5" />, text: "Logements vérifiés" },
@@ -142,6 +135,13 @@ export const HeroSection = () => {
                       <span className="font-semibold">1.200.000 FCFA</span> / mois
                     </div>
                   </div>
+                </div>
+                
+                <div className="absolute right-3 bottom-3 z-10 md:hidden">
+                  <MagicBook 
+                    position="bottom-right"
+                    title="Logements en Afrique et partout dans le monde"
+                  />
                 </div>
               </div>
             </motion.div>

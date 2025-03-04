@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { MagicBook } from "@/components/ui/magic-book";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -120,15 +121,15 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
           </div>
         )}
         
-        {/* Add the magic book with enhanced animation */}
+        {/* Book positioned in bottom right of the image gallery with smaller size */}
         <div 
-          className="absolute left-6 bottom-6 z-10"
+          className="absolute right-3 bottom-3 z-10"
           onMouseEnter={() => setIsBookHovered(true)}
           onMouseLeave={() => setIsBookHovered(false)}
         >
           <MagicBook 
-            position="bottom-left" 
-            className={`transition-all duration-500 ${isBookHovered ? 'scale-110 -translate-y-2' : ''}`}
+            position="bottom-right" 
+            className={`transition-all duration-300 ${isBookHovered ? 'scale-105' : 'scale-90'}`}
             title="Logements en Afrique et partout dans le monde"
             isOpen={isBookHovered}
           />

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 interface MagicBookProps {
   className?: string;
@@ -18,41 +18,30 @@ export const MagicBook: React.FC<MagicBookProps> = ({
   position = "bottom-left",
   isOpen = false
 }) => {
-  const [pageCount, setPageCount] = useState(0);
   const [localIsOpen, setLocalIsOpen] = useState(isOpen);
   
   useEffect(() => {
     setLocalIsOpen(isOpen);
   }, [isOpen]);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (localIsOpen) {
-        setPageCount((prev) => (prev + 1) % 5);
-      }
-    }, 1500); // Faster page turning
-    
-    return () => clearInterval(interval);
-  }, [localIsOpen]);
 
   const getPositionClasses = () => {
     switch (position) {
       case "bottom-left":
-        return "left-0 bottom-0";
+        return "left-4 bottom-4";
       case "bottom-right":
-        return "right-0 bottom-0";
+        return "right-4 bottom-4";
       case "top-left":
-        return "left-0 top-0";
+        return "left-4 top-4";
       case "top-right":
-        return "right-0 top-0";
+        return "right-4 top-4";
       default:
-        return "left-0 bottom-0";
+        return "left-4 bottom-4";
     }
   };
   
   return (
     <motion.div 
-      className={`absolute ${getPositionClasses()} z-10 cursor-pointer shadow-lg ${className}`}
+      className={`absolute ${getPositionClasses()} z-10 cursor-pointer ${className}`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
@@ -64,13 +53,12 @@ export const MagicBook: React.FC<MagicBookProps> = ({
       onMouseLeave={() => !isOpen && setLocalIsOpen(false)}
     >
       <motion.div
-        className="relative w-20 h-28 md:w-24 md:h-32 bg-white rounded-md shadow-xl overflow-hidden"
+        className="relative w-16 h-24 md:w-20 md:h-28 bg-white rounded-md shadow-xl overflow-hidden"
         animate={{
-          y: [0, -5, 0],
-          rotate: localIsOpen ? [0, 2, 0, -2, 0] : 0,
+          y: [0, -2, 0],
         }}
         transition={{
-          duration: localIsOpen ? 3 : 4,
+          duration: 4,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -78,19 +66,19 @@ export const MagicBook: React.FC<MagicBookProps> = ({
         <div className="absolute inset-0 bg-white rounded-md shadow-lg flex flex-col">
           <div className="bg-white py-1 px-2 flex items-center gap-1 shadow-sm rounded-t-md">
             <motion.div
-              animate={{ rotate: localIsOpen ? 360 : 0 }}
-              transition={{ duration: 2, repeat: localIsOpen ? Infinity : 0, ease: "linear" }}
+              animate={{ scale: localIsOpen ? [1, 1.1, 1] : 1 }}
+              transition={{ duration: 2, repeat: localIsOpen ? Infinity : 0, ease: "easeInOut" }}
             >
-              <Trophy className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
+              <BookOpen className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
             </motion.div>
-            <div className="text-black text-[6px] md:text-[8px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+            <div className="text-black text-[6px] md:text-[7px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
               {title}
             </div>
           </div>
           
           <div className="flex-grow flex items-center justify-center p-2">
             <motion.div 
-              className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-gray-200"
+              className="w-8 h-8 md:w-12 md:h-12 rounded-full overflow-hidden border-2 border-gray-200"
               animate={{ scale: localIsOpen ? [1, 1.05, 1] : 1 }}
               transition={{ duration: 2, repeat: localIsOpen ? Infinity : 0, ease: "easeInOut" }}
             >
@@ -108,24 +96,38 @@ export const MagicBook: React.FC<MagicBookProps> = ({
         
         {localIsOpen && (
           <>
+            {/* Book opening animation - left side */}
             <motion.div
-              className="absolute top-8 left-2 right-5 bottom-2 bg-white rounded-sm shadow-md"
+              className="absolute top-6 left-0 right-1/2 bottom-2 bg-white rounded-l-sm shadow-md"
               initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 40 }}
+              animate={{ rotateY: -60 }}
               transition={{ duration: 0.5 }}
-            ></motion.div>
+              style={{ transformOrigin: "right center", zIndex: 5 }}
+            >
+              <div className="h-full w-full bg-amber-50 p-1">
+                <div className="text-[5px] md:text-[6px] font-serif text-gray-800">
+                  Lieux recommandés
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Book opening animation - right side */}
             <motion.div
-              className="absolute top-10 left-3 right-7 bottom-3 bg-white/90 rounded-sm"
+              className="absolute top-6 left-1/2 right-0 bottom-2 bg-white rounded-r-sm shadow-md"
               initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 25 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            ></motion.div>
-            <motion.div
-              className="absolute top-12 left-4 right-9 bottom-4 bg-white/80 rounded-sm"
-              initial={{ rotateY: 0 }}
-              animate={{ rotateY: pageCount * 15 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            ></motion.div>
+              animate={{ rotateY: 60 }}
+              transition={{ duration: 0.5 }}
+              style={{ transformOrigin: "left center", zIndex: 5 }}
+            >
+              <div className="h-full w-full bg-amber-50 p-1">
+                <div className="text-[5px] md:text-[6px] font-serif text-gray-800">
+                  Séjours exceptionnels
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Book center/spine */}
+            <div className="absolute top-6 left-1/2 bottom-2 w-[1px] bg-amber-200" style={{ transform: "translateX(-50%)" }} />
           </>
         )}
       </motion.div>
