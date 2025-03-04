@@ -14,7 +14,7 @@ export const StatusBanner: React.FC = () => {
   // Load status messages on component mount
   useEffect(() => {
     const messages = loadData<StatusMessage[]>('admin-status-messages', []);
-    setStatusMessages(messages);
+    setStatusMessages(messages || []);
   }, [loadData]);
 
   // Filter active statuses

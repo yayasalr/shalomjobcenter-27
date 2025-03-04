@@ -36,7 +36,7 @@ export const AdminStatusManager = () => {
   // Load status messages on component mount
   useEffect(() => {
     const messages = loadData<StatusMessage[]>('admin-status-messages', []);
-    setStatusMessages(messages);
+    setStatusMessages(messages || []);
   }, [loadData]);
 
   // Save status messages when they change
