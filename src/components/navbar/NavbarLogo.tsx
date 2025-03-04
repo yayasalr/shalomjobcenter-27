@@ -16,9 +16,9 @@ export const NavbarLogo = () => {
     
     if (settings.logo === 'stored_separately') {
       const storedLogo = localStorage.getItem('site_logo');
-      logoSrc = storedLogo || "/placeholder.svg";
+      logoSrc = storedLogo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
     } else {
-      logoSrc = settings.logo || "/placeholder.svg";
+      logoSrc = settings.logo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
     }
     
     console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
@@ -50,9 +50,9 @@ export const NavbarLogo = () => {
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <div className="h-full w-8 sm:w-10 md:w-12 rounded-full bg-primary flex items-center justify-center">
+            <div className="h-full w-8 sm:w-10 md:w-12 rounded-full bg-yellow-600 flex items-center justify-center">
               <span className="text-white font-bold text-xl">
-                {settings.siteName ? settings.siteName.substring(0, 2) : 'SJ'}
+                {settings.siteName ? settings.siteName.substring(0, 2) : 'SS'}
               </span>
             </div>
           )}
@@ -62,7 +62,7 @@ export const NavbarLogo = () => {
         className="text-lg sm:text-xl md:text-2xl font-bold site-name inline-block font-serif tracking-wide truncate max-w-[180px] xs:max-w-[180px] sm:max-w-none" 
         whileHover={{ scale: 1.05 }}
       >
-        {settings.siteName || 'Shalom Job Center'}
+        {settings.siteName || 'Shalom Security'}
       </motion.span>
     </Link>
   );

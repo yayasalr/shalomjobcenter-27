@@ -31,7 +31,7 @@ export const LogoSection: React.FC<LogoSectionProps> = ({
           {!logoError ? (
             <img 
               key={`logo-${Date.now()}`} 
-              src={logoUrl || "/placeholder.svg"} 
+              src={logoUrl || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png"} 
               alt="Logo" 
               className="h-full w-auto object-contain" 
               onLoad={() => setLogoLoaded(true)}

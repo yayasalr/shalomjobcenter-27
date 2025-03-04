@@ -1,43 +1,46 @@
 
 import React from 'react';
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/home/Footer';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { BackButton } from '@/components/shared/BackButton';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 const FAQ = () => {
+  const { settings } = useSiteSettings();
+
   const faqItems = [
     {
-      question: "Comment créer un compte sur Shalom Job Center ?",
+      question: "Quels services de sécurité proposez-vous ?",
+      answer: "Nous proposons une gamme complète de services de sécurité incluant le gardiennage professionnel, la protection rapprochée, le conseil en sécurité, et l'installation de systèmes d'alarme et de surveillance."
+    },
+    {
+      question: "Comment engager un agent de sécurité ?",
+      answer: "Pour engager un agent de sécurité, contactez-nous par téléphone ou via notre formulaire de contact. Un conseiller vous contactera pour évaluer vos besoins et vous proposer une solution adaptée."
+    },
+    {
+      question: "Quelles sont vos zones d'intervention ?",
+      answer: "Nous intervenons principalement à Lomé et dans les environs, mais nous pouvons étendre nos services à d'autres régions du Togo selon vos besoins spécifiques."
+    },
+    {
+      question: "Vos agents sont-ils formés et certifiés ?",
+      answer: "Oui, tous nos agents sont rigoureusement sélectionnés, formés et certifiés. Ils reçoivent une formation continue pour maintenir leurs compétences à jour."
+    },
+    {
+      question: "Quelles mesures recommandez-vous pour sécuriser un domicile ?",
+      answer: "Nous recommandons un ensemble de mesures incluant l'installation d'un éclairage adéquat des zones extérieures, la sécurisation des portes et fenêtres, l'installation d'un système d'alarme, et éventuellement la présence d'un agent de sécurité pour une protection optimale."
+    },
+    {
+      question: "Proposez-vous des services de surveillance 24h/24 ?",
+      answer: "Oui, nous offrons des services de surveillance et de gardiennage disponibles 24h/24 et 7j/7 pour assurer une protection continue de vos biens et de votre personnel."
+    },
+    {
+      question: "Comment créer un compte sur votre site ?",
       answer: "Pour créer un compte, cliquez sur le bouton \"S'inscrire\" dans le menu en haut à droite. Remplissez le formulaire avec vos informations personnelles et suivez les instructions à l'écran."
     },
     {
-      question: "Comment trouver un logement ?",
-      answer: "Utilisez la barre de recherche sur la page d'accueil pour trouver des logements par localisation. Vous pouvez filtrer les résultats par type de logement, prix, et caractéristiques."
-    },
-    {
-      question: "Comment postuler à une offre d'emploi ?",
-      answer: "Accédez à la page des offres d'emploi, sélectionnez l'offre qui vous intéresse, et cliquez sur le bouton \"Postuler\". Vous devrez être connecté à votre compte pour soumettre votre candidature."
-    },
-    {
-      question: "Comment contacter un propriétaire ?",
-      answer: "Sur la page de détail d'un logement, vous trouverez un bouton \"Contacter le propriétaire\". Cliquez dessus pour envoyer un message au propriétaire. Vous devez être connecté pour utiliser cette fonctionnalité."
-    },
-    {
-      question: "Comment modifier mon profil ?",
-      answer: "Connectez-vous à votre compte, accédez à votre profil en cliquant sur votre avatar en haut à droite, puis sélectionnez \"Modifier le profil\". Vous pourrez y modifier vos informations personnelles et professionnelles."
-    },
-    {
-      question: "Comment publier une annonce de logement ?",
-      answer: "Après vous être connecté, accédez à votre tableau de bord et cliquez sur \"Publier une annonce\". Remplissez le formulaire avec les détails de votre logement, ajoutez des photos et définissez le prix."
-    },
-    {
-      question: "Comment signaler un problème ?",
-      answer: "Si vous rencontrez un problème, utilisez le formulaire de contact accessible depuis le pied de page du site ou envoyez un email directement à notre équipe de support à support@shalomjobcenter.com."
-    },
-    {
-      question: "Quels sont les délais de réponse pour les candidatures ?",
-      answer: "Les délais de réponse varient selon les employeurs. En général, vous devriez recevoir une réponse dans les 7 à 14 jours après votre candidature. Vous pouvez consulter le statut de vos candidatures dans votre espace personnel."
+      question: "Comment contacter votre service client ?",
+      answer: "Vous pouvez nous contacter par téléphone au +228 90-19-03-41 ou par email à Shalomjob@gmail.com. Notre équipe est disponible du lundi au vendredi de 8h à 18h et le samedi de 9h à 15h."
     }
   ];
 
@@ -52,12 +55,20 @@ const FAQ = () => {
           </div>
           
           <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
-            <h1 className="text-3xl font-semibold text-sholom-dark mb-6 elegant-title">
+            <div className="flex justify-center mb-6">
+              <img 
+                src="/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png" 
+                alt="Shalom Security Logo" 
+                className="h-16 w-auto" 
+              />
+            </div>
+            
+            <h1 className="text-3xl font-semibold mb-6 text-center elegant-title">
               Questions fréquemment posées
             </h1>
             
-            <p className="text-sholom-muted mb-8">
-              Trouvez rapidement des réponses aux questions les plus courantes sur notre plateforme.
+            <p className="text-gray-600 mb-8 text-center">
+              Trouvez rapidement des réponses aux questions les plus courantes sur nos services de sécurité.
               Si vous ne trouvez pas la réponse que vous cherchez, n'hésitez pas à nous contacter.
             </p>
             
@@ -75,23 +86,23 @@ const FAQ = () => {
             </Accordion>
           </div>
           
-          <div className="bg-sholom-primary bg-opacity-5 rounded-xl p-8 border border-sholom-primary border-opacity-10">
-            <h2 className="text-xl font-medium text-sholom-dark mb-4">
+          <div className="bg-yellow-50 rounded-xl p-8 border border-yellow-200">
+            <h2 className="text-xl font-medium text-gray-900 mb-4">
               Vous avez encore des questions ?
             </h2>
             <p className="text-gray-600 mb-6">
-              Notre équipe est disponible pour vous aider et répondre à toutes vos questions.
+              Notre équipe est disponible pour vous aider et répondre à toutes vos questions concernant nos services de sécurité.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a 
                 href="/contact" 
-                className="py-3 px-6 bg-sholom-primary text-white rounded-lg font-medium hover:bg-sholom-primary-dark transition-colors duration-300"
+                className="py-3 px-6 bg-yellow-600 text-white rounded-lg font-medium hover:bg-yellow-700 transition-colors duration-300"
               >
                 Nous contacter
               </a>
               <a 
                 href="/support" 
-                className="py-3 px-6 bg-white text-sholom-primary border border-sholom-primary rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300"
+                className="py-3 px-6 bg-white text-yellow-600 border border-yellow-600 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-300"
               >
                 Centre d'aide
               </a>

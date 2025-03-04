@@ -31,7 +31,7 @@ export const FaviconSection: React.FC<FaviconSectionProps> = ({
           {!faviconError ? (
             <img 
               key={`favicon-${Date.now()}`}
-              src={faviconUrl} 
+              src={faviconUrl || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png"} 
               alt="Favicon" 
               className="h-full w-auto object-contain"
               onLoad={() => setFaviconLoaded(true)}
