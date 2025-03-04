@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
@@ -37,15 +38,15 @@ export const MagicBook: React.FC<MagicBookProps> = ({
   const getPositionClasses = () => {
     switch (position) {
       case "bottom-left":
-        return "left-3 bottom-3";
+        return "left-0 bottom-0";
       case "bottom-right":
-        return "right-3 bottom-3";
+        return "right-0 bottom-0";
       case "top-left":
-        return "left-3 top-3";
+        return "left-0 top-0";
       case "top-right":
-        return "right-3 top-3";
+        return "right-0 top-0";
       default:
-        return "left-3 bottom-3";
+        return "left-0 bottom-0";
     }
   };
   

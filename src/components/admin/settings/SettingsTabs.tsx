@@ -10,6 +10,7 @@ import { SocialSettingsTab } from './SocialSettingsTab';
 import { ThemeSettingsTab } from './ThemeSettingsTab';
 import { FooterSettingsTab } from './FooterSettingsTab';
 import { ImportExportTab } from './ImportExportTab';
+import { AdminStatusManager } from '../status/AdminStatusManager';
 import { useTabsManagement } from './hooks/useTabsManagement';
 
 export interface SettingsTabsProps {
@@ -45,7 +46,7 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({
   return (
     <Tabs defaultValue="general" className="w-full overflow-x-auto">
       <div className="w-full overflow-x-auto pb-2">
-        <TabsList className="grid md:grid-cols-8 grid-cols-4 md:grid-rows-1 grid-rows-2 h-auto mb-2 w-full">
+        <TabsList className="grid md:grid-cols-9 grid-cols-3 md:grid-rows-1 grid-rows-3 h-auto mb-2 w-full">
           <TabsTrigger value="general" className="text-xs md:text-sm">Général</TabsTrigger>
           <TabsTrigger value="theme" className="text-xs md:text-sm">Apparence</TabsTrigger>
           <TabsTrigger value="company" className="text-xs md:text-sm">Entreprise</TabsTrigger>
@@ -53,6 +54,7 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({
           <TabsTrigger value="social" className="text-xs md:text-sm">Réseaux sociaux</TabsTrigger>
           <TabsTrigger value="notification" className="text-xs md:text-sm">Notifications</TabsTrigger>
           <TabsTrigger value="content" className="text-xs md:text-sm">Contenu</TabsTrigger>
+          <TabsTrigger value="status" className="text-xs md:text-sm">Statut</TabsTrigger>
           <TabsTrigger value="import-export" className="text-xs md:text-sm">Import/Export</TabsTrigger>
         </TabsList>
       </div>
@@ -110,6 +112,10 @@ export const SettingsTabs: React.FC<SettingsTabsProps> = ({
         
         <TabsContent value="content">
           <ContentSettingsTab />
+        </TabsContent>
+        
+        <TabsContent value="status">
+          <AdminStatusManager />
         </TabsContent>
         
         <TabsContent value="import-export">
