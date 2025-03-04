@@ -6,7 +6,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import { X } from 'lucide-react';
 
 export const StatusBanner: React.FC = () => {
-  const { loadData, saveData } = useLocalStorage();
+  const { loadData } = useLocalStorage();
   const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDismissed, setIsDismissed] = useState(false);
@@ -88,7 +88,7 @@ export const StatusBanner: React.FC = () => {
   return (
     <AnimatePresence>
       <motion.div 
-        className="w-full overflow-hidden"
+        className="w-full overflow-hidden mt-16 sm:mt-20" // Added margin-top to position below navbar
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
@@ -122,53 +122,52 @@ export const StatusBanner: React.FC = () => {
             </div>
           </div>
           
-          {/* Content */}
-          <div className="flex items-center justify-between w-full max-w-7xl mx-auto relative z-10">
-            <div className="flex items-center gap-3 flex-1">
-              <div className="flex-shrink-0">
-                {getIcon()}
-              </div>
-              
-              <motion.p 
-                className="flex-1 truncate pr-2 font-medium"
-                key={currentMessage.id}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -20, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {currentMessage.text}
-              </motion.p>
-              
-              {currentMessage.imageUrl && (
-                <div className="h-10 w-16 rounded overflow-hidden flex-shrink-0 hidden sm:block">
-                  <img 
-                    src={currentMessage.imageUrl} 
-                    alt="Status" 
-                    className="h-full w-full object-cover"
-                  />
+          {/* Content with scrolling animation */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto overflow-hidden">
+            <motion.div
+              className="flex items-center"
+              initial={{ x: "100%" }}
+              animate={{ x: "-100%" }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 20,
+                  ease: "linear"
+                }
+              }}
+            >
+              <div className="flex items-center gap-3 whitespace-nowrap">
+                <div className="flex-shrink-0">
+                  {getIcon()}
                 </div>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-2 ml-2">
-              {activeMessages.length > 1 && (
-                <button 
-                  onClick={handleNext}
-                  className="text-xs underline hover:opacity-80 transition-opacity font-medium"
-                >
-                  Suivant
-                </button>
-              )}
-              
-              <button 
-                onClick={() => setIsDismissed(true)}
-                className="hover:opacity-80 transition-opacity"
-                aria-label="Fermer"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+                
+                <p className="font-medium">
+                  {currentMessage.text}
+                </p>
+                
+                {currentMessage.imageUrl && (
+                  <div className="h-10 w-16 rounded overflow-hidden flex-shrink-0 hidden sm:block">
+                    <img 
+                      src={currentMessage.imageUrl} 
+                      alt="Status" 
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+          
+          {/* Close button - positioned absolutely to not interfere with scrolling text */}
+          <div className="absolute right-4 z-20">
+            <button 
+              onClick={() => setIsDismissed(true)}
+              className="hover:opacity-80 transition-opacity bg-black/20 rounded-full p-1"
+              aria-label="Fermer"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </motion.div>
