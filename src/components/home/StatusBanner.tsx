@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StatusMessage } from '@/components/admin/status/types';
 import useLocalStorage from '@/hooks/useLocalStorage';
-import { X } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const StatusBanner: React.FC = () => {
   const { loadData } = useLocalStorage();
@@ -54,121 +55,141 @@ export const StatusBanner: React.FC = () => {
 
   const currentMessage = activeMessages[currentIndex];
   
-  // Get icon based on message type
-  const getIcon = () => {
-    switch (currentMessage.type) {
-      case 'announcement':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-megaphone"><path d="m3 11 18-5v12L3 13"></path><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path></svg>
-        );
-      case 'promotion':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-template"><rect width="18" height="7" x="3" y="3" rx="1"></rect><rect width="9" height="7" x="3" y="14" rx="1"></rect><rect width="5" height="7" x="16" y="14" rx="1"></rect></svg>
-        );
-      case 'info':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path></svg>
-        );
-      case 'alert':
-        return (
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-alert"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>
-        );
-      default:
-        return null;
-    }
-  };
-
-  // Handle clicking "Next" if there are multiple messages
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === activeMessages.length - 1 ? 0 : prevIndex + 1
-    );
+  // Default promotional message if none exists
+  const promoContent = {
+    title: "Optimisez vos performances",
+    subtitle: "Accédez à des outils puissants pour booster votre entreprise",
+    cta: "Découvrez nos solutions"
   };
 
   return (
     <AnimatePresence>
       <motion.div 
-        className="w-full overflow-hidden mt-16 sm:mt-20" // Added margin-top to position below navbar
+        className="w-full overflow-hidden mt-2" 
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
         <div 
-          className="relative flex items-center px-4 py-3 overflow-hidden shadow-md"
+          className="relative py-6 px-4 sm:px-6 lg:px-8 overflow-hidden"
           style={{ 
-            backgroundColor: currentMessage.backgroundColor || '#f97316',
-            color: currentMessage.textColor || '#ffffff'
+            background: 'linear-gradient(135deg, #1a237e 0%, #0ea5e9 100%)'
           }}
         >
-          {/* Background pattern */}
+          {/* Background abstract technology patterns */}
           <div className="absolute inset-0 overflow-hidden opacity-10">
-            <div className="absolute -inset-1 blur-xl">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div 
-                  key={i}
-                  className="absolute rounded-full"
-                  style={{
-                    width: `${Math.random() * 100 + 50}px`,
-                    height: `${Math.random() * 100 + 50}px`,
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    backgroundColor: 'currentColor',
-                    opacity: 0.2,
-                    transform: `scale(${Math.random() * 2 + 0.5})`,
-                  }}
-                />
-              ))}
+            {/* Circuit pattern effect */}
+            <svg className="absolute h-full w-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10,30 L90,30" stroke="white" strokeWidth="0.5" fill="none" />
+              <path d="M10,50 L90,50" stroke="white" strokeWidth="0.5" fill="none" />
+              <path d="M10,70 L90,70" stroke="white" strokeWidth="0.5" fill="none" />
+              <path d="M30,10 L30,90" stroke="white" strokeWidth="0.5" fill="none" />
+              <path d="M50,10 L50,90" stroke="white" strokeWidth="0.5" fill="none" />
+              <path d="M70,10 L70,90" stroke="white" strokeWidth="0.5" fill="none" />
+              <circle cx="30" cy="30" r="2" fill="white" />
+              <circle cx="50" cy="50" r="2" fill="white" />
+              <circle cx="70" cy="70" r="2" fill="white" />
+              <circle cx="70" cy="30" r="2" fill="white" />
+              <circle cx="30" cy="70" r="2" fill="white" />
+            </svg>
+            
+            {/* Floating particles */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <motion.div 
+                key={i}
+                className="absolute rounded-full bg-white"
+                style={{
+                  width: `${Math.random() * 5 + 2}px`,
+                  height: `${Math.random() * 5 + 2}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.5 + 0.2,
+                }}
+                animate={{
+                  y: [0, -15, 0],
+                  opacity: [0.2, 0.8, 0.2],
+                }}
+                transition={{
+                  duration: Math.random() * 3 + 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+          </div>
+          
+          {/* Main content */}
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              {/* Left: Text content with animations */}
+              <div className="flex-1 text-white space-y-2 text-center md:text-left">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <h3 className="text-2xl font-bold tracking-tight">{currentMessage.text || promoContent.title}</h3>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <p className="text-white/80 max-w-xl">{promoContent.subtitle}</p>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.4 }}
+                >
+                  <Button 
+                    className="mt-3 bg-white text-blue-900 hover:bg-blue-50 group"
+                  >
+                    {promoContent.cta}
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ 
+                        duration: 0.8, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                    >
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </motion.div>
+                  </Button>
+                </motion.div>
+              </div>
+              
+              {/* Right: Image of person using device */}
+              <motion.div 
+                className="flex-shrink-0 w-full max-w-xs md:max-w-sm"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="relative rounded-xl overflow-hidden shadow-2xl">
+                  <img 
+                    src="/lovable-uploads/8f046947-6e09-442a-88f9-2f82a0a50910.png" 
+                    alt="Person using modern technology" 
+                    className="w-full h-auto object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent"></div>
+                </div>
+              </motion.div>
             </div>
           </div>
           
-          {/* Content with scrolling animation */}
-          <div className="relative z-10 w-full max-w-7xl mx-auto overflow-hidden">
-            <motion.div
-              className="flex items-center"
-              initial={{ x: "100%" }}
-              animate={{ x: "-100%" }}
-              transition={{
-                x: {
-                  repeat: Infinity,
-                  repeatType: "loop",
-                  duration: 20,
-                  ease: "linear"
-                }
-              }}
-            >
-              <div className="flex items-center gap-3 whitespace-nowrap">
-                <div className="flex-shrink-0">
-                  {getIcon()}
-                </div>
-                
-                <p className="font-medium">
-                  {currentMessage.text}
-                </p>
-                
-                {currentMessage.imageUrl && (
-                  <div className="h-10 w-16 rounded overflow-hidden flex-shrink-0 hidden sm:block">
-                    <img 
-                      src={currentMessage.imageUrl} 
-                      alt="Status" 
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-          
-          {/* Close button - positioned absolutely to not interfere with scrolling text */}
-          <div className="absolute right-4 z-20">
-            <button 
-              onClick={() => setIsDismissed(true)}
-              className="hover:opacity-80 transition-opacity bg-black/20 rounded-full p-1"
-              aria-label="Fermer"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          {/* Close button */}
+          <button 
+            onClick={() => setIsDismissed(true)}
+            className="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 p-1.5 rounded-full transition-colors"
+            aria-label="Fermer"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </motion.div>
     </AnimatePresence>
