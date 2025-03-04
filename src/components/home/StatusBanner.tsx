@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { StatusMessage } from '@/components/admin/status/AdminStatusManager';
+import { StatusMessage } from '@/components/admin/status/types';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { X } from 'lucide-react';
 
