@@ -23,8 +23,8 @@ const JobActionButtons = ({
       onShare();
     } else {
       // Fallback for browsers without navigator.share
+      navigator.clipboard.writeText(window.location.href);
       toast.success("Lien copié dans le presse-papier!");
-      onShare();
     }
   };
 

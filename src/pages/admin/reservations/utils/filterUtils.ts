@@ -43,6 +43,7 @@ export const getAllApplications = (jobs: Job[]) => {
     }
   });
   
+  console.log("All applications:", applications);
   return applications;
 };
 

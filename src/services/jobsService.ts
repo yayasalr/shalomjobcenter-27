@@ -45,10 +45,12 @@ export const useJobsService = () => {
 
   // Soumettre une candidature
   const submitApplication = async (applicationData: JobApplicationFormData): Promise<any> => {
+    console.log("Submitting application:", applicationData);
     const currentJobs = loadData('jobs', MOCK_JOBS);
     const jobIndex = currentJobs.findIndex(job => job.id === applicationData.jobId);
     
     if (jobIndex === -1) {
+      console.error("Job not found:", applicationData.jobId);
       throw new Error("Offre d'emploi introuvable");
     }
     
@@ -61,7 +63,7 @@ export const useJobsService = () => {
       phone: applicationData.phone,
       resume: applicationData.resume,
       coverLetter: applicationData.coverLetter,
-      status: "pending" as ApplicationStatus, // Utilisation d'une assertion de type pour s'assurer que status est de type ApplicationStatus
+      status: "pending" as ApplicationStatus,
       submittedAt: new Date().toISOString()
     };
     
@@ -72,6 +74,7 @@ export const useJobsService = () => {
     
     currentJobs[jobIndex].applications!.push(newApplication);
     saveData('jobs', currentJobs);
+    console.log("Application saved, updated jobs:", currentJobs);
     
     return newApplication;
   };

@@ -1,158 +1,193 @@
 
 import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
   DialogDescription,
-  DialogHeader,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+  DialogFooter
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { 
+  Mail, 
+  Phone, 
+  Calendar, 
+  FileText, 
+  MapPin, 
+  Briefcase,
+  Check,
+  X,
+  Clock
+} from 'lucide-react';
 import { JobApplication } from '@/types/job';
-import { Calendar, User, Briefcase, MapPin, Clock } from "lucide-react";
+import { formatDate } from '../utils/formatUtils';
+import { Badge } from '@/components/ui/badge';
 
 interface ApplicationDetailsDialogProps {
+  application: JobApplication | null;
+  jobTitle: string;
+  jobLocation: string;
   isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  selectedApplication: JobApplication | null;
-  jobs: any[];
-  updateApplicationStatus: (applicationId: string, jobId: string, status: 'pending' | 'approved' | 'rejected') => void;
+  onClose: () => void;
+  onUpdateStatus: (applicationId: string, jobId: string, status: 'approved' | 'rejected' | 'pending') => void;
 }
 
 const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
+  application,
+  jobTitle,
+  jobLocation,
   isOpen,
-  onOpenChange,
-  selectedApplication,
-  jobs,
-  updateApplicationStatus
+  onClose,
+  onUpdateStatus
 }) => {
-  if (!selectedApplication) return null;
-
-  // Trouver le job correspondant à cette candidature
-  const relatedJob = jobs.find(job => 
-    job.applications?.some((app: JobApplication) => app.id === selectedApplication.id)
-  );
-
-  const jobId = relatedJob?.id || '';
-
-  // Fonction pour formater le statut
-  const getStatusBadge = (status: string) => {
-    switch(status) {
-      case 'approved':
-        return <Badge className="bg-green-500 text-white">Acceptée</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-500 text-white">En attente</Badge>;
-      case 'rejected':
-        return <Badge className="bg-red-500 text-white">Refusée</Badge>;
-      default:
-        return <Badge className="bg-gray-500 text-white">{status}</Badge>;
-    }
-  };
+  if (!application) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white border-none shadow-xl max-w-3xl">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Détails de la candidature</DialogTitle>
-          <DialogDescription className="text-base">
-            Candidature #{selectedApplication.id.slice(0, 8)}
+          <DialogTitle>Détails de la candidature</DialogTitle>
+          <DialogDescription>
+            Candidature pour <span className="font-medium">{jobTitle}</span>
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Candidat</h3>
-            <div className="flex items-start space-x-3">
-              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                <User className="w-5 h-5 text-gray-600" />
-              </div>
-              <div>
-                <p className="font-medium">{selectedApplication.applicantName}</p>
-                <p className="text-gray-600">{selectedApplication.email}</p>
-                <p className="text-gray-600">{selectedApplication.phone}</p>
-              </div>
-            </div>
+        <div className="space-y-6">
+          {/* Status badge */}
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Statut</h3>
+            <Badge
+              className={`${
+                application.status === 'approved'
+                  ? 'bg-green-100 text-green-800 border-green-200'
+                  : application.status === 'pending'
+                  ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                  : 'bg-red-100 text-red-800 border-red-200'
+              }`}
+            >
+              {application.status === 'approved' ? (
+                <>
+                  <Check className="mr-1 h-4 w-4" />
+                  Acceptée
+                </>
+              ) : application.status === 'pending' ? (
+                <>
+                  <Clock className="mr-1 h-4 w-4" />
+                  En attente
+                </>
+              ) : (
+                <>
+                  <X className="mr-1 h-4 w-4" />
+                  Refusée
+                </>
+              )}
+            </Badge>
           </div>
 
-          {relatedJob && (
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Offre</h3>
-              <div className="flex items-start space-x-3">
-                <Briefcase className="w-5 h-5 mt-1 text-gray-600" />
-                <div>
-                  <p className="font-medium">{relatedJob.title}</p>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {relatedJob.location}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-lg font-semibold mb-2">Motivation</h3>
-            <div className="bg-gray-50 p-3 rounded-md">
-              <p className="text-gray-800">{selectedApplication.coverLetter}</p>
-            </div>
-          </div>
-
+          {/* Candidate information */}
           <div>
-            <h3 className="text-lg font-semibold mb-2">Expériences</h3>
+            <h3 className="text-lg font-semibold mb-3">Informations du candidat</h3>
             <div className="space-y-2">
-              {selectedApplication.resume && (
-                <p className="text-gray-800">{selectedApplication.resume}</p>
-              )}
-              {!selectedApplication.resume && (
-                <p className="text-gray-500 italic">Aucune expérience mentionnée</p>
-              )}
+              <div className="flex items-center text-gray-700">
+                <Mail className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium mr-2">Email:</span>
+                <a href={`mailto:${application.email}`} className="text-blue-600 hover:underline">
+                  {application.email}
+                </a>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <Phone className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium mr-2">Téléphone:</span>
+                <a href={`tel:${application.phone}`} className="text-blue-600 hover:underline">
+                  {application.phone}
+                </a>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium mr-2">Date de candidature:</span>
+                <span>{formatDate(application.submittedAt)}</span>
+              </div>
             </div>
           </div>
 
+          {/* Job information */}
           <div>
-            <h3 className="text-lg font-semibold mb-2">Informations</h3>
+            <h3 className="text-lg font-semibold mb-3">Détails du poste</h3>
             <div className="space-y-2">
-              {selectedApplication.submittedAt && (
-                <div className="flex items-center">
-                  <Calendar className="w-5 h-5 mr-2 text-gray-600" />
-                  <span>Postuler le: {new Date(selectedApplication.submittedAt).toLocaleDateString()}</span>
-                </div>
-              )}
-              <div className="flex items-center">
-                <Clock className="w-5 h-5 mr-2 text-gray-600" />
-                <span>Statut: {getStatusBadge(selectedApplication.status)}</span>
+              <div className="flex items-center text-gray-700">
+                <Briefcase className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium mr-2">Poste:</span>
+                <span>{jobTitle}</span>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <MapPin className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium mr-2">Lieu:</span>
+                <span>{jobLocation}</span>
               </div>
             </div>
+          </div>
+
+          {/* Application details */}
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Documents</h3>
+            {application.resume ? (
+              <div className="bg-gray-50 p-3 rounded-md flex items-center mb-4">
+                <FileText className="h-5 w-5 mr-2 text-blue-600" />
+                <a href={application.resume} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate">
+                  CV du candidat
+                </a>
+              </div>
+            ) : (
+              <div className="text-gray-500 italic mb-4">Aucun CV fourni</div>
+            )}
+
+            <h3 className="text-lg font-semibold mb-3">Lettre de motivation</h3>
+            {application.coverLetter ? (
+              <div className="bg-gray-50 p-4 rounded-md text-gray-700 whitespace-pre-wrap">
+                {application.coverLetter}
+              </div>
+            ) : (
+              <div className="text-gray-500 italic">Aucune lettre de motivation fournie</div>
+            )}
           </div>
         </div>
 
-        <DialogFooter className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+        <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 mt-6">
+          <div className="flex space-x-2 w-full sm:w-auto justify-start sm:justify-start order-2 sm:order-1">
+            <Button 
+              variant="destructive" 
+              onClick={() => onUpdateStatus(application.id, application.jobId, 'rejected')}
+              disabled={application.status === 'rejected'}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Refuser
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => onUpdateStatus(application.id, application.jobId, 'pending')}
+              disabled={application.status === 'pending'}
+            >
+              <Clock className="h-4 w-4 mr-2" />
+              En attente
+            </Button>
+            <Button 
+              variant="default" 
+              className="bg-green-600 hover:bg-green-700"
+              onClick={() => onUpdateStatus(application.id, application.jobId, 'approved')}
+              disabled={application.status === 'approved'}
+            >
+              <Check className="h-4 w-4 mr-2" />
+              Accepter
+            </Button>
+          </div>
           <Button 
-            variant="outline" 
-            onClick={() => onOpenChange(false)}
+            type="button" 
+            variant="ghost" 
+            onClick={onClose} 
+            className="order-1 sm:order-2"
           >
             Fermer
-          </Button>
-          <Button 
-            variant="default" 
-            className="bg-green-500 hover:bg-green-600 text-white"
-            onClick={() => {
-              updateApplicationStatus(selectedApplication.id, jobId, 'approved');
-              onOpenChange(false);
-            }}
-          >
-            <span className="mr-1">✓</span> Accepter
-          </Button>
-          <Button 
-            variant="destructive"
-            onClick={() => {
-              updateApplicationStatus(selectedApplication.id, jobId, 'rejected');
-              onOpenChange(false);
-            }}
-          >
-            <span className="mr-1">✗</span> Refuser
           </Button>
         </DialogFooter>
       </DialogContent>

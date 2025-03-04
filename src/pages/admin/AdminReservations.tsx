@@ -1,108 +1,100 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { useReservations, Reservation } from "@/hooks/reservations";
-import { useJobs } from "@/hooks/useJobs";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { JobApplication } from '@/types/job';
-import { toast } from "sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
-
-// Import our components
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useJobs } from '@/hooks/useJobs';
+import { useReservations } from '@/hooks/reservations';
 import ReservationsTable from './reservations/components/ReservationsTable';
 import ApplicationsTable from './reservations/components/ApplicationsTable';
+import { getFilteredReservations, getFilteredApplications } from './reservations/utils/filterUtils';
+import SearchAndFilterBar from './reservations/components/SearchAndFilterBar';
 import ReservationDetailsDialog from './reservations/components/ReservationDetailsDialog';
 import ApplicationDetailsDialog from './reservations/components/ApplicationDetailsDialog';
-import SearchAndFilterBar from './reservations/components/SearchAndFilterBar';
-
-// Import our utility functions
-import { 
-  getFilteredReservations, 
-  getFilteredApplications 
-} from './reservations/utils/filterUtils';
-import { exportToCSV } from './reservations/utils/formatUtils';
+import { JobApplication } from '@/types/job';
+import { toast } from 'sonner';
 
 const AdminReservations = () => {
-  const { reservations, isLoading: isLoadingReservations, updateReservationStatus } = useReservations();
-  const { jobs, isLoading: isLoadingJobs, updateJob } = useJobs();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
+  // State hooks
+  const [activeTab, setActiveTab] = useState<'reservations' | 'applications'>('reservations');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedReservation, setSelectedReservation] = useState<any>(null);
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isApplicationDialogOpen, setIsApplicationDialogOpen] = useState(false);
-  const [tab, setTab] = useState("all");
-  const [contentTab, setContentTab] = useState("reservations");
-  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  const [selectedJobTitle, setSelectedJobTitle] = useState<string>('');
+  const [selectedJobLocation, setSelectedJobLocation] = useState<string>('');
+  
+  // Data hooks
+  const { 
+    reservations, 
+    isLoading: isLoadingReservations, 
+    updateReservationStatus 
+  } = useReservations();
+  
+  const { 
+    jobs, 
+    isLoading: isLoadingJobs, 
+    updateJob 
+  } = useJobs();
 
-  // Observer la largeur de l'écran
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as 'reservations' | 'applications');
+    setStatusFilter('all');
+    setSearchQuery('');
+  };
 
-  // Mettre à jour le statut d'une candidature
-  const updateApplicationStatus = (applicationId: string, jobId: string, status: 'pending' | 'approved' | 'rejected') => {
-    // Trouver le job
-    const job = jobs.find(j => j.id === jobId);
-    if (!job || !job.applications) return;
-    
-    // Trouver et mettre à jour la candidature
-    const appIndex = job.applications.findIndex(app => app.id === applicationId);
-    if (appIndex === -1) return;
-    
-    // Créer une copie du job avec la candidature mise à jour
-    const updatedApplications = [...job.applications];
-    updatedApplications[appIndex] = {
-      ...updatedApplications[appIndex],
-      status
-    };
-    
-    const updatedJob = {
-      ...job,
-      applications: updatedApplications
-    };
-    
-    // Appeler la mutation pour mettre à jour le job
-    try {
-      updateJob.mutate(updatedJob);
-      
-      toast.success(`Candidature ${
-        status === 'approved' 
-          ? 'acceptée' 
-          : status === 'rejected' 
-            ? 'refusée' 
-            : 'mise en attente'
-      }`);
-    } catch (error) {
-      toast.error("Erreur lors de la mise à jour du statut");
+  // Get filtered data
+  const filteredReservations = getFilteredReservations(reservations, statusFilter, searchQuery);
+  const filteredApplications = getFilteredApplications(jobs, statusFilter, searchQuery);
+
+  // Handle application selection
+  const handleSelectApplication = (application: JobApplication) => {
+    setSelectedApplication(application);
+    const job = jobs.find(j => j.id === application.jobId);
+    if (job) {
+      setSelectedJobTitle(job.title);
+      setSelectedJobLocation(job.location);
     }
   };
 
-  const handleUpdateStatus = (reservationId: string, status: 'confirmed' | 'pending' | 'cancelled') => {
-    updateReservationStatus.mutate({ reservationId, status });
-  };
-
-  // Functions to handle dialogs
-  const handleSelectReservation = (reservation: Reservation) => {
-    setSelectedReservation(reservation);
-    setIsDialogOpen(true);
-  };
-
-  const handleSelectApplication = (application: JobApplication) => {
-    setSelectedApplication(application);
-    setIsApplicationDialogOpen(true);
-  };
-
-  // Handle export
-  const handleExport = () => {
-    if (contentTab === 'reservations') {
-      exportToCSV('reservations', getFilteredReservations(reservations, tab, searchQuery));
-    } else {
-      exportToCSV('applications', getFilteredApplications(jobs, tab, searchQuery));
+  // Update application status
+  const handleUpdateApplicationStatus = async (applicationId: string, jobId: string, status: 'pending' | 'approved' | 'rejected') => {
+    try {
+      const jobToUpdate = jobs.find(job => job.id === jobId);
+      
+      if (!jobToUpdate) {
+        toast.error("Offre d'emploi introuvable");
+        return;
+      }
+      
+      if (!jobToUpdate.applications) {
+        toast.error("Aucune candidature trouvée pour cette offre");
+        return;
+      }
+      
+      const updatedApplications = jobToUpdate.applications.map(app => 
+        app.id === applicationId ? { ...app, status } : app
+      );
+      
+      const updatedJob = { ...jobToUpdate, applications: updatedApplications };
+      
+      await updateJob.mutateAsync(updatedJob);
+      
+      toast.success(`Statut de la candidature mis à jour: ${
+        status === 'approved' ? 'Acceptée' :
+        status === 'rejected' ? 'Refusée' : 'En attente'
+      }`);
+      
+      // If we're viewing application details, update the selected application
+      if (selectedApplication && selectedApplication.id === applicationId) {
+        setSelectedApplication({...selectedApplication, status});
+      }
+      
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      toast.error("Erreur lors de la mise à jour du statut");
     }
   };
 
@@ -112,62 +104,74 @@ const AdminReservations = () => {
         <AdminSidebar />
         <div className="flex flex-1 flex-col">
           <AdminTopbar />
-          <main className="flex-1 overflow-y-auto bg-gray-50 p-4 md:p-6">
-            <div className="mb-6">
-              <SearchAndFilterBar
+          <div className="p-6">
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold mb-2">Gérer les réservations et candidatures</h1>
+              <p className="text-gray-500">
+                Consultez et gérez toutes les réservations et candidatures reçues sur votre plateforme.
+              </p>
+            </div>
+
+            <Tabs defaultValue="reservations" value={activeTab} onValueChange={handleTabChange}>
+              <div className="flex justify-between items-center mb-6">
+                <TabsList>
+                  <TabsTrigger value="reservations">Réservations</TabsTrigger>
+                  <TabsTrigger value="applications">Candidatures</TabsTrigger>
+                </TabsList>
+              </div>
+
+              <SearchAndFilterBar 
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                contentTab={contentTab}
-                setContentTab={setContentTab}
-                tab={tab}
-                setTab={setTab}
-                onExport={handleExport}
-                itemCount={
-                  contentTab === 'reservations' 
-                    ? getFilteredReservations(reservations, tab, searchQuery).length 
-                    : getFilteredApplications(jobs, tab, searchQuery).length
-                }
-                itemType={contentTab === 'reservations' ? 'réservation' : 'candidature'}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
+                type={activeTab}
               />
-              
-              <Tabs value={contentTab} defaultValue="reservations">
-                <TabsContent value="reservations" className="mt-4">
-                  <ReservationsTable
-                    reservations={getFilteredReservations(reservations, tab, searchQuery)}
-                    handleUpdateStatus={handleUpdateStatus}
-                    onSelectReservation={handleSelectReservation}
-                    isLoading={isLoadingReservations}
-                  />
-                </TabsContent>
-                
-                <TabsContent value="applications" className="mt-4">
-                  <ApplicationsTable
-                    applications={getFilteredApplications(jobs, tab, searchQuery)}
-                    updateApplicationStatus={updateApplicationStatus}
-                    onSelectApplication={handleSelectApplication}
-                    isLoading={isLoadingJobs}
-                  />
-                </TabsContent>
-              </Tabs>
-            </div>
-          </main>
-        </div>
 
-        {/* Modals for details */}
-        <ReservationDetailsDialog
-          isOpen={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-          selectedReservation={selectedReservation}
-          handleUpdateStatus={handleUpdateStatus}
-        />
-        
-        <ApplicationDetailsDialog
-          isOpen={isApplicationDialogOpen}
-          onOpenChange={setIsApplicationDialogOpen}
-          selectedApplication={selectedApplication}
-          jobs={jobs}
-          updateApplicationStatus={updateApplicationStatus}
-        />
+              <TabsContent value="reservations" className="mt-4">
+                <ReservationsTable 
+                  reservations={filteredReservations}
+                  isLoading={isLoadingReservations}
+                  onSelectReservation={setSelectedReservation}
+                  updateReservationStatus={updateReservationStatus}
+                />
+              </TabsContent>
+
+              <TabsContent value="applications" className="mt-4">
+                <ApplicationsTable 
+                  applications={filteredApplications}
+                  isLoading={isLoadingJobs}
+                  onSelectApplication={handleSelectApplication}
+                  updateApplicationStatus={handleUpdateApplicationStatus}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
+
+          {/* Dialogs */}
+          {selectedReservation && (
+            <ReservationDetailsDialog 
+              reservation={selectedReservation}
+              isOpen={!!selectedReservation}
+              onClose={() => setSelectedReservation(null)}
+              onUpdateStatus={(id, status) => {
+                updateReservationStatus(id, status);
+                setSelectedReservation(prev => prev ? {...prev, status} : null);
+              }}
+            />
+          )}
+
+          {selectedApplication && (
+            <ApplicationDetailsDialog 
+              application={selectedApplication}
+              jobTitle={selectedJobTitle}
+              jobLocation={selectedJobLocation}
+              isOpen={!!selectedApplication}
+              onClose={() => setSelectedApplication(null)}
+              onUpdateStatus={handleUpdateApplicationStatus}
+            />
+          )}
+        </div>
       </div>
     </SidebarProvider>
   );

@@ -40,6 +40,11 @@ const JobDetail = () => {
     }
     
     try {
+      console.log("Submitting application data:", {
+        jobId: job.id,
+        ...applicantData
+      });
+      
       await applyForJob.mutateAsync({
         jobId: job.id,
         ...applicantData
@@ -55,8 +60,8 @@ const JobDetail = () => {
       
       toast.success("Votre candidature a été envoyée avec succès!");
     } catch (error) {
-      toast.error("Une erreur est survenue lors de l'envoi de votre candidature.");
       console.error("Erreur de candidature:", error);
+      toast.error("Une erreur est survenue lors de l'envoi de votre candidature.");
     }
   };
 
@@ -68,6 +73,8 @@ const JobDetail = () => {
         jobs={jobs}
         settings={settings}
         handleApplySubmit={handleApplySubmit}
+        applicantData={applicantData}
+        setApplicantData={setApplicantData}
       />
     </div>
   );

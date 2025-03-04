@@ -20,17 +20,31 @@ interface JobDetailContentProps {
   jobs: Job[];
   settings: SiteSettings;
   handleApplySubmit: (e: React.FormEvent) => Promise<void>;
+  applicantData: {
+    name: string;
+    email: string;
+    phone: string;
+    resume: string;
+    coverLetter: string;
+  };
+  setApplicantData: React.Dispatch<React.SetStateAction<{
+    name: string;
+    email: string;
+    phone: string;
+    resume: string;
+    coverLetter: string;
+  }>>;
 }
 
-const JobDetailContent = ({ job, jobs, settings, handleApplySubmit }: JobDetailContentProps) => {
+const JobDetailContent = ({ 
+  job, 
+  jobs, 
+  settings, 
+  handleApplySubmit,
+  applicantData,
+  setApplicantData 
+}: JobDetailContentProps) => {
   const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
-  const [applicantData, setApplicantData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    resume: '',
-    coverLetter: '',
-  });
 
   const handleShare = () => {
     if (navigator.share) {
@@ -61,7 +75,7 @@ const JobDetailContent = ({ job, jobs, settings, handleApplySubmit }: JobDetailC
           domain={job.domain}
           status={job.status}
           isHousingOffer={!!job.isHousingOffer}
-          image={job.images?.[0] || ''}
+          image={job.images?.[0] || job.image || ''}
           translateDomain={translateDomain}
           getDomainImage={getDomainImage}
         />
