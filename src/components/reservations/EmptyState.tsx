@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarIcon } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface EmptyStateProps {
   title: string;
@@ -9,6 +10,8 @@ interface EmptyStateProps {
 }
 
 export const EmptyState = ({ title, description }: EmptyStateProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="text-center p-12 border border-dashed rounded-lg">
       <CalendarIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
@@ -17,7 +20,7 @@ export const EmptyState = ({ title, description }: EmptyStateProps) => {
         {description}
       </p>
       <Button asChild>
-        <a href="/">Découvrir des logements</a>
+        <a href="/">{t('find_housing')}</a>
       </Button>
     </div>
   );

@@ -1,16 +1,19 @@
 
 import React from 'react';
 import { Home, Shield, CheckCircle } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export const FeaturesSection = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="mt-24 mb-16">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-4">
-          Pourquoi choisir Sholom ?
+          {t('recommended_places')}
         </h2>
         <p className="text-sholom-muted text-lg max-w-2xl mx-auto">
-          Nous nous distinguons par notre engagement à offrir des services de qualité supérieure
+          {t('premium_housing')}
         </p>
       </div>
       
@@ -18,18 +21,18 @@ export const FeaturesSection = () => {
         {[
           {
             icon: <Home className="h-8 w-8" />,
-            title: "Logements Premium",
-            description: "Tous nos logements sont vérifiés et répondent à des standards de qualité élevés"
+            title: t('verified_housing'),
+            description: t('verified_housing')
           },
           {
             icon: <Shield className="h-8 w-8" />,
-            title: "Sécurité Garantie",
-            description: "Nous offrons des services de sécurité 24/7 pour tous nos clients"
+            title: t('secure_payments'),
+            description: t('secure_payments')
           },
           {
             icon: <CheckCircle className="h-8 w-8" />,
-            title: "Service Client Exceptionnel",
-            description: "Notre équipe est disponible pour vous accompagner à chaque étape"
+            title: t('local_support'),
+            description: t('local_support')
           }
         ].map((feature, index) => (
           <div 

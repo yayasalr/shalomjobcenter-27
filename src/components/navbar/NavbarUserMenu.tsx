@@ -1,9 +1,11 @@
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Globe, LogIn, Menu, User } from "lucide-react";
+import { LogIn, Menu, User } from "lucide-react";
 import { motion } from "framer-motion";
 import useAuth from "@/hooks/useAuth";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useLanguage } from "@/hooks/useLanguage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +27,7 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
 }) => {
   const { user } = useAuth();
   const { settings } = useSiteSettings();
+  const { t } = useLanguage();
   const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
   
   useEffect(() => {
@@ -67,27 +70,27 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
             </motion.div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56 bg-white shadow-md z-50">
-            <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+            <DropdownMenuLabel>{t('profile')}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to="/profile" className="w-full">Profil</Link>
+              <Link to="/profile" className="w-full">{t('profile')}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link to="/favorites" className="w-full">Favoris</Link>
+              <Link to="/favorites" className="w-full">{t('favorites')}</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link to="/reservations" className="w-full">Réservations</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to="/messages" className="w-full">Messages</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/notifications" className="w-full">Notifications</Link>
+              <Link to="/reservations" className="w-full">{t('reservations')}</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to="/logout" className="w-full text-red-500">Se déconnecter</Link>
+              <Link to="/messages" className="w-full">{t('messages')}</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/notifications" className="w-full">{t('notifications')}</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link to="/logout" className="w-full text-red-500">{t('logout')}</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -99,7 +102,7 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
             className="flex items-center bg-sholom-primary text-white rounded-full px-4 py-2 gap-2 shadow-sm hover:bg-sholom-primary/90"
           >
             <LogIn className="h-4 w-4" />
-            <span className="font-medium">Connexion</span>
+            <span className="font-medium">{t('login')}</span>
           </motion.div>
         </Link>
       )}
