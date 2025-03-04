@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { User, LoginCredentials, RegisterData } from "./types";
@@ -14,7 +15,9 @@ const useAuth = () => {
       const savedUser = localStorage.getItem("currentUser");
       if (savedUser) {
         try {
-          return JSON.parse(savedUser) as User;
+          const user = JSON.parse(savedUser) as User;
+          console.log("Utilisateur chargé depuis localStorage:", user);
+          return user;
         } catch (error) {
           console.error("Error parsing user data:", error);
           localStorage.removeItem("currentUser");
@@ -29,15 +32,26 @@ const useAuth = () => {
 
   const login = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const users = JSON.parse(localStorage.getItem("users") || JSON.stringify(MOCK_USERS));
+      // Charge les utilisateurs du localStorage ou utilise les données par défaut
+      const storedUsers = localStorage.getItem("users");
+      const users = storedUsers ? JSON.parse(storedUsers) : MOCK_USERS;
+      
+      // Si c'est la première fois qu'on utilise les utilisateurs par défaut, les enregistrer
+      if (!storedUsers) {
+        localStorage.setItem("users", JSON.stringify(MOCK_USERS));
+      }
+      
       const user = users.find(
         (u: any) => u.email === credentials.email && u.password === credentials.password
       );
+      
       if (!user) {
         throw new Error("Identifiants invalides");
       }
+      
       const { password, ...userWithoutPassword } = user;
       localStorage.setItem("currentUser", JSON.stringify(userWithoutPassword));
+      console.log("Utilisateur connecté:", userWithoutPassword);
       return userWithoutPassword;
     },
     onSuccess: (user) => {
@@ -51,23 +65,35 @@ const useAuth = () => {
 
   const register = useMutation({
     mutationFn: async (data: RegisterData) => {
-      const users = JSON.parse(localStorage.getItem("users") || JSON.stringify(MOCK_USERS));
+      // Charge les utilisateurs du localStorage ou utilise les données par défaut
+      const storedUsers = localStorage.getItem("users");
+      const users = storedUsers ? JSON.parse(storedUsers) : MOCK_USERS;
+      
+      // Si c'est la première fois qu'on utilise les utilisateurs par défaut, les enregistrer
+      if (!storedUsers) {
+        localStorage.setItem("users", JSON.stringify(MOCK_USERS));
+      }
+      
       const existingUser = users.find((u: any) => u.email === data.email);
       if (existingUser) {
         throw new Error("Cet email est déjà utilisé");
       }
+      
       const newUser = {
         id: Math.random().toString(36).substr(2, 9),
         ...data,
         role: "user" as const,
       };
+      
       users.push(newUser);
       localStorage.setItem("users", JSON.stringify(users));
+      
       const { password, ...userWithoutPassword } = newUser;
 
       // Créer la conversation de bienvenue
       createWelcomeMessages(userWithoutPassword);
       
+      console.log("Nouvel utilisateur enregistré:", userWithoutPassword);
       return userWithoutPassword;
     },
     onSuccess: (user) => {
@@ -84,6 +110,7 @@ const useAuth = () => {
   const logout = useMutation({
     mutationFn: async () => {
       localStorage.removeItem("currentUser");
+      console.log("Utilisateur déconnecté");
       return null;
     },
     onSuccess: () => {

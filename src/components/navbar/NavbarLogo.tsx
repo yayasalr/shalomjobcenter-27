@@ -8,23 +8,23 @@ export const NavbarLogo = () => {
   const { settings } = useSiteSettings();
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [logoError, setLogoError] = useState(false);
-  const [currentLogo, setCurrentLogo] = useState(
-    settings.logo === 'stored_separately' 
-      ? localStorage.getItem('site_logo') || "/placeholder.svg" 
-      : settings.logo || "/placeholder.svg"
-  );
+  const [currentLogo, setCurrentLogo] = useState<string>("");
   
-  // Update currentLogo when settings.logo changes
+  // Update currentLogo when settings.logo changes or on component mount
   useEffect(() => {
-    if (settings.logo) {
-      const logoSrc = settings.logo === 'stored_separately' 
-        ? localStorage.getItem('site_logo') || "/placeholder.svg" 
-        : settings.logo;
-      
-      setCurrentLogo(logoSrc);
-      setLogoLoaded(false);
-      setLogoError(false);
+    let logoSrc = "";
+    
+    if (settings.logo === 'stored_separately') {
+      const storedLogo = localStorage.getItem('site_logo');
+      logoSrc = storedLogo || "/placeholder.svg";
+    } else {
+      logoSrc = settings.logo || "/placeholder.svg";
     }
+    
+    console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
+    setCurrentLogo(logoSrc);
+    setLogoLoaded(false);
+    setLogoError(false);
   }, [settings.logo]);
   
   return (
@@ -41,8 +41,8 @@ export const NavbarLogo = () => {
               alt={settings.siteName}
               className="w-auto h-full object-contain"
               onLoad={() => setLogoLoaded(true)}
-              onError={() => {
-                console.error("Error loading logo:", currentLogo);
+              onError={(e) => {
+                console.error("Error loading logo:", currentLogo.substring(0, 30) + "...");
                 setLogoError(true);
               }}
               style={{ display: logoLoaded ? 'block' : 'none' }}

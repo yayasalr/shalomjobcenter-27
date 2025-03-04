@@ -15,10 +15,13 @@ export const FaviconSection: React.FC<FaviconSectionProps> = ({
   handleFaviconUpload
 }) => {
   const [faviconError, setFaviconError] = useState(false);
+  const [faviconLoaded, setFaviconLoaded] = useState(false);
   
   // Reset error when URL changes
   useEffect(() => {
     setFaviconError(false);
+    setFaviconLoaded(false);
+    console.log("Favicon URL mise à jour:", faviconUrl?.substring(0, 30) + "...");
   }, [faviconUrl]);
   
   return (
@@ -27,17 +30,24 @@ export const FaviconSection: React.FC<FaviconSectionProps> = ({
         <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-lg">
           {!faviconError ? (
             <img 
-              key={`favicon-${faviconUrl}`}
+              key={`favicon-${Date.now()}`}
               src={faviconUrl} 
               alt="Favicon" 
               className="h-full w-auto object-contain"
+              onLoad={() => setFaviconLoaded(true)}
               onError={() => {
                 setFaviconError(true);
+                console.error("Erreur de chargement du favicon");
                 toast.error("Erreur de chargement du favicon");
               }}
+              style={{ display: faviconLoaded ? 'block' : 'none' }}
             />
           ) : (
             <span className="text-sm text-gray-400">Favicon</span>
+          )}
+          
+          {(!faviconLoaded && !faviconError) && (
+            <div className="animate-pulse bg-gray-200 h-8 w-8 rounded-lg"></div>
           )}
         </div>
         <ImageUploadField

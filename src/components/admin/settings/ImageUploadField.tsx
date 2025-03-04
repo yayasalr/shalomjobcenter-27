@@ -23,6 +23,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   // Mettre à jour l'URL locale lorsque l'URL d'image change
   React.useEffect(() => {
     setLocalImageUrl(imageUrl);
+    console.log("Image URL mise à jour dans ImageUploadField");
   }, [imageUrl]);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +31,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     if (!files || files.length === 0) return;
     
     const file = files[0];
+    console.log("Fichier sélectionné pour téléchargement:", file.name, file.type, file.size);
     
     // Créer un aperçu temporaire
     const temporaryPreview = URL.createObjectURL(file);

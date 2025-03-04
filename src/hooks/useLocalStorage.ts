@@ -6,8 +6,9 @@ const useLocalStorage = () => {
       if (savedData) {
         return JSON.parse(savedData);
       }
-      // Save default data immediately
+      // Save default data immediately to ensure it's available on refresh
       localStorage.setItem(key, JSON.stringify(defaultData));
+      console.log(`Données par défaut enregistrées pour ${key}:`, defaultData);
       return defaultData;
     } catch (error) {
       console.error(`Erreur lors du chargement des données pour ${key}:`, error);
@@ -18,6 +19,7 @@ const useLocalStorage = () => {
   const saveData = <T>(key: string, data: T[]): boolean => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
+      console.log(`Données sauvegardées pour ${key}:`, data);
       return true;
     } catch (error) {
       console.error(`Erreur lors de la sauvegarde des données pour ${key}:`, error);
@@ -40,6 +42,7 @@ const useLocalStorage = () => {
   const setItem = <T>(key: string, value: T): boolean => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
+      console.log(`Item sauvegardé pour ${key}:`, value);
       return true;
     } catch (error) {
       console.error(`Erreur lors de l'enregistrement de ${key}:`, error);
@@ -51,6 +54,7 @@ const useLocalStorage = () => {
   const removeItem = (key: string): boolean => {
     try {
       localStorage.removeItem(key);
+      console.log(`Item supprimé: ${key}`);
       return true;
     } catch (error) {
       console.error(`Erreur lors de la suppression de ${key}:`, error);
@@ -78,6 +82,7 @@ const useLocalStorage = () => {
   const setSessionItem = <T>(key: string, value: T): boolean => {
     try {
       sessionStorage.setItem(key, JSON.stringify(value));
+      console.log(`Session item sauvegardé pour ${key}:`, value);
       return true;
     } catch (error) {
       console.error(`Erreur lors de l'enregistrement de la session ${key}:`, error);

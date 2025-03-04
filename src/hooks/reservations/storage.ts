@@ -3,9 +3,9 @@ import { Reservation } from "./types";
 
 // Fonction pour charger les réservations depuis le localStorage
 export const loadReservations = (): Reservation[] => {
-  const savedReservations = localStorage.getItem('reservations');
-  if (savedReservations) {
-    try {
+  try {
+    const savedReservations = localStorage.getItem('reservations');
+    if (savedReservations) {
       const parsed = JSON.parse(savedReservations);
       // Vérifier que chaque réservation a toutes les propriétés requises
       return parsed.map((reservation: any) => {
@@ -31,12 +31,12 @@ export const loadReservations = (): Reservation[] => {
           notes: reservation.notes
         };
       });
-    } catch (error) {
-      console.error("Erreur lors du chargement des réservations:", error);
-      return [];
     }
+  } catch (error) {
+    console.error("Erreur lors du chargement des réservations:", error);
+    console.log("Création d'un tableau de réservations vide suite à une erreur");
   }
-  // Si pas de réservations, retourner un tableau vide
+  // Si pas de réservations ou en cas d'erreur, retourner un tableau vide
   return [];
 };
 
@@ -44,6 +44,7 @@ export const loadReservations = (): Reservation[] => {
 export const saveReservations = (reservations: Reservation[]) => {
   try {
     localStorage.setItem('reservations', JSON.stringify(reservations));
+    console.log("Réservations sauvegardées avec succès:", reservations.length);
     return true;
   } catch (error) {
     console.error("Erreur lors de la sauvegarde des réservations:", error);

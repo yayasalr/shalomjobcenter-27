@@ -21,6 +21,7 @@ export const LogoSection: React.FC<LogoSectionProps> = ({
   useEffect(() => {
     setLogoError(false);
     setLogoLoaded(false);
+    console.log("Logo URL mise à jour dans LogoSection:", logoUrl?.substring(0, 30) + "...");
   }, [logoUrl]);
   
   return (
@@ -29,13 +30,14 @@ export const LogoSection: React.FC<LogoSectionProps> = ({
         <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-full border">
           {!logoError ? (
             <img 
-              key={`logo-${logoUrl}`} 
+              key={`logo-${Date.now()}`} 
               src={logoUrl || "/placeholder.svg"} 
               alt="Logo" 
               className="h-full w-auto object-contain" 
               onLoad={() => setLogoLoaded(true)}
               onError={() => {
                 setLogoError(true);
+                console.error("Erreur de chargement du logo dans LogoSection");
                 toast.error("Erreur de chargement du logo");
               }}
               style={{ display: logoLoaded ? 'block' : 'none' }}

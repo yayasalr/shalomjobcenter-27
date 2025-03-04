@@ -17,14 +17,17 @@ export const useSettingsStorage = () => {
       const storedLogo = localStorage.getItem('site_logo');
       if (storedLogo) {
         parsedSettings.logo = storedLogo;
+        console.log("Logo chargé depuis le stockage séparé");
       }
       
       const storedFavicon = localStorage.getItem('site_favicon');
       if (storedFavicon) {
         parsedSettings.favicon = storedFavicon;
+        console.log("Favicon chargé depuis le stockage séparé");
       }
       
       setSettings(parsedSettings as SiteSettings);
+      console.log("Paramètres chargés avec succès", parsedSettings);
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres:", error);
       setSettings(defaultSettings as SiteSettings);
@@ -34,35 +37,47 @@ export const useSettingsStorage = () => {
   // Sauvegarder les paramètres à chaque modification
   useEffect(() => {
     try {
+      // Sauvegarder immédiatement le logo et favicon
+      if (settings.logo && settings.logo.startsWith('data:')) {
+        localStorage.setItem('site_logo', settings.logo);
+        console.log("Logo sauvegardé séparément");
+      }
+      
+      if (settings.favicon && settings.favicon.startsWith('data:')) {
+        localStorage.setItem('site_favicon', settings.favicon);
+        console.log("Favicon sauvegardé séparément");
+      }
+      
       // Créer une copie des paramètres pour éviter de stocker les grandes data URLs directement
       const settingsToStore = { ...settings };
       
       // Ne pas stocker les grandes data URLs dans l'objet principal
       if (settingsToStore.logo && settingsToStore.logo.startsWith('data:')) {
-        // Stocker séparément
-        localStorage.setItem('site_logo', settingsToStore.logo);
         // Remplacer par un indicateur dans l'objet principal
         settingsToStore.logo = 'stored_separately';
       }
       
       if (settingsToStore.favicon && settingsToStore.favicon.startsWith('data:')) {
-        // Stocker séparément
-        localStorage.setItem('site_favicon', settingsToStore.favicon);
         // Remplacer par un indicateur dans l'objet principal
         settingsToStore.favicon = 'stored_separately';
       }
       
       localStorage.setItem('siteSettings', JSON.stringify(settingsToStore));
+      console.log("Paramètres sauvegardés avec succès");
     } catch (error) {
       console.error("Erreur lors de la sauvegarde des paramètres:", error);
     }
   }, [settings]);
 
   const updateSettings = (newSettings: Partial<SiteSettings>) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      ...newSettings,
-    }));
+    setSettings((prevSettings) => {
+      const updatedSettings = {
+        ...prevSettings,
+        ...newSettings,
+      };
+      console.log("Paramètres mis à jour:", updatedSettings);
+      return updatedSettings;
+    });
   };
 
   const resetSettings = () => {
@@ -71,6 +86,7 @@ export const useSettingsStorage = () => {
     localStorage.removeItem('site_favicon');
     
     setSettings(defaultSettings as SiteSettings);
+    console.log("Paramètres réinitialisés");
   };
 
   return {

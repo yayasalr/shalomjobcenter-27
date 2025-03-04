@@ -18,8 +18,8 @@ export const useReservationMutations = () => {
           status: 'pending' as const
         };
         
-        currentReservations.push(reservation);
-        const saved = saveReservations(currentReservations);
+        const updatedReservations = [...currentReservations, reservation];
+        const saved = saveReservations(updatedReservations);
         if (!saved) {
           throw new Error("Échec de la sauvegarde de la réservation");
         }
@@ -31,7 +31,13 @@ export const useReservationMutations = () => {
       }
     },
     onSuccess: (newReservation) => {
-      queryClient.setQueryData(["reservations"], (old: Reservation[] = []) => [...old, newReservation]);
+      // Mettre à jour le cache pour éviter de perdre les données au rechargement
+      queryClient.setQueryData(["reservations"], (old: Reservation[] = []) => {
+        const updatedReservations = [...old, newReservation];
+        return updatedReservations;
+      });
+      
+      // Invalider la requête pour forcer un rechargement des données
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       toast.success("Réservation ajoutée avec succès");
     },
@@ -47,27 +53,35 @@ export const useReservationMutations = () => {
         const index = currentReservations.findIndex(reservation => reservation.id === reservationId);
         
         if (index !== -1) {
-          currentReservations[index].status = status;
-          const saved = saveReservations(currentReservations);
+          const updatedReservations = [...currentReservations];
+          updatedReservations[index] = {
+            ...updatedReservations[index],
+            status
+          };
+          
+          const saved = saveReservations(updatedReservations);
           if (!saved) {
             throw new Error("Échec de la mise à jour du statut de réservation");
           }
           console.log("Statut de réservation mis à jour:", { reservationId, status });
+          return { reservationId, status, updatedReservation: updatedReservations[index] };
         } else {
           throw new Error(`Réservation avec ID ${reservationId} non trouvée`);
         }
-        return { reservationId, status };
       } catch (error) {
         console.error("Erreur lors de la mise à jour du statut:", error);
         throw error;
       }
     },
-    onSuccess: ({ reservationId, status }) => {
-      queryClient.setQueryData(["reservations"], (old: Reservation[] = []) =>
-        old.map((reservation) =>
+    onSuccess: ({ reservationId, status, updatedReservation }) => {
+      // Mettre à jour le cache pour éviter de perdre les données au rechargement
+      queryClient.setQueryData(["reservations"], (old: Reservation[] = []) => {
+        return old.map((reservation) =>
           reservation.id === reservationId ? { ...reservation, status } : reservation
-        )
-      );
+        );
+      });
+      
+      // Invalider la requête pour forcer un rechargement des données
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       
       const statusMessages = {
