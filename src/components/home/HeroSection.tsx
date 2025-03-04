@@ -121,8 +121,8 @@ export const HeroSection = () => {
               <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-sholom-primary/20 rounded-full blur-2xl"></div>
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1472396961693-142e6e269027?w=800" 
-                  alt="Logement premium" 
+                  src="/lovable-uploads/8f046947-6e09-442a-88f9-2f82a0a50910.png" 
+                  alt="Shalom Security" 
                   className="w-full h-auto object-cover rounded-2xl hover-scale aspect-[16/9]"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
