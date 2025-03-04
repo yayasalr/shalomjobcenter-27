@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useNavigate } from 'react-router-dom';
 
 interface EmptyStateProps {
   title: string;
@@ -11,6 +12,11 @@ interface EmptyStateProps {
 
 export const EmptyState = ({ title, description }: EmptyStateProps) => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  
+  const handleFindHousing = () => {
+    navigate('/');
+  };
   
   return (
     <div className="text-center p-12 border border-dashed rounded-lg">
@@ -19,8 +25,8 @@ export const EmptyState = ({ title, description }: EmptyStateProps) => {
       <p className="text-gray-500 mb-6">
         {description}
       </p>
-      <Button asChild>
-        <a href="/">{t('find_housing')}</a>
+      <Button onClick={handleFindHousing}>
+        {t('find_housing')}
       </Button>
     </div>
   );

@@ -62,6 +62,8 @@ export const calculateStayDuration = (startDate: string, endDate: string): numbe
 export const createReservationObject = (
   listing: Listing,
   userId: string,
+  userName: string,
+  userEmail: string,
   startDate: string,
   endDate: string,
   guestCount: number
@@ -70,11 +72,15 @@ export const createReservationObject = (
   
   return {
     listingId: listing.id,
-    userId,
-    startDate,
-    endDate,
-    guestCount,
+    listingTitle: listing.title || "Logement sans titre",
+    listingLocation: listing.location || "Emplacement non spécifié",
+    listingImage: listing.image || "/placeholder.svg",
+    guestName: userName,
+    guestEmail: userEmail,
+    checkIn: startDate,
+    checkOut: endDate,
+    guests: guestCount,
     totalPrice: diffDays * listing.price,
-    status: "pending",
+    notes: `Réservation pour ${diffDays} jours à ${formatPriceFCFA(listing.price)} FCFA par jour`,
   };
 };

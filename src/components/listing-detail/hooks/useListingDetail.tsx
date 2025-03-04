@@ -1,13 +1,14 @@
 
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useListings } from "@/hooks/useListings";
-import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useSiteSettings } from "@/hooks/settings/useSiteSettings";
 import { useReviews } from "@/hooks/useReviews";
+import { useReservations } from "@/hooks/reservations";
 import useAuth from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-// Import our new utility functions
+// Import our utility functions
 import { processListingImages } from "./utils/imageProcessing";
 import { checkIsFavorite, toggleFavoriteStatus } from "./utils/favoritesManager";
 import { 
@@ -21,11 +22,13 @@ import {
 } from "./utils/reservationManager";
 
 export const useListingDetail = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { listings, isLoading, addReservation } = useListings();
+  const { listings, isLoading } = useListings();
   const { settings } = useSiteSettings();
   const { reviews, addReview } = useReviews();
   const { user } = useAuth();
+  const { addReservation } = useReservations();
   
   // State management
   const [startDate, setStartDate] = useState<string>("");
@@ -81,6 +84,8 @@ export const useListingDetail = () => {
     const reservation = createReservationObject(
       listing,
       user.id,
+      user.name,
+      user.email || "utilisateur@example.com",
       startDate,
       endDate,
       guestCount
@@ -90,6 +95,10 @@ export const useListingDetail = () => {
     addReservation.mutate(reservation, {
       onSuccess: () => {
         toast.success("Réservation effectuée avec succès !");
+        // Rediriger vers la page des réservations après une réservation réussie
+        setTimeout(() => {
+          navigate("/reservations");
+        }, 1500);
       },
       onError: () => {
         toast.error("Erreur lors de la réservation");

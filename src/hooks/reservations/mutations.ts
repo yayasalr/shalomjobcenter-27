@@ -9,18 +9,23 @@ export const useReservationMutations = () => {
 
   const addReservation = useMutation({
     mutationFn: async (newReservation: Omit<Reservation, "id" | "createdAt" | "status">) => {
-      const currentReservations = loadReservations();
-      const reservation = {
-        ...newReservation,
-        id: Math.random().toString(36).substr(2, 9),
-        createdAt: new Date().toISOString(),
-        status: 'pending' as const
-      };
-      
-      currentReservations.push(reservation);
-      saveReservations(currentReservations);
-      console.log("Nouvelle réservation ajoutée:", reservation);
-      return reservation;
+      try {
+        const currentReservations = loadReservations();
+        const reservation = {
+          ...newReservation,
+          id: Math.random().toString(36).substr(2, 9),
+          createdAt: new Date().toISOString(),
+          status: 'pending' as const
+        };
+        
+        currentReservations.push(reservation);
+        saveReservations(currentReservations);
+        console.log("Nouvelle réservation ajoutée:", reservation);
+        return reservation;
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de la réservation:", error);
+        throw error;
+      }
     },
     onSuccess: (newReservation) => {
       queryClient.setQueryData(["reservations"], (old: Reservation[] = []) => [...old, newReservation]);
@@ -34,15 +39,22 @@ export const useReservationMutations = () => {
 
   const updateReservationStatus = useMutation({
     mutationFn: async ({ reservationId, status }: { reservationId: string; status: 'confirmed' | 'pending' | 'cancelled' }) => {
-      const currentReservations = loadReservations();
-      const index = currentReservations.findIndex(reservation => reservation.id === reservationId);
-      
-      if (index !== -1) {
-        currentReservations[index].status = status;
-        saveReservations(currentReservations);
-        console.log("Statut de réservation mis à jour:", { reservationId, status });
+      try {
+        const currentReservations = loadReservations();
+        const index = currentReservations.findIndex(reservation => reservation.id === reservationId);
+        
+        if (index !== -1) {
+          currentReservations[index].status = status;
+          saveReservations(currentReservations);
+          console.log("Statut de réservation mis à jour:", { reservationId, status });
+        } else {
+          throw new Error(`Réservation avec ID ${reservationId} non trouvée`);
+        }
+        return { reservationId, status };
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du statut:", error);
+        throw error;
       }
-      return { reservationId, status };
     },
     onSuccess: ({ reservationId, status }) => {
       queryClient.setQueryData(["reservations"], (old: Reservation[] = []) =>

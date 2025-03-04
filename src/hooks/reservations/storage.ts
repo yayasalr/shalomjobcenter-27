@@ -42,5 +42,11 @@ export const loadReservations = (): Reservation[] => {
 
 // Fonction pour sauvegarder les réservations
 export const saveReservations = (reservations: Reservation[]) => {
-  localStorage.setItem('reservations', JSON.stringify(reservations));
+  try {
+    localStorage.setItem('reservations', JSON.stringify(reservations));
+    return true;
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des réservations:", error);
+    return false;
+  }
 };
