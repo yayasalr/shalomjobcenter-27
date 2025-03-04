@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { LanguageProvider } from './providers/LanguageProvider';
 
 // Définir les couleurs globales inspirées d'Airbnb
 document.documentElement.style.setProperty('--primary', '#FF385C'); // Rouge Airbnb
@@ -25,6 +26,8 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <App />
+    <LanguageProvider>
+      <App />
+    </LanguageProvider>
   </QueryClientProvider>
 );

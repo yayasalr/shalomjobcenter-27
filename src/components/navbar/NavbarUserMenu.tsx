@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Globe, LogIn, Menu, User } from "lucide-react";
@@ -13,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LanguageSelector } from './LanguageSelector';
 
 interface NavbarUserMenuProps {
   mobileMenuOpen?: boolean;
@@ -27,7 +27,6 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
   const { settings } = useSiteSettings();
   const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
   
-  // Charger l'avatar depuis le localStorage et l'actualiser lorsque user change
   useEffect(() => {
     const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
@@ -38,14 +37,9 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
   }, [user]);
   
   return (
-    <div className="flex items-center gap-4">
-      {/* Bouton de langue */}
-      <button className="hidden md:flex items-center gap-1 text-sm hover:text-sholom-primary transition-colors">
-        <Globe className="h-4 w-4" />
-        <span>{settings.language === 'fr' ? 'FR' : 'EN'}</span>
-      </button>
-
-      {/* Menu utilisateur */}
+    <div className="flex items-center gap-2">
+      <LanguageSelector />
+      
       {user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -62,7 +56,6 @@ export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({
                     alt={user.name}
                     className="h-full w-full object-cover" 
                     onError={(e) => {
-                      // Si l'image échoue à charger, afficher un fallback
                       e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
                     }}
                   />

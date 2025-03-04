@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Briefcase, Home, Building, Shield, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,9 +7,11 @@ import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
 import { MagicBook } from '@/components/ui/magic-book';
 import { StatusBanner } from './StatusBanner';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const handleFindListing = () => {
     navigate('/', { state: { focusSearch: true } });
@@ -43,7 +46,7 @@ export const HeroSection = () => {
           <MagicBook 
             position="bottom-right"
             isOpen={false}
-            title="Logements en Afrique et partout dans le monde"
+            title={t('housing_in_africa')}
           />
         </div>
         
@@ -56,10 +59,10 @@ export const HeroSection = () => {
           >
             <motion.div className="lg:w-1/2 space-y-6" variants={itemVariants}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-sholom-dark leading-tight">
-                Découvrez votre nouveau <span className="text-sholom-primary italic">chez-vous</span> à Lomé
+                {t('discover_home')} <span className="text-sholom-primary italic">chez-vous</span> à Lomé
               </h1>
               <p className="text-xl text-sholom-muted max-w-2xl">
-                Des logements premium et des opportunités d'emploi exclusives dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.
+                {t('premium_housing')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
@@ -67,7 +70,7 @@ export const HeroSection = () => {
                   className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium"
                   onClick={handleFindListing}
                 >
-                  Trouver un logement
+                  {t('find_housing')}
                 </Button>
                 <Link to="/emplois">
                   <Button 
@@ -76,13 +79,13 @@ export const HeroSection = () => {
                     className="font-medium"
                   >
                     <Briefcase className="mr-2 h-5 w-5" />
-                    Offres d'emploi
+                    {t('job_offers')}
                   </Button>
                 </Link>
               </div>
               
               <div className="pt-8">
-                <p className="text-sholom-dark font-medium mb-3">Quartiers populaires:</p>
+                <p className="text-sholom-dark font-medium mb-3">{t('popular_neighborhoods')}</p>
                 <div className="flex flex-wrap gap-2">
                   {LOME_NEIGHBORHOODS.slice(0, 5).map((neighborhood, index) => (
                     <Button
@@ -101,9 +104,9 @@ export const HeroSection = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
                 {[
-                  { icon: <Home className="h-5 w-5" />, text: "Logements vérifiés" },
-                  { icon: <Shield className="h-5 w-5" />, text: "Paiements sécurisés" },
-                  { icon: <Building className="h-5 w-5" />, text: "Support local 24/7" }
+                  { icon: <Home className="h-5 w-5" />, text: t('verified_housing') },
+                  { icon: <Shield className="h-5 w-5" />, text: t('secure_payments') },
+                  { icon: <Building className="h-5 w-5" />, text: t('local_support') }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-center gap-2 text-sholom-dark">
                     <div className="text-sholom-primary">{benefit.icon}</div>
@@ -125,7 +128,7 @@ export const HeroSection = () => {
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
                   <div className="flex items-center text-white gap-4">
                     <div>
-                      <p className="text-lg font-medium">Villa Premium à Lomé</p>
+                      <p className="text-lg font-medium">{t('premium_villa')}</p>
                       <div className="flex items-center">
                         <MapPin className="h-4 w-4 mr-1" />
                         <span>Tokoin, Lomé</span>
@@ -140,7 +143,7 @@ export const HeroSection = () => {
                 <div className="absolute right-3 bottom-3 z-10 md:hidden">
                   <MagicBook 
                     position="bottom-right"
-                    title="Logements en Afrique et partout dans le monde"
+                    title={t('housing_in_africa')}
                   />
                 </div>
               </div>

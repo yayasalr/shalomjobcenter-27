@@ -1,7 +1,7 @@
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface MagicBookProps {
   className?: string;
@@ -13,12 +13,15 @@ interface MagicBookProps {
 
 export const MagicBook: React.FC<MagicBookProps> = ({ 
   className = "",
-  title = "Logements en Afrique et partout dans le monde",
+  title,
   onClick,
   position = "bottom-left",
   isOpen = false
 }) => {
   const [localIsOpen, setLocalIsOpen] = useState(isOpen);
+  const { t } = useLanguage();
+  
+  const bookTitle = title || t('housing_in_africa');
   
   useEffect(() => {
     setLocalIsOpen(isOpen);
@@ -72,7 +75,7 @@ export const MagicBook: React.FC<MagicBookProps> = ({
               <BookOpen className="h-3 w-3 md:h-4 md:w-4 text-amber-500" />
             </motion.div>
             <div className="text-black text-[6px] md:text-[7px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
-              {title}
+              {bookTitle}
             </div>
           </div>
           
