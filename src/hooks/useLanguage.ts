@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import useLocalStorage from './useLocalStorage';
-import { useSiteSettings } from './useSiteSettings';
+import { useSiteSettings } from './settings';
 
 type LanguageContextType = {
   language: 'fr' | 'en';
