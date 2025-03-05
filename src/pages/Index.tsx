@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -87,13 +88,17 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white w-screen p-0 m-0">
       <Navbar />
-      <StatusBanner />
       
       {!searchTerm && <HeroSection />}
       
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
           {!searchTerm && <FeaturesSection />}
+          
+          {/* Bannière positionnée au milieu de la page d'accueil */}
+          <div className="my-10 px-4">
+            <StatusBanner />
+          </div>
         </div>
       </div>
       
