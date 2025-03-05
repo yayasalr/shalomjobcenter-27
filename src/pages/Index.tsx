@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -13,7 +12,7 @@ import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { Footer } from '@/components/home/Footer';
 import { useLocation } from 'react-router-dom';
-import { StatusBanner } from '@/components/home/StatusBanner';
+import { StatusBanner } from '@/components/home/status-banner';
 
 const Index = () => {
   const { listings, isLoading } = useListings();
