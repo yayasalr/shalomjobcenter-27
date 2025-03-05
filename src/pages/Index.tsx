@@ -96,7 +96,7 @@ const Index = () => {
           {!searchTerm && <FeaturesSection />}
           
           {/* Bannière positionnée au milieu de la page d'accueil */}
-          <div className="my-10 px-4">
+          <div className="my-8 px-4">
             <StatusBanner />
           </div>
         </div>

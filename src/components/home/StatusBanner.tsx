@@ -64,150 +64,115 @@ export const StatusBanner: React.FC = () => {
   return (
     <AnimatePresence>
       <motion.div 
-        className="w-full overflow-hidden rounded-xl shadow-lg max-w-6xl mx-auto" 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
+        className="w-full overflow-hidden rounded-lg shadow-md max-w-5xl mx-auto h-16 sm:h-14"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
       >
         <div 
-          className="relative p-4 sm:p-6 overflow-hidden"
+          className="relative flex items-center h-full overflow-hidden bg-white"
           style={{ 
-            background: 'linear-gradient(135deg, #1a237e 0%, #0ea5e9 100%)'
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+            borderRadius: '8px',
+            border: '1px solid #f0f0f0'
           }}
         >
           {/* Background abstract elements */}
           <div className="absolute inset-0 overflow-hidden">
-            {/* Circuit pattern */}
-            <svg className="absolute h-full w-full opacity-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10,30 L30,30 L30,10" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M70,10 L70,30 L90,30" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M90,70 L70,70 L70,90" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M30,90 L30,70 L10,70" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M0,50 L100,50" stroke="white" strokeWidth="0.2" fill="none" strokeDasharray="2,2" />
-              <path d="M50,0 L50,100" stroke="white" strokeWidth="0.2" fill="none" strokeDasharray="2,2" />
-              <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="0.3" fill="none" />
-              <circle cx="50" cy="50" r="20" stroke="white" strokeWidth="0.2" fill="none" strokeDasharray="1,1" />
+            {/* Abstract patterns */}
+            <svg className="absolute h-full w-full opacity-5" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10,30 L30,30 L30,10" stroke="#888" strokeWidth="0.5" fill="none" />
+              <path d="M70,10 L70,30 L90,30" stroke="#888" strokeWidth="0.5" fill="none" />
+              <path d="M90,70 L70,70 L70,90" stroke="#888" strokeWidth="0.5" fill="none" />
+              <path d="M30,90 L30,70 L10,70" stroke="#888" strokeWidth="0.5" fill="none" />
+              <circle cx="50" cy="50" r="30" stroke="#888" strokeWidth="0.3" fill="none" />
+              <circle cx="50" cy="50" r="20" stroke="#888" strokeWidth="0.2" fill="none" strokeDasharray="1,1" />
             </svg>
             
-            {/* Animated particles */}
-            {Array.from({ length: 15 }).map((_, i) => (
-              <motion.div 
-                key={i}
-                className="absolute rounded-full bg-white"
-                style={{
-                  width: `${Math.random() * 4 + 1}px`,
-                  height: `${Math.random() * 4 + 1}px`,
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  opacity: Math.random() * 0.5 + 0.1,
-                }}
-                animate={{
-                  y: [0, -15, 0],
-                  x: [0, Math.random() * 10 - 5, 0],
-                  opacity: [0.1, 0.5, 0.1],
-                }}
-                transition={{
-                  duration: Math.random() * 5 + 5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            ))}
+            {/* Dot patterns */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute rounded-full bg-gray-300"
+                  style={{
+                    width: `${Math.random() * 3 + 1}px`,
+                    height: `${Math.random() * 3 + 1}px`,
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    opacity: Math.random() * 0.2,
+                  }}
+                />
+              ))}
+            </div>
           </div>
           
-          {/* Content wrapper */}
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
-            {/* Text content column */}
-            <div className="md:col-span-3 text-white space-y-3">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <Zap className="h-5 w-5 text-yellow-300" />
-                  <h3 className="text-xl font-semibold tracking-tight text-white">
+          {/* Scrolling content */}
+          <div className="relative flex items-center w-full h-full px-4">
+            <motion.div
+              className="flex items-center gap-2 w-full"
+              initial={{ x: "100%" }}
+              animate={{ x: "-100%" }}
+              transition={{
+                repeat: Infinity,
+                duration: 20,
+                ease: "linear",
+              }}
+            >
+              <div className="flex items-center space-x-3 flex-nowrap whitespace-nowrap">
+                <div className="flex items-center">
+                  <Zap className="h-4 w-4 text-amber-500 mr-2 flex-shrink-0" />
+                  <span className="text-gray-800 font-medium text-sm">
                     {currentMessage.text || promoContent.title}
-                  </h3>
+                  </span>
                 </div>
                 
-                <motion.p 
-                  className="text-blue-100 text-sm max-w-md"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
+                <span className="text-gray-500 text-xs">•</span>
+                
+                <span className="text-gray-600 text-sm">
                   {promoContent.subtitle}
-                </motion.p>
+                </span>
                 
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button 
-                    size="sm"
-                    className="bg-white text-blue-900 hover:bg-blue-50 group text-sm font-medium"
-                  >
-                    {promoContent.cta}
-                    <motion.div
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: Infinity, 
-                        ease: "easeInOut",
-                        repeatDelay: 1
-                      }}
-                    >
-                      <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                    </motion.div>
-                  </Button>
-                  
-                  <Button 
-                    size="sm"
-                    variant="ghost"
-                    className="text-blue-100 hover:text-white hover:bg-white/10 text-sm"
-                  >
-                    <LineChart className="h-3.5 w-3.5 mr-1.5" />
-                    Voir les statistiques
-                  </Button>
+                <span className="text-gray-500 text-xs">•</span>
+                
+                <Button 
+                  size="sm"
+                  variant="ghost"
+                  className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 py-1 h-8 text-xs font-medium"
+                >
+                  {promoContent.cta}
+                  <ArrowRight className="h-3 w-3 ml-1" />
+                </Button>
+                
+                <span className="text-gray-500 text-xs">•</span>
+                
+                <div className="flex items-center">
+                  <LineChart className="h-3 w-3 text-gray-600 mr-1" />
+                  <span className="text-gray-600 text-sm">Statistiques</span>
                 </div>
-              </motion.div>
-            </div>
-            
-            {/* Image column */}
-            <div className="md:col-span-2 relative">
-              <motion.div
-                className="relative z-10 rounded-lg overflow-hidden shadow-xl"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
-              >
-                <div className="relative overflow-hidden rounded-lg bg-gradient-to-tr from-white/10 to-white/5 p-2">
+                
+                <span className="text-gray-500 text-xs">•</span>
+                
+                <div className="flex items-center">
                   <img 
                     src="/lovable-uploads/8f046947-6e09-442a-88f9-2f82a0a50910.png" 
-                    alt="Innovation technologique" 
-                    className="w-full h-auto object-cover rounded"
+                    alt="Innovation" 
+                    className="h-6 w-6 object-cover rounded"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent rounded-lg"></div>
+                  <span className="text-gray-700 text-sm ml-2">Nouvelle fonctionnalité</span>
                 </div>
-                
-                {/* Decorative elements */}
-                <div className="absolute -top-3 -right-3 bg-yellow-400 w-8 h-8 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-blue-900 font-bold text-xs">NEW</span>
-                </div>
-              </motion.div>
-              
-              {/* Background decorative elements */}
-              <div className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 blur-2xl opacity-20"></div>
-              <div className="absolute -top-4 -left-4 w-16 h-16 rounded-full bg-gradient-to-tr from-blue-400 to-cyan-300 blur-xl opacity-20"></div>
-            </div>
+              </div>
+            </motion.div>
           </div>
           
           {/* Close button */}
           <button 
             onClick={() => setIsDismissed(true)}
-            className="absolute top-2 right-2 text-white/80 hover:text-white bg-black/10 hover:bg-black/20 p-1.5 rounded-full transition-colors"
+            className="absolute right-2 text-gray-400 hover:text-gray-600 bg-white/90 p-1 rounded-full z-10 transition-colors"
             aria-label="Fermer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3 w-3" />
           </button>
         </div>
       </motion.div>
