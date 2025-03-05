@@ -57,8 +57,8 @@ export const StatusBanner: React.FC = () => {
   
   // Default promotional message if none exists
   const promoContent = {
-    title: "Optimisez vos performances",
-    subtitle: "Accédez à des outils puissants pour booster votre entreprise",
+    title: "Boostez votre entreprise",
+    subtitle: "Accédez à des outils puissants",
     cta: "Découvrez nos solutions"
   };
 
@@ -72,46 +72,40 @@ export const StatusBanner: React.FC = () => {
         transition={{ duration: 0.3 }}
       >
         <div 
-          className="relative py-6 px-4 sm:px-6 lg:px-8 overflow-hidden"
+          className="relative py-3 px-4 sm:px-6 lg:px-8 overflow-hidden"
           style={{ 
             background: 'linear-gradient(135deg, #1a237e 0%, #0ea5e9 100%)'
           }}
         >
-          {/* Background abstract technology patterns */}
-          <div className="absolute inset-0 overflow-hidden opacity-10">
-            {/* Circuit pattern effect */}
+          {/* Subtle background abstract technology patterns */}
+          <div className="absolute inset-0 overflow-hidden opacity-5">
+            {/* Simplified circuit pattern */}
             <svg className="absolute h-full w-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10,30 L90,30" stroke="white" strokeWidth="0.5" fill="none" />
               <path d="M10,50 L90,50" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M10,70 L90,70" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M30,10 L30,90" stroke="white" strokeWidth="0.5" fill="none" />
               <path d="M50,10 L50,90" stroke="white" strokeWidth="0.5" fill="none" />
-              <path d="M70,10 L70,90" stroke="white" strokeWidth="0.5" fill="none" />
-              <circle cx="30" cy="30" r="2" fill="white" />
-              <circle cx="50" cy="50" r="2" fill="white" />
-              <circle cx="70" cy="70" r="2" fill="white" />
-              <circle cx="70" cy="30" r="2" fill="white" />
-              <circle cx="30" cy="70" r="2" fill="white" />
+              <circle cx="50" cy="50" r="1.5" fill="white" />
+              <circle cx="30" cy="30" r="1" fill="white" />
+              <circle cx="70" cy="70" r="1" fill="white" />
             </svg>
             
-            {/* Floating particles */}
-            {Array.from({ length: 12 }).map((_, i) => (
+            {/* Minimal floating particles */}
+            {Array.from({ length: 6 }).map((_, i) => (
               <motion.div 
                 key={i}
                 className="absolute rounded-full bg-white"
                 style={{
-                  width: `${Math.random() * 5 + 2}px`,
-                  height: `${Math.random() * 5 + 2}px`,
+                  width: `${Math.random() * 3 + 1}px`,
+                  height: `${Math.random() * 3 + 1}px`,
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * 100}%`,
-                  opacity: Math.random() * 0.5 + 0.2,
+                  opacity: Math.random() * 0.4 + 0.1,
                 }}
                 animate={{
-                  y: [0, -15, 0],
-                  opacity: [0.2, 0.8, 0.2],
+                  y: [0, -10, 0],
+                  opacity: [0.1, 0.4, 0.1],
                 }}
                 transition={{
-                  duration: Math.random() * 3 + 2,
+                  duration: Math.random() * 3 + 3,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
@@ -119,64 +113,63 @@ export const StatusBanner: React.FC = () => {
             ))}
           </div>
           
-          {/* Main content */}
-          <div className="relative z-10 max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              {/* Left: Text content with animations */}
-              <div className="flex-1 text-white space-y-2 text-center md:text-left">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <h3 className="text-2xl font-bold tracking-tight">{currentMessage.text || promoContent.title}</h3>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  <p className="text-white/80 max-w-xl">{promoContent.subtitle}</p>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.4 }}
-                >
-                  <Button 
-                    className="mt-3 bg-white text-blue-900 hover:bg-blue-50 group"
+          {/* Main content with more compact layout */}
+          <div className="relative z-10 max-w-5xl mx-auto">
+            <div className="flex items-center justify-between gap-3">
+              {/* Left: Text content with more subtle animations */}
+              <div className="flex-1 text-white text-center md:text-left">
+                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex-1 min-w-0"
                   >
-                    {promoContent.cta}
-                    <motion.div
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ 
-                        duration: 0.8, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
+                    <h3 className="text-lg font-medium tracking-tight">{currentMessage.text || promoContent.title}</h3>
+                    <p className="text-white/70 text-sm">{promoContent.subtitle}</p>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                    className="flex-shrink-0"
+                  >
+                    <Button 
+                      size="sm"
+                      className="bg-white text-blue-900 hover:bg-blue-50 group text-sm"
                     >
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </motion.div>
-                  </Button>
-                </motion.div>
+                      {promoContent.cta}
+                      <motion.div
+                        animate={{ x: [0, 3, 0] }}
+                        transition={{ 
+                          duration: 1, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          repeatDelay: 1
+                        }}
+                      >
+                        <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                      </motion.div>
+                    </Button>
+                  </motion.div>
+                </div>
               </div>
               
-              {/* Right: Image of person using device */}
+              {/* Right: Smaller image of person using device */}
               <motion.div 
-                className="flex-shrink-0 w-full max-w-xs md:max-w-sm"
-                initial={{ opacity: 0, scale: 0.9 }}
+                className="flex-shrink-0 w-28 md:w-32 hidden xs:block"
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
-                <div className="relative rounded-xl overflow-hidden shadow-2xl">
+                <div className="relative rounded-lg overflow-hidden shadow-md">
                   <img 
                     src="/lovable-uploads/8f046947-6e09-442a-88f9-2f82a0a50910.png" 
                     alt="Person using modern technology" 
                     className="w-full h-auto object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/40 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/30 to-transparent"></div>
                 </div>
               </motion.div>
             </div>
@@ -185,10 +178,10 @@ export const StatusBanner: React.FC = () => {
           {/* Close button */}
           <button 
             onClick={() => setIsDismissed(true)}
-            className="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 p-1.5 rounded-full transition-colors"
+            className="absolute top-2 right-2 text-white/80 hover:text-white bg-black/10 p-1 rounded-full transition-colors"
             aria-label="Fermer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" />
           </button>
         </div>
       </motion.div>
