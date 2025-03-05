@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -13,6 +12,7 @@ import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { Footer } from '@/components/home/Footer';
 import { useLocation } from 'react-router-dom';
+import { StatusBanner } from '@/components/home/StatusBanner';
 
 const Index = () => {
   const { listings, isLoading } = useListings();
@@ -31,7 +31,6 @@ const Index = () => {
     "https://images.unsplash.com/photo-1599809275671-b5942cabc7a2?w=800"  // Appartement contemporain
   ];
 
-  // Récupérer le terme de recherche de l'URL
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const searchParam = queryParams.get('search');
@@ -59,12 +58,10 @@ const Index = () => {
     }));
     
     const shuffled = [...processedListings].sort(() => 0.5 - Math.random());
-    // Afficher jusqu'à 6 logements en vedette (nombre optimal pour la grille)
     setFeaturedListings(shuffled.slice(0, Math.min(6, shuffled.length)));
     
     if (!searchTerm.trim()) {
       setFilteredListings(processedListings);
-      // Afficher 24 logements initialement (4 rangées de 6)
       setVisibleListings(processedListings.slice(0, 24));
     } else {
       const filtered = processedListings.filter(listing => 
@@ -83,7 +80,6 @@ const Index = () => {
 
   const loadMoreListings = () => {
     if (visibleListings.length < filteredListings.length) {
-      // Charger 12 logements supplémentaires (2 rangées de 6)
       setVisibleListings(filteredListings.slice(0, visibleListings.length + 12));
     }
   };
@@ -91,6 +87,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white w-screen p-0 m-0">
       <Navbar />
+      <StatusBanner />
       
       {!searchTerm && <HeroSection />}
       

@@ -37,7 +37,7 @@ export const StatusBanner: React.FC = () => {
       console.error('Error loading status messages:', error);
       setStatusMessages([]);
     }
-  }, [loadData]);
+  }, [loadData]); // Only run once on mount with stable loadData reference
 
   // Filter active statuses
   const activeMessages = statusMessages.filter(msg => msg.active);
@@ -45,7 +45,6 @@ export const StatusBanner: React.FC = () => {
   // Reset to first message when active messages change
   useEffect(() => {
     setCurrentIndex(0);
-    setIsDismissed(false);
   }, [activeMessages.length]);
   
   // If no active messages, don't render anything
@@ -65,7 +64,7 @@ export const StatusBanner: React.FC = () => {
   return (
     <AnimatePresence>
       <motion.div 
-        className="w-full overflow-hidden mt-2" 
+        className="w-full overflow-hidden mt-[72px] sm:mt-[80px] md:mt-[88px]" 
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
@@ -113,28 +112,28 @@ export const StatusBanner: React.FC = () => {
             ))}
           </div>
           
-          {/* Main content with more compact layout */}
-          <div className="relative z-10 max-w-5xl mx-auto">
-            <div className="flex items-center justify-between gap-3">
-              {/* Left: Text content with more subtle animations */}
-              <div className="flex-1 text-white text-center md:text-left">
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="flex-1 min-w-0"
-                  >
+          {/* Scrolling banner content */}
+          <motion.div 
+            className="relative z-10 max-w-5xl mx-auto"
+            animate={{ x: ["100%", "-100%"] }}
+            transition={{
+              x: {
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+              }
+            }}
+          >
+            <div className="flex items-center gap-3">
+              {/* Text content with more subtle animations */}
+              <div className="flex-1 text-white text-center whitespace-nowrap">
+                <div className="flex flex-row items-center gap-4">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-lg font-medium tracking-tight">{currentMessage.text || promoContent.title}</h3>
                     <p className="text-white/70 text-sm">{promoContent.subtitle}</p>
-                  </motion.div>
+                  </div>
                   
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: 0.2 }}
-                    className="flex-shrink-0"
-                  >
+                  <div className="flex-shrink-0">
                     <Button 
                       size="sm"
                       className="bg-white text-blue-900 hover:bg-blue-50 group text-sm"
@@ -152,17 +151,12 @@ export const StatusBanner: React.FC = () => {
                         <ArrowRight className="h-3.5 w-3.5 ml-1" />
                       </motion.div>
                     </Button>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
               
-              {/* Right: Smaller image of person using device */}
-              <motion.div 
-                className="flex-shrink-0 w-28 md:w-32 hidden xs:block"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-              >
+              {/* Image of person using device */}
+              <div className="flex-shrink-0 w-28 md:w-32 hidden xs:block">
                 <div className="relative rounded-lg overflow-hidden shadow-md">
                   <img 
                     src="/lovable-uploads/8f046947-6e09-442a-88f9-2f82a0a50910.png" 
@@ -171,9 +165,9 @@ export const StatusBanner: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/30 to-transparent"></div>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </div>
+          </motion.div>
           
           {/* Close button */}
           <button 
