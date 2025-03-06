@@ -1,7 +1,36 @@
 
-// Liste des quartiers de Lomé pour les nouvelles annonces
+// Liste des quartiers de Lomé
 export const LOME_NEIGHBORHOODS = [
-  "Tokoin", "Bè", "Adidogomé", "Agoè", "Kodjoviakopé", 
-  "Nyékonakpoè", "Hédzranawoé", "Baguida", "Agbalépédogan", 
-  "Akodésséwa", "Gbényédji", "Ablogamé", "Abobo", "Aflao"
+  'Tokoin',
+  'Bè',
+  'Doulassamé',
+  'Hédzranawoé',
+  'Adidogomé',
+  'Agoè',
+  'Atikoumé',
+  'Nyékonakpoè',
+  'Gbadago',
+  'Kodjoviakopé',
+  'Amoutivé',
+  'Tokoin Trésor',
+  'Adakpamé',
+  'Adéwui',
+  'Aflao Gakli',
+  'Agbalépédogan',
+  'Akodesséwa',
+  'Anfamé',
+  'Baguida',
+  'Djidjolé',
+  'Forever',
+  'Kélégouvi',
+  'Kpogan',
+  'Lomé II',
+  'Nukafu',
+  'Sagbado',
+  'Soviépé',
+  'Tokoin Elavagnon',
+  'Tokoin Gbadago',
+  'Tokoin Ouest',
+  'Wonyomé',
+  'Zongo'
 ];

@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             id: `user-${Date.now()}`,
             email: userData.email,
             name: userData.email.split('@')[0],
-            role: 'user',
+            role: userData.email.includes('admin') ? 'admin' : 'user',
             isAdmin: userData.email.includes('admin')
           };
           

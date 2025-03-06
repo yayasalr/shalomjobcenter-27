@@ -16,7 +16,7 @@ export const defaultSettings: Partial<SiteSettings> = {
   darkMode: false,
   footer: {
     contact: 'Contactez-nous pour plus d\'informations',
-    about: 'SHALOM JOB CENTER est une agence de placement spécialisée dans le recrutement et le placement de personnel qualifié.',
+    about: 'SHALOM JOB CENTER est une agence de placement spécialisée dans le recrutement et le placement de personnel qualifié à Lomé, Togo.',
     terms: 'Conditions d\'utilisation',
     policy: 'Politique de confidentialité'
   },
@@ -27,10 +27,10 @@ export const defaultSettings: Partial<SiteSettings> = {
     linkedin: 'https://linkedin.com'
   },
   companyInfo: {
-    address: '123 Main Street, Anytown',
-    phone: '+15551234567',
-    email: 'info@example.com',
-    registrationNumber: '123456789',
-    mapLocation: ''
+    address: 'Tokoin Trésor, ancien immeuble Udecto, Lomé, Togo',
+    phone: '+228 90-19-03-41',
+    email: 'Shalomjob@gmail.com',
+    registrationNumber: 'TG-LOM-01-2023-B12',
+    mapLocation: '6.1796825,1.1272278'
   },
 };
