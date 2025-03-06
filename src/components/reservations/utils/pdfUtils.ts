@@ -82,8 +82,10 @@ export const downloadReservationPDF = (reservation: Reservation): void => {
     headStyles: { fillColor: [66, 66, 66] },
   });
   
-  // Footer
-  const pageCount = doc.internal.getNumberOfPages();
+  // Footer with page numbers
+  // Get the current page count - fixed approach
+  const pageCount = (doc as any).internal.pages.length - 1;
+  
   doc.setFontSize(10);
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
