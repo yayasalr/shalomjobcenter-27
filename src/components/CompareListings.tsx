@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Link } from 'react-router-dom';
-import { X, Scale, ArrowRight, MapPin, Star } from 'lucide-react';
+import { X, GitCompare, ArrowRight, MapPin, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -12,7 +11,6 @@ export const CompareListings = () => {
   const { listings } = useListings();
   const [compareListings, setCompareListings] = useState<any[]>([]);
 
-  // Charger les IDs depuis le localStorage
   useEffect(() => {
     const handleStorageChange = () => {
       const storedIds = localStorage.getItem('compareListings');
@@ -37,7 +35,6 @@ export const CompareListings = () => {
     };
   }, []);
 
-  // Obtenir les détails des logements à comparer
   useEffect(() => {
     if (!listings || compareIds.length === 0) {
       setCompareListings([]);
@@ -48,24 +45,19 @@ export const CompareListings = () => {
     setCompareListings(filteredListings);
   }, [listings, compareIds]);
 
-  // Supprimer un logement de la comparaison
   const removeListing = (id: string) => {
     const updatedIds = compareIds.filter(compareId => compareId !== id);
     localStorage.setItem('compareListings', JSON.stringify(updatedIds));
     
-    // Mettre à jour l'état local
     setCompareIds(updatedIds);
     
-    // Masquer le panneau si plus aucun logement à comparer
     if (updatedIds.length === 0) {
       setIsVisible(false);
     }
     
-    // Déclencher un événement pour que les autres composants puissent réagir
     window.dispatchEvent(new Event('storage'));
   };
 
-  // Vider la comparaison
   const clearComparison = () => {
     localStorage.removeItem('compareListings');
     setCompareIds([]);
@@ -73,13 +65,11 @@ export const CompareListings = () => {
     window.dispatchEvent(new Event('storage'));
   };
 
-  // Affichage du prix en FCFA
   const formatPriceFCFA = (priceEUR: number): string => {
     const priceFCFA = Math.round(priceEUR * 655.957);
     return priceFCFA.toLocaleString('fr-FR');
   };
 
-  // Animations
   const containerVariants = {
     hidden: { y: 100, opacity: 0 },
     visible: { 
@@ -110,7 +100,7 @@ export const CompareListings = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <Scale className="h-5 w-5 text-sholom-primary mr-2" />
+                <GitCompare className="h-5 w-5 text-sholom-primary mr-2" />
                 <h3 className="text-lg font-semibold">
                   Comparer ({compareListings.length} logement{compareListings.length > 1 ? 's' : ''})
                 </h3>

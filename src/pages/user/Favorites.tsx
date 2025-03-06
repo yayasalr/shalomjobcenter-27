@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { ListingCard } from '@/components/listing-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, AlertCircle, FolderPlus, Compare } from 'lucide-react';
+import { Heart, AlertCircle, FolderPlus, GitCompare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useListings } from '@/hooks/useListings';
 import useAuth from '@/hooks/useAuth';
@@ -22,11 +21,9 @@ const Favorites = () => {
   const { user } = useAuth();
   const [selectedListings, setSelectedListings] = useState<string[]>([]);
   
-  // Dans une application réelle, vous récupéreriez les favoris depuis une API
   const { data: favorites = [] } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
-      // Simuler des favoris avec 3 annonces aléatoires
       const randomListings = [...listings]
         .sort(() => 0.5 - Math.random())
         .slice(0, 3);
@@ -80,7 +77,7 @@ const Favorites = () => {
                 className="flex items-center gap-2"
                 onClick={() => {/* Implement comparison logic */}}
               >
-                <Compare className="h-4 w-4" />
+                <GitCompare className="h-4 w-4" />
                 Comparer ({selectedListings.length})
               </Button>
             )}
@@ -108,7 +105,7 @@ const Favorites = () => {
                         }`}
                         onClick={() => toggleListingSelection(listing.id)}
                       >
-                        <Compare className="h-4 w-4" />
+                        <GitCompare className="h-4 w-4" />
                       </Button>
                     </div>
                     <ListingCard listing={listing} />
