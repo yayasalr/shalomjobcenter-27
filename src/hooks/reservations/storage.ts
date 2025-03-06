@@ -7,6 +7,7 @@ export const loadReservations = (): Reservation[] => {
     const savedReservations = localStorage.getItem('reservations');
     if (savedReservations) {
       const parsed = JSON.parse(savedReservations);
+      console.log("Réservations chargées depuis le storage:", parsed.length);
       // Vérifier que chaque réservation a toutes les propriétés requises
       return parsed.map((reservation: any) => {
         // S'assurer que chaque réservation a une image

@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 interface ApplicationDialogProps {
   isOpen: boolean;
@@ -52,8 +53,13 @@ const ApplicationDialog = ({
     try {
       await onSubmit(e);
       onOpenChange(false);
+      toast.success(isHousingOffer 
+        ? "Votre demande de réservation a été enregistrée avec succès" 
+        : "Votre candidature a été envoyée avec succès");
+      console.log("Application submitted successfully:", applicantData);
     } catch (error) {
       console.error("Application submission error:", error);
+      toast.error("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
     } finally {
       setIsSubmitting(false);
     }

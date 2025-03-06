@@ -13,14 +13,15 @@ export const DisplaySettings: React.FC<DisplaySettingsProps> = ({
   settings,
   handleInputChange
 }) => {
+  // Le mode est toujours clair, désactivé la possibilité de changer
   return (
     <div className="flex items-center space-x-2">
       <Switch
-        checked={settings.darkMode}
-        onCheckedChange={(checked) => handleInputChange('darkMode', checked)}
+        checked={false}
+        disabled={true}
         id="darkMode"
       />
-      <Label htmlFor="darkMode">Mode sombre</Label>
+      <Label htmlFor="darkMode">Mode sombre (désactivé)</Label>
     </div>
   );
 };

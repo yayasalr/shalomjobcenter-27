@@ -19,11 +19,13 @@ export const useListings = () => {
     queryKey: ["listings"],
     queryFn: async () => {
       const currentListings = loadListings();
-      console.log("Chargement des listings:", currentListings);
+      console.log("Chargement des listings:", currentListings.length);
       return currentListings;
     },
-    staleTime: 0,
-    gcTime: 0,
+    staleTime: 0, // Toujours recharger les données
+    gcTime: 0, // Ne pas mettre en cache
+    refetchOnMount: true, // Recharger à chaque montage du composant
+    refetchOnWindowFocus: true, // Recharger quand la fenêtre retrouve le focus
   });
 
   const addListing = useMutation({
@@ -53,6 +55,7 @@ export const useListings = () => {
       return listing;
     },
     onSuccess: (newListing) => {
+      // Mettre à jour immédiatement le cache
       queryClient.setQueryData(["listings"], (old: Listing[] = []) => [...old, newListing]);
       queryClient.invalidateQueries({ queryKey: ["listings"] });
       toast.success("Logement ajouté avec succès");
@@ -79,6 +82,7 @@ export const useListings = () => {
       return updatedListing;
     },
     onSuccess: (updatedListing) => {
+      // Mettre à jour immédiatement le cache
       queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
         old.map((listing) =>
           listing.id === updatedListing.id ? updatedListing : listing
@@ -104,6 +108,7 @@ export const useListings = () => {
       return listingId;
     },
     onSuccess: (deletedId) => {
+      // Mettre à jour immédiatement le cache
       queryClient.setQueryData(["listings"], (old: Listing[] = []) =>
         old.filter((listing) => listing.id !== deletedId)
       );
@@ -130,7 +135,9 @@ export const useListings = () => {
       console.log("Nouvelle réservation ajoutée:", newReservation);
       return newReservation;
     },
-    onSuccess: () => {
+    onSuccess: (newReservation) => {
+      // Mettre à jour immédiatement le cache des réservations
+      queryClient.setQueryData(["reservations"], (old: any[] = []) => [...old, newReservation]);
       queryClient.invalidateQueries({ queryKey: ["reservations"] });
       toast.success("Réservation effectuée avec succès");
     },

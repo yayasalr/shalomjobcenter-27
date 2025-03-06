@@ -1,11 +1,10 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light'; // Seulement 'light' comme option maintenant
 
 interface ThemeProviderProps {
   children: React.ReactNode;
-  defaultTheme?: Theme;
   storageKey?: string;
 }
 
@@ -15,7 +14,7 @@ interface ThemeContextType {
 }
 
 const initialState: ThemeContextType = {
-  theme: 'system',
+  theme: 'light',
   setTheme: () => null,
 };
 
@@ -23,37 +22,30 @@ const ThemeContext = createContext<ThemeContextType>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
   storageKey = 'ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
+  const [theme] = useState<Theme>('light');
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light', 'dark');
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light';
-      
-      root.setAttribute('data-theme', systemTheme);
-      root.classList.add(systemTheme);
-    } else {
-      root.setAttribute('data-theme', theme);
-      root.classList.add(theme);
-    }
-  }, [theme]);
+    
+    // Supprimer toute classe dark qui pourrait être présente
+    root.classList.remove('dark');
+    
+    // Toujours définir le thème clair
+    root.setAttribute('data-theme', 'light');
+    root.classList.add('light');
+    
+    // Stocker le thème en local storage
+    localStorage.setItem(storageKey, 'light');
+  }, [storageKey]);
 
   const value = {
-    theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
+    theme: 'light',
+    setTheme: () => {
+      // Ne change rien, toujours en mode clair
+      localStorage.setItem(storageKey, 'light');
     },
   };
 

@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Check, Monitor, Moon, Sun, BellRing, Bell, Globe, Layout } from 'lucide-react';
+import { Check, Sun, BellRing, Bell, Globe, Layout } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -14,16 +13,10 @@ import { Separator } from '@/components/ui/separator';
 export const PreferencesTab: React.FC = () => {
   const { settings, updateSettings } = useSiteSettings();
   const { t, language, setLanguage } = useLanguage();
-  const [selectedTheme, setSelectedTheme] = useState('light');
   const [selectedColor, setSelectedColor] = useState('purple');
   
   const savePreferences = () => {
     toast.success("Préférences enregistrées avec succès");
-  };
-
-  const toggleDarkMode = (checked: boolean) => {
-    updateSettings({ darkMode: checked });
-    setSelectedTheme(checked ? 'dark' : 'light');
   };
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -49,9 +42,10 @@ export const PreferencesTab: React.FC = () => {
           <div className="space-y-2">
             <div className="font-medium mb-2">Thème</div>
             <RadioGroup 
-              defaultValue={settings.darkMode ? "dark" : "light"} 
-              className="grid grid-cols-3 gap-4"
-              onValueChange={(value) => toggleDarkMode(value === 'dark')}
+              defaultValue="light" 
+              className="grid grid-cols-1 gap-4"
+              value="light"
+              disabled
             >
               <div>
                 <RadioGroupItem 
@@ -61,38 +55,10 @@ export const PreferencesTab: React.FC = () => {
                 />
                 <Label
                   htmlFor="theme-light"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-white p-4 hover:bg-gray-100 hover:border-gray-200 cursor-pointer [&:has([data-state=checked])]:border-primary"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-primary bg-white p-4 cursor-pointer"
                 >
                   <Sun className="mb-2 h-6 w-6 text-yellow-500" />
-                  <span>Clair</span>
-                </Label>
-              </div>
-              <div>
-                <RadioGroupItem 
-                  value="dark" 
-                  id="theme-dark" 
-                  className="sr-only" 
-                />
-                <Label
-                  htmlFor="theme-dark"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-gray-950 p-4 hover:bg-gray-900 hover:border-gray-800 cursor-pointer [&:has([data-state=checked])]:border-primary"
-                >
-                  <Moon className="mb-2 h-6 w-6 text-blue-300" />
-                  <span className="text-white">Sombre</span>
-                </Label>
-              </div>
-              <div>
-                <RadioGroupItem 
-                  value="system" 
-                  id="theme-system" 
-                  className="sr-only" 
-                />
-                <Label
-                  htmlFor="theme-system"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-gray-100 p-4 hover:bg-gray-200 hover:border-gray-300 cursor-pointer [&:has([data-state=checked])]:border-primary"
-                >
-                  <Monitor className="mb-2 h-6 w-6 text-gray-600" />
-                  <span>Système</span>
+                  <span>Clair (par défaut)</span>
                 </Label>
               </div>
             </RadioGroup>
