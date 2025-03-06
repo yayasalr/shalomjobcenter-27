@@ -41,8 +41,8 @@ export function ThemeProvider({
     localStorage.setItem(storageKey, 'light');
   }, [storageKey]);
 
-  const value = {
-    theme: 'light',
+  const value: ThemeContextType = {
+    theme: 'light' as Theme,
     setTheme: () => {
       // Ne change rien, toujours en mode clair
       localStorage.setItem(storageKey, 'light');
