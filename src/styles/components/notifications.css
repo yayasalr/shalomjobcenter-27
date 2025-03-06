@@ -1,17 +1,17 @@
 
-/* Responsive styles for notifications */
-
 /* Mobile-first styles */
 .notification-container {
   padding: 0.5rem;
   max-height: calc(100vh - 160px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .notification-item {
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   border-radius: 0.5rem;
+  touch-action: manipulation;
 }
 
 .notification-header {
@@ -51,8 +51,10 @@
 }
 
 .notification-action-button {
-  min-height: 28px;
-  min-width: 28px;
+  min-height: 44px; /* Taille minimale pour les cibles tactiles */
+  min-width: 44px;
+  padding: 0.5rem;
+  touch-action: manipulation;
 }
 
 /* Tablet styles */
@@ -164,7 +166,7 @@
   }
 }
 
-/* No unnecessary padding on very small screens */
+/* Small screens optimizations */
 @media (max-width: 320px) {
   .notification-container {
     padding: 0.25rem;
@@ -179,8 +181,8 @@
   }
 
   .notification-action-button {
-    min-height: 24px;
-    min-width: 24px;
+    min-height: 40px;
+    min-width: 40px;
     padding: 0 0.35rem;
   }
 
@@ -191,5 +193,16 @@
   .notification-message {
     font-size: 0.8rem;
     line-height: 1.2rem;
+  }
+}
+
+/* Optimisations tactiles */
+@media (hover: none) and (pointer: coarse) {
+  .notification-action-button {
+    margin: 0.15rem;
+  }
+  
+  .notification-actions {
+    margin: 0.25rem -0.15rem;
   }
 }

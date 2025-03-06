@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -31,12 +30,10 @@ const Notifications = () => {
   
   const [showConnectionAlert, setShowConnectionAlert] = useState(false);
   
-  // Afficher l'alerte de connexion lorsque l'état de connexion change
   useEffect(() => {
     if (!isConnected) {
       setShowConnectionAlert(true);
     } else {
-      // Masquer l'alerte après un délai si la connexion est rétablie
       const timer = setTimeout(() => {
         setShowConnectionAlert(false);
       }, 3000);
@@ -48,7 +45,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-16 sm:py-20 lg:py-24 max-w-4xl">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-8 sm:py-12 lg:py-16 max-w-4xl">
         <NotificationHeader 
           unreadCount={unreadCount} 
           onMarkAllAsRead={markAllAsRead}
@@ -57,7 +54,11 @@ const Notifications = () => {
         />
         
         {showConnectionAlert && (
-          <Alert className={`mb-4 sm:mb-6 ${isConnected ? 'bg-green-50' : 'bg-red-50'}`}>
+          <Alert 
+            className={`mb-4 sm:mb-6 ${
+              isConnected ? 'bg-green-50' : 'bg-red-50'
+            }`}
+          >
             {isConnected ? (
               <Wifi className="h-4 w-4 text-green-600" />
             ) : (
@@ -75,16 +76,22 @@ const Notifications = () => {
         )}
         
         <TooltipProvider>
-          <Card className="shadow-sm">
+          <Card className="shadow-sm overflow-hidden">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg sm:text-xl">Centre de notifications</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Restez informé de toutes vos activités récentes</CardDescription>
+                  <CardTitle className="text-lg sm:text-xl">
+                    Centre de notifications
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
+                    Restez informé de toutes vos activités récentes
+                  </CardDescription>
                 </div>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'} animate-pulse`}></div>
+                    <div className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${
+                      isConnected ? 'bg-green-500' : 'bg-red-500'
+                    } animate-pulse`}></div>
                   </TooltipTrigger>
                   <TooltipContent>
                     {isConnected 

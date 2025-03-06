@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { MessageSquare, Calendar, CreditCard, AlertTriangle, Info, Bookmark, Star, MoreHorizontal } from 'lucide-react';
 import { Notification } from '@/components/notifications/types';
 import { 
@@ -89,7 +88,9 @@ const NotificationItem = ({
 
   return (
     <div 
-      className={`p-4 border-b transition-colors relative ${!notification.read ? 'bg-blue-50' : ''} ${isHovered ? 'bg-gray-50' : ''}`}
+      className={`notification-item transition-colors relative ${
+        !notification.read ? 'bg-blue-50' : ''
+      } ${isHovered ? 'bg-gray-50' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -98,38 +99,92 @@ const NotificationItem = ({
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2">
-              <h3 className={`font-medium ${!notification.read ? 'text-black' : 'text-gray-700'}`}>
+              <h3 className={`notification-title ${
+                !notification.read ? 'text-black' : 'text-gray-700'
+              }`}>
                 {notification.title}
               </h3>
               {notification.important && (
-                <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Notification importante
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
               {notification.saved && (
-                <Bookmark className="h-4 w-4 text-blue-500 fill-blue-500" />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Bookmark className="h-4 w-4 text-blue-500 fill-blue-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Notification sauvegardée
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
-            <span className="text-xs text-gray-500">
-              {notification.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            <span className="notification-timestamp text-gray-500">
+              {notification.timestamp.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })}
             </span>
           </div>
-          <p className={`text-sm mt-1 ${!notification.read ? 'text-gray-800' : 'text-gray-500'}`}>
+          <p className={`notification-message ${
+            !notification.read ? 'text-gray-800' : 'text-gray-500'
+          }`}>
             {notification.message}
           </p>
           
           <div className="flex justify-between items-center mt-2">
             {notification.actionUrl && notification.actionLabel && (
-              <Button size="sm" variant="outline" asChild>
-                <a href={notification.actionUrl}>{notification.actionLabel}</a>
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      className="notification-action-button" 
+                      variant="outline" 
+                      asChild
+                    >
+                      <a href={notification.actionUrl}>
+                        {notification.actionLabel}
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {notification.actionLabel}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
             
-            <div className={`flex items-center gap-2 ml-auto transition-opacity ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`notification-actions ml-auto transition-opacity ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          className="notification-action-button p-0"
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Plus d'options
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <DropdownMenuContent align="end">
                   {notification.read ? (
                     <DropdownMenuItem onClick={handleMarkAsUnread}>
