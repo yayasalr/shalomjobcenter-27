@@ -3,9 +3,21 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Reservation } from '@/hooks/reservations';
-import { Calendar, MoreHorizontal } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar, MoreHorizontal, Download, FileText } from 'lucide-react';
+import { 
+  Popover, 
+  PopoverContent, 
+  PopoverTrigger 
+} from '@/components/ui/popover';
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator 
+} from '@/components/ui/dropdown-menu';
 import { downloadICalFile, addToGoogleCalendar } from '../utils/calendarUtils';
+import { downloadReservationPDF } from '../utils/pdfUtils';
 
 interface CardActionsProps {
   status: Reservation['status'];
@@ -35,6 +47,15 @@ export const CardActions = ({
     }
   };
   
+  const handleExportPDF = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!reservation) return;
+    
+    downloadReservationPDF(reservation);
+  };
+  
   return (
     <div className="flex gap-2">
       <Button variant="outline" className="w-full" onClick={onViewDetails}>
@@ -42,31 +63,31 @@ export const CardActions = ({
       </Button>
       
       {reservation && (
-        <Popover>
-          <PopoverTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
-              <Calendar className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-2">
-            <div className="flex flex-col gap-2">
-              <Button 
-                variant="ghost" 
-                className="justify-start" 
-                onClick={(e) => handleAddToCalendar(e, 'ical')}
-              >
-                {t('add_to_calendar') || 'Ajouter au calendrier'}
-              </Button>
-              <Button 
-                variant="ghost" 
-                className="justify-start" 
-                onClick={(e) => handleAddToCalendar(e, 'google')}
-              >
-                {t('add_to_google') || 'Ajouter à Google'}
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={handleExportPDF}>
+              <FileText className="mr-2 h-4 w-4" />
+              {t('save_as_pdf') || 'Enregistrer en PDF'}
+            </DropdownMenuItem>
+            
+            <DropdownMenuSeparator />
+            
+            <DropdownMenuItem onClick={(e) => handleAddToCalendar(e, 'ical')}>
+              <Calendar className="mr-2 h-4 w-4" />
+              {t('add_to_calendar') || 'Ajouter au calendrier'}
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem onClick={(e) => handleAddToCalendar(e, 'google')}>
+              <Calendar className="mr-2 h-4 w-4" />
+              {t('add_to_google') || 'Ajouter à Google'}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
       
       {status !== 'cancelled' && onCancel && (
