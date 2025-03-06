@@ -3,12 +3,15 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/useAuth";
 
 export interface NavbarMobileMenuProps {
   isOpen: boolean;
 }
 
 export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) => {
+  const { user, logout } = useAuth();
+  
   if (!isOpen) {
     return null;
   }
@@ -36,12 +39,39 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
           <Link to="/contact" className="hover:text-primary transition-colors">
             Contact
           </Link>
-          <Link to="/login" className="text-primary font-semibold transition-colors">
-            Connexion
-          </Link>
-          <Link to="/register" className="bg-primary text-white px-6 py-2 rounded-full transition-colors">
-            S'inscrire
-          </Link>
+          
+          {user ? (
+            <>
+              <Link to="/profile" className="hover:text-primary transition-colors">
+                Mon profil
+              </Link>
+              <Link to="/favorites" className="hover:text-primary transition-colors">
+                Mes favoris
+              </Link>
+              <Link to="/reservations" className="hover:text-primary transition-colors">
+                Mes réservations
+              </Link>
+              <Link to="/messages" className="hover:text-primary transition-colors">
+                Messages
+              </Link>
+              <Button 
+                onClick={logout} 
+                variant="outline" 
+                className="border-primary text-primary"
+              >
+                Déconnexion
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-primary font-semibold transition-colors">
+                Connexion
+              </Link>
+              <Link to="/register" className="bg-primary text-white px-6 py-2 rounded-full transition-colors">
+                S'inscrire
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </div>

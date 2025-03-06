@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { NavbarDesktopMenu } from "./NavbarDesktopMenu";
 import { NavbarLogo } from "./NavbarLogo";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
+import { NavbarUserMenu } from "./NavbarUserMenu";
 import useAuth from "@/hooks/useAuth";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,20 +34,8 @@ export const Navbar = () => {
         
         <div className="hidden md:flex md:flex-1 md:items-center md:justify-between">
           <NavbarDesktopMenu />
-          {/* User menu added directly in the navbar component */}
-          <div className="flex items-center space-x-4">
-            {user ? (
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium">{user.name}</span>
-                {/* Add any user-specific UI elements here */}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <a href="/login" className="text-sm font-medium">Connexion</a>
-                <a href="/register" className="bg-primary text-primary-foreground px-3 py-1.5 rounded-md text-sm font-medium">S'inscrire</a>
-              </div>
-            )}
-          </div>
+          {/* User menu with NavbarUserMenu component */}
+          <NavbarUserMenu />
         </div>
       </div>
     </header>
