@@ -25,7 +25,10 @@ export interface AuthContextType {
   isAdmin: boolean; // Added for Login and ProtectedRoute
   refreshSession: () => void; // Added for ProtectedRoute
   updateUserAvatar: (avatarUrl: string) => void; // Added for Profile
-  login: (userData: User) => void;
+  login: { // Modified to match Login.tsx usage
+    mutateAsync: (data: any) => Promise<void>;
+    isPending: boolean;
+  };
   register: { // Added for Register
     mutateAsync: (data: RegisterData) => Promise<void>;
     isPending: boolean;

@@ -28,12 +28,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  // User login function
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(userData));
-    toast.success("Connexion réussie!");
-    navigate(userData.isAdmin ? "/admin/dashboard" : "/");
+  // Enhanced login function with mutateAsync
+  const login = {
+    mutateAsync: async (userData: any): Promise<void> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const newUser: User = {
+            id: `user-${Date.now()}`,
+            email: userData.email,
+            name: userData.email.split('@')[0],
+            role: 'user',
+            isAdmin: userData.email.includes('admin')
+          };
+          
+          setUser(newUser);
+          localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(newUser));
+          toast.success("Connexion réussie!");
+          navigate(newUser.isAdmin ? "/admin/dashboard" : "/");
+          resolve();
+        }, 500);
+      });
+    },
+    isPending: false
   };
 
   // Mock register function with Promise for mutateAsync
