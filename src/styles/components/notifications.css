@@ -1,0 +1,195 @@
+
+/* Responsive styles for notifications */
+
+/* Mobile-first styles */
+.notification-container {
+  padding: 0.5rem;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.notification-header {
+  padding: 0.75rem 0.5rem;
+}
+
+.notification-group-date {
+  font-size: 0.75rem;
+  padding: 0.5rem;
+}
+
+.notification-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 1rem;
+}
+
+.notification-message {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.notification-title {
+  font-size: 0.9rem;
+  line-height: 1.35rem;
+  margin-bottom: 0.25rem;
+}
+
+.notification-timestamp {
+  font-size: 0.65rem;
+}
+
+.notification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.notification-action-button {
+  min-height: 28px;
+  min-width: 28px;
+}
+
+/* Tablet styles */
+@media (min-width: 640px) {
+  .notification-container {
+    padding: 1rem;
+    max-height: calc(100vh - 180px);
+  }
+
+  .notification-item {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .notification-header {
+    padding: 1rem;
+  }
+
+  .notification-group-date {
+    font-size: 0.8rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .notification-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .notification-message {
+    font-size: 0.925rem;
+    line-height: 1.4rem;
+  }
+
+  .notification-title {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .notification-timestamp {
+    font-size: 0.7rem;
+  }
+
+  .notification-actions {
+    gap: 0.35rem;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .notification-container {
+    padding: 1.5rem;
+    max-height: calc(100vh - 200px);
+  }
+
+  .notification-item {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .notification-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .notification-group-date {
+    font-size: 0.875rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .notification-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .notification-message {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .notification-title {
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .notification-timestamp {
+    font-size: 0.75rem;
+  }
+
+  .notification-actions {
+    gap: 0.5rem;
+  }
+}
+
+/* Landscape mode on mobile devices */
+@media (max-height: 500px) and (orientation: landscape) {
+  .notification-container {
+    max-height: calc(100vh - 120px);
+    padding: 0.5rem;
+  }
+
+  .notification-item {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .notification-actions {
+    flex-wrap: nowrap;
+  }
+}
+
+/* No unnecessary padding on very small screens */
+@media (max-width: 320px) {
+  .notification-container {
+    padding: 0.25rem;
+  }
+
+  .notification-item {
+    padding: 0.6rem;
+  }
+
+  .notification-header {
+    padding: 0.6rem 0.25rem;
+  }
+
+  .notification-action-button {
+    min-height: 24px;
+    min-width: 24px;
+    padding: 0 0.35rem;
+  }
+
+  .notification-title {
+    font-size: 0.85rem;
+  }
+
+  .notification-message {
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+  }
+}

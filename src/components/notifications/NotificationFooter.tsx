@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { toast } from 'sonner';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const NotificationFooter = () => {
   const handleExport = (format: string) => {
@@ -16,36 +17,66 @@ const NotificationFooter = () => {
   };
 
   return (
-    <div className="border-t flex flex-wrap justify-between pt-6 gap-2">
-      <div className="flex flex-wrap gap-2">
-        <Button variant="outline" asChild>
-          <a href="/profile?tab=preferences">
-            <User className="mr-2 h-4 w-4" />
-            Gérer mes préférences
-          </a>
-        </Button>
+    <div className="border-t flex flex-wrap justify-between pt-4 sm:pt-6 gap-2">
+      <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="outline" size="sm" className="flex-grow sm:flex-grow-0" asChild>
+                <a href="/profile?tab=preferences">
+                  <User className="mr-2 h-4 w-4" />
+                  <span className="hidden xs:inline">Gérer mes préférences</span>
+                  <span className="xs:hidden">Préférences</span>
+                </a>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Gérer mes préférences de notification
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
-        <Button variant="ghost" size="sm" asChild>
-          <a href="/profile?tab=notifications">
-            <Rss className="mr-2 h-4 w-4" />
-            S'abonner aux alertes
-          </a>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex-grow sm:flex-grow-0" asChild>
+                <a href="/profile?tab=notifications">
+                  <Rss className="mr-2 h-4 w-4" />
+                  <span className="hidden xs:inline">S'abonner aux alertes</span>
+                  <span className="xs:hidden">Alertes</span>
+                </a>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              S'abonner aux alertes et notifications
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
-        <Button variant="ghost" size="sm" asChild>
-          <a href="/profile?tab=saved">
-            <Bookmark className="mr-2 h-4 w-4" />
-            Notifications sauvegardées
-          </a>
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex-grow sm:flex-grow-0" asChild>
+                <a href="/profile?tab=saved">
+                  <Bookmark className="mr-2 h-4 w-4" />
+                  <span className="hidden xs:inline">Notifications sauvegardées</span>
+                  <span className="xs:hidden">Sauvegardées</span>
+                </a>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Voir vos notifications sauvegardées
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
-      <div className="flex gap-2">
+      <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="flex-grow-0">
               <Download className="mr-2 h-4 w-4" />
-              Exporter
+              <span className="hidden xs:inline">Exporter</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -61,10 +92,20 @@ const NotificationFooter = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         
-        <Button variant="ghost" size="sm">
-          <Clock className="mr-2 h-4 w-4" />
-          Historique complet
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" className="flex-grow sm:flex-grow-0">
+                <Clock className="mr-2 h-4 w-4" />
+                <span className="hidden xs:inline">Historique complet</span>
+                <span className="xs:hidden">Historique</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Voir l'historique complet de vos notifications
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );
