@@ -19,7 +19,7 @@
 @import './styles/components/badges.css';
 @import './styles/components/admin-messages.css';
 @import './styles/components/whatsapp/index.css';
-@import './styles/components/notifications.css';
+@import './styles/components/notifications/index.css';
 
 /* Theme-specific styles */
 @import './styles/theme.css';
