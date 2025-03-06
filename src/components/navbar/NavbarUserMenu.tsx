@@ -89,31 +89,31 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
           </DropdownMenuItem>
         )}
         <DropdownMenuItem asChild>
-          <Link to="/user/profile" className="cursor-pointer">
+          <Link to="/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             <span>Mon Profil</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/user/favorites" className="cursor-pointer">
+          <Link to="/favorites" className="cursor-pointer">
             <Heart className="mr-2 h-4 w-4" />
             <span>Favoris</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/user/reservations" className="cursor-pointer">
+          <Link to="/reservations" className="cursor-pointer">
             <CalendarDays className="mr-2 h-4 w-4" />
             <span>Réservations</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/user/messages" className="cursor-pointer">
+          <Link to="/messages" className="cursor-pointer">
             <MessageSquare className="mr-2 h-4 w-4" />
             <span>Messages</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/user/notifications" className="cursor-pointer">
+          <Link to="/notifications" className="cursor-pointer">
             <Bell className="mr-2 h-4 w-4" />
             <span>Notifications</span>
           </Link>

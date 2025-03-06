@@ -1,4 +1,3 @@
-
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import { Toaster as SonnerToaster } from 'sonner';
@@ -53,7 +52,6 @@ function App() {
       <AppInitializer />
       <AnimatePresence mode="wait">
         <Routes>
-          {/* Routes publiques */}
           <Route path="/" element={<Index />} />
           <Route path="/logement/:id" element={<ListingDetail />} />
           <Route path="/login" element={<Login />} />
@@ -65,7 +63,6 @@ function App() {
           <Route path="/support" element={<Support />} />
           <Route path="/faq" element={<FAQ />} />
           
-          {/* Routes utilisateur (authentification requise) */}
           <Route path="/profile" element={
             <ProtectedRoute>
               <Profile />
@@ -92,7 +89,6 @@ function App() {
             </ProtectedRoute>
           } />
           
-          {/* Routes admin (rôle admin requis) */}
           <Route path="/admin" element={
             <ProtectedRoute requireAdmin={true}>
               <AdminDashboard />
@@ -144,7 +140,6 @@ function App() {
             </ProtectedRoute>
           } />
           
-          {/* Route fallback */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>

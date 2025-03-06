@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
@@ -53,6 +52,9 @@ export const NavbarMobileMenu: React.FC<NavbarMobileMenuProps> = ({ isOpen }) =>
               </Link>
               <Link to="/messages" className="hover:text-primary transition-colors">
                 Messages
+              </Link>
+              <Link to="/notifications" className="hover:text-primary transition-colors">
+                Notifications
               </Link>
               <Button 
                 onClick={logout} 
