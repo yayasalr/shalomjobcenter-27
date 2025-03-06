@@ -1,3 +1,3 @@
 
-import { Navbar } from "./navbar";
-export { Navbar };
+// Re-export for backwards compatibility
+export { Navbar } from "./navbar";
