@@ -25,7 +25,12 @@ const EmptyNotificationState = ({ type }: EmptyNotificationStateProps) => {
           description: "Vous avez lu toutes vos notifications.",
           buttonText: "Voir toutes les notifications",
           buttonUrl: "#",
-          buttonAction: () => document.querySelector('[data-value="all"]')?.click()
+          buttonAction: () => {
+            const element = document.querySelector('[data-value="all"]');
+            if (element && element instanceof HTMLElement) {
+              element.click();
+            }
+          }
         };
       case 'messages':
         return {
@@ -50,7 +55,12 @@ const EmptyNotificationState = ({ type }: EmptyNotificationStateProps) => {
           description: "Vous n'avez pas encore sauvegardé de notifications.",
           buttonText: "Voir toutes les notifications",
           buttonUrl: "#",
-          buttonAction: () => document.querySelector('[data-value="all"]')?.click()
+          buttonAction: () => {
+            const element = document.querySelector('[data-value="all"]');
+            if (element && element instanceof HTMLElement) {
+              element.click();
+            }
+          }
         };
       default:
         return {

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { User, Clock, RSS, Bookmark, Download } from 'lucide-react';
+import { User, Clock, Rss, Bookmark, Download } from 'lucide-react';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -27,7 +27,7 @@ const NotificationFooter = () => {
         
         <Button variant="ghost" size="sm" asChild>
           <a href="/profile?tab=notifications">
-            <RSS className="mr-2 h-4 w-4" />
+            <Rss className="mr-2 h-4 w-4" />
             S'abonner aux alertes
           </a>
         </Button>
