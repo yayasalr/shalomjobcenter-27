@@ -2,19 +2,19 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { User, AuthContextType } from "./types";
+import { User, AuthContextType, RegisterData } from "./types";
 import { LocalStorageKeys } from "./authUtils";
 
-// Création du contexte d'authentification
+// Create authentication context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Fournisseur du contexte d'authentification
+// Authentication provider component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Vérifier si l'utilisateur est déjà connecté au chargement
+  // Check if user is already logged in on load
   useEffect(() => {
     const storedUser = localStorage.getItem(LocalStorageKeys.USER);
     if (storedUser) {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  // Fonction de connexion
+  // User login function
   const login = (userData: User) => {
     setUser(userData);
     localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(userData));
@@ -36,19 +36,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate(userData.isAdmin ? "/admin/dashboard" : "/");
   };
 
-  // Fonction de déconnexion améliorée
+  // Mock register function with Promise for mutateAsync
+  const register = {
+    mutateAsync: async (data: RegisterData): Promise<void> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const newUser: User = {
+            id: `user-${Date.now()}`,
+            email: data.email,
+            name: data.name,
+            role: 'user'
+          };
+          
+          registerUser(newUser);
+          resolve();
+        }, 500);
+      });
+    },
+    isPending: false
+  };
+
+  // Enhanced logout function
   const logout = () => {
     try {
-      // Supprimer l'utilisateur de l'état
+      // Remove user from state
       setUser(null);
       
-      // Supprimer les données du localStorage
+      // Remove data from localStorage
       localStorage.removeItem(LocalStorageKeys.USER);
       
-      // Notifier l'utilisateur du succès
+      // Notify user of success
       toast.success("Déconnexion réussie");
       
-      // Rediriger vers la page d'accueil
+      // Redirect to login page
       navigate("/login");
     } catch (error) {
       console.error("Erreur lors de la déconnexion:", error);
@@ -63,14 +83,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     navigate("/");
   };
 
+  // Update user avatar
+  const updateUserAvatar = (avatarUrl: string) => {
+    if (user) {
+      const updatedUser = { ...user, avatar: avatarUrl };
+      setUser(updatedUser);
+      localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(updatedUser));
+    }
+  };
+
+  // Mock session refresh
+  const refreshSession = () => {
+    console.log("Refreshing user session");
+    // In a real app, this would validate and refresh tokens
+  };
+
+  // Computed properties
+  const isAuthenticated = !!user;
+  const isAdmin = !!user?.isAdmin;
+  const isLoading = loading;
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, registerUser }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading,
+      isLoading,
+      isAuthenticated,
+      isAdmin,
+      login, 
+      logout, 
+      registerUser,
+      register,
+      refreshSession,
+      updateUserAvatar
+    }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Hook personnalisé pour utiliser le contexte d'authentification
+// Custom hook to access auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

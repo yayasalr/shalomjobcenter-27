@@ -5,7 +5,7 @@ export interface User {
   name: string;
   avatar?: string;
   role: 'user' | 'host' | 'admin';
-  isAdmin?: boolean; // Adding isAdmin property
+  isAdmin?: boolean;
 }
 
 export interface LoginCredentials {
@@ -20,7 +20,16 @@ export interface RegisterData extends LoginCredentials {
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isLoading: boolean; // Added for ProtectedRoute
+  isAuthenticated: boolean; // Added for Login and ProtectedRoute
+  isAdmin: boolean; // Added for Login and ProtectedRoute
+  refreshSession: () => void; // Added for ProtectedRoute
+  updateUserAvatar: (avatarUrl: string) => void; // Added for Profile
   login: (userData: User) => void;
+  register: { // Added for Register
+    mutateAsync: (data: RegisterData) => Promise<void>;
+    isPending: boolean;
+  };
   logout: () => void;
   registerUser: (userData: User) => void;
 }
