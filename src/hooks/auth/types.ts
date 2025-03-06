@@ -3,9 +3,14 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  role: string;
   avatar?: string;
-  role: 'user' | 'host' | 'admin';
   isAdmin?: boolean;
+  created?: string;
+  lastLogin?: string;
+  loginCount?: number;
+  securityLevel?: 'standard' | 'high' | 'restricted';
+  lockedUntil?: string;
 }
 
 export interface LoginCredentials {
@@ -13,26 +18,32 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterData extends LoginCredentials {
+export interface RegisterData {
   name: string;
+  email: string;
+  password: string;
 }
 
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
-  isLoading: boolean; // Added for ProtectedRoute
-  isAuthenticated: boolean; // Added for Login and ProtectedRoute
-  isAdmin: boolean; // Added for Login and ProtectedRoute
-  refreshSession: () => void; // Added for ProtectedRoute
-  updateUserAvatar: (avatarUrl: string) => void; // Added for Profile
-  login: { // Modified to match Login.tsx usage
-    mutateAsync: (data: any) => Promise<void>;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  login: {
+    mutateAsync: (userData: LoginCredentials) => Promise<void>;
     isPending: boolean;
   };
-  register: { // Added for Register
+  register: {
     mutateAsync: (data: RegisterData) => Promise<void>;
     isPending: boolean;
   };
   logout: () => void;
   registerUser: (userData: User) => void;
+  refreshSession: () => void;
+  updateUserAvatar: (avatarUrl: string) => void;
+  // Nouvelles fonctions de sécurité
+  unlockUserAccount?: (email: string) => boolean;
+  updateUserSecurityLevel?: (userId: string, level: 'standard' | 'high' | 'restricted') => boolean;
+  checkAccountLocked?: (email: string) => { locked: boolean; remainingMinutes: number };
 }
