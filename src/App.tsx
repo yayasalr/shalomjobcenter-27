@@ -1,7 +1,7 @@
 
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
-import { SonnerToaster } from 'sonner';
+import { Toaster as SonnerToaster } from 'sonner';
 import { SidebarProvider } from './components/ui/sidebar';
 import { AnimatePresence } from 'framer-motion';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
