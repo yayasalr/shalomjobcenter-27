@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
 import { MagicBook } from '@/components/ui/magic-book';
-import { StatusBanner } from './StatusBanner';
+import { StatusBanner } from '@/components/home/status-banner';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export const HeroSection = () => {
