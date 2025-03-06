@@ -1,20 +1,20 @@
 
 import { User } from './types';
 
-// Simulation de stockage local des utilisateurs
+// Simulation de stockage local des utilisateurs avec mot de passe plus sécurisé
 export const MOCK_USERS = [
   {
     id: "1",
-    email: "john@example.com",
-    name: "John Doe",
-    password: "password123",
-    role: "host" as const,
+    email: "user@example.com",
+    name: "Utilisateur Standard",
+    password: "User@2025!",
+    role: "user" as const,
   },
   {
     id: "admin",
-    email: "admin@example.com",
+    email: "admin@admin.com",
     name: "Administrateur",
-    password: "admin123",
+    password: "Admin@2025!",
     role: "admin" as const,
   },
 ];
@@ -78,4 +78,23 @@ export const createWelcomeMessages = (user: User) => {
   ];
 
   localStorage.setItem(`conversations_${user.id}`, JSON.stringify(initialConversations));
+};
+
+// Fonction pour vérifier si un compte admin existe déjà
+export const ensureAdminAccount = () => {
+  const storedUsers = localStorage.getItem("users");
+  if (!storedUsers) {
+    // Si pas d'utilisateurs, on initialise avec les utilisateurs par défaut
+    localStorage.setItem("users", JSON.stringify(MOCK_USERS));
+    return;
+  }
+  
+  const users = JSON.parse(storedUsers);
+  const adminExists = users.some((user: any) => user.role === "admin");
+  
+  if (!adminExists) {
+    // Si aucun administrateur n'existe, on ajoute l'administrateur par défaut
+    users.push(MOCK_USERS.find(user => user.role === "admin"));
+    localStorage.setItem("users", JSON.stringify(users));
+  }
 };

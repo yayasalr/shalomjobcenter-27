@@ -1,8 +1,11 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import { Toaster as SonnerToaster } from 'sonner';
 import { SidebarProvider } from './components/ui/sidebar';
 import { AnimatePresence } from 'framer-motion';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { AppInitializer } from './components/auth/AppInitializer';
 
 import Index from './pages/Index';
 import ListingDetail from './pages/ListingDetail';
@@ -46,6 +49,7 @@ function App() {
 
   return (
     <SidebarProvider>
+      <AppInitializer />
       <Router>
         <AnimatePresence mode="wait">
           <Routes>
