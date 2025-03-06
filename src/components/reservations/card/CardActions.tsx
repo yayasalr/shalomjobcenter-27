@@ -6,8 +6,8 @@ import { Reservation } from '@/hooks/reservations';
 
 interface CardActionsProps {
   status: Reservation['status'];
-  onViewDetails: () => void;
-  onCancel?: () => void;
+  onViewDetails: (e?: React.MouseEvent) => void;
+  onCancel?: (e?: React.MouseEvent) => void;
 }
 
 export const CardActions = ({ 
