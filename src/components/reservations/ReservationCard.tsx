@@ -14,12 +14,14 @@ interface ReservationCardProps {
   reservation: Reservation;
   onViewDetails?: (id: string) => void;
   onCancel?: (id: string) => void;
+  actions?: React.ReactNode; // Add this line to accept actions as a prop
 }
 
 export const ReservationCard = ({ 
   reservation, 
   onViewDetails,
-  onCancel 
+  onCancel,
+  actions // Add this to the destructuring
 }: ReservationCardProps) => {
   const { t } = useLanguage();
   const { toggleLike, hasUserLiked, incrementShares } = useSocialInteractions();
@@ -198,6 +200,9 @@ export const ReservationCard = ({
             <span>{t('share') || 'Partager'}</span>
           </Button>
         </div>
+        
+        {/* Render custom actions if provided */}
+        {actions}
       </CardContent>
       <CardFooter className="gap-2">
         <Button variant="outline" className="w-full" onClick={handleViewDetails}>
