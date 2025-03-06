@@ -42,7 +42,6 @@ export interface AuthContextType {
   registerUser: (userData: User) => void;
   refreshSession: () => void;
   updateUserAvatar: (avatarUrl: string) => void;
-  // Nouvelles fonctions de sécurité
   unlockUserAccount?: (email: string) => boolean;
   updateUserSecurityLevel?: (userId: string, level: 'standard' | 'high' | 'restricted') => boolean;
   checkAccountLocked?: (email: string) => { locked: boolean; remainingMinutes: number };
