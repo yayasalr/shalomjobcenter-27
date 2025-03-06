@@ -4,6 +4,8 @@
 
 /* Layout styles */
 @import './styles/layout/container.css';
+@import './styles/layout/typography.css';
+@import './styles/layout/variables.css';
 
 /* Animation-related styles */
 @import './styles/animations.css';
