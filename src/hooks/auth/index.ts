@@ -1,3 +1,5 @@
 
-export { default as useAuth } from './useAuth';
-export type { User, LoginCredentials, RegisterData } from './types';
+export * from './useAuth';
+export * from './types';
+export * from './authUtils';
+export * from './useUserAvatar';

@@ -1,3 +1,4 @@
+
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import { Toaster as SonnerToaster } from 'sonner';
@@ -5,6 +6,9 @@ import { SidebarProvider } from './components/ui/sidebar';
 import { AnimatePresence } from 'framer-motion';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AppInitializer } from './components/auth/AppInitializer';
+import { OfflineIndicator } from './components/messages/OfflineIndicator';
+
+import './index.css';
 
 import Index from './pages/Index';
 import ListingDetail from './pages/ListingDetail';
@@ -145,6 +149,7 @@ function App() {
       </AnimatePresence>
       
       <CompareListings />
+      <OfflineIndicator />
       
       <SonnerToaster position="top-right" closeButton theme="light" 
         toastOptions={{
