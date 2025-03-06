@@ -5,6 +5,7 @@ import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LanguageProvider } from './providers/LanguageProvider';
 import { AuthProvider } from './hooks/auth/useAuth';
+import { BrowserRouter } from 'react-router-dom';
 
 // Custom CSS variables for the SHALOM theme updated to Airbnb colors
 document.documentElement.style.setProperty('--sholom-primary', '#FF385C');
@@ -20,10 +21,12 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
-    </AuthProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <LanguageProvider>
+          <App />
+        </LanguageProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
