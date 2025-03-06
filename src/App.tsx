@@ -1,7 +1,7 @@
 
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
-import { Toaster as SonnerToaster } from 'sonner';
+import { SonnerToaster } from 'sonner';
 import { SidebarProvider } from './components/ui/sidebar';
 import { AnimatePresence } from 'framer-motion';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -21,6 +21,8 @@ import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import Support from './pages/Support';
 import FAQ from './pages/FAQ';
+import TermsOfUse from './pages/TermsOfUse';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import Profile from './pages/user/Profile';
 import Favorites from './pages/user/Favorites';
@@ -66,6 +68,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/support" element={<Support />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
           
           <Route path="/profile" element={
             <ProtectedRoute>

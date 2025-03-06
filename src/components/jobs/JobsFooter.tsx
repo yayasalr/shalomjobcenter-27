@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export const JobsFooter = () => {
@@ -42,8 +43,16 @@ export const JobsFooter = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Informations légales</h4>
             <div className="text-gray-400 space-y-2">
-              <p>{settings.footer.terms}</p>
-              <p>{settings.footer.policy}</p>
+              <p>
+                <Link to="/terms" className="hover:text-white transition-colors">
+                  {settings.footer.terms}
+                </Link>
+              </p>
+              <p>
+                <Link to="/privacy" className="hover:text-white transition-colors">
+                  {settings.footer.policy}
+                </Link>
+              </p>
               {settings.companyInfo && (
                 <p>RCCM: {settings.companyInfo.registrationNumber}</p>
               )}

@@ -40,8 +40,8 @@ export const Footer = () => {
               <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">À propos</Link></li>
               <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
               <li><Link to="/faq" className="text-gray-300 hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</Link></li>
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Politique de confidentialité</Link></li>
+              <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</Link></li>
+              <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Politique de confidentialité</Link></li>
             </ul>
           </div>
           
@@ -88,9 +88,9 @@ export const Footer = () => {
             &copy; {new Date().getFullYear()} Shalom Security. Tous droits réservés.
           </p>
           <div className="flex gap-4">
-            <Link to="/" className="text-gray-400 text-sm hover:text-white transition-colors">Mentions légales</Link>
+            <Link to="/terms" className="text-gray-400 text-sm hover:text-white transition-colors">Conditions d'utilisation</Link>
             <span className="text-gray-600">|</span>
-            <Link to="/" className="text-gray-400 text-sm hover:text-white transition-colors">Cookies</Link>
+            <Link to="/privacy" className="text-gray-400 text-sm hover:text-white transition-colors">Politique de confidentialité</Link>
             <span className="text-gray-600">|</span>
             <Link to="/faq" className="text-gray-400 text-sm hover:text-white transition-colors">FAQ</Link>
           </div>
