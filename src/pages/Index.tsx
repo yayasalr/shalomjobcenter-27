@@ -90,14 +90,13 @@ const Index = () => {
       
       {!searchTerm && <HeroSection />}
       
+      <div className="w-full py-6 bg-gradient-to-r from-slate-50 to-white">
+        <StatusBanner />
+      </div>
+      
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
           {!searchTerm && <FeaturesSection />}
-          
-          {/* Bannière positionnée au milieu de la page d'accueil */}
-          <div className="my-8 px-4">
-            <StatusBanner />
-          </div>
         </div>
       </div>
       

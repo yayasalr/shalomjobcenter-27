@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Briefcase, Home, Building, Shield, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
 import { MagicBook } from '@/components/ui/magic-book';
-import { StatusBanner } from '@/components/home/status-banner';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export const HeroSection = () => {
@@ -39,8 +37,6 @@ export const HeroSection = () => {
 
   return (
     <>
-      <StatusBanner />
-      
       <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16 relative">
         <div className="absolute right-8 bottom-8 transform z-10 hidden md:block">
           <MagicBook 
