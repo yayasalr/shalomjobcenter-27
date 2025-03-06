@@ -106,6 +106,7 @@ export const ReservationCard = ({
       <CardFooter className="gap-2">
         <CardActions 
           status={reservation.status} 
+          reservation={reservation}
           onViewDetails={handleViewDetails}
           onCancel={onCancel ? handleCancel : undefined}
         />
