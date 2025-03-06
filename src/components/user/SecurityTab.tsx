@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Lock, ShieldCheck, KeyRound, Smartphone, AlertTriangle, History } from 
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import useAuth from '@/hooks/useAuth';
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 export const SecurityTab: React.FC = () => {
   const { user } = useAuth();
@@ -23,16 +22,13 @@ export const SecurityTab: React.FC = () => {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [secretKey, setSecretKey] = useState('');
 
-  // Generate unique secret key for 2FA when needed
   useEffect(() => {
     if (showTwoFactorSetup) {
-      // Create a simple random key for demo purposes
       const key = generateRandomKey();
       setSecretKey(key);
     }
   }, [showTwoFactorSetup]);
 
-  // Generate random key for demo purposes
   const generateRandomKey = (): string => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
     let result = '';
@@ -42,7 +38,6 @@ export const SecurityTab: React.FC = () => {
     return result;
   };
 
-  // Récupération de l'historique des connexions
   const loginLogs = JSON.parse(localStorage.getItem('login_logs') || '[]')
     .filter((log: any) => log.email === user?.email)
     .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -110,10 +105,6 @@ export const SecurityTab: React.FC = () => {
       return;
     }
 
-    // En production, cette logique serait gérée côté serveur
-    // Ici, nous simulons simplement un changement de mot de passe
-    // Dans une implémentation réelle, il y aurait une vérification du mot de passe actuel
-    
     setTimeout(() => {
       toast.success("Mot de passe mis à jour avec succès");
       setCurrentPassword('');
@@ -122,7 +113,6 @@ export const SecurityTab: React.FC = () => {
       setPasswordStrength(0);
       setPasswordErrors([]);
       
-      // Journaliser le changement de mot de passe
       const securityLogs = JSON.parse(localStorage.getItem('security_logs') || '[]');
       securityLogs.push({
         type: 'password_changed',
@@ -150,7 +140,6 @@ export const SecurityTab: React.FC = () => {
       setShowTwoFactorSetup(false);
       toast.success("Authentification à deux facteurs activée avec succès");
       
-      // Journaliser l'activation de la 2FA
       const securityLogs = JSON.parse(localStorage.getItem('security_logs') || '[]');
       securityLogs.push({
         type: '2fa_enabled',
@@ -180,7 +169,6 @@ export const SecurityTab: React.FC = () => {
     localStorage.setItem(`recovery_codes_${user?.id}`, JSON.stringify(codes));
     toast.success("Codes de récupération générés avec succès");
     
-    // Ouvrir une fenêtre modale ou afficher les codes
     alert("Voici vos codes de récupération. Conservez-les en lieu sûr:\n\n" + codes.join("\n"));
   };
 
@@ -301,7 +289,7 @@ export const SecurityTab: React.FC = () => {
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <div className="text-center mb-2 font-medium">Scanner ce QR code</div>
                   <div className="w-40 h-40 bg-white mx-auto flex items-center justify-center">
-                    <QRCode value={getTotpUrl()} size={140} />
+                    <QRCodeCanvas value={getTotpUrl()} size={140} />
                   </div>
                   <p className="text-xs text-center mt-2 text-gray-500 dark:text-gray-400">
                     Utilisez une application comme Google Authenticator
@@ -418,4 +406,3 @@ export const SecurityTab: React.FC = () => {
     </div>
   );
 };
-
