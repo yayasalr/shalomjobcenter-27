@@ -5,7 +5,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { NavbarLogo } from "./NavbarLogo";
 import { NavbarDesktopMenu } from "./NavbarDesktopMenu";
 import { NavbarSearchBar } from "./NavbarSearchBar";
-import { NavbarUserMenu } from "./NavbarUserMenu";
+import NavbarUserMenu from "./NavbarUserMenu";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { BackButton } from "@/components/shared/BackButton";
 
@@ -76,3 +76,5 @@ export const Navbar = () => {
     </>
   );
 };
+
+export { Navbar };

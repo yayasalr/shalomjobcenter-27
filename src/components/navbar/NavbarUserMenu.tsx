@@ -22,7 +22,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import useAuth from "../../hooks/useAuth";
 
-const NavbarUserMenu = () => {
+interface NavbarUserMenuProps {
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
+}
+
+const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuProps) => {
   const { user, logout } = useAuth();
 
   // Handler pour la déconnexion
@@ -127,3 +132,4 @@ const NavbarUserMenu = () => {
 };
 
 export default NavbarUserMenu;
+export { NavbarUserMenu };

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -23,8 +24,8 @@ import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
 
 interface AdminTopbarProps {
-  isSidebarOpen: boolean;
-  toggleSidebar: () => void;
+  isSidebarOpen?: boolean;
+  toggleSidebar?: () => void;
 }
 
 const AdminTopbar = ({ isSidebarOpen, toggleSidebar }: AdminTopbarProps) => {
@@ -45,19 +46,21 @@ const AdminTopbar = ({ isSidebarOpen, toggleSidebar }: AdminTopbarProps) => {
   return (
     <div className="flex h-16 items-center justify-between border-b px-4 md:px-6">
       <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={toggleSidebar}
-        >
-          {isSidebarOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-          <span className="sr-only">Toggle Sidebar</span>
-        </Button>
+        {toggleSidebar && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={toggleSidebar}
+          >
+            {isSidebarOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle Sidebar</span>
+          </Button>
+        )}
         <div className="hidden md:flex md:w-80">
           <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -125,3 +128,4 @@ const AdminTopbar = ({ isSidebarOpen, toggleSidebar }: AdminTopbarProps) => {
 };
 
 export default AdminTopbar;
+export { AdminTopbar };
