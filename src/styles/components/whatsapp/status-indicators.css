@@ -1,63 +1,70 @@
 
-/* Online & Offline indicators */
-.whatsapp-online-indicator {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: var(--whatsapp-indicator-size);
-  height: var(--whatsapp-indicator-size);
-  background-color: var(--whatsapp-secondary);
-  border: 2px solid white;
-  border-radius: 50%;
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: calc(0.75rem * var(--font-size-factor));
 }
 
-.whatsapp-offline-indicator {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: var(--whatsapp-indicator-size);
-  height: var(--whatsapp-indicator-size);
-  background-color: #8696a0;
-  border: 2px solid white;
-  border-radius: 50%;
-}
-
-/* Read and sent indicators */
-.whatsapp-tick {
-  margin-left: 4px;
-  vertical-align: middle;
-}
-
-.whatsapp-single-tick {
-  color: #8696a0;
-}
-
-.whatsapp-read-tick {
-  color: #53bdeb;
-}
-
-/* Recording indicators */
-.recording-pulse {
+.status-indicator .indicator-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #FF0000;
-  animation: pulse 1.5s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
-  }
-  
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(255, 0, 0, 0);
-  }
-  
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
-  }
+.status-indicator .indicator-dot.online {
+  background-color: var(--whatsapp-online);
+}
+
+.status-indicator .indicator-dot.offline {
+  background-color: var(--whatsapp-offline);
+}
+
+.status-indicator .status-text {
+  color: inherit;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: calc(0.75rem * var(--font-size-factor));
+  gap: 4px;
+}
+
+.status-badge.online {
+  background-color: rgba(37, 211, 102, 0.1);
+  color: var(--whatsapp-online);
+}
+
+.status-badge.offline {
+  background-color: rgba(142, 142, 142, 0.1);
+  color: var(--whatsapp-offline);
+}
+
+.status-tooltip {
+  max-width: 200px;
+}
+
+html[data-theme="dark"] .status-badge.online {
+  background-color: rgba(37, 211, 102, 0.15);
+}
+
+html[data-theme="dark"] .status-badge.offline {
+  background-color: rgba(142, 142, 142, 0.15);
+}
+
+.high-contrast .status-indicator .indicator-dot.online {
+  background-color: #00ff9d;
+}
+
+.high-contrast .status-badge.online {
+  border: 1px solid #00ff9d;
+  color: #00ff9d;
+}
+
+.high-contrast .status-badge.offline {
+  border: 1px solid white;
+  color: white;
 }

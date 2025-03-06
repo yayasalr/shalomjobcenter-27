@@ -13,6 +13,9 @@ import { EnhancedConversationList } from '@/components/admin/messages/EnhancedCo
 import { EnhancedConversationView } from '@/components/admin/messages/EnhancedConversationView';
 import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
 import { Conversation, Message } from '@/components/messages/types';
+import { ThemeToggle } from '@/components/messages/ThemeToggle';
+import { AccessibilityMenu } from '@/components/messages/AccessibilityMenu';
+import { OfflineIndicator } from '@/components/messages/OfflineIndicator';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -77,10 +80,17 @@ const AdminMessages: React.FC = () => {
         
         <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold">Messages</h1>
-            <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-800">
-              {totalUnreadCount} non lus
-            </Badge>
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-bold">Messages</h1>
+              <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-800">
+                {totalUnreadCount} non lus
+              </Badge>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <AccessibilityMenu />
+              <ThemeToggle />
+            </div>
           </div>
           
           <Tabs defaultValue="messages" className="w-full">
@@ -156,6 +166,9 @@ const AdminMessages: React.FC = () => {
           </Tabs>
         </main>
       </div>
+      
+      {/* Offline indicator */}
+      <OfflineIndicator />
     </div>
   );
 };

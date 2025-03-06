@@ -4,6 +4,9 @@ import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
 import useAuth from '@/hooks/useAuth';
 import { useMessages } from '@/hooks/useMessages';
+import { ThemeToggle } from '@/components/messages/ThemeToggle';
+import { AccessibilityMenu } from '@/components/messages/AccessibilityMenu';
+import { OfflineIndicator } from '@/components/messages/OfflineIndicator';
 
 // Message components
 import ConversationList from '@/components/messages/ConversationList';
@@ -57,7 +60,7 @@ const Messages = () => {
   // Check if user is authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Navbar />
         <NotAuthenticated />
       </div>
@@ -67,10 +70,16 @@ const Messages = () => {
   const isMobile = windowWidth < 768;
 
   return (
-    <div className="min-h-screen bg-gray-50 no-overflow-x">
+    <div className="min-h-screen bg-background no-overflow-x">
       <Navbar />
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 pt-20">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 mt-4">Messages</h1>
+        <div className="flex items-center justify-between mb-4 sm:mb-6 mt-4">
+          <h1 className="text-2xl sm:text-3xl font-bold">Messages</h1>
+          <div className="flex items-center gap-2">
+            <AccessibilityMenu />
+            <ThemeToggle />
+          </div>
+        </div>
         
         <Card className="h-[calc(80vh-6rem)] sm:h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
@@ -108,6 +117,9 @@ const Messages = () => {
           </div>
         </Card>
       </div>
+      
+      {/* Offline indicator */}
+      <OfflineIndicator />
     </div>
   );
 };
