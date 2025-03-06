@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { User, LoginCredentials, RegisterData } from "./types";
@@ -172,7 +173,7 @@ const useAuth = () => {
       toast.success("Connexion réussie");
       
       if (user.role === "admin") {
-        navigate("/admin/dashboard");
+        navigate("/admin"); // Changed from "/admin/dashboard" to "/admin"
       } else {
         navigate("/");
       }
