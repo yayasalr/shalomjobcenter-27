@@ -63,11 +63,11 @@ const ConversationList: React.FC<ConversationListProps> = ({
     { id: 3, user: 'Bob Johnson', avatar: '/placeholder.svg', isViewed: false, timestamp: new Date() }
   ];
 
-  // Mock call history for the demo
+  // Mock call history for the demo - fixed typing issue with explicit typing for 'incoming' | 'outgoing'
   const calls = [
-    { id: 1, user: 'John Doe', avatar: '/placeholder.svg', type: 'incoming', timestamp: new Date(), missed: false },
-    { id: 2, user: 'Jane Smith', avatar: '/placeholder.svg', type: 'outgoing', timestamp: new Date(), missed: true },
-    { id: 3, user: 'Bob Johnson', avatar: '/placeholder.svg', type: 'incoming', timestamp: new Date(), missed: true }
+    { id: 1, user: 'John Doe', avatar: '/placeholder.svg', type: 'incoming' as const, timestamp: new Date(), missed: false },
+    { id: 2, user: 'Jane Smith', avatar: '/placeholder.svg', type: 'outgoing' as const, timestamp: new Date(), missed: true },
+    { id: 3, user: 'Bob Johnson', avatar: '/placeholder.svg', type: 'incoming' as const, timestamp: new Date(), missed: true }
   ];
 
   return (
