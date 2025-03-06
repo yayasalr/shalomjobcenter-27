@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -30,7 +29,6 @@ interface NavbarUserMenuProps {
 const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuProps) => {
   const { user, logout } = useAuth();
 
-  // Handler pour la déconnexion
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -61,12 +59,18 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-10 w-10 rounded-full"
+          className="relative h-10 w-10 rounded-full border-2 border-gray-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Menu utilisateur"
         >
-          <Avatar>
-            <AvatarImage src={user.avatar} alt={user.name || "Utilisateur"} />
-            <AvatarFallback>{initials}</AvatarFallback>
+          <Avatar className="h-full w-full">
+            <AvatarImage 
+              src={user.avatar} 
+              alt={user.name || "Utilisateur"}
+              className="object-cover"
+            />
+            <AvatarFallback className="bg-primary/10 text-primary">
+              {initials}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
