@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useListings } from '@/hooks/useListings';
 import { Navbar } from '@/components/Navbar';
@@ -90,8 +91,10 @@ const Index = () => {
       
       {!searchTerm && <HeroSection />}
       
-      <div className="w-full py-6 bg-gradient-to-r from-slate-50 to-white">
-        <StatusBanner />
+      <div className="w-full py-8 bg-gradient-to-r from-slate-50 to-white">
+        <div className="container mx-auto px-4">
+          <StatusBanner />
+        </div>
       </div>
       
       <div className="w-screen p-0 m-0">

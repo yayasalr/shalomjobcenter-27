@@ -24,7 +24,7 @@ export const StatusBanner: React.FC = () => {
   return (
     <AnimatePresence>
       <motion.div 
-        className="w-full overflow-hidden rounded-lg shadow-md max-w-5xl mx-auto h-20 sm:h-16"
+        className="w-full overflow-hidden rounded-lg shadow-md max-w-7xl mx-auto h-28 sm:h-24"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
@@ -42,7 +42,7 @@ export const StatusBanner: React.FC = () => {
           <BannerBackground />
           
           {/* Scrolling content */}
-          <div className="relative flex items-center w-full h-full px-6">
+          <div className="relative flex items-center justify-center w-full h-full px-4">
             <StatusContent message={currentMessage.text} />
           </div>
           
