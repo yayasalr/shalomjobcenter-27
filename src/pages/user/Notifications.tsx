@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useNotifications } from '@/hooks/useNotifications';
+import { useNotifications } from '@/hooks/notifications';
 import { 
   NotificationTabs, 
   NotificationHeader,
@@ -9,7 +10,6 @@ import {
 } from '@/components/notifications';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Wifi, WifiOff } from 'lucide-react';
-import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const Notifications = () => {
