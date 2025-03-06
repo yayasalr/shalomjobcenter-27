@@ -1,53 +1,54 @@
 
 import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Phone, Video, MoreVertical } from 'lucide-react';
-import { Conversation } from './types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Search, Settings } from 'lucide-react';
+import { AllUsersDialog } from './AllUsersDialog';
 
 interface ConversationHeaderProps {
-  conversation: Conversation;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  setIsProfileOpen?: (isOpen: boolean) => void;
 }
 
-const ConversationHeader: React.FC<ConversationHeaderProps> = ({ conversation }) => {
+const ConversationHeader: React.FC<ConversationHeaderProps> = ({
+  searchQuery,
+  setSearchQuery,
+  setIsProfileOpen = () => {}
+}) => {
   return (
-    <div className="p-4 border-b flex justify-between items-center">
-      <div className="flex items-center gap-3">
-        <Avatar>
-          <AvatarImage src={conversation.with.avatar} />
-          <AvatarFallback className={
-            conversation.with.role === 'admin' ? 'bg-blue-500 text-white' : ''
-          }>
-            {conversation.with.name.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <div className="flex items-center">
-            <h2 className="font-medium">{conversation.with.name}</h2>
-            {conversation.with.role === 'admin' && (
-              <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Admin</Badge>
-            )}
-          </div>
-          <p className="text-xs text-gray-500">
-            {conversation.with.id === 'admin' 
-              ? 'Administrateur de la plateforme' 
-              : 'En ligne il y a 2h'}
-          </p>
+    <>
+      <div className="p-3 bg-emerald-600 flex items-center justify-between">
+        <div 
+          className="cursor-pointer flex items-center" 
+          onClick={() => setIsProfileOpen(true)}
+        >
+          <Avatar className="h-10 w-10">
+            <AvatarImage src="/placeholder.svg" />
+            <AvatarFallback>U</AvatarFallback>
+          </Avatar>
+        </div>
+        
+        <div className="flex gap-2">
+          <Settings className="h-5 w-5 text-white cursor-pointer" />
+        </div>
+        
+        <div className="relative flex-1 mx-2">
+          <Input
+            placeholder="Rechercher une conversation..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 bg-white/90 border-0 focus-visible:ring-0"
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
         </div>
       </div>
-      <div className="flex gap-2">
-        <Button variant="ghost" size="icon">
-          <Phone className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <Video className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <MoreVertical className="h-4 w-4" />
-        </Button>
+      
+      <div className="p-2 flex justify-end">
+        <AllUsersDialog onSelectUser={() => {}} />
       </div>
-    </div>
+    </>
   );
 };
 

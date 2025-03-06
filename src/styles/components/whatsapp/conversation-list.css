@@ -71,3 +71,44 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Online/offline indicator styles */
+.whatsapp-online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #25D366;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.whatsapp-offline-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Tab navigation styles */
+.whatsapp-tabs {
+  background-color: #075E54;
+  color: white;
+}
+
+.whatsapp-tab {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  padding: 10px 0;
+}
+
+.whatsapp-tab[data-state="active"] {
+  color: white;
+  font-weight: 500;
+  background-color: transparent;
+}
