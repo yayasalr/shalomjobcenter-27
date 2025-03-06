@@ -44,7 +44,7 @@ export const OfflineIndicator = () => {
       )}
       
       {isOnline && showReconnected && (
-        <Alert variant="success" className="bg-green-50 border-green-200 text-green-800 flex items-center">
+        <Alert variant="default" className="bg-green-50 border-green-200 text-green-800 flex items-center">
           <CheckCircle2 className="h-4 w-4 mr-2 text-green-600" />
           <AlertDescription>
             Connexion rétablie.

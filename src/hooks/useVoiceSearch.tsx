@@ -2,6 +2,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
+// Define the SpeechRecognition interface to fix TypeScript errors
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionError extends Event {
+  error: string;
+}
+
 interface UseVoiceSearchProps {
   onResult: (result: string) => void;
   language?: string;
@@ -26,7 +35,8 @@ export const useVoiceSearch = ({
     }
 
     // Create recognition instance
-    const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+    // TypeScript fix: Use type assertion to handle browser compatibility
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
     const recognitionInstance = new SpeechRecognition();
     
     // Configure recognition
@@ -35,7 +45,7 @@ export const useVoiceSearch = ({
     recognitionInstance.lang = language;
 
     // Set up event handlers
-    recognitionInstance.onresult = (event: any) => {
+    recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
       const currentTranscript = Array.from(event.results)
         .map((result: any) => result[0].transcript)
         .join('');
@@ -48,7 +58,7 @@ export const useVoiceSearch = ({
       }
     };
 
-    recognitionInstance.onerror = (event: any) => {
+    recognitionInstance.onerror = (event: SpeechRecognitionError) => {
       console.error('Speech recognition error', event.error);
       setIsListening(false);
       
