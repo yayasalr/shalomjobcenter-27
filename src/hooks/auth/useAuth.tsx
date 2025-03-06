@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(newUser);
           localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(newUser));
           toast.success("Connexion réussie!");
-          navigate(newUser.isAdmin ? "/admin/dashboard" : "/");
+          navigate(newUser.isAdmin ? "/admin" : "/");
           resolve();
         }, 500);
       });
