@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Lock, ShieldCheck, KeyRound, Smartphone, AlertTriangle, History } from 
 import { toast } from 'sonner';
 import { Separator } from '@/components/ui/separator';
 import useAuth from '@/hooks/useAuth';
+import QRCode from 'qrcode.react';
 
 export const SecurityTab: React.FC = () => {
   const { user } = useAuth();
@@ -20,6 +21,26 @@ export const SecurityTab: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [secretKey, setSecretKey] = useState('');
+
+  // Generate unique secret key for 2FA when needed
+  useEffect(() => {
+    if (showTwoFactorSetup) {
+      // Create a simple random key for demo purposes
+      const key = generateRandomKey();
+      setSecretKey(key);
+    }
+  }, [showTwoFactorSetup]);
+
+  // Generate random key for demo purposes
+  const generateRandomKey = (): string => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    let result = '';
+    for (let i = 0; i < 16; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
 
   // Récupération de l'historique des connexions
   const loginLogs = JSON.parse(localStorage.getItem('login_logs') || '[]')
@@ -143,6 +164,26 @@ export const SecurityTab: React.FC = () => {
     }
   };
 
+  const getTotpUrl = () => {
+    const issuer = encodeURIComponent('MonApplication');
+    const account = encodeURIComponent(user?.email || 'user');
+    return `otpauth://totp/${issuer}:${account}?secret=${secretKey}&issuer=${issuer}`;
+  };
+
+  const generateRecoveryCodes = () => {
+    const codes = Array(10).fill(0).map(() => {
+      const code1 = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const code2 = Math.random().toString(36).substring(2, 6).toUpperCase();
+      return `${code1}-${code2}`;
+    });
+    
+    localStorage.setItem(`recovery_codes_${user?.id}`, JSON.stringify(codes));
+    toast.success("Codes de récupération générés avec succès");
+    
+    // Ouvrir une fenêtre modale ou afficher les codes
+    alert("Voici vos codes de récupération. Conservez-les en lieu sûr:\n\n" + codes.join("\n"));
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -259,8 +300,8 @@ export const SecurityTab: React.FC = () => {
               <div className="flex justify-center mb-4">
                 <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
                   <div className="text-center mb-2 font-medium">Scanner ce QR code</div>
-                  <div className="w-40 h-40 bg-gray-200 dark:bg-gray-700 mx-auto flex items-center justify-center">
-                    <ShieldCheck className="w-16 h-16 text-gray-500 dark:text-gray-400" />
+                  <div className="w-40 h-40 bg-white mx-auto flex items-center justify-center">
+                    <QRCode value={getTotpUrl()} size={140} />
                   </div>
                   <p className="text-xs text-center mt-2 text-gray-500 dark:text-gray-400">
                     Utilisez une application comme Google Authenticator
@@ -275,7 +316,7 @@ export const SecurityTab: React.FC = () => {
                   placeholder="Entrez le code à 6 chiffres" 
                   maxLength={6}
                   value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
+                  onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, ''))}
                 />
               </div>
               
@@ -296,7 +337,7 @@ export const SecurityTab: React.FC = () => {
               <p className="text-sm text-muted-foreground mt-1">
                 Ces codes vous permettent de vous connecter en cas de perte d'accès à votre téléphone.
               </p>
-              <Button variant="outline" className="mt-2">
+              <Button variant="outline" className="mt-2" onClick={generateRecoveryCodes}>
                 <KeyRound className="h-4 w-4 mr-2" />
                 Générer des codes de récupération
               </Button>
@@ -377,3 +418,4 @@ export const SecurityTab: React.FC = () => {
     </div>
   );
 };
+
