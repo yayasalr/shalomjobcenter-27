@@ -1,10 +1,12 @@
 
 import React from 'react';
-import { SocialAccountsCard } from './social/SocialAccountsCard';
-import { BenefitsCard } from './social/BenefitsCard';
-import { ConnectAccountDialog } from './social/ConnectAccountDialog';
-import { DisconnectAccountDialog } from './social/DisconnectAccountDialog';
-import { useSocialAccounts } from './social/useSocialAccounts';
+import { 
+  SocialAccountsCard,
+  BenefitsCard,
+  ConnectAccountDialog,
+  DisconnectAccountDialog,
+  useSocialAccounts
+} from './social';
 
 export const ConnectedAccountsTab: React.FC = () => {
   const {
