@@ -27,19 +27,6 @@
 /* Utility classes */
 @import './styles/utilities.css';
 
-/* Responsive display utilities */
-.xs\:block {
-  @media (min-width: 480px) {
-    display: block;
-  }
-}
-
-.xs\:hidden {
-  @media (min-width: 480px) {
-    display: none;
-  }
-}
-
 /* Make buttons more visible */
 button {
   position: relative;
