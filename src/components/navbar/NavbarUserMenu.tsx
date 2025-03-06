@@ -1,11 +1,6 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { LogIn, Menu, User } from "lucide-react";
-import { motion } from "framer-motion";
-import useAuth from "@/hooks/useAuth";
-import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { useLanguage } from "@/hooks/useLanguage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,99 +8,122 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { LanguageSelector } from './LanguageSelector';
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import {
+  User,
+  Settings,
+  LogOut,
+  Heart,
+  CalendarDays,
+  MessageSquare,
+  Bell,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import useAuth from "../../hooks/useAuth";
 
-interface NavbarUserMenuProps {
-  mobileMenuOpen?: boolean;
-  setMobileMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+const NavbarUserMenu = () => {
+  const { user, logout } = useAuth();
 
-export const NavbarUserMenu: React.FC<NavbarUserMenuProps> = ({ 
-  mobileMenuOpen, 
-  setMobileMenuOpen 
-}) => {
-  const { user } = useAuth();
-  const { settings } = useSiteSettings();
-  const { t } = useLanguage();
-  const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
-  
-  useEffect(() => {
-    const storedAvatar = localStorage.getItem('userAvatar');
-    if (storedAvatar) {
-      setUserAvatar(storedAvatar);
-    } else if (user?.avatar) {
-      setUserAvatar(user.avatar);
-    }
-  }, [user]);
-  
-  return (
-    <div className="flex items-center gap-2">
-      <LanguageSelector />
-      
-      {user ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex items-center border border-gray-200 rounded-full px-3 py-1.5 gap-2 bg-white hover:shadow-md cursor-pointer relative"
-            >
-              <Menu className="h-4 w-4" />
-              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-100 overflow-hidden border border-gray-200">
-                {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt={user.name}
-                    className="h-full w-full object-cover" 
-                    onError={(e) => {
-                      e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E";
-                    }}
-                  />
-                ) : (
-                  <User className="h-5 w-5 text-gray-500" />
-                )}
-              </div>
-              <div className="h-2 w-2 absolute top-1 right-2 rounded-full bg-red-500"></div>
-            </motion.div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-white shadow-md z-50">
-            <DropdownMenuLabel>{t('profile')}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to="/profile" className="w-full">{t('profile')}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/favorites" className="w-full">{t('favorites')}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/reservations" className="w-full">{t('reservations')}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to="/messages" className="w-full">{t('messages')}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/notifications" className="w-full">{t('notifications')}</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to="/logout" className="w-full text-red-500">{t('logout')}</Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
+  // Handler pour la déconnexion
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    logout();
+  };
+
+  if (!user) {
+    return (
+      <div className="flex items-center gap-2">
         <Link to="/login">
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center bg-sholom-primary text-white rounded-full px-4 py-2 gap-2 shadow-sm hover:bg-sholom-primary/90"
-          >
-            <LogIn className="h-4 w-4" />
-            <span className="font-medium">{t('login')}</span>
-          </motion.div>
+          <Button variant="outline" size="sm">
+            Connexion
+          </Button>
         </Link>
-      )}
-    </div>
+        <Link to="/register">
+          <Button size="sm">Inscription</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const initials = user?.name
+    ? `${user.name.charAt(0)}${user.name.split(" ")[1]?.charAt(0) || ""}`
+    : "U";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="relative h-10 w-10 rounded-full"
+          aria-label="Menu utilisateur"
+        >
+          <Avatar>
+            <AvatarImage src={user.avatar} alt={user.name || "Utilisateur"} />
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {user.isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin/dashboard" className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Espace Admin</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem asChild>
+          <Link to="/user/profile" className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>Mon Profil</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/user/favorites" className="cursor-pointer">
+            <Heart className="mr-2 h-4 w-4" />
+            <span>Favoris</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/user/reservations" className="cursor-pointer">
+            <CalendarDays className="mr-2 h-4 w-4" />
+            <span>Réservations</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/user/messages" className="cursor-pointer">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            <span>Messages</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/user/notifications" className="cursor-pointer">
+            <Bell className="mr-2 h-4 w-4" />
+            <span>Notifications</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          className="cursor-pointer text-red-500 focus:text-red-500" 
+          onClick={handleLogout}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Déconnexion</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
+
+export default NavbarUserMenu;
