@@ -1,5 +1,5 @@
-
 import { User } from './types';
+import CryptoJS from 'crypto-js';
 
 // Simulation de stockage local des utilisateurs avec mot de passe plus sécurisé
 export const MOCK_USERS = [
@@ -80,21 +80,96 @@ export const createWelcomeMessages = (user: User) => {
   localStorage.setItem(`conversations_${user.id}`, JSON.stringify(initialConversations));
 };
 
-// Fonction pour vérifier si un compte admin existe déjà
+// Fonction pour vérifier si un compte admin existe déjà avec sécurité renforcée
 export const ensureAdminAccount = () => {
   const storedUsers = localStorage.getItem("users");
-  if (!storedUsers) {
-    // Si pas d'utilisateurs, on initialise avec les utilisateurs par défaut
+  let users = [];
+  
+  // Vérifier l'intégrité des données stockées
+  try {
+    users = storedUsers ? JSON.parse(storedUsers) : [];
+    if (!Array.isArray(users)) {
+      console.error("Format de données utilisateurs invalide, réinitialisation");
+      users = [];
+    }
+  } catch (error) {
+    console.error("Erreur lors de la lecture des données utilisateurs:", error);
+    users = [];
+  }
+  
+  // Si aucun utilisateur ou données corrompues, initialiser avec les utilisateurs par défaut
+  if (users.length === 0) {
     localStorage.setItem("users", JSON.stringify(MOCK_USERS));
+    console.log("Base d'utilisateurs réinitialisée avec les valeurs par défaut");
+    
+    // Initialiser le journal d'accès administrateur
+    localStorage.setItem("admin_access_logs", JSON.stringify([]));
     return;
   }
   
-  const users = JSON.parse(storedUsers);
-  const adminExists = users.some((user: any) => user.role === "admin");
+  // Vérifier si un admin valide existe
+  const adminExists = users.some((user: any) => 
+    user.role === "admin" && 
+    user.email && 
+    user.password && 
+    user.id
+  );
   
   if (!adminExists) {
-    // Si aucun administrateur n'existe, on ajoute l'administrateur par défaut
-    users.push(MOCK_USERS.find(user => user.role === "admin"));
-    localStorage.setItem("users", JSON.stringify(users));
+    // Si aucun administrateur valide n'existe, ajouter l'administrateur par défaut
+    const defaultAdmin = MOCK_USERS.find(user => user.role === "admin");
+    
+    if (defaultAdmin) {
+      users.push(defaultAdmin);
+      localStorage.setItem("users", JSON.stringify(users));
+      console.log("Compte administrateur par défaut ajouté");
+    }
   }
+  
+  // Mise en place du journal des accès administrateur s'il n'existe pas
+  if (!localStorage.getItem("admin_access_logs")) {
+    localStorage.setItem("admin_access_logs", JSON.stringify([]));
+  }
+  
+  // Mise en place du journal des activités suspectes s'il n'existe pas
+  if (!localStorage.getItem("suspicious_activities")) {
+    localStorage.setItem("suspicious_activities", JSON.stringify([]));
+  }
+};
+
+// Nouvelle fonction pour hacher les mots de passe - pour la future mise à niveau
+export const hashPassword = (password: string): string => {
+  const salt = CryptoJS.lib.WordArray.random(16).toString();
+  const hash = CryptoJS.PBKDF2(password, salt, { 
+    keySize: 512/32, 
+    iterations: 1000 
+  }).toString();
+  
+  return `${salt}:${hash}`;
+};
+
+// Fonction pour vérifier un mot de passe haché - pour la future mise à niveau
+export const verifyPassword = (password: string, hashedPassword: string): boolean => {
+  const [salt, storedHash] = hashedPassword.split(':');
+  const hash = CryptoJS.PBKDF2(password, salt, { 
+    keySize: 512/32, 
+    iterations: 1000 
+  }).toString();
+  
+  return storedHash === hash;
+};
+
+// Fonction pour détecter les activités suspectes
+export const detectSuspiciousActivity = (userId: string, activity: string, details: any = {}) => {
+  const suspiciousActivities = JSON.parse(localStorage.getItem('suspicious_activities') || '[]');
+  
+  suspiciousActivities.push({
+    userId,
+    activity,
+    details,
+    timestamp: new Date().toISOString(),
+    userAgent: navigator.userAgent
+  });
+  
+  localStorage.setItem('suspicious_activities', JSON.stringify(suspiciousActivities));
 };

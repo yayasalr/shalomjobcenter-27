@@ -39,6 +39,7 @@ import AdminMessages from './pages/admin/AdminMessages';
 import { CompareListings } from './components/CompareListings';
 import { useEffect } from 'react';
 import { useSiteSettings } from './hooks/useSiteSettings';
+import NotAuthenticated from './components/messages/NotAuthenticated';
 
 function App() {
   const { settings, applySettingsToDOM } = useSiteSettings();
@@ -53,6 +54,7 @@ function App() {
       <Router>
         <AnimatePresence mode="wait">
           <Routes>
+            {/* Routes publiques */}
             <Route path="/" element={<Index />} />
             <Route path="/logement/:id" element={<ListingDetail />} />
             <Route path="/login" element={<Login />} />
@@ -64,23 +66,86 @@ function App() {
             <Route path="/support" element={<Support />} />
             <Route path="/faq" element={<FAQ />} />
             
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/reservations" element={<UserReservations />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/notifications" element={<Notifications />} />
+            {/* Routes utilisateur (authentification requise) */}
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/favorites" element={
+              <ProtectedRoute>
+                <Favorites />
+              </ProtectedRoute>
+            } />
+            <Route path="/reservations" element={
+              <ProtectedRoute>
+                <UserReservations />
+              </ProtectedRoute>
+            } />
+            <Route path="/messages" element={
+              <ProtectedRoute>
+                <Messages />
+              </ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            } />
             
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/logements" element={<AdminListings />} />
-            <Route path="/admin/emplois" element={<AdminJobs />} />
-            <Route path="/admin/avis" element={<AdminReviews />} />
-            <Route path="/admin/reservations" element={<AdminReservations />} />
-            <Route path="/admin/paiements" element={<AdminPayments />} />
-            <Route path="/admin/utilisateurs" element={<AdminUsers />} />
-            <Route path="/admin/support" element={<AdminSupport />} />
-            <Route path="/admin/parametres" element={<AdminSettings />} />
-            <Route path="/admin/messages" element={<AdminMessages />} />
+            {/* Routes admin (rôle admin requis) */}
+            <Route path="/admin" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/logements" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminListings />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/emplois" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminJobs />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/avis" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminReviews />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/reservations" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminReservations />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/paiements" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminPayments />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/utilisateurs" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminUsers />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/support" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminSupport />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/parametres" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminSettings />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/messages" element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminMessages />
+              </ProtectedRoute>
+            } />
             
+            {/* Route fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AnimatePresence>

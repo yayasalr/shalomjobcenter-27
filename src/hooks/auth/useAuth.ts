@@ -1,54 +1,136 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { User, LoginCredentials, RegisterData } from "./types";
 import { MOCK_USERS, createWelcomeMessages } from "./authUtils";
 import { useUserAvatar } from "./useUserAvatar";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
+import CryptoJS from 'crypto-js';
 
 const useAuth = () => {
   const queryClient = useQueryClient();
   const { updateUserAvatar: avatarUpdater } = useUserAvatar();
   const navigate = useNavigate();
 
+  const generateToken = (user: Omit<User, "password">) => {
+    const header = { alg: "HS256", typ: "JWT" };
+    const payload = {
+      ...user,
+      iat: new Date().getTime(),
+      exp: new Date().getTime() + (24 * 60 * 60 * 1000),
+      jti: uuidv4(),
+    };
+    
+    const headerStr = btoa(JSON.stringify(header));
+    const payloadStr = btoa(JSON.stringify(payload));
+    
+    const secret = localStorage.getItem("auth_secret") || uuidv4();
+    localStorage.setItem("auth_secret", secret);
+    
+    const signature = CryptoJS.HmacSHA256(
+      `${headerStr}.${payloadStr}`,
+      secret
+    ).toString(CryptoJS.enc.Base64);
+    
+    return `${headerStr}.${payloadStr}.${signature}`;
+  };
+
+  const verifyToken = (token: string): boolean => {
+    try {
+      const [headerStr, payloadStr, signature] = token.split('.');
+      
+      const secret = localStorage.getItem("auth_secret");
+      if (!secret) return false;
+      
+      const computedSignature = CryptoJS.HmacSHA256(
+        `${headerStr}.${payloadStr}`,
+        secret
+      ).toString(CryptoJS.enc.Base64);
+      
+      if (computedSignature !== signature) return false;
+      
+      const payload = JSON.parse(atob(payloadStr));
+      if (payload.exp < new Date().getTime()) return false;
+      
+      return true;
+    } catch (error) {
+      console.error("Erreur de vérification du token:", error);
+      return false;
+    }
+  };
+
+  const refreshSession = () => {
+    const savedToken = localStorage.getItem("auth_token");
+    if (savedToken && !verifyToken(savedToken)) {
+      console.log("Session expirée, déconnexion automatique");
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("auth_token");
+      queryClient.setQueryData(["auth-user"], null);
+      toast.error("Votre session a expiré. Veuillez vous reconnecter.");
+      navigate("/login");
+    }
+  };
+
   const { data: currentUser, isLoading } = useQuery({
     queryKey: ["auth-user"],
     queryFn: async () => {
       const savedUser = localStorage.getItem("currentUser");
-      if (savedUser) {
+      const savedToken = localStorage.getItem("auth_token");
+      
+      if (savedUser && savedToken) {
         try {
-          const user = JSON.parse(savedUser) as User;
-          console.log("Utilisateur chargé depuis localStorage:", user);
-          
-          // Vérifier si la session est encore valide
-          const sessionExpiry = localStorage.getItem("session_expiry");
-          if (sessionExpiry && new Date().getTime() > parseInt(sessionExpiry)) {
-            console.log("Session expirée, déconnexion automatique");
+          if (verifyToken(savedToken)) {
+            const user = JSON.parse(savedUser) as User;
+            console.log("Utilisateur chargé depuis localStorage:", user);
+            return user;
+          } else {
+            console.log("Token invalide, déconnexion automatique");
             localStorage.removeItem("currentUser");
-            localStorage.removeItem("session_expiry");
+            localStorage.removeItem("auth_token");
             return null;
           }
-          
-          return user;
         } catch (error) {
           console.error("Error parsing user data:", error);
           localStorage.removeItem("currentUser");
+          localStorage.removeItem("auth_token");
           return null;
         }
       }
       return null;
     },
-    staleTime: Infinity, // Keep the data fresh and avoid unnecessary refetches
-    gcTime: Infinity, // Keep data in cache indefinitely (renamed from cacheTime)
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
+
+  const isIpSuspicious = (ipData: any[]): boolean => {
+    const lastHour = new Date().getTime() - (60 * 60 * 1000);
+    const recentAttempts = ipData.filter(
+      attempt => new Date(attempt.timestamp).getTime() > lastHour
+    );
+    
+    return recentAttempts.length >= 10;
+  };
 
   const login = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      // Charge les utilisateurs du localStorage ou utilise les données par défaut
+      const loginAttempts = JSON.parse(localStorage.getItem("login_attempts") || "[]");
+      
+      const userAttempts = loginAttempts.filter(
+        (attempt: any) => attempt.email === credentials.email
+      );
+      
+      const recentUserAttempts = userAttempts.filter(
+        (attempt: any) => new Date(attempt.timestamp).getTime() > 
+          new Date().getTime() - (30 * 60 * 1000)
+      );
+      
+      if (recentUserAttempts.length >= 5) {
+        throw new Error("Trop de tentatives de connexion. Veuillez réessayer plus tard.");
+      }
+      
       const storedUsers = localStorage.getItem("users");
       const users = storedUsers ? JSON.parse(storedUsers) : MOCK_USERS;
       
-      // Si c'est la première fois qu'on utilise les utilisateurs par défaut, les enregistrer
       if (!storedUsers) {
         localStorage.setItem("users", JSON.stringify(MOCK_USERS));
       }
@@ -58,24 +140,29 @@ const useAuth = () => {
       );
       
       if (!user) {
+        loginAttempts.push({
+          email: credentials.email,
+          timestamp: new Date().toISOString(),
+          success: false,
+          userAgent: navigator.userAgent
+        });
+        localStorage.setItem("login_history", JSON.stringify(loginAttempts));
         throw new Error("Identifiants invalides");
       }
       
-      // Journalisation des connexions
-      const loginHistory = JSON.parse(localStorage.getItem("login_history") || "[]");
-      loginHistory.push({
+      loginAttempts.push({
         userId: user.id,
         email: user.email,
         timestamp: new Date().toISOString(),
-        success: true
+        success: true,
+        userAgent: navigator.userAgent
       });
-      localStorage.setItem("login_history", JSON.stringify(loginHistory));
-      
-      // Définir une expiration de session (24 heures)
-      const expiryTime = new Date().getTime() + (24 * 60 * 60 * 1000);
-      localStorage.setItem("session_expiry", expiryTime.toString());
+      localStorage.setItem("login_history", JSON.stringify(loginAttempts));
       
       const { password, ...userWithoutPassword } = user;
+      const token = generateToken(userWithoutPassword);
+      localStorage.setItem("auth_token", token);
+      
       localStorage.setItem("currentUser", JSON.stringify(userWithoutPassword));
       console.log("Utilisateur connecté:", userWithoutPassword);
       return userWithoutPassword;
@@ -84,7 +171,6 @@ const useAuth = () => {
       queryClient.setQueryData(["auth-user"], user);
       toast.success("Connexion réussie");
       
-      // Rediriger vers la page d'accueil par défaut
       if (user.role === "admin") {
         navigate("/admin/dashboard");
       } else {
@@ -92,27 +178,15 @@ const useAuth = () => {
       }
     },
     onError: (error) => {
-      // Journalisation des échecs de connexion
-      const loginHistory = JSON.parse(localStorage.getItem("login_history") || "[]");
-      loginHistory.push({
-        email: (error as any).email || "unknown",
-        timestamp: new Date().toISOString(),
-        success: false,
-        error: error.message
-      });
-      localStorage.setItem("login_history", JSON.stringify(loginHistory));
-      
-      toast.error("Échec de la connexion");
+      toast.error(error.message || "Échec de la connexion");
     },
   });
 
   const register = useMutation({
     mutationFn: async (data: RegisterData) => {
-      // Charge les utilisateurs du localStorage ou utilise les données par défaut
       const storedUsers = localStorage.getItem("users");
       const users = storedUsers ? JSON.parse(storedUsers) : MOCK_USERS;
       
-      // Si c'est la première fois qu'on utilise les utilisateurs par défaut, les enregistrer
       if (!storedUsers) {
         localStorage.setItem("users", JSON.stringify(MOCK_USERS));
       }
@@ -132,8 +206,7 @@ const useAuth = () => {
       localStorage.setItem("users", JSON.stringify(users));
       
       const { password, ...userWithoutPassword } = newUser;
-
-      // Créer la conversation de bienvenue
+      
       createWelcomeMessages(userWithoutPassword);
       
       console.log("Nouvel utilisateur enregistré:", userWithoutPassword);
@@ -141,7 +214,6 @@ const useAuth = () => {
     },
     onSuccess: (user) => {
       toast.success("Inscription réussie");
-      // Connexion automatique après inscription
       localStorage.setItem("currentUser", JSON.stringify(user));
       queryClient.setQueryData(["auth-user"], user);
     },
@@ -153,7 +225,7 @@ const useAuth = () => {
   const logout = useMutation({
     mutationFn: async () => {
       localStorage.removeItem("currentUser");
-      localStorage.removeItem("session_expiry");
+      localStorage.removeItem("auth_token");
       console.log("Utilisateur déconnecté");
       return null;
     },
@@ -164,17 +236,14 @@ const useAuth = () => {
     },
   });
 
-  // Wrapper function that uses the avatar updater
   const updateUserAvatar = (avatarUrl: string) => {
     if (currentUser) {
       return avatarUpdater(currentUser, avatarUrl);
     }
   };
 
-  // Vérifier si l'utilisateur a le rôle admin
   const isAdmin = currentUser?.role === "admin";
 
-  // Vérifier si l'utilisateur est authentifié
   const isAuthenticated = !!currentUser;
 
   return {
@@ -185,7 +254,8 @@ const useAuth = () => {
     logout,
     updateUserAvatar,
     isAdmin,
-    isAuthenticated
+    isAuthenticated,
+    refreshSession
   };
 };
 
