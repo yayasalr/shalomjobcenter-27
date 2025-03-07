@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useTestimonials } from './useTestimonials';
 import { TestimonialsList } from './TestimonialsList';
 import { TestimonialFormDialog } from './TestimonialFormDialog';
-import useAuth from '@/hooks/auth';
+import { useAuth } from '@/hooks/auth';
 
 export const TestimonialsSection = () => {
   const { user } = useAuth();

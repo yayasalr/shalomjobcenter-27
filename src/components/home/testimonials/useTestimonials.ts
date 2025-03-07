@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Testimonial } from './types';
-import useAuth from '@/hooks/auth';
+import { useAuth } from '@/hooks/auth';
 
 export const useTestimonials = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([
