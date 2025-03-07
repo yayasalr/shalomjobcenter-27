@@ -8,15 +8,17 @@ interface FeatureCardProps {
   title: string;
   description: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export const FeatureCard = ({ icon, title, description, className }: FeatureCardProps) => {
+export const FeatureCard = ({ icon, title, description, className, style }: FeatureCardProps) => {
   return (
     <div 
       className={cn(
         "bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center",
         className
       )}
+      style={style}
     >
       <div className="bg-sholom-primary/10 text-sholom-primary p-3 rounded-full mb-4">
         {icon}
