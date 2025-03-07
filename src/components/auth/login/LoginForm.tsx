@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +40,9 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
     // Check how rapidly the user is interacting with the form
     const typingSpeedCheck = () => {
       const now = Date.now();
-      const lastActivity = parseInt(sessionStorage.getItem('last_login_activity') || '0');
+      const lastActivityStr = sessionStorage.getItem('last_login_activity');
+      const lastActivity = lastActivityStr ? parseInt(lastActivityStr) : 0;
+      
       if (lastActivity && (now - lastActivity < 100)) {
         // Typing is suspiciously fast - might be automated
         incrementSuspiciousCounter();
@@ -87,7 +88,8 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
   }, []);
 
   const incrementSuspiciousCounter = (increment = 1) => {
-    const currentCount = parseInt(sessionStorage.getItem('suspicious_activity_counter') || '0');
+    const counterStr = sessionStorage.getItem('suspicious_activity_counter');
+    const currentCount = counterStr ? parseInt(counterStr) : 0;
     const newCount = currentCount + increment;
     sessionStorage.setItem('suspicious_activity_counter', newCount.toString());
     
