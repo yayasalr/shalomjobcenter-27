@@ -17,7 +17,7 @@ export const DisplaySettings: React.FC<DisplaySettingsProps> = ({
 }) => {
   return (
     <div className="space-y-4">
-      <Alert variant="info" className="mb-4 bg-yellow-50 text-yellow-800 border border-yellow-200">
+      <Alert variant="default" className="mb-4 bg-yellow-50 text-yellow-800 border border-yellow-200">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           Le mode sombre est désactivé sur cette plateforme pour assurer une expérience utilisateur cohérente.

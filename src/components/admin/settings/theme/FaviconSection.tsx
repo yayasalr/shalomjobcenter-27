@@ -6,7 +6,7 @@ import { toast } from "sonner";
 interface FaviconSectionProps {
   faviconUrl: string;
   faviconUploading: boolean;
-  handleFaviconUpload: (file: File) => void;
+  handleFaviconUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const FaviconSection: React.FC<FaviconSectionProps> = ({
@@ -50,13 +50,19 @@ export const FaviconSection: React.FC<FaviconSectionProps> = ({
             <div className="animate-pulse bg-gray-200 h-8 w-8 rounded-lg"></div>
           )}
         </div>
-        <ImageUploadField
-          label=""
-          imageUrl={faviconUrl}
-          onUpload={handleFaviconUpload}
-          isUploading={faviconUploading}
-        />
+        <div className="relative">
+          <Button variant="outline" className="relative" disabled={faviconUploading}>
+            {faviconUploading ? "Chargement..." : "Choisir une image"}
+            <input
+              type="file"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={handleFaviconUpload}
+              accept="image/*"
+              disabled={faviconUploading}
+            />
+          </Button>
+        </div>
       </div>
     </div>
   );
-};
+}

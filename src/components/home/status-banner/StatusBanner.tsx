@@ -8,19 +8,20 @@ import { CloseButton } from './CloseButton';
 
 export const StatusBanner: React.FC = () => {
   const { 
-    activeMessages, 
-    currentIndex, 
-    isDismissed, 
-    setIsDismissed 
+    messages,
+    currentIndex,
+    isVisible,
+    hasLoaded,
+    isDismissed,
+    setIsDismissed,
+    currentMessage
   } = useStatusMessages();
   
-  // If no active messages, don't render anything
-  if (activeMessages.length === 0 || isDismissed) {
+  // Wait for messages to load and return null if not visible
+  if (!hasLoaded || !isVisible || isDismissed || !messages || messages.length === 0) {
     return null;
   }
 
-  const currentMessage = activeMessages[currentIndex];
-  
   return (
     <AnimatePresence>
       <motion.div 
@@ -43,7 +44,7 @@ export const StatusBanner: React.FC = () => {
           
           {/* Scrolling content */}
           <div className="relative flex items-center justify-center w-full h-full px-4">
-            <StatusContent message={currentMessage.text} />
+            <StatusContent message={currentMessage?.text || ""} />
           </div>
           
           {/* Close button */}

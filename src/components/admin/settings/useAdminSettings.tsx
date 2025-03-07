@@ -32,7 +32,10 @@ export function useAdminSettings() {
     }
   }, [settings.logo, settings.favicon]);
 
-  const handleLogoUpload = useCallback((file: File) => {
+  const handleLogoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
     setLogoUploading(true);
     
     // Create a preview URL and apply it immediately to see the change
@@ -59,7 +62,10 @@ export function useAdminSettings() {
     fileReader.readAsDataURL(file);
   }, [updateSettings]);
 
-  const handleFaviconUpload = useCallback((file: File) => {
+  const handleFaviconUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
     setFaviconUploading(true);
     
     // Create a preview URL and apply it immediately

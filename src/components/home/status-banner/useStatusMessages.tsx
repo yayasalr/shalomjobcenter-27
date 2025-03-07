@@ -6,6 +6,7 @@ export const useStatusMessages = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
 
   // Fonction pour charger les messages du stockage local
   const loadMessages = useCallback(() => {
@@ -14,12 +15,12 @@ export const useStatusMessages = () => {
       const parsedMessages = storedMessages ? JSON.parse(storedMessages) : [];
       
       // Filtrer pour n'avoir que les messages actifs
-      const activeMessages = parsedMessages.filter((msg: any) => msg.isActive);
+      const activeMessages = parsedMessages.filter((msg: any) => msg.isActive || msg.active);
       
       console.info("Données chargées pour admin-status-messages:", activeMessages);
       
       setMessages(activeMessages);
-      setIsVisible(activeMessages.length > 0);
+      setIsVisible(activeMessages.length > 0 && !isDismissed);
       
       if (activeMessages.length > 0 && currentIndex >= activeMessages.length) {
         setCurrentIndex(0);
@@ -32,7 +33,7 @@ export const useStatusMessages = () => {
       setIsVisible(false);
       setHasLoaded(true);
     }
-  }, [currentIndex]);
+  }, [currentIndex, isDismissed]);
 
   // Charger les messages au montage du composant
   useEffect(() => {
@@ -61,6 +62,7 @@ export const useStatusMessages = () => {
 
   // Fonction pour masquer la bannière
   const dismissBanner = useCallback(() => {
+    setIsDismissed(true);
     setIsVisible(false);
   }, []);
 
@@ -69,6 +71,10 @@ export const useStatusMessages = () => {
     hasMessages: messages.length > 0,
     isVisible,
     hasLoaded,
+    isDismissed,
+    setIsDismissed,
+    messages,
+    currentIndex,
     nextMessage,
     dismissBanner
   };
