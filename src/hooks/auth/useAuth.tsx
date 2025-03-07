@@ -2,7 +2,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { User, AuthContextType, RegisterData } from "./types";
+import { User, AuthContextType, RegisterData, LoginCredentials } from "./types";
 import { LocalStorageKeys } from "./authUtils";
 
 // Create authentication context
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Enhanced login function with security features
   const login = {
-    mutateAsync: async (userData: any): Promise<void> => {
+    mutateAsync: async (userData: LoginCredentials): Promise<User | void> => {
       return new Promise((resolve, reject) => {
         // Vérifier si le compte est verrouillé
         const lockStatus = checkAccountLocked(userData.email);
@@ -175,7 +175,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           
           toast.success("Connexion réussie!");
           navigate(newUser.isAdmin ? "/admin" : "/");
-          resolve();
+          resolve(newUser); // Return the user object
         }, 500);
       });
     },

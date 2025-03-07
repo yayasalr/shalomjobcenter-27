@@ -157,9 +157,12 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
       
       // Simulate 2FA validation
       try {
-        await login.mutateAsync({
-          ...formData,
-          twoFactorCode
+        // Use spread with formData and add twoFactorCode as a separate parameter
+        // or modify the LoginCredentials interface to include it
+        const result = await login.mutateAsync({
+          email: formData.email,
+          password: formData.password,
+          twoFactorCode: twoFactorCode
         });
         
         // Log successful 2FA login
@@ -181,21 +184,23 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
       // First authentication step
       const result = await login.mutateAsync(formData);
       
-      // Check if user has 2FA enabled
-      const userData = localStorage.getItem(`2fa_${result?.id}`);
-      if (userData) {
-        try {
-          const parsedData = JSON.parse(userData);
-          if (parsedData.enabled) {
-            // Show 2FA input
-            setShowTwoFactorInput(true);
-            if (twoFactorInputRef.current) {
-              setTimeout(() => twoFactorInputRef.current?.focus(), 100);
+      // Check if user has 2FA enabled and if we got a result back
+      if (result && result.id) {
+        const userData = localStorage.getItem(`2fa_${result.id}`);
+        if (userData) {
+          try {
+            const parsedData = JSON.parse(userData);
+            if (parsedData.enabled) {
+              // Show 2FA input
+              setShowTwoFactorInput(true);
+              if (twoFactorInputRef.current) {
+                setTimeout(() => twoFactorInputRef.current?.focus(), 100);
+              }
+              return;
             }
-            return;
+          } catch (e) {
+            console.error("Error parsing 2FA data", e);
           }
-        } catch (e) {
-          console.error("Error parsing 2FA data", e);
         }
       }
     } catch (error) {

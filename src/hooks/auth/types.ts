@@ -16,6 +16,7 @@ export interface User {
 export interface LoginCredentials {
   email: string;
   password: string;
+  twoFactorCode?: string; // Add optional twoFactorCode
 }
 
 export interface RegisterData {
@@ -31,7 +32,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: {
-    mutateAsync: (userData: LoginCredentials) => Promise<void>;
+    mutateAsync: (userData: LoginCredentials) => Promise<User | void>;
     isPending: boolean;
   };
   register: {

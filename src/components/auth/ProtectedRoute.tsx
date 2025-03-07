@@ -48,7 +48,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         if (requireAdmin || location.pathname.includes('/profile')) {
           toast.error("Session de sécurité invalide. Reconnexion requise.");
           logout();
-          return <Navigate to="/login" state={{ from: location }} replace />;
+          // Remove the incorrect return statement from the useEffect
         }
       }
     }
