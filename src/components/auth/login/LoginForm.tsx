@@ -62,11 +62,11 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
       // Check for automation tools, headless browsers, or unusual plugins
       const automationHints = [
         'webdriver' in navigator,
-        'domAutomation' in window,
-        'callPhantom' in window,
-        '__nightmare' in window,
-        '__selenium_evaluate' in window,
-        '__webdriverFunc' in window,
+        'domAutomation' in (window as any),
+        'callPhantom' in (window as any),
+        '__nightmare' in (window as any),
+        '__selenium_evaluate' in (window as any),
+        '__webdriverFunc' in (window as any),
         'selenium' in navigator.userAgent.toLowerCase(),
         /headless/i.test(navigator.userAgent)
       ];
