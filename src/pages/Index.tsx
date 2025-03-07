@@ -10,7 +10,7 @@ import { SearchBar } from '@/components/home/SearchBar';
 import { ListingsGrid } from '@/components/home/ListingsGrid';
 import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
-import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { TestimonialsSection } from '@/components/home/testimonials';
 import { Footer } from '@/components/home/Footer';
 import { useLocation } from 'react-router-dom';
 import { StatusBanner } from '@/components/home/status-banner';
