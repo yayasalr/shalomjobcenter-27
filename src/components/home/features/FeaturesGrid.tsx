@@ -3,6 +3,7 @@ import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Shield, Home, Medal, MapPin, Clock, CheckCircle } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
+import { motion } from 'framer-motion';
 
 export const FeaturesGrid = () => {
   const { t } = useLanguage();
@@ -41,17 +42,22 @@ export const FeaturesGrid = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+    <motion.div 
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {features.map((feature, index) => (
         <FeatureCard
           key={index}
           icon={feature.icon}
           title={feature.title}
           description={feature.description}
-          className="animate-fade-in"
+          index={index}
           style={{ animationDelay: `${index * 100}ms` }}
         />
       ))}
-    </div>
+    </motion.div>
   );
 };
