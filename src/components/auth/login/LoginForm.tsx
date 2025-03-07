@@ -28,8 +28,13 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
     handleSubmit
   } = useLoginForm();
 
+  // Create a form submission wrapper that accepts the event
+  const onSubmit = (e: React.FormEvent) => {
+    handleSubmit(e);
+  };
+
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <form className="mt-8 space-y-6" onSubmit={onSubmit}>
       <SecurityAlert show={hasDetectedSuspiciousActivity} />
       
       {showTwoFactorInput ? (
@@ -46,7 +51,7 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
           password={formData.password}
           onEmailChange={handleEmailChange}
           onPasswordChange={handlePasswordChange}
-          onSubmit={handleSubmit}
+          onSubmit={onSubmit}
           isPending={login.isPending}
           isDisabled={!!securityInfo?.locked}
         />

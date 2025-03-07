@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 interface TwoFactorFormProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (e?: React.FormEvent) => void;
   onBack: () => void;
   isPending: boolean;
 }
@@ -19,6 +19,10 @@ const TwoFactorForm: React.FC<TwoFactorFormProps> = ({
   onBack,
   isPending
 }) => {
+  const handleSubmitClick = () => {
+    onSubmit();
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -47,10 +51,10 @@ const TwoFactorForm: React.FC<TwoFactorFormProps> = ({
       </div>
 
       <Button
-        type="submit"
+        type="button"
         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
         disabled={isPending}
-        onClick={onSubmit}
+        onClick={handleSubmitClick}
       >
         {isPending ? "Vérification..." : "Vérifier"}
       </Button>
