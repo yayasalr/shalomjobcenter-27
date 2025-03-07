@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext } from "react";
 import { User, AuthContextType } from "./types";
 import { LocalStorageKeys } from "./authUtils";
