@@ -1,11 +1,11 @@
 
 import { useRef } from "react";
-import { useSuspiciousActivityDetection } from "@/hooks/auth/useSuspiciousActivityDetection";
-import { useLoginForm } from "@/hooks/auth/useLoginForm";
 import useAuth from "@/hooks/useAuth";
 import SecurityAlert from "./SecurityAlert";
 import StandardLoginForm from "./StandardLoginForm";
 import TwoFactorForm from "./TwoFactorForm";
+import { useLoginForm } from "@/hooks/auth/useLoginForm";
+import { useSuspiciousActivityDetection } from "@/hooks/auth/useSuspiciousActivityDetection";
 
 interface LoginFormProps {
   securityInfo: {locked: boolean; remainingMinutes: number} | null;
