@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Briefcase, Home, Shield, Medal, MapPin, Clock } from 'lucide-react';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -13,7 +14,7 @@ export const FeatureCard = ({ icon, title, description, className }: FeatureCard
   return (
     <div 
       className={cn(
-        "bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover-shadow transition-all flex flex-col items-center text-center",
+        "bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col items-center text-center",
         className
       )}
     >
