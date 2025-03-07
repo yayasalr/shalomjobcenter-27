@@ -60,13 +60,14 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
     // Check for unusual browser/device patterns
     const detectSuspiciousEnvironment = () => {
       // Check for automation tools, headless browsers, or unusual plugins
+      const windowObj = window as any;
       const automationHints = [
         'webdriver' in navigator,
-        'domAutomation' in (window as any),
-        'callPhantom' in (window as any),
-        '__nightmare' in (window as any),
-        '__selenium_evaluate' in (window as any),
-        '__webdriverFunc' in (window as any),
+        'domAutomation' in windowObj,
+        'callPhantom' in windowObj,
+        '__nightmare' in windowObj,
+        '__selenium_evaluate' in windowObj,
+        '__webdriverFunc' in windowObj,
         'selenium' in navigator.userAgent.toLowerCase(),
         /headless/i.test(navigator.userAgent)
       ];
