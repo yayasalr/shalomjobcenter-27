@@ -26,11 +26,14 @@ export const useSettingsStorage = () => {
         console.log("Favicon chargé depuis le stockage séparé");
       }
       
+      // S'assurer que le mode sombre est toujours désactivé
+      parsedSettings.darkMode = false;
+      
       setSettings(parsedSettings as SiteSettings);
       console.log("Paramètres chargés avec succès", parsedSettings);
     } catch (error) {
       console.error("Erreur lors du chargement des paramètres:", error);
-      setSettings(defaultSettings as SiteSettings);
+      setSettings({...defaultSettings, darkMode: false} as SiteSettings);
     }
   }, []);
 
@@ -49,7 +52,7 @@ export const useSettingsStorage = () => {
       }
       
       // Créer une copie des paramètres pour éviter de stocker les grandes data URLs directement
-      const settingsToStore = { ...settings };
+      const settingsToStore = { ...settings, darkMode: false };
       
       // Ne pas stocker les grandes data URLs dans l'objet principal
       if (settingsToStore.logo && settingsToStore.logo.startsWith('data:')) {
@@ -71,9 +74,11 @@ export const useSettingsStorage = () => {
 
   const updateSettings = (newSettings: Partial<SiteSettings>) => {
     setSettings((prevSettings) => {
+      // S'assurer que le mode sombre reste désactivé
       const updatedSettings = {
         ...prevSettings,
         ...newSettings,
+        darkMode: false
       };
       console.log("Paramètres mis à jour:", updatedSettings);
       return updatedSettings;
@@ -85,7 +90,7 @@ export const useSettingsStorage = () => {
     localStorage.removeItem('site_logo');
     localStorage.removeItem('site_favicon');
     
-    setSettings(defaultSettings as SiteSettings);
+    setSettings({...defaultSettings, darkMode: false} as SiteSettings);
     console.log("Paramètres réinitialisés");
   };
 

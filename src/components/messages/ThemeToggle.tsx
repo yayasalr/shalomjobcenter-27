@@ -5,8 +5,7 @@ import { Sun } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 export function ThemeToggle() {
-  const { theme } = useTheme();
-
+  // Toujours en mode clair
   return (
     <Button variant="ghost" size="icon" className="h-9 w-9 text-gray-500">
       <Sun className="h-4 w-4" />

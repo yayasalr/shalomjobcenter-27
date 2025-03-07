@@ -41,7 +41,7 @@ export const NavbarLogo = () => {
               alt={settings.siteName}
               className="w-auto h-full object-contain"
               onLoad={() => setLogoLoaded(true)}
-              onError={(e) => {
+              onError={() => {
                 console.error("Error loading logo:", currentLogo.substring(0, 30) + "...");
                 setLogoError(true);
               }}
