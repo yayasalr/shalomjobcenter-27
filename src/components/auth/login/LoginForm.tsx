@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,14 +62,16 @@ const LoginForm = ({ securityInfo, onSetShowContactAdminDialog }: LoginFormProps
     const detectSuspiciousEnvironment = () => {
       // Check for automation tools, headless browsers, or unusual plugins
       const windowObj = window as any;
+      const navigatorObj = navigator as any;
+      
       const automationHints = [
-        'webdriver' in navigator,
+        'webdriver' in navigatorObj,
         'domAutomation' in windowObj,
         'callPhantom' in windowObj,
         '__nightmare' in windowObj,
         '__selenium_evaluate' in windowObj,
         '__webdriverFunc' in windowObj,
-        'selenium' in navigator.userAgent.toLowerCase(),
+        navigator.userAgent.toLowerCase().includes('selenium'),
         /headless/i.test(navigator.userAgent)
       ];
       
