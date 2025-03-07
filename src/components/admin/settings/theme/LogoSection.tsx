@@ -1,61 +1,113 @@
 
 import React, { useState, useEffect } from 'react';
-import { ImageUploadField } from '../ImageUploadField';
-import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ImageIcon, Loader2, AlertCircle } from "lucide-react";
+import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LogoSectionProps {
   logoUrl: string;
   logoUploading: boolean;
-  handleLogoUpload: (file: File) => void;
+  handleLogoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const LogoSection: React.FC<LogoSectionProps> = ({
-  logoUrl,
-  logoUploading,
-  handleLogoUpload
-}) => {
+export const LogoSection = ({ 
+  logoUrl, 
+  logoUploading, 
+  handleLogoUpload 
+}: LogoSectionProps) => {
+  const { settings } = useSiteSettings();
+  const [previewUrl, setPreviewUrl] = useState<string>("");
   const [logoError, setLogoError] = useState(false);
-  const [logoLoaded, setLogoLoaded] = useState(false);
   
-  // Reset error when URL changes
   useEffect(() => {
-    setLogoError(false);
-    setLogoLoaded(false);
-    console.log("Logo URL mise à jour dans LogoSection:", logoUrl?.substring(0, 30) + "...");
-  }, [logoUrl]);
+    try {
+      // Vérifier si le logo est stocké séparément
+      if (settings.logo === 'stored_separately') {
+        const storedLogo = localStorage.getItem('site_logo');
+        setPreviewUrl(storedLogo || "");
+      } else {
+        setPreviewUrl(settings.logo || "");
+      }
+      
+      setLogoError(false);
+    } catch (error) {
+      console.error("Erreur lors du chargement du logo:", error);
+      setLogoError(true);
+    }
+  }, [settings.logo, logoUrl]);
+  
+  const handleLogoError = () => {
+    console.error("Erreur lors du chargement de l'aperçu du logo");
+    setLogoError(true);
+  };
   
   return (
-    <div>
-      <div className="flex items-center space-x-4 mt-1">
-        <div className="h-16 w-16 flex items-center justify-center overflow-hidden bg-gray-50 rounded-full border">
-          {!logoError ? (
-            <img 
-              key={`logo-${Date.now()}`} 
-              src={logoUrl || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png"} 
-              alt="Logo" 
-              className="h-full w-auto object-contain" 
-              onLoad={() => setLogoLoaded(true)}
-              onError={() => {
-                setLogoError(true);
-                console.error("Erreur de chargement du logo dans LogoSection");
-                toast.error("Erreur de chargement du logo");
-              }}
-              style={{ display: logoLoaded ? 'block' : 'none' }}
-            />
-          ) : (
-            <span className="text-sm text-gray-400">Logo</span>
+    <div className="mb-6">
+      <div className="flex flex-col space-y-1.5 mb-4">
+        <Label htmlFor="logo">Logo du site</Label>
+        <p className="text-sm text-muted-foreground">
+          Téléchargez votre logo pour le site. Formats recommandés: PNG, SVG (transparent).
+        </p>
+      </div>
+      
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <Card className="w-full sm:w-1/3">
+          <CardContent className="p-4 flex items-center justify-center">
+            <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center overflow-hidden">
+              {logoUploading ? (
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Chargement...</span>
+                </div>
+              ) : previewUrl && !logoError ? (
+                <img 
+                  src={previewUrl} 
+                  alt="Logo du site" 
+                  className="max-w-full max-h-[120px] object-contain" 
+                  onError={handleLogoError}
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Pas de logo</span>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        
+        <div className="flex flex-col justify-center space-y-4 w-full sm:w-2/3">
+          {logoError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Erreur lors du chargement du logo. Veuillez essayer de télécharger à nouveau.
+              </AlertDescription>
+            </Alert>
           )}
           
-          {(!logoLoaded && !logoError) && (
-            <div className="animate-pulse bg-gray-200 h-8 w-8 rounded-full"></div>
-          )}
+          <div className="flex items-center gap-4">
+            <Button variant="outline" className="relative" disabled={logoUploading}>
+              {logoUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {previewUrl ? "Changer le logo" : "Ajouter un logo"}
+              <input
+                id="logo"
+                type="file"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                onChange={handleLogoUpload}
+                accept="image/*"
+                disabled={logoUploading}
+              />
+            </Button>
+            
+            <div className="text-sm text-muted-foreground">
+              Formats supportés: JPG, PNG, GIF, SVG. Taille max: 2MB
+            </div>
+          </div>
         </div>
-        <ImageUploadField
-          label=""
-          imageUrl={logoUrl}
-          onUpload={handleLogoUpload}
-          isUploading={logoUploading}
-        />
       </div>
     </div>
   );

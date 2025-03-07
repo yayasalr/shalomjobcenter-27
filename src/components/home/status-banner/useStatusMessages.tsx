@@ -1,54 +1,75 @@
 
-import { useState, useEffect } from 'react';
-import useLocalStorage from '@/hooks/useLocalStorage';
-import { StatusMessage } from '@/components/admin/status/types';
+import { useState, useEffect, useCallback } from 'react';
 
 export const useStatusMessages = () => {
-  const { loadData } = useLocalStorage();
-  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Load status messages on hook mount
-  useEffect(() => {
+  // Fonction pour charger les messages du stockage local
+  const loadMessages = useCallback(() => {
     try {
-      const rawData = loadData<any>('admin-status-messages', []);
-      let processedMessages: StatusMessage[] = [];
+      const storedMessages = localStorage.getItem('admin-status-messages');
+      const parsedMessages = storedMessages ? JSON.parse(storedMessages) : [];
       
-      if (Array.isArray(rawData)) {
-        // Check if it's already a flat array of StatusMessage objects
-        if (rawData.length === 0 || (rawData.length > 0 && typeof rawData[0] === 'object' && rawData[0] !== null && 'id' in rawData[0])) {
-          processedMessages = rawData as StatusMessage[];
-        } 
-        // Check if it's a nested array and flatten it
-        else if (rawData.length > 0 && Array.isArray(rawData[0])) {
-          const flattened = (rawData as any[]).flat();
-          if (flattened.length > 0 && typeof flattened[0] === 'object' && flattened[0] !== null && 'id' in flattened[0]) {
-            processedMessages = flattened as StatusMessage[];
-          }
-        }
+      // Filtrer pour n'avoir que les messages actifs
+      const activeMessages = parsedMessages.filter((msg: any) => msg.isActive);
+      
+      console.info("Données chargées pour admin-status-messages:", activeMessages);
+      
+      setMessages(activeMessages);
+      setIsVisible(activeMessages.length > 0);
+      
+      if (activeMessages.length > 0 && currentIndex >= activeMessages.length) {
+        setCurrentIndex(0);
       }
       
-      setStatusMessages(processedMessages);
+      setHasLoaded(true);
     } catch (error) {
-      console.error('Error loading status messages:', error);
-      setStatusMessages([]);
+      console.error("Erreur lors du chargement des messages de statut:", error);
+      setMessages([]);
+      setIsVisible(false);
+      setHasLoaded(true);
     }
-  }, [loadData]); // Only run once on mount with stable loadData reference
+  }, [currentIndex]);
 
-  // Filter active statuses
-  const activeMessages = statusMessages.filter(msg => msg.active);
-  
-  // Reset to first message when active messages change
+  // Charger les messages au montage du composant
   useEffect(() => {
-    setCurrentIndex(0);
-  }, [activeMessages.length]);
+    loadMessages();
+    
+    // Ajouter un écouteur d'événement pour les mises à jour du stockage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'admin-status-messages') {
+        loadMessages();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [loadMessages]);
+
+  // Fonction pour passer au message suivant
+  const nextMessage = useCallback(() => {
+    if (messages.length > 1) {
+      setCurrentIndex(prev => (prev + 1) % messages.length);
+    }
+  }, [messages.length]);
+
+  // Fonction pour masquer la bannière
+  const dismissBanner = useCallback(() => {
+    setIsVisible(false);
+  }, []);
 
   return {
-    activeMessages,
-    currentIndex,
-    isDismissed,
-    setCurrentIndex,
-    setIsDismissed
+    currentMessage: messages[currentIndex],
+    hasMessages: messages.length > 0,
+    isVisible,
+    hasLoaded,
+    nextMessage,
+    dismissBanner
   };
 };

@@ -12,19 +12,26 @@ export const NavbarLogo = () => {
   
   // Update currentLogo when settings.logo changes or on component mount
   useEffect(() => {
-    let logoSrc = "";
-    
-    if (settings.logo === 'stored_separately') {
-      const storedLogo = localStorage.getItem('site_logo');
-      logoSrc = storedLogo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
-    } else {
-      logoSrc = settings.logo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
+    try {
+      let logoSrc = "";
+      
+      if (settings.logo === 'stored_separately') {
+        const storedLogo = localStorage.getItem('site_logo');
+        logoSrc = storedLogo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
+      } else {
+        logoSrc = settings.logo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
+      }
+      
+      console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
+      setCurrentLogo(logoSrc);
+      setLogoLoaded(false);
+      setLogoError(false);
+    } catch (error) {
+      console.error("Erreur lors de l'initialisation du logo:", error);
+      setLogoError(true);
+      // Utiliser un logo par défaut en cas d'erreur
+      setCurrentLogo("/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png");
     }
-    
-    console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
-    setCurrentLogo(logoSrc);
-    setLogoLoaded(false);
-    setLogoError(false);
   }, [settings.logo]);
   
   return (
@@ -38,7 +45,7 @@ export const NavbarLogo = () => {
           {!logoError ? (
             <img 
               src={currentLogo} 
-              alt={settings.siteName}
+              alt={settings.siteName || "Logo"}
               className="w-auto h-full object-contain"
               onLoad={() => setLogoLoaded(true)}
               onError={() => {

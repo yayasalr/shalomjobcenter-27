@@ -33,12 +33,54 @@ button {
   z-index: 10;
 }
 
-/* Make dropdown menus visible */
+/* Improved dropdown menu visibility */
 .dropdown-content, 
 [role="menu"],
-[data-radix-popper-content-wrapper] {
+[data-radix-popper-content-wrapper],
+.radix-dropdown-content,
+[data-state="open"],
+.select-content,
+[data-state="open"] > div,
+[data-radix-select-content] {
   background-color: white !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   z-index: 50 !important;
+  color: #1f2937 !important;
+}
+
+/* Ensure menus are properly displayed */
+[data-radix-popper-content-wrapper] {
+  max-height: none !important;
+  max-width: none !important;
+  overflow: visible !important;
+  transform-origin: var(--radix-popper-transform-origin);
+}
+
+/* Fix for dialog and modals */
+[role="dialog"],
+.radix-dialog-content,
+[data-state="open"] {
+  z-index: 1000 !important;
+}
+
+/* Fix for select menu items */
+[role="option"] {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+[role="option"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* Fix for tooltip rendering */
+[data-radix-tooltip-content] {
+  z-index: 999 !important;
+  background-color: #1f2937 !important;
+  color: white !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
 }

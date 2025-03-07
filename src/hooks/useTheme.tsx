@@ -39,6 +39,24 @@ export function ThemeProvider({
     
     // Stocker le thème en local storage
     localStorage.setItem(storageKey, 'light');
+    
+    // Désactiver les styles liés au mode sombre en CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      .dark {
+        display: none !important;
+      }
+      
+      [data-theme="dark"] {
+        --background: 0 0% 100% !important;
+        --foreground: 222.2 84% 4.9% !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
   }, [storageKey]);
 
   const value: ThemeContextType = {
