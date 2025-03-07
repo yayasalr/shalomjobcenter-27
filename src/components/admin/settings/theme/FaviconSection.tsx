@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ImageUploadField } from '../ImageUploadField';
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface FaviconSectionProps {
   faviconUrl: string;

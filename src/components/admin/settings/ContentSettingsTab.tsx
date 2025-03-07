@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -63,8 +62,10 @@ export const ContentSettingsTab: React.FC = () => {
     featured: false
   });
 
-  // Handler pour le téléchargement d'images (simulé)
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
     setImageUploading(true);
     
     // Simuler un téléchargement d'image
@@ -83,7 +84,6 @@ export const ContentSettingsTab: React.FC = () => {
     }, 1000);
   };
 
-  // Fonctions pour démarrer/terminer l'édition
   const startEditing = (sectionId: string) => {
     setActiveSectionId(sectionId);
     const section = content.pages[activePageId].sections.find(s => s.id === sectionId);
@@ -139,7 +139,6 @@ export const ContentSettingsTab: React.FC = () => {
     setActivePublicationId("");
   };
 
-  // Fonctions pour ajouter de nouveaux éléments
   const handleAddSection = () => {
     if (newSection.title && newSection.content) {
       addPageSection(activePageId, {
@@ -214,7 +213,6 @@ export const ContentSettingsTab: React.FC = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* CONTENU DES PAGES */}
           <TabsContent value="pages" className="space-y-4">
             <div className="flex space-x-4">
               <div className="w-1/3 pr-4 border-r">
@@ -382,7 +380,6 @@ export const ContentSettingsTab: React.FC = () => {
             </div>
           </TabsContent>
 
-          {/* MENU DE NAVIGATION */}
           <TabsContent value="navigation" className="space-y-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold">Éléments du menu</h3>
@@ -525,7 +522,6 @@ export const ContentSettingsTab: React.FC = () => {
             </div>
           </TabsContent>
 
-          {/* PUBLICATIONS */}
           <TabsContent value="publications" className="space-y-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold">Publications et articles</h3>
