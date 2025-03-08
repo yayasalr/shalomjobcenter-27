@@ -36,7 +36,7 @@ export const useMessageSender = (
         content: newMessage,
         timestamp,
         read: true,
-        sender: 'user',
+        sender: 'user' as const,  // Explicitly type as a literal "user" type
       },
     };
     
