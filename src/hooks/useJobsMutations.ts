@@ -1,9 +1,9 @@
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useJobsService } from "@/services/jobsService";
 import { Job } from "@/types/job";
 import { JobApplicationFormData } from "@/types/jobApplications";
+import { processStoredImages, saveJobImages } from "./useJobs/jobImageUtils";
 
 export const useJobsMutations = () => {
   const queryClient = useQueryClient();
@@ -12,7 +12,38 @@ export const useJobsMutations = () => {
   // Mutation pour ajouter un job
   const addJob = useMutation({
     mutationFn: async (newJob: Omit<Job, "id">) => {
-      return await createJob(newJob);
+      try {
+        const currentJobs = loadJobs();
+        const id = Math.random().toString(36).substr(2, 9);
+        
+        const job: Job = {
+          ...newJob,
+          id,
+          rating: 0,
+          dates: new Date().toLocaleDateString(),
+          host: newJob.host || { name: "Hôte", image: "/placeholder.svg" }
+        };
+        
+        // Sauvegarder les images avec le nouveau système
+        if (newJob.images && newJob.images.length > 0) {
+          job.images = [...newJob.images];
+          saveJobImages(id, job.images);
+        }
+        
+        // Définir l'image principale
+        if (newJob.image) {
+          job.image = newJob.image;
+        } else if (job.images && job.images.length > 0) {
+          job.image = job.images[0];
+        }
+
+        currentJobs.push(job);
+        saveJobs(currentJobs);
+        return job;
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de l'offre:", error);
+        throw error;
+      }
     },
     onSuccess: (newJob) => {
       queryClient.setQueryData(["jobs"], (old: Job[] = []) => [...old, newJob]);

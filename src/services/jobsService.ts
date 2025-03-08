@@ -1,8 +1,8 @@
-
 import { MOCK_JOBS } from "@/data/mockJobs";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Job, ApplicationStatus } from "@/types/job";
 import { JobApplicationFormData } from "@/types/jobApplications";
+import { processStoredImages } from "@/hooks/useJobs/jobImageUtils";
 
 // Service pour les opérations sur les offres d'emploi
 export const useJobsService = () => {
@@ -10,7 +10,8 @@ export const useJobsService = () => {
 
   // Chargement des jobs depuis le localStorage ou les données mock
   const loadJobs = (): Job[] => {
-    return loadData('jobs', MOCK_JOBS);
+    const jobs = loadData('jobs', MOCK_JOBS);
+    return jobs.map(job => processStoredImages(job));
   };
 
   // Ajouter un nouveau job
