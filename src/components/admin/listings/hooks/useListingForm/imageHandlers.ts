@@ -1,13 +1,11 @@
 
 import { useState, useEffect } from "react";
 import { Listing } from "@/types/listing";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import { toast } from "sonner";
 
 export const useImageHandlers = (initialImages: string[] = []) => {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(initialImages);
-  const localStorage = useLocalStorage();
 
   // Effet pour charger les images initiales
   useEffect(() => {
@@ -113,7 +111,7 @@ export const useImageHandlers = (initialImages: string[] = []) => {
   const resetImages = () => {
     // Nettoyer les URL blob pour éviter les fuites mémoire
     imagePreviews.forEach(url => {
-      if (url.startsWith('blob:')) {
+      if (url && typeof url === 'string' && url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
     });
@@ -132,7 +130,7 @@ export const useImageHandlers = (initialImages: string[] = []) => {
   useEffect(() => {
     return () => {
       imagePreviews.forEach(url => {
-        if (url.startsWith('blob:')) {
+        if (url && typeof url === 'string' && url.startsWith('blob:')) {
           URL.revokeObjectURL(url);
         }
       });

@@ -35,14 +35,15 @@ export const useListingForm = ({
     resetForm
   } = useFormState(selectedListing, isEditing);
 
-  // Image handling
+  // Image handling - initialize with the listing's images if editing
+  const initialImages = selectedListing && isEditing ? selectedListing.images || [] : [];
   const {
     images,
     imagePreviews,
     handleImageChange,
     removeImage,
     resetImages
-  } = useImageHandlers();
+  } = useImageHandlers(initialImages);
 
   // Dialog management
   const {
@@ -95,6 +96,7 @@ export const useListingForm = ({
     handleNeighborhoodChange,
     handleImageChange,
     removeImage,
+    resetImages,
     handleSubmit,
     handleCancel,
     handleDialogChange
