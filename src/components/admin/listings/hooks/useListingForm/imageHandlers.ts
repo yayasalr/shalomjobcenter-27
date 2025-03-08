@@ -14,26 +14,28 @@ export const useImageHandlers = () => {
       const newPreviews = filesArray.map(file => URL.createObjectURL(file));
       console.log("Nouvelles URL de prévisualisation créées:", newPreviews);
       
-      // Stocker les nouvelles URL dans le stockage de session ET local pour double persistance
+      // AMÉLIORATION: Triple stockage pour une persistance maximale
       try {
+        // 1. SessionStorage (pour la session actuelle)
         const storedPreviews = sessionStorage.getItem('listing_image_previews');
         const currentPreviews = storedPreviews ? JSON.parse(storedPreviews) : [];
         const updatedPreviews = [...currentPreviews, ...newPreviews];
-        
-        // Stocker dans sessionStorage (pour la session en cours)
         sessionStorage.setItem('listing_image_previews', JSON.stringify(updatedPreviews));
-        console.log("Prévisualisations stockées dans sessionStorage:", updatedPreviews);
         
-        // Stocker aussi dans localStorage pour une persistance plus longue
+        // 2. LocalStorage (persistance à long terme)
         localStorage.setItem('listing_image_previews', JSON.stringify(updatedPreviews));
-        console.log("Prévisualisations stockées dans localStorage pour persistance:", updatedPreviews);
         
-        // Stocker aussi les images individuelles pour plus de robustesse
+        // 3. Stockage individuel de chaque URL (ultra-redondant)
         newPreviews.forEach((url, idx) => {
           const key = `listing_image_preview_${Date.now()}_${idx}`;
           localStorage.setItem(key, url);
-          console.log(`Image individuelle stockée sous la clé ${key}`);
+          
+          // Stockage additionnel avec horodatage pour éviter les conflits
+          const backupKey = `listing_image_backup_${new Date().toISOString()}_${idx}`;
+          localStorage.setItem(backupKey, url);
         });
+        
+        console.log("Triple sauvegarde des images effectuée pour une persistance maximale");
       } catch (error) {
         console.error('Erreur lors du stockage des prévisualisations:', error);
       }
@@ -46,31 +48,20 @@ export const useImageHandlers = () => {
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
     // Révoquer l'URL de l'objet Blob pour éviter les fuites de mémoire
-    if (imagePreviews[index]) {
-      if (imagePreviews[index].startsWith('blob:')) {
-        URL.revokeObjectURL(imagePreviews[index]);
-        console.log(`URL révoquée: ${imagePreviews[index]}`);
-      }
+    if (imagePreviews[index] && imagePreviews[index].startsWith('blob:')) {
+      URL.revokeObjectURL(imagePreviews[index]);
     }
     
-    // Mettre à jour le stockage
+    // Mettre à jour tous les stockages
     try {
-      // Mettre à jour sessionStorage
       const storedPreviews = sessionStorage.getItem('listing_image_previews');
       if (storedPreviews) {
         const currentPreviews = JSON.parse(storedPreviews);
         currentPreviews.splice(index, 1);
+        
+        // Mettre à jour les deux stockages
         sessionStorage.setItem('listing_image_previews', JSON.stringify(currentPreviews));
-        console.log("Prévisualisations mises à jour dans sessionStorage après suppression");
-      }
-      
-      // Mettre à jour localStorage
-      const localStoredPreviews = localStorage.getItem('listing_image_previews');
-      if (localStoredPreviews) {
-        const localCurrentPreviews = JSON.parse(localStoredPreviews);
-        localCurrentPreviews.splice(index, 1);
-        localStorage.setItem('listing_image_previews', JSON.stringify(localCurrentPreviews));
-        console.log("Prévisualisations mises à jour dans localStorage après suppression");
+        localStorage.setItem('listing_image_previews', JSON.stringify(currentPreviews));
       }
     } catch (error) {
       console.error('Erreur lors de la mise à jour des prévisualisations stockées:', error);
@@ -84,48 +75,76 @@ export const useImageHandlers = () => {
     imagePreviews.forEach(url => {
       if (url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
-        console.log(`URL révoquée lors de la réinitialisation: ${url}`);
       }
     });
     
-    // Effacer le stockage
-    try {
-      sessionStorage.removeItem('listing_image_previews');
-      console.log("Prévisualisations supprimées de sessionStorage");
-      
-      // Ne pas effacer localStorage pour conserver une référence persistante
-      // localStorage.removeItem('listing_image_previews');
-    } catch (error) {
-      console.error('Erreur lors de la réinitialisation des prévisualisations stockées:', error);
-    }
+    // Ne pas effacer le stockage - cela permet de récupérer les images
+    // même après réinitialisation accidentelle
     
     setImages([]);
     setImagePreviews([]);
   };
 
-  // Charger les prévisualisations d'images au montage du composant
+  // Charger les prévisualisations d'images au montage du composant avec priorité
   useEffect(() => {
     try {
-      // Essayer d'abord sessionStorage (pour la même session)
-      const storedPreviews = sessionStorage.getItem('listing_image_previews');
-      if (storedPreviews) {
-        const parsedPreviews = JSON.parse(storedPreviews);
-        console.log("Prévisualisations chargées depuis sessionStorage:", parsedPreviews);
-        setImagePreviews(parsedPreviews);
-      } else {
-        // Si rien dans sessionStorage, essayer localStorage
-        const localStoredPreviews = localStorage.getItem('listing_image_previews');
-        if (localStoredPreviews) {
-          const parsedLocalPreviews = JSON.parse(localStoredPreviews);
-          console.log("Prévisualisations chargées depuis localStorage:", parsedLocalPreviews);
-          setImagePreviews(parsedLocalPreviews);
+      // Priorité 1: Images de la dernière soumission
+      const lastSubmittedImages = localStorage.getItem('last_listing_images');
+      if (lastSubmittedImages) {
+        console.log("Restauration des images de la dernière soumission");
+        const parsedImages = JSON.parse(lastSubmittedImages);
+        setImagePreviews(parsedImages);
+        return;
+      }
+      
+      // Priorité 2: Images de la session en cours
+      const sessionImages = sessionStorage.getItem('listing_image_previews');
+      if (sessionImages) {
+        console.log("Restauration des images de la session en cours");
+        const parsedImages = JSON.parse(sessionImages);
+        setImagePreviews(parsedImages);
+        return;
+      }
+      
+      // Priorité 3: Images du stockage local
+      const localStoredImages = localStorage.getItem('listing_image_previews');
+      if (localStoredImages) {
+        console.log("Restauration des images du stockage local");
+        const parsedImages = JSON.parse(localStoredImages);
+        setImagePreviews(parsedImages);
+        
+        // Synchroniser avec sessionStorage
+        sessionStorage.setItem('listing_image_previews', localStoredImages);
+      }
+      
+      // Priorité 4: Récupération des images individuelles
+      // Cette méthode est expérimentale et sert de dernier recours
+      else {
+        console.log("Tentative de récupération d'images individuelles");
+        const recoveredImages: string[] = [];
+        
+        // Parcourir le localStorage pour trouver des images
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('listing_image_preview_') || key.startsWith('listing_image_backup_'))) {
+            const imageUrl = localStorage.getItem(key);
+            if (imageUrl && !recoveredImages.includes(imageUrl)) {
+              recoveredImages.push(imageUrl);
+            }
+          }
+        }
+        
+        if (recoveredImages.length > 0) {
+          console.log(`Récupération de ${recoveredImages.length} images individuelles`);
+          setImagePreviews(recoveredImages);
           
-          // Synchroniser avec sessionStorage
-          sessionStorage.setItem('listing_image_previews', localStoredPreviews);
+          // Synchroniser avec les autres stockages
+          sessionStorage.setItem('listing_image_previews', JSON.stringify(recoveredImages));
+          localStorage.setItem('listing_image_previews', JSON.stringify(recoveredImages));
         }
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des prévisualisations stockées:', error);
+      console.error('Erreur lors du chargement des prévisualisations:', error);
     }
   }, []);
 
@@ -135,7 +154,6 @@ export const useImageHandlers = () => {
       imagePreviews.forEach(url => {
         if (url.startsWith('blob:')) {
           URL.revokeObjectURL(url);
-          console.log(`URL révoquée lors du démontage: ${url}`);
         }
       });
     };

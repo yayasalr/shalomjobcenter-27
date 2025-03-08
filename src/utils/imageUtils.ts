@@ -1,4 +1,3 @@
-
 import { FALLBACK_IMAGES } from '@/constants/images';
 import { compressImage, cleanupImageUrls } from '@/hooks/upload';
 
@@ -12,51 +11,23 @@ const UNSPLASH_FALLBACKS = [
 ];
 
 /**
- * Obtenir une URL d'image valide à partir d'une URL
- * Conserve l'URL originale dans presque tous les cas, 
- * n'utilise l'image de secours qu'en dernier recours
+ * BUGFIX: Cette fonction préservera maintenant TOUTES les URLs d'images telles quelles
+ * et n'utilisera une image de secours qu'en cas d'URL complètement vide
  */
 export const getValidImageUrl = (imageUrl: string, index: number = 0): string => {
-  // Si pas d'URL du tout ou explicitement null/undefined, utiliser une image de secours
-  if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null' || imageUrl === '') {
-    console.log(`URL d'image non valide (${imageUrl}), utilisation de l'image de secours`);
-    return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
-  }
-  
-  // CRUCIAL: Préserver TOUTES les URLs qui ont un format valide
-  // Blob URLs (pour les téléchargements récents)
-  if (imageUrl.startsWith('blob:')) {
-    console.log(`Préservation de l'URL blob: ${imageUrl}`);
+  // Retourner l'URL telle quelle dans presque tous les cas
+  if (imageUrl && imageUrl !== 'undefined' && imageUrl !== 'null') {
+    console.log(`URL d'image préservée: ${imageUrl}`);
     return imageUrl;
   }
   
-  // URLs HTTP(S) (pour les images externes)
-  if (imageUrl.startsWith('http')) {
-    console.log(`Préservation de l'URL externe: ${imageUrl}`);
-    return imageUrl;
-  }
-  
-  // URLs de fichiers locaux
-  if (imageUrl.startsWith('/')) {
-    console.log(`Préservation du chemin local: ${imageUrl}`);
-    return imageUrl;
-  }
-  
-  // Data URLs (base64)
-  if (imageUrl.startsWith('data:')) {
-    console.log(`Préservation de l'URL data: ${imageUrl.substring(0, 20)}...`);
-    return imageUrl;
-  }
-  
-  // Si aucun des formats ci-dessus ne correspond, mais qu'une URL est fournie,
-  // la conserver telle quelle, ne pas la remplacer par une image par défaut
-  console.log(`Conservation de l'URL telle quelle: ${imageUrl}`);
-  return imageUrl;
+  // Ne remplacer que si l'URL est complètement vide ou invalide
+  console.log(`URL d'image vide ou invalide, utilisation de secours à l'index ${index}`);
+  return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
 };
 
 /**
- * Normalise un tableau d'images en préservant les URLs valides
- * Ne remplace JAMAIS les images fournies par des images par défaut
+ * Normalise un tableau d'images en préservant STRICTEMENT les URLs fournies
  */
 export const normalizeImages = (images: string[] | undefined): string[] => {
   if (!images || images.length === 0) {
@@ -65,10 +36,10 @@ export const normalizeImages = (images: string[] | undefined): string[] => {
   }
   
   // Log pour le débogage
-  console.log(`Normalisation d'un tableau de ${images.length} images sans remplacement`);
+  console.log(`Préservation stricte des ${images.length} images sans aucune modification`);
   
-  // Conserver toutes les images du tableau sans remplacement automatique
-  return images;
+  // CRITIQUE: Retourner exactement les mêmes images sans aucune modification
+  return [...images];
 };
 
 // Re-export the image utility functions from the new location
@@ -83,10 +54,6 @@ export const getHostAvatar = (avatarUrl: string | undefined): string => {
   }
   
   // Préserver les URLs blob et HTTP
-  if (avatarUrl.startsWith('blob:') || avatarUrl.startsWith('http')) {
-    return avatarUrl;
-  }
-  
   return avatarUrl;
 };
 
