@@ -15,11 +15,11 @@ export const normalizeListing = (listing: Listing): Listing => {
   console.log("Images originales:", images);
   console.log("Image principale originale:", mainImage);
   
-  // Ne plus toucher aux images, sauf si absolument aucune n'existe
+  // Préserver toutes les images existantes
   let finalMainImage = mainImage;
   let finalImages = images;
   
-  // Si absolument aucune image n'est fournie, seulement dans ce cas utiliser une image par défaut
+  // Si aucune image n'est fournie, seulement dans ce cas utiliser une image par défaut
   if (finalImages.length === 0 && !finalMainImage) {
     console.log("Aucune image fournie, utilisation d'une image par défaut");
     finalMainImage = FALLBACK_IMAGES[0];

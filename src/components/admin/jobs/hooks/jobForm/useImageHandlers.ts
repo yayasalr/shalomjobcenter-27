@@ -1,5 +1,6 @@
 
 import { toast } from "sonner";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export interface UseImageHandlersParams {
   images: string[];
@@ -14,29 +15,32 @@ export const useImageHandlers = ({
   setFeaturedImage,
   setIsUploading
 }: UseImageHandlersParams) => {
+  const localStorage = useLocalStorage();
   
-  // Fonction complètement réécrité pour garantir une persistance exacte des images
+  // Fonction améliorée pour garantir une persistance des images
   const storeImagesInLocalStorage = (key: string, imageUrl: string | string[]) => {
     try {
       const timestamp = Date.now();
       
       if (Array.isArray(imageUrl)) {
-        // Stockage avec horodatage pour garantir les images les plus récentes
+        // Stockage avec horodatage et multiples sauvegardes
         const timestampedKey = `${key}_${timestamp}`;
-        localStorage.setItem(timestampedKey, JSON.stringify(imageUrl));
+        localStorage.setItem(timestampedKey, imageUrl);
         
-        // Stocker le timestamp comme référence de la dernière mise à jour
+        // Stocker le timestamp comme référence
         localStorage.setItem(`${key}_latest_timestamp`, timestamp.toString());
+        localStorage.setItem(`${key}_latest`, imageUrl);
         
-        console.log(`Nouvelles images stockées avec timestamp ${timestamp}:`, imageUrl);
+        console.log(`Images stockées avec timestamp ${timestamp}:`, imageUrl);
       } else {
-        // Pour une seule image, création d'un nouveau tableau
+        // Pour une seule image
         const timestampedKey = `${key}_${timestamp}`;
-        localStorage.setItem(timestampedKey, JSON.stringify([imageUrl]));
+        localStorage.setItem(timestampedKey, [imageUrl]);
         localStorage.setItem(`${key}_latest_timestamp`, timestamp.toString());
         localStorage.setItem(`${key}_single_${timestamp}`, imageUrl);
+        localStorage.setItem(`${key}_latest`, [imageUrl]);
         
-        console.log(`Nouvelle image stockée avec timestamp ${timestamp}:`, imageUrl);
+        console.log(`Image stockée avec timestamp ${timestamp}:`, imageUrl);
       }
     } catch (error) {
       console.error('Erreur lors du stockage des images:', error);
@@ -73,10 +77,11 @@ export const useImageHandlers = ({
     simulateImageUpload((url) => {
       setFeaturedImage(url);
       
-      // Stockage avec horodatage précis pour la featured image
+      // Stockage avec horodatage précis
       const timestamp = Date.now();
       localStorage.setItem(`job_featured_image_${timestamp}`, url);
       localStorage.setItem('job_featured_image_latest_timestamp', timestamp.toString());
+      localStorage.setItem('job_featured_image_latest', url);
       
       console.log(`Image principale téléchargée et stockée: ${url}`);
       
@@ -94,6 +99,7 @@ export const useImageHandlers = ({
       const timestamp = Date.now();
       localStorage.setItem(`job_images_${timestamp}`, JSON.stringify(updatedImages));
       localStorage.setItem('job_images_latest_timestamp', timestamp.toString());
+      localStorage.setItem('job_images_latest', JSON.stringify(updatedImages));
       
       console.log(`Images additionnelles mises à jour et stockées: ${JSON.stringify(updatedImages)}`);
       
@@ -110,6 +116,7 @@ export const useImageHandlers = ({
     const timestamp = Date.now();
     localStorage.setItem(`job_images_${timestamp}`, JSON.stringify(newImages));
     localStorage.setItem('job_images_latest_timestamp', timestamp.toString());
+    localStorage.setItem('job_images_latest', JSON.stringify(newImages));
     
     console.log(`Images mise à jour après suppression: ${JSON.stringify(newImages)}`);
     

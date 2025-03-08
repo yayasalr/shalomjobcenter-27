@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormState } from "./formState";
 import { useImageHandlers } from "./imageHandlers";
 import { useDialogHandlers } from "./dialogHandlers";
@@ -39,14 +39,15 @@ export const useListingForm = ({
     resetForm
   } = useFormState(selectedListing, isEditing);
 
-  // Image handling
+  // Image handling - initialize with the listing's images if editing
+  const initialImages = selectedListing && isEditing ? selectedListing.images || [] : [];
   const {
     images,
     imagePreviews,
     handleImageChange,
     removeImage,
     resetImages
-  } = useImageHandlers();
+  } = useImageHandlers(initialImages);
 
   // Dialog management
   const {

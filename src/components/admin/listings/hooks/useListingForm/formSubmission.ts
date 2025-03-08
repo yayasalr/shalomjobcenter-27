@@ -82,16 +82,11 @@ export const useFormSubmission = ({
         }
       }
 
-      // ABSOLUMENT PRIORITAIRE: Utiliser les nouvelles images téléchargées
+      // Utiliser TOUJOURS les images actuellement présentes dans la prévisualisation
       if (imagePreviews && imagePreviews.length > 0) {
-        console.log("UTILISATION DES IMAGES TÉLÉCHARGÉES:", imagePreviews);
+        console.log("UTILISATION DES IMAGES ACTUELLES:", imagePreviews);
         
-        // Enregistrer définitivement les images
-        const timestamp = Date.now();
-        const permanentKey = `permanent_listing_images_${timestamp}`;
-        localStorage.setItem(permanentKey, JSON.stringify(imagePreviews));
-        
-        // Utiliser DIRECTEMENT les images prévisualisées
+        // Utiliser directement les images prévisualisées
         formData.images = [...imagePreviews];
         
         // Définir la première comme image principale
@@ -99,18 +94,13 @@ export const useFormSubmission = ({
           formData.image = imagePreviews[0];
           console.log("Image principale définie:", formData.image);
         }
-      } 
-      // En mode édition, uniquement si aucune nouvelle image n'est fournie
-      else if (isEditing && selectedListing) {
-        if (selectedListing.images && selectedListing.images.length > 0) {
-          formData.images = [...selectedListing.images];
-        }
         
-        if (selectedListing.image) {
-          formData.image = selectedListing.image;
-        }
-      }
-
+        // Stockage permanent des images
+        const timestamp = Date.now();
+        localStorage.setItem(`permanent_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
+        localStorage.setItem('latest_permanent_images', JSON.stringify(imagePreviews));
+      } 
+      
       console.log("Données finales du formulaire:", formData);
       await onSave(formData);
       

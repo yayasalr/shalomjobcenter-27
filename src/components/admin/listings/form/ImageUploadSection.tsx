@@ -1,9 +1,11 @@
+
 import React, { useEffect, useCallback } from 'react';
-import { X } from 'lucide-react';
+import { X, Trash2 } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { ImageUploader } from '@/components/shared/image-uploader';
 import { useUploadImage } from '@/hooks/upload';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from "@/components/ui/button";
 
 interface ImageUploadSectionProps {
   imagePreviews: string[];
@@ -49,14 +51,46 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
     }
   }, [handleSingleImageUpload, onImageChange, toast]);
 
+  const clearAllImages = () => {
+    // Supprimer toutes les images une par une pour gérer correctement les blobs
+    const totalImages = imagePreviews.length;
+    for (let i = totalImages - 1; i >= 0; i--) {
+      removeImage(i);
+    }
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('latest_listing_images');
+    localStorage.removeItem('latest_permanent_images');
+    
+    toast({
+      title: "Images supprimées",
+      description: "Toutes les images ont été supprimées"
+    });
+  };
+
   return (
     <div className="space-y-2">
-      <Label 
-        htmlFor="images" 
-        className={`text-gray-700 font-medium ${error ? 'text-red-500' : ''}`}
-      >
-        Images {imagePreviews.length === 0 && '*'}
-      </Label>
+      <div className="flex justify-between items-center">
+        <Label 
+          htmlFor="images" 
+          className={`text-gray-700 font-medium ${error ? 'text-red-500' : ''}`}
+        >
+          Images {imagePreviews.length === 0 && '*'}
+        </Label>
+        
+        {imagePreviews.length > 0 && (
+          <Button 
+            type="button" 
+            variant="destructive" 
+            size="sm"
+            onClick={clearAllImages}
+            className="flex items-center gap-1"
+          >
+            <Trash2 size={14} />
+            Supprimer tout
+          </Button>
+        )}
+      </div>
       
       <ImageUploader
         onImageUpload={handleImageUpload}
@@ -82,7 +116,7 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
             <div key={index} className="relative">
               <img
                 src={preview}
-                alt={`Preview ${index}`}
+                alt={`Preview ${index + 1}`}
                 className="h-24 w-full object-cover rounded-md border shadow-sm"
                 loading="lazy"
               />

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Trash2 } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { ImageUploader } from '@/components/shared/ImageUploader';
 
@@ -24,8 +24,42 @@ export const ImageManagementSection: React.FC<ImageManagementSectionProps> = ({
   onFeaturedImageUpload,
   setFeaturedImage
 }) => {
+  // Fonction pour supprimer toutes les images
+  const clearAllImages = () => {
+    // Supprimer l'image principale
+    setFeaturedImage('');
+    
+    // Supprimer toutes les images additionnelles en partant de la fin
+    if (images.length > 0) {
+      const totalImages = images.length;
+      for (let i = totalImages - 1; i >= 0; i--) {
+        onRemoveImage(i);
+      }
+    }
+    
+    // Nettoyer le localStorage
+    localStorage.removeItem('job_images_latest_timestamp');
+    localStorage.removeItem('job_featured_image_latest_timestamp');
+  };
+
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-lg font-medium">Gestion des images</h3>
+        {(featuredImage || images.length > 0) && (
+          <Button 
+            type="button" 
+            variant="destructive" 
+            size="sm"
+            onClick={clearAllImages}
+            className="flex items-center gap-1"
+          >
+            <Trash2 size={14} />
+            Supprimer toutes les images
+          </Button>
+        )}
+      </div>
+
       {/* Section d'image principale */}
       <div className="mb-6">
         <ImageUploader

@@ -1,10 +1,17 @@
 
 import { useState, useEffect } from "react";
 import { Listing } from "@/types/listing";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
-export const useImageHandlers = () => {
+export const useImageHandlers = (initialImages: string[] = []) => {
   const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>(initialImages);
+  const localStorage = useLocalStorage();
+
+  // Effet pour charger les images initiales
+  useEffect(() => {
+    setImagePreviews(initialImages);
+  }, [initialImages]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -21,26 +28,17 @@ export const useImageHandlers = () => {
       // Stockage permanent et fiable
       try {
         const timestamp = Date.now();
-        const key = `new_listing_images_${timestamp}`;
+        const key = `listing_images_${timestamp}`;
         
-        // Récupérer les prévisualisations existantes
-        const existingPreviewsStr = localStorage.getItem('latest_listing_images') || '[]';
-        const existingPreviews = JSON.parse(existingPreviewsStr);
+        // Récupérer les prévisualisations existantes et les combiner avec les nouvelles
+        const allPreviews = [...imagePreviews, ...newPreviews];
         
-        // Combiner avec les nouvelles
-        const allPreviews = [...existingPreviews, ...newPreviews];
+        // Stocker dans localStorage pour une persistance maximale
+        localStorage.setItem(key, allPreviews);
         
-        // Stocker dans localStorage ET sessionStorage pour une persistance maximale
-        localStorage.setItem(key, JSON.stringify(allPreviews));
-        sessionStorage.setItem(key, JSON.stringify(allPreviews));
-        
-        // Marquer cette entrée comme la plus récente
+        // Clé de secours avec le timestamp actuel
         localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
-        sessionStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
-        
-        // Clé de secours avec les images combinées
-        localStorage.setItem('latest_listing_images', JSON.stringify(allPreviews));
-        sessionStorage.setItem('latest_listing_images', JSON.stringify(allPreviews));
+        localStorage.setItem('latest_listing_images', allPreviews);
         
         console.log(`Images totales stockées: ${allPreviews.length}`, allPreviews);
       } catch (error) {
@@ -53,7 +51,7 @@ export const useImageHandlers = () => {
     // Supprimer le fichier
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
-    // Révoquer l'URL de l'objet Blob
+    // Révoquer l'URL de l'objet Blob si c'est un blob
     if (imagePreviews[index] && imagePreviews[index].startsWith('blob:')) {
       URL.revokeObjectURL(imagePreviews[index]);
     }
@@ -64,14 +62,11 @@ export const useImageHandlers = () => {
     // Mettre à jour les stockages
     try {
       const timestamp = Date.now();
-      const key = `new_listing_images_${timestamp}`;
+      const key = `listing_images_${timestamp}`;
       
-      localStorage.setItem(key, JSON.stringify(updatedPreviews));
-      sessionStorage.setItem(key, JSON.stringify(updatedPreviews));
+      localStorage.setItem(key, updatedPreviews);
       localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
-      sessionStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
-      localStorage.setItem('latest_listing_images', JSON.stringify(updatedPreviews));
-      sessionStorage.setItem('latest_listing_images', JSON.stringify(updatedPreviews));
+      localStorage.setItem('latest_listing_images', updatedPreviews);
       
       console.log("Images mises à jour après suppression:", updatedPreviews);
     } catch (error) {
@@ -94,7 +89,6 @@ export const useImageHandlers = () => {
     
     // Nettoyer également le localStorage
     localStorage.removeItem('latest_listing_images');
-    sessionStorage.removeItem('latest_listing_images');
   };
 
   // Nettoyer les URL blob lors du démontage du composant
