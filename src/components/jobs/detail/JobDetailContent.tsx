@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { Job } from '@/types/job';
-import { JobDetailHeader } from './JobDetailHeader';
-import { JobDescription } from './JobDescription';
-import { JobRequirements } from './JobRequirements';
-import { JobSidebar } from './JobSidebar';
-import { JobGallery } from './JobGallery'; // Fixed import - should be a named import
+import JobDetailHeader from './JobDetailHeader';
+import JobDescription from './JobDescription';
+import JobRequirements from './JobRequirements';
+import JobSidebar from './JobSidebar';
+import { JobGallery } from './JobGallery';
 
 interface JobDetailContentProps {
   job: Job;
@@ -26,10 +27,15 @@ export const JobDetailContent: React.FC<JobDetailContentProps> = ({ job, isLoadi
         <div className="md:col-span-2">
           <JobDetailHeader job={job} />
           {job.images && job.images.length > 0 && (
-            <JobGallery images={job.images} />
+            <JobGallery job={job} />
           )}
           <JobDescription description={job.description} />
-          <JobRequirements requirements={job.requirements} />
+          <JobRequirements 
+            requirements={job.requirements}
+            isHousingOffer={job.isHousingOffer || false}
+            bedrooms={job.bedrooms}
+            bathrooms={job.bathrooms}
+          />
         </div>
         <div>
           <JobSidebar job={job} />

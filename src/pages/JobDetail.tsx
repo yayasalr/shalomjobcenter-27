@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import LoadingState from '@/components/jobs/detail/LoadingState';
 import NotFoundState from '@/components/jobs/detail/NotFoundState';
-import JobDetailContent from '@/components/jobs/detail/JobDetailContent';
+import { JobDetailContent } from '@/components/jobs/detail/JobDetailContent';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 const JobDetail = () => {
@@ -72,11 +72,7 @@ const JobDetail = () => {
       <ScrollAnimation direction="up" duration={0.7} once={true}>
         <JobDetailContent 
           job={job}
-          jobs={jobs}
-          settings={settings}
-          handleApplySubmit={handleApplySubmit}
-          applicantData={applicantData}
-          setApplicantData={setApplicantData}
+          isLoading={false}
         />
       </ScrollAnimation>
     </div>

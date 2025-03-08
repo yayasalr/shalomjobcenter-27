@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Job } from '@/types/job';
 import { Button } from "@/components/ui/button";
@@ -42,11 +43,13 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     title,
     setTitle,
     domain,
+    setDomain,
     description,
     setDescription,
     requirements,
     setRequirements,
     contract,
+    setContract,
     location,
     setLocation,
     salary,
@@ -160,11 +163,6 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               setBathrooms={setBathrooms}
               images={images}
               onAddImage={handleAddImage}
-              onUpdateImage={(index, url) => {
-                const newImages = [...images];
-                newImages[index] = url;
-                setImages(newImages);
-              }}
               onRemoveImage={handleRemoveImage}
               isUploading={isUploading}
             />
