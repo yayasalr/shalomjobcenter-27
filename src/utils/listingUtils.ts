@@ -4,20 +4,39 @@ import { LOME_NEIGHBORHOODS } from '@/constants/locations';
 import { getValidImageUrl } from './imageUtils';
 import { FALLBACK_IMAGES } from '@/constants/images';
 
-// Fonction pour normaliser un objet listing sans JAMAIS remplacer les images
+// Fonction pour normaliser un objet listing en PRÉSERVANT les images existantes
 export const normalizeListing = (listing: Listing): Listing => {
   // Créer des copies profondes pour éviter les références
   const images = listing.images ? [...listing.images] : [];
   const mainImage = listing.image ? listing.image : '';
   
-  // CRITIQUE: TOUJOURS préserver les images existantes sans exception
   console.log("Normalisation du listing:", listing.title);
   console.log("Images originales:", images);
   console.log("Image principale originale:", mainImage);
   
-  // Préserver toutes les images existantes
+  // CRITIQUE: Toujours préserver les images existantes
   let finalMainImage = mainImage;
   let finalImages = images;
+  
+  // Vérifier si des images sont stockées dans localStorage pour ce listing
+  if (listing.id) {
+    try {
+      const savedImagesStr = localStorage.getItem(`listing_images_${listing.id}`);
+      if (savedImagesStr) {
+        const savedImages = JSON.parse(savedImagesStr);
+        if (Array.isArray(savedImages) && savedImages.length > 0) {
+          console.log(`Images récupérées depuis localStorage pour le listing ${listing.id}:`, savedImages);
+          finalImages = savedImages;
+          // Si l'image principale est vide mais qu'il y a des images sauvegardées, utiliser la première
+          if (!finalMainImage && savedImages.length > 0) {
+            finalMainImage = savedImages[0];
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des images du listing ${listing.id}:`, error);
+    }
+  }
   
   // Si aucune image n'est fournie, seulement dans ce cas utiliser une image par défaut
   if (finalImages.length === 0 && !finalMainImage) {

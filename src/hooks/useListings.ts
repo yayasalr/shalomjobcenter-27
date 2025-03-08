@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
@@ -22,6 +23,24 @@ export const useListings = () => {
         const verifiedListings = currentListings.map(listing => {
           if (!listing.images) listing.images = [];
           if (!listing.id) listing.id = Math.random().toString(36).substr(2, 9);
+          
+          // Vérifier si des images sont stockées dans localStorage pour ce listing
+          try {
+            const savedImagesStr = localStorage.getItem(`listing_images_${listing.id}`);
+            if (savedImagesStr) {
+              const savedImages = JSON.parse(savedImagesStr);
+              if (Array.isArray(savedImages) && savedImages.length > 0) {
+                console.log(`Images récupérées depuis localStorage pour le listing ${listing.id}:`, savedImages);
+                listing.images = savedImages;
+                if (savedImages.length > 0 && (!listing.image || listing.image.trim() === '')) {
+                  listing.image = savedImages[0];
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Erreur lors de la récupération des images du listing ${listing.id}:`, error);
+          }
+          
           return listing;
         });
         

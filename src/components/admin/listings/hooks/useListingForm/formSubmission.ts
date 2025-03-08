@@ -58,6 +58,7 @@ export const useFormSubmission = ({
     }
 
     try {
+      // Création des données du formulaire
       const formData: any = {
         title: formState.title.trim(),
         description: formState.description.trim(),
@@ -82,7 +83,7 @@ export const useFormSubmission = ({
         }
       }
 
-      // Utiliser TOUJOURS les images actuellement présentes dans la prévisualisation
+      // Gérer les images
       if (imagePreviews && imagePreviews.length > 0) {
         console.log("UTILISATION DES IMAGES ACTUELLES:", imagePreviews);
         
@@ -99,6 +100,12 @@ export const useFormSubmission = ({
         const timestamp = Date.now();
         localStorage.setItem(`permanent_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
         localStorage.setItem('latest_permanent_images', JSON.stringify(imagePreviews));
+        
+        // Sauvegarde dans localStorage par ID si on est en mode édition
+        if (isEditing && selectedListing) {
+          localStorage.setItem(`listing_images_${selectedListing.id}`, JSON.stringify(imagePreviews));
+          console.log(`Images sauvegardées pour le listing ${selectedListing.id}:`, imagePreviews);
+        }
       } 
       
       console.log("Données finales du formulaire:", formData);
