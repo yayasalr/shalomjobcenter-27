@@ -5,6 +5,8 @@ export interface UseJobFormProps {
   selectedJob?: Job | null;
   onSave: (formData: Omit<Job, "id">) => void;
   onCancel: () => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
 
 export interface JobFormState {
@@ -29,7 +31,7 @@ export interface JobFormState {
   featuredImage: string;
 }
 
-export interface FormStateSetters {
+export interface JobFormStateWithSetters extends JobFormState {
   setIsOpen: (value: boolean) => void;
   setIsSubmitting: (value: boolean) => void;
   setIsUploading: (value: boolean) => void;
@@ -50,5 +52,3 @@ export interface FormStateSetters {
   setIsPublished: (value: boolean) => void;
   setFeaturedImage: (value: string) => void;
 }
-
-export type JobFormStateWithSetters = JobFormState & FormStateSetters;

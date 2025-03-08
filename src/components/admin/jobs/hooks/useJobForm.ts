@@ -17,6 +17,7 @@ export const useJobForm = (props: UseJobFormProps) => {
     setFeaturedImage,
     setIsUploading,
     setIsSubmitting,
+    isOpen,
     setIsOpen
   } = formState;
 

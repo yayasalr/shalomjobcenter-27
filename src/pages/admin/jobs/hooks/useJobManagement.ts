@@ -42,6 +42,7 @@ export const useJobManagement = () => {
       await addJob.mutateAsync(formData);
       setIsJobDialogOpen(false);
     } catch (error) {
+      console.error('Error saving job:', error);
       throw error;
     }
   };
@@ -60,6 +61,7 @@ export const useJobManagement = () => {
         setIsEditing(false);
         setIsJobDialogOpen(false);
       } catch (error) {
+        console.error('Error updating job:', error);
         throw error;
       }
     }

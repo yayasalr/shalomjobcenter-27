@@ -24,6 +24,8 @@ interface JobFormDialogProps {
   onSave: (formData: Omit<Job, "id">) => void;
   onCancel: () => void;
   buttonText?: string;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }
 
 export const JobFormDialog: React.FC<JobFormDialogProps> = ({
@@ -32,10 +34,10 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   onSave,
   onCancel,
   buttonText,
+  isOpen,
+  setIsOpen,
 }) => {
   const {
-    isOpen,
-    setIsOpen,
     isSubmitting,
     isUploading,
     title,
@@ -76,7 +78,13 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     handleSubmit,
     handleDomainChange,
     handleContractChange
-  } = useJobForm({ selectedJob, onSave, onCancel });
+  } = useJobForm({ 
+    selectedJob, 
+    onSave, 
+    onCancel,
+    isOpen,
+    setIsOpen
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>

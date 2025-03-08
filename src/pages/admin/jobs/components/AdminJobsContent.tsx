@@ -98,7 +98,8 @@ export const AdminJobsContent: React.FC = () => {
         selectedJob={selectedJob}
         isEditing={isEditingJob}
         onCancel={handleCancelJob}
-        buttonText="" // This is empty, so no button will be shown inside the Dialog
+        isOpen={isJobDialogOpen}
+        setIsOpen={setIsJobDialogOpen}
       />
       
       {/* Listing Form Dialog */}

@@ -33,10 +33,10 @@ export const useFormSubmission = ({
 }: UseFormSubmissionParams) => {
   
   const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
     if (!open) {
       onCancel();
     }
+    setIsOpen(open);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
