@@ -1,36 +1,19 @@
 
 import { useState, useEffect } from "react";
-import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 
 export const useImageHandlers = (initialImages: string[] = []) => {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(initialImages);
 
-  // Effet pour charger les images initiales
+  // Charger les images initiales
   useEffect(() => {
     // Si des images sont fournies, les utiliser
     if (initialImages && initialImages.length > 0) {
       setImagePreviews(initialImages);
       console.log("Images initiales chargées:", initialImages);
-    } else {
-      // Essayer de récupérer des images depuis le localStorage
-      try {
-        const lastSavedImages = localStorage.getItem('latest_listing_images');
-        if (lastSavedImages) {
-          const parsedImages = JSON.parse(lastSavedImages);
-          if (Array.isArray(parsedImages) && parsedImages.length > 0) {
-            setImagePreviews(parsedImages);
-            console.log("Images récupérées depuis localStorage:", parsedImages);
-          }
-        }
-      } catch (error) {
-        console.error("Erreur lors de la récupération des images:", error);
-      }
     }
   }, []);
-
-  // Ne pas mettre initialImages comme dépendance pour éviter les boucles infinies
   
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -54,11 +37,8 @@ export const useImageHandlers = (initialImages: string[] = []) => {
         // Récupérer les prévisualisations existantes et les combiner avec les nouvelles
         const allPreviews = [...imagePreviews, ...newPreviews];
         
-        // Stocker dans localStorage pour une persistance maximale
+        // Stocker dans localStorage pour une persistance temporaire
         localStorage.setItem(key, JSON.stringify(allPreviews));
-        
-        // Clé de secours avec le timestamp actuel
-        localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
         localStorage.setItem('latest_listing_images', JSON.stringify(allPreviews));
         
         toast.success(`${newPreviews.length} image(s) ajoutée(s)`);
@@ -81,7 +61,7 @@ export const useImageHandlers = (initialImages: string[] = []) => {
     });
     
     // Révoquer l'URL de l'objet Blob si c'est un blob
-    if (imagePreviews[index] && imagePreviews[index].startsWith('blob:')) {
+    if (imagePreviews[index] && typeof imagePreviews[index] === 'string' && imagePreviews[index].startsWith('blob:')) {
       URL.revokeObjectURL(imagePreviews[index]);
     }
     
@@ -89,17 +69,10 @@ export const useImageHandlers = (initialImages: string[] = []) => {
     setImagePreviews(prevPreviews => {
       const updatedPreviews = prevPreviews.filter((_, i) => i !== index);
       
-      // Mettre à jour les stockages
+      // Mettre à jour le localStorage
       try {
-        const timestamp = Date.now();
-        const key = `listing_images_${timestamp}`;
-        
-        localStorage.setItem(key, JSON.stringify(updatedPreviews));
-        localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
         localStorage.setItem('latest_listing_images', JSON.stringify(updatedPreviews));
-        
         toast.success("Image supprimée");
-        console.log("Images mises à jour après suppression:", updatedPreviews);
       } catch (error) {
         console.error('Erreur lors de la mise à jour des prévisualisations:', error);
       }
@@ -121,7 +94,6 @@ export const useImageHandlers = (initialImages: string[] = []) => {
     
     // Nettoyer également le localStorage
     localStorage.removeItem('latest_listing_images');
-    localStorage.removeItem('latest_permanent_images');
     
     toast.success("Toutes les images ont été supprimées");
   };

@@ -1,11 +1,9 @@
 
-import React, { useEffect, useCallback } from 'react';
-import { X, Trash2, AlertCircle } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, Trash2, AlertCircle, Upload } from 'lucide-react';
 import { Label } from "@/components/ui/label";
-import { ImageUploader } from '@/components/shared/image-uploader';
-import { useUploadImage } from '@/hooks/upload';
-import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
+import { toast } from 'sonner';
 
 interface ImageUploadSectionProps {
   imagePreviews: string[];
@@ -22,55 +20,28 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
   error,
   clearAllImages
 }) => {
-  const { toast } = useToast();
-  const { handleSingleImageUpload } = useUploadImage({
-    maxFileSize: 10,
-    maxWidth: 1200,
-    maxHeight: 1200,
-    quality: 0.8,
-    allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-  });
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = useCallback(async (file: File) => {
-    try {
-      const result = await handleSingleImageUpload(file);
-      if (result) {
-        const mockEvent = {
-          target: {
-            files: [result.compressedFile] as unknown as FileList
-          }
-        } as React.ChangeEvent<HTMLInputElement>;
-        
-        onImageChange(mockEvent);
-        
-        toast({
-          title: "Image téléchargée",
-          description: "L'image a été ajoutée avec succès"
-        });
-      }
-    } catch (error) {
-      console.error('Error handling image upload:', error);
-      toast({
-        variant: "destructive",
-        title: "Erreur de téléchargement",
-        description: "Une erreur s'est produite lors du traitement de l'image"
-      });
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
-  }, [handleSingleImageUpload, onImageChange, toast]);
+  };
 
-  // Si aucune image n'est visible mais que le localStorage contient des images
+  // Vérifier l'état des images au chargement
   useEffect(() => {
-    if (imagePreviews.length === 0) {
-      const savedImages = localStorage.getItem('latest_listing_images');
-      if (savedImages) {
-        try {
-          console.log("Récupération des images depuis localStorage");
-        } catch (error) {
-          console.error("Erreur lors de la récupération des images:", error);
-        }
-      }
+    if (imagePreviews && imagePreviews.length > 0) {
+      console.log(`${imagePreviews.length} images disponibles au chargement:`, imagePreviews);
+    } else {
+      console.log("Aucune image n'est disponible au chargement");
     }
-  }, [imagePreviews.length]);
+  }, []);
+
+  // Gérer les erreurs d'affichage d'images
+  const handleImageError = (index: number, url: string) => {
+    console.error(`Erreur de chargement pour l'image à l'index ${index}:`, url);
+    toast.error(`Erreur de chargement d'image`);
+  };
 
   return (
     <div className="space-y-2">
@@ -96,15 +67,29 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
         )}
       </div>
       
-      <ImageUploader
-        onImageUpload={handleImageUpload}
-        variant="button"
-        label="Sélectionner des images"
-        buttonVariant="primary"
-        allowedTypes={['image/jpeg', 'image/png', 'image/gif', 'image/webp']}
-        maxSizeMB={10}
-        className={error ? 'border border-red-500 rounded-md p-1' : ''}
-      />
+      <div className={`border border-dashed rounded-md p-4 ${error ? 'border-red-500' : 'border-gray-300'}`}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          onChange={onImageChange}
+          accept="image/jpeg,image/png,image/gif,image/webp"
+          multiple
+        />
+        
+        <Button 
+          type="button"
+          variant="outline"
+          onClick={handleButtonClick}
+          className="w-full py-8 flex flex-col items-center justify-center gap-2"
+        >
+          <Upload size={24} className="text-gray-500" />
+          <span className="font-medium">Sélectionner des images</span>
+          <span className="text-xs text-gray-500">
+            Formats acceptés: JPG, PNG, GIF, WEBP (max 10MB)
+          </span>
+        </Button>
+      </div>
       
       {error ? (
         <div className="flex items-center gap-1 text-red-500 text-xs mt-1">
@@ -120,16 +105,13 @@ export const ImageUploadSection: React.FC<ImageUploadSectionProps> = ({
       {imagePreviews.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
           {imagePreviews.map((preview, index) => (
-            <div key={index} className="relative group">
+            <div key={`${preview}-${index}`} className="relative group">
               <img
                 src={preview}
                 alt={`Aperçu ${index + 1}`}
                 className="h-24 w-full object-cover rounded-md border shadow-sm"
                 loading="lazy"
-                onError={(e) => {
-                  console.error("Erreur de chargement d'image:", preview);
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800";
-                }}
+                onError={() => handleImageError(index, preview)}
               />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all duration-200">
                 <button

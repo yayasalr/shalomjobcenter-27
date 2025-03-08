@@ -83,32 +83,35 @@ export const useFormSubmission = ({
         }
       }
 
-      // Gérer les images
+      // Gérer les images - CRITIQUE POUR LA CORRECTION
       if (imagePreviews && imagePreviews.length > 0) {
-        console.log("UTILISATION DES IMAGES ACTUELLES:", imagePreviews);
+        console.log("UTILISATION DES IMAGES ACTUELLES POUR LA SOUMISSION:", imagePreviews);
+        
+        // Assurer que toutes les images ont des URL valides
+        const validImagePreviews = imagePreviews.filter(img => img && typeof img === 'string' && img.trim() !== '');
         
         // Utiliser directement les images prévisualisées
-        formData.images = [...imagePreviews];
+        formData.images = [...validImagePreviews];
         
         // Définir la première comme image principale
-        if (imagePreviews[0]) {
-          formData.image = imagePreviews[0];
+        if (validImagePreviews[0]) {
+          formData.image = validImagePreviews[0];
           console.log("Image principale définie:", formData.image);
         }
         
-        // Stockage permanent des images
-        const timestamp = Date.now();
-        localStorage.setItem(`permanent_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
-        localStorage.setItem('latest_permanent_images', JSON.stringify(imagePreviews));
-        
-        // Sauvegarde dans localStorage par ID si on est en mode édition
-        if (isEditing && selectedListing) {
-          localStorage.setItem(`listing_images_${selectedListing.id}`, JSON.stringify(imagePreviews));
-          console.log(`Images sauvegardées pour le listing ${selectedListing.id}:`, imagePreviews);
+        // Si on est en mode édition, associer les images au listing par ID
+        if (isEditing && selectedListing?.id) {
+          const listingId = selectedListing.id;
+          localStorage.setItem(`listing_images_${listingId}`, JSON.stringify(validImagePreviews));
+          console.log(`Images sauvegardées pour le listing ${listingId}:`, validImagePreviews);
         }
-      } 
+      } else if (selectedListing && selectedListing.images && selectedListing.images.length > 0) {
+        // Si pas de nouvelles images mais des images existantes, les conserver
+        formData.images = [...selectedListing.images];
+        formData.image = selectedListing.image || selectedListing.images[0];
+      }
       
-      console.log("Données finales du formulaire:", formData);
+      console.log("Données finales du formulaire pour soumission:", formData);
       await onSave(formData);
       
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");
