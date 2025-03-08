@@ -7,7 +7,7 @@ import { processStoredImages, saveJobImages } from "./useJobs/jobImageUtils";
 
 export const useJobsMutations = () => {
   const queryClient = useQueryClient();
-  const { createJob, updateJobItem, deleteJobItem, submitApplication } = useJobsService();
+  const { createJob, updateJobItem, deleteJobItem, submitApplication, loadJobs } = useJobsService();
 
   // Mutation pour ajouter un job
   const addJob = useMutation({
@@ -19,9 +19,8 @@ export const useJobsMutations = () => {
         const job: Job = {
           ...newJob,
           id,
-          rating: 0,
-          dates: new Date().toLocaleDateString(),
-          host: newJob.host || { name: "Hôte", image: "/placeholder.svg" }
+          publishDate: new Date().toISOString().split('T')[0],
+          status: "active",
         };
         
         // Sauvegarder les images avec le nouveau système
@@ -37,8 +36,7 @@ export const useJobsMutations = () => {
           job.image = job.images[0];
         }
 
-        currentJobs.push(job);
-        saveJobs(currentJobs);
+        await createJob(job);
         return job;
       } catch (error) {
         console.error("Erreur lors de l'ajout de l'offre:", error);
