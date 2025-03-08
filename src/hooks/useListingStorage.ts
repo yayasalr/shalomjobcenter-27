@@ -12,7 +12,7 @@ export const loadListings = (): Listing[] => {
       console.log("Chargement des listings depuis localStorage");
       const parsedListings = JSON.parse(savedListings);
       
-      // Récupérer les listings sans normalisation qui pourrait changer les images
+      // Récupérer les listings sans normalisation pour préserver les images d'origine
       return parsedListings.map((listing: Listing) => {
         console.log(`Chargement du listing ${listing.id} avec ses images d'origine`);
         
@@ -25,8 +25,12 @@ export const loadListings = (): Listing[] => {
           console.log(`Image principale originale du listing ${listing.id} préservée:`, listing.image);
         }
         
-        // Important: retourner le listing tel quel sans normalisation
-        return listing;
+        // IMPORTANTE: Conserver les images exactement telles quelles
+        return {
+          ...listing,
+          images: listing.images ? [...listing.images] : [],
+          image: listing.image || ''
+        };
       });
     }
     
@@ -73,12 +77,25 @@ export const saveListings = (listings: Listing[]) => {
   try {
     console.log(`Sauvegarde de ${listings.length} listings dans localStorage`);
     
-    // CRITIQUE: Sauvegarder les listings exactement tels quels sans normalisation
+    // CRITIQUE: Sauvegarder les listings exactement tels quels avec renforcement
     localStorage.setItem('listings', JSON.stringify(listings));
     
-    // Timestamp pour identifier cette sauvegarde
+    // Sauvegardes additionnelles avec timestamp
     const timestamp = Date.now();
     localStorage.setItem(`listings_backup_${timestamp}`, JSON.stringify(listings));
+    
+    // Sauvegarder les images de chaque listing séparément pour plus de sécurité
+    listings.forEach(listing => {
+      if (listing.id) {
+        const key = `listing_images_${listing.id}_${timestamp}`;
+        if (listing.images && listing.images.length > 0) {
+          localStorage.setItem(key, JSON.stringify(listing.images));
+        }
+        if (listing.image) {
+          localStorage.setItem(`listing_image_${listing.id}_${timestamp}`, listing.image);
+        }
+      }
+    });
     
     console.log(`Listings sauvegardés avec succès à ${new Date(timestamp).toISOString()}`);
     

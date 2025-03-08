@@ -82,34 +82,36 @@ export const useFormSubmission = ({
         }
       }
 
-      // GESTION CRITIQUE DES IMAGES: Toujours privilégier les nouvelles images téléchargées
-      if (imagePreviews.length > 0) {
-        console.log("UTILISATION PRIORITAIRE des images nouvellement téléchargées:", imagePreviews);
+      // GESTION PRIORITAIRE DES NOUVELLES IMAGES
+      if (imagePreviews && imagePreviews.length > 0) {
+        console.log("PRIORITÉ ABSOLUE aux images téléchargées:", imagePreviews);
         
-        // Stockage avec horodatage précis 
+        // Forcer l'utilisation des nouvelles images avec horodatage
         const timestamp = Date.now();
-        localStorage.setItem(`latest_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
         
-        // Utiliser la première image comme image principale
-        formData.image = imagePreviews[0];
-        // Définir toutes les images dans le tableau images
+        // Enregistrer en plusieurs emplacements pour garantir la persistance
+        localStorage.setItem(`fresh_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
+        sessionStorage.setItem(`fresh_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
+        
+        // Définir comme SEULES images valides
         formData.images = [...imagePreviews];
         
-        console.log("Images finales utilisées pour le formulaire:", formData.images);
-        console.log("Image principale utilisée pour le formulaire:", formData.image);
+        // Définir la première comme image principale
+        if (imagePreviews[0]) {
+          formData.image = imagePreviews[0];
+          console.log("Image principale définie à partir des nouvelles images:", formData.image);
+        }
+        
+        console.log("Images utilisées pour le nouveau listing:", formData.images);
       } 
-      // En mode édition, si aucune nouvelle image n'est fournie, conserver les images existantes
+      // En mode édition, uniquement si aucune nouvelle image n'est fournie
       else if (isEditing && selectedListing) {
-        console.log("Mode édition SANS nouvelles images: conservation des images existantes");
+        if (selectedListing.images && selectedListing.images.length > 0) {
+          formData.images = [...selectedListing.images];
+        }
         
         if (selectedListing.image) {
           formData.image = selectedListing.image;
-          console.log("Conservation de l'image principale existante:", selectedListing.image);
-        }
-        
-        if (selectedListing.images && selectedListing.images.length > 0) {
-          formData.images = [...selectedListing.images];
-          console.log("Conservation des images additionnelles existantes:", selectedListing.images);
         }
       }
 

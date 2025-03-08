@@ -11,17 +11,19 @@ export const normalizeListing = (listing: Listing): Listing => {
   // CRITIQUE: TOUJOURS préserver les images existantes sans exception
   // Créer des copies profondes pour éviter les références
   const images = listing.images ? [...listing.images] : [];
-  let mainImage = listing.image ? listing.image : '';
+  const mainImage = listing.image ? listing.image : '';
   
   console.log("Images d'origine STRICTEMENT préservées:", images);
   console.log("Image principale d'origine:", mainImage);
   
-  // Si aucune image n'est fournie du tout, seulement dans ce cas utiliser des images par défaut
-  if (images.length === 0 && !mainImage) {
+  // Ne plus toucher aux images, sauf si absolument aucune n'existe
+  let finalMainImage = mainImage;
+  let finalImages = images;
+  
+  // Si absolument aucune image n'est fournie, seulement dans ce cas utiliser une image par défaut
+  if (finalImages.length === 0 && !finalMainImage) {
     console.log("Aucune image fournie, utilisation d'une image par défaut");
-    
-    // Dans ce cas seulement, utiliser une image par défaut
-    mainImage = FALLBACK_IMAGES[0];
+    finalMainImage = FALLBACK_IMAGES[0];
   }
   
   // Assurer que chaque listing a une propriété host
@@ -33,18 +35,18 @@ export const normalizeListing = (listing: Listing): Listing => {
     : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
   
   // Garder une copie séparée des images pour vérification
-  localStorage.setItem(`original_images_${listing.id || Date.now()}`, JSON.stringify(images));
-  if (mainImage) {
-    localStorage.setItem(`original_main_image_${listing.id || Date.now()}`, mainImage);
+  localStorage.setItem(`original_images_${listing.id || Date.now()}`, JSON.stringify(finalImages));
+  if (finalMainImage) {
+    localStorage.setItem(`original_main_image_${listing.id || Date.now()}`, finalMainImage);
   }
   
-  console.log("Images finales préservées:", images);
-  console.log("Image principale finale:", mainImage);
+  console.log("Images finales préservées:", finalImages);
+  console.log("Image principale finale:", finalMainImage);
   
   return {
     ...listing,
-    image: mainImage,
-    images: images,
+    image: finalMainImage,
+    images: finalImages,
     host,
     location
   };

@@ -11,101 +11,84 @@ export const useImageHandlers = () => {
       const filesArray = Array.from(e.target.files);
       setImages(prevImages => [...prevImages, ...filesArray]);
       
+      // Créer des URL pour les prévisualisations
       const newPreviews = filesArray.map(file => URL.createObjectURL(file));
       console.log("NOUVELLES IMAGES TÉLÉCHARGÉES:", newPreviews);
       
-      // Stockage avec horodatage pour garantir que ce sont toujours les plus récentes
+      // TRÈS IMPORTANT: Stockage avec horodatage précis dans plusieurs emplacements
       try {
-        // Effacer les anciennes prévisualisations pour s'assurer que seules les nouvelles sont utilisées
-        sessionStorage.removeItem('listing_image_previews');
-        localStorage.removeItem('listing_image_previews');
-        
-        // Stockage avec horodatage précis pour éviter toute confusion
         const timestamp = Date.now();
-        const key = `listing_image_previews_${timestamp}`;
+        const key = `new_listing_images_${timestamp}`;
         
-        // Stocker les nouvelles prévisualisations
-        sessionStorage.setItem(key, JSON.stringify(newPreviews));
+        // Stocker dans localStorage ET sessionStorage pour une persistance maximale
         localStorage.setItem(key, JSON.stringify(newPreviews));
+        sessionStorage.setItem(key, JSON.stringify(newPreviews));
         
-        // Stocker également le dernier timestamp utilisé
-        localStorage.setItem('latest_image_previews_timestamp', timestamp.toString());
+        // Marquer cette entrée comme la plus récente
+        localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
+        sessionStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
         
-        console.log(`Nouvelles images stockées avec timestamp ${timestamp}`, newPreviews);
+        // Clé de secours
+        localStorage.setItem('latest_listing_images', JSON.stringify(newPreviews));
+        sessionStorage.setItem('latest_listing_images', JSON.stringify(newPreviews));
+        
+        console.log(`Nouvelles images stockées avec timestamp ${timestamp}:`, newPreviews);
       } catch (error) {
         console.error('Erreur lors du stockage des prévisualisations:', error);
       }
       
-      // REMPLACER complètement les prévisualisations précédentes
+      // IMPORTANT: REMPLACER toutes les prévisualisations par les nouvelles
       setImagePreviews(newPreviews);
     }
   };
 
   const removeImage = (index: number) => {
+    // Supprimer le fichier
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
-    // Révoquer l'URL de l'objet Blob pour éviter les fuites de mémoire
+    // Révoquer l'URL de l'objet Blob
     if (imagePreviews[index] && imagePreviews[index].startsWith('blob:')) {
       URL.revokeObjectURL(imagePreviews[index]);
     }
     
-    // Mise à jour du stockage
+    // Mettre à jour les prévisualisations
     const updatedPreviews = imagePreviews.filter((_, i) => i !== index);
     
+    // Mettre à jour les stockages
     try {
       const timestamp = Date.now();
-      const key = `listing_image_previews_${timestamp}`;
+      const key = `new_listing_images_${timestamp}`;
       
-      // Stocker les prévisualisations mises à jour
-      sessionStorage.setItem(key, JSON.stringify(updatedPreviews));
       localStorage.setItem(key, JSON.stringify(updatedPreviews));
-      localStorage.setItem('latest_image_previews_timestamp', timestamp.toString());
+      sessionStorage.setItem(key, JSON.stringify(updatedPreviews));
+      localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
+      sessionStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
+      localStorage.setItem('latest_listing_images', JSON.stringify(updatedPreviews));
+      sessionStorage.setItem('latest_listing_images', JSON.stringify(updatedPreviews));
       
       console.log("Images mises à jour après suppression:", updatedPreviews);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour des prévisualisations stockées:', error);
+      console.error('Erreur lors de la mise à jour des prévisualisations:', error);
     }
     
     setImagePreviews(updatedPreviews);
   };
 
   const resetImages = () => {
-    // Nettoyer les objets URL pour éviter les fuites de mémoire
+    // Nettoyer les URL blob pour éviter les fuites mémoire
     imagePreviews.forEach(url => {
       if (url.startsWith('blob:')) {
         URL.revokeObjectURL(url);
       }
     });
     
-    // Effacer le stockage pour garantir un nouvel état propre
-    try {
-      sessionStorage.removeItem('listing_image_previews');
-      localStorage.removeItem('listing_image_previews');
-      
-      // Trouver et supprimer tous les stockages d'images datés
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('listing_image_previews_')) {
-          localStorage.removeItem(key);
-          sessionStorage.removeItem(key);
-        }
-      }
-      
-      localStorage.removeItem('latest_image_previews_timestamp');
-      console.log("Nettoyage complet du stockage d'images");
-    } catch (error) {
-      console.error('Erreur lors du nettoyage du stockage:', error);
-    }
-    
     setImages([]);
     setImagePreviews([]);
   };
 
-  // Ne pas charger les anciennes images au montage du composant
-  // Cela garantit que chaque formulaire commence propre
+  // Nettoyer les URL blob lors du démontage du composant
   useEffect(() => {
     return () => {
-      // Nettoyage des URL blob lors du démontage
       imagePreviews.forEach(url => {
         if (url.startsWith('blob:')) {
           URL.revokeObjectURL(url);

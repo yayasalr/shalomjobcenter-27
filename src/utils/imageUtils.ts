@@ -16,8 +16,8 @@ const UNSPLASH_FALLBACKS = [
  * et n'utilise une image de secours QUE si l'URL est complètement vide ou undefined
  */
 export const getValidImageUrl = (imageUrl: string, index: number = 0): string => {
-  // CRITIQUE: Ne JAMAIS remplacer une URL d'image existante
-  if (imageUrl) {
+  // JAMAIS remplacer une URL d'image existante, quelle qu'elle soit
+  if (imageUrl && imageUrl.trim() !== '') {
     console.log(`URL d'image STRICTEMENT préservée: ${imageUrl}`);
     return imageUrl;
   }

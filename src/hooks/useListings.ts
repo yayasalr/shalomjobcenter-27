@@ -4,7 +4,6 @@ import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 import { loadListings, saveListings } from "./useListingStorage";
 import { loadReservations, saveReservations } from "./reservations";
-import { normalizeListing } from "@/utils/listingUtils";
 import { LOME_NEIGHBORHOODS } from "@/constants/locations";
 import { FALLBACK_IMAGES } from "@/constants/images";
 
@@ -35,7 +34,7 @@ export const useListings = () => {
       // Créer un ID unique pour le nouveau listing
       const id = Math.random().toString(36).substr(2, 9);
       
-      // Normaliser les données du listing sans modifier les images
+      // Créer une copie complète pour préserver toutes les données
       const listing: Listing = {
         ...newListing,
         id,
@@ -44,43 +43,33 @@ export const useListings = () => {
         host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
       };
       
-      // Préserver explicitement les images
-      if (newListing.images) {
-        listing.images = newListing.images;
-        console.log("Images préservées lors de l'ajout:", listing.images);
+      // TRÈS IMPORTANT: Préserver explicitement toutes les images
+      console.log("Images fournies lors de la création:", newListing.images);
+      console.log("Image principale fournie lors de la création:", newListing.image);
+      
+      if (newListing.images && newListing.images.length > 0) {
+        listing.images = [...newListing.images];
+        // Sauvegarde de sécurité des images
+        localStorage.setItem(`new_listing_${id}_images`, JSON.stringify(listing.images));
+        
+        // Si pas d'image principale mais des images disponibles, utiliser la première
+        if (!newListing.image && newListing.images.length > 0) {
+          listing.image = newListing.images[0];
+          localStorage.setItem(`new_listing_${id}_main_image`, listing.image);
+        }
       }
       
       if (newListing.image) {
         listing.image = newListing.image;
-        console.log("Image principale préservée lors de l'ajout:", listing.image);
+        localStorage.setItem(`new_listing_${id}_main_image`, listing.image);
       }
       
-      // S'assurer que l'image principale existe si nous avons des images
-      if (!listing.image && listing.images && listing.images.length > 0) {
-        listing.image = listing.images[0];
-        console.log("Image principale définie à partir des images:", listing.image);
-      }
+      console.log("Données finales du nouveau listing avant ajout:", listing);
       
-      console.log("Nouveau listing avant ajout:", listing);
-      
-      // Enregistrement en localStorage pour durabilité maximale
-      try {
-        if (listing.images && listing.images.length > 0) {
-          localStorage.setItem(`listing_images_${id}`, JSON.stringify(listing.images));
-          console.log(`Images du listing ${id} sauvegardées séparément`);
-        }
-        
-        if (listing.image) {
-          localStorage.setItem(`listing_main_image_${id}`, listing.image);
-          console.log(`Image principale du listing ${id} sauvegardée séparément`);
-        }
-      } catch (err) {
-        console.error("Erreur lors de la sauvegarde séparée des images:", err);
-      }
-      
+      // Ajout du listing à la liste
       currentListings.push(listing);
       saveListings(currentListings);
-      console.log("Nouveau listing ajouté:", listing);
+      
       return listing;
     },
     onSuccess: (newListing) => {
@@ -100,59 +89,37 @@ export const useListings = () => {
       const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
       
       if (index !== -1) {
-        console.log("Mise à jour du listing avec ID:", updatedListing.id);
-        console.log("Images dans la mise à jour:", updatedListing.images);
-        console.log("Image principale dans la mise à jour:", updatedListing.image);
-        
-        // Préserver les données existantes et mettre à jour avec les nouvelles données
+        // Sauvegarde de sécurité des données originales
         const existingListing = currentListings[index];
+        localStorage.setItem(`old_listing_${existingListing.id}_backup`, JSON.stringify(existingListing));
         
-        // Créer une copie modifiée du listing
-        const updatedCopy = {...updatedListing};
+        console.log("Images fournies pour la mise à jour:", updatedListing.images);
+        console.log("Image principale fournie pour la mise à jour:", updatedListing.image);
         
-        // Garantir que tous les champs requis existent
-        updatedCopy.rating = updatedListing.rating ?? existingListing.rating ?? 0;
-        updatedCopy.host = updatedListing.host || existingListing.host || { name: "Hôte", image: "/placeholder.svg" };
-        
-        // Préserver explicitement les images fournies
+        // Préserver les images si spécifiées dans la mise à jour
         if (updatedListing.images && updatedListing.images.length > 0) {
-          // Enregistrement séparé des images pour plus de durabilité
-          try {
-            localStorage.setItem(`listing_images_${updatedListing.id}`, JSON.stringify(updatedListing.images));
-            console.log(`Images du listing ${updatedListing.id} sauvegardées séparément lors de la mise à jour`);
-          } catch (err) {
-            console.error("Erreur lors de la sauvegarde séparée des images:", err);
-          }
+          console.log("Utilisation des nouvelles images pour la mise à jour");
+          localStorage.setItem(`updated_listing_${updatedListing.id}_images`, JSON.stringify(updatedListing.images));
         } else if (existingListing.images && existingListing.images.length > 0) {
-          // Si pas de nouvelles images, conserver les anciennes
-          updatedCopy.images = existingListing.images;
-          console.log("Conservation des images existantes:", existingListing.images);
+          console.log("Conservation des images existantes pour la mise à jour");
+          updatedListing.images = [...existingListing.images];
         }
         
-        // Préserver l'image principale
         if (updatedListing.image) {
-          try {
-            localStorage.setItem(`listing_main_image_${updatedListing.id}`, updatedListing.image);
-            console.log(`Image principale du listing ${updatedListing.id} sauvegardée séparément lors de la mise à jour`);
-          } catch (err) {
-            console.error("Erreur lors de la sauvegarde séparée de l'image principale:", err);
-          }
+          console.log("Utilisation de la nouvelle image principale pour la mise à jour");
+          localStorage.setItem(`updated_listing_${updatedListing.id}_main_image`, updatedListing.image);
         } else if (existingListing.image) {
-          // Si pas de nouvelle image principale, conserver l'ancienne
-          updatedCopy.image = existingListing.image;
-          console.log("Conservation de l'image principale existante:", existingListing.image);
+          console.log("Conservation de l'image principale existante pour la mise à jour");
+          updatedListing.image = existingListing.image;
         }
         
-        // Mettre à jour le listing
-        currentListings[index] = updatedCopy;
-        console.log("Listing après mise à jour:", updatedCopy);
-        
+        // Remplacer le listing existant par le listing mis à jour
+        currentListings[index] = updatedListing;
         saveListings(currentListings);
-        return updatedCopy;
+        return updatedListing;
       }
       
-      console.warn("Listing non trouvé pour la mise à jour, ID:", updatedListing.id);
-      return updatedListing;
+      throw new Error(`Listing avec ID ${updatedListing.id} non trouvé pour la mise à jour`);
     },
     onSuccess: (updatedListing) => {
       // Mettre à jour immédiatement le cache
@@ -174,19 +141,13 @@ export const useListings = () => {
       const currentListings = loadListings();
       const index = currentListings.findIndex(listing => listing.id === listingId);
       if (index !== -1) {
-        // Nettoyer les données d'images stockées séparément
-        try {
-          localStorage.removeItem(`listing_images_${listingId}`);
-          localStorage.removeItem(`listing_main_image_${listingId}`);
-          console.log(`Données d'images séparées du listing ${listingId} supprimées`);
-        } catch (err) {
-          console.error("Erreur lors de la suppression des données d'images séparées:", err);
-        }
+        const deletedListing = currentListings[index];
         
-        // Supprimer le listing
+        // Sauvegarde du listing supprimé
+        localStorage.setItem(`deleted_listing_${listingId}`, JSON.stringify(deletedListing));
+        
         currentListings.splice(index, 1);
         saveListings(currentListings);
-        console.log("Listing supprimé:", listingId);
       }
       return listingId;
     },
