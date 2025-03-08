@@ -82,47 +82,38 @@ export const useFormSubmission = ({
         }
       }
 
-      // IMPORTANT: Gérer correctement les images
+      // GESTION CRITIQUE DES IMAGES: Toujours privilégier les nouvelles images téléchargées
       if (imagePreviews.length > 0) {
-        console.log("Utilisation des images téléchargées:", imagePreviews);
+        console.log("UTILISATION PRIORITAIRE des images nouvellement téléchargées:", imagePreviews);
         
-        // Création d'une sauvegarde persistante des URLs d'images
-        try {
-          // Stocker les URLs pour les récupérer après rechargement
-          localStorage.setItem('last_listing_images', JSON.stringify(imagePreviews));
-          
-          // Stocker chaque URL individuellement comme sauvegarde
-          imagePreviews.forEach((url, idx) => {
-            localStorage.setItem(`listing_image_${Date.now()}_${idx}`, url);
-          });
-          
-          console.log("Images sauvegardées de manière persistante");
-        } catch (err) {
-          console.error("Erreur lors de la sauvegarde persistante des images:", err);
-        }
+        // Stockage avec horodatage précis 
+        const timestamp = Date.now();
+        localStorage.setItem(`latest_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
         
         // Utiliser la première image comme image principale
         formData.image = imagePreviews[0];
-        // Conserver toutes les images dans le tableau images
+        // Définir toutes les images dans le tableau images
         formData.images = [...imagePreviews];
+        
+        console.log("Images finales utilisées pour le formulaire:", formData.images);
+        console.log("Image principale utilisée pour le formulaire:", formData.image);
       } 
-      // En mode édition, si aucune nouvelle image n'est fournie ET que nous avons des images existantes
-      else if (isEditing && selectedListing && 
-              ((selectedListing.images && selectedListing.images.length > 0) || selectedListing.image)) {
-        console.log("Mode édition: conservation des images existantes");
+      // En mode édition, si aucune nouvelle image n'est fournie, conserver les images existantes
+      else if (isEditing && selectedListing) {
+        console.log("Mode édition SANS nouvelles images: conservation des images existantes");
         
         if (selectedListing.image) {
           formData.image = selectedListing.image;
-          console.log("Conservation de l'image principale:", selectedListing.image);
+          console.log("Conservation de l'image principale existante:", selectedListing.image);
         }
         
         if (selectedListing.images && selectedListing.images.length > 0) {
           formData.images = [...selectedListing.images];
-          console.log("Conservation des images additionnelles:", selectedListing.images);
+          console.log("Conservation des images additionnelles existantes:", selectedListing.images);
         }
       }
 
-      console.log("Données de formulaire finales avant enregistrement:", formData);
+      console.log("Données finales du formulaire avant enregistrement:", formData);
       await onSave(formData);
       
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");

@@ -8,15 +8,20 @@ import { FALLBACK_IMAGES } from '@/constants/images';
 export const normalizeListing = (listing: Listing): Listing => {
   console.log("Normalisation d'un listing:", listing.title);
   
-  // CRITIQUE: Ne JAMAIS modifier ou remplacer les images existantes
-  // Simplement vérifier si elles existent et les utiliser telles quelles
-  const images = listing.images || [];
-  console.log("Images originales:", images);
+  // CRITIQUE: TOUJOURS préserver les images existantes sans exception
+  // Créer des copies profondes pour éviter les références
+  const images = listing.images ? [...listing.images] : [];
+  let mainImage = listing.image ? listing.image : '';
   
-  // Ne jamais modifier l'image principale si elle existe déjà
-  let mainImage = listing.image;
-  if (!mainImage && images.length > 0) {
-    mainImage = images[0];
+  console.log("Images d'origine STRICTEMENT préservées:", images);
+  console.log("Image principale d'origine:", mainImage);
+  
+  // Si aucune image n'est fournie du tout, seulement dans ce cas utiliser des images par défaut
+  if (images.length === 0 && !mainImage) {
+    console.log("Aucune image fournie, utilisation d'une image par défaut");
+    
+    // Dans ce cas seulement, utiliser une image par défaut
+    mainImage = FALLBACK_IMAGES[0];
   }
   
   // Assurer que chaque listing a une propriété host
@@ -27,8 +32,14 @@ export const normalizeListing = (listing: Listing): Listing => {
     ? listing.location 
     : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
   
-  console.log("Images préservées sans modification:", images);
-  console.log("Image principale préservée:", mainImage);
+  // Garder une copie séparée des images pour vérification
+  localStorage.setItem(`original_images_${listing.id || Date.now()}`, JSON.stringify(images));
+  if (mainImage) {
+    localStorage.setItem(`original_main_image_${listing.id || Date.now()}`, mainImage);
+  }
+  
+  console.log("Images finales préservées:", images);
+  console.log("Image principale finale:", mainImage);
   
   return {
     ...listing,

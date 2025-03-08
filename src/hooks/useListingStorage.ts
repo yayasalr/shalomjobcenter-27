@@ -12,29 +12,22 @@ export const loadListings = (): Listing[] => {
       console.log("Chargement des listings depuis localStorage");
       const parsedListings = JSON.parse(savedListings);
       
-      // Récupérer et intégrer les images stockées séparément pour chaque listing
-      const enhancedListings = parsedListings.map((listing: Listing) => {
-        try {
-          // Récupérer les images stockées séparément, si elles existent
-          const separateImages = localStorage.getItem(`listing_images_${listing.id}`);
-          if (separateImages) {
-            console.log(`Images séparées trouvées pour le listing ${listing.id}`);
-            listing.images = JSON.parse(separateImages);
-          }
-          
-          // Récupérer l'image principale stockée séparément, si elle existe
-          const separateMainImage = localStorage.getItem(`listing_main_image_${listing.id}`);
-          if (separateMainImage) {
-            console.log(`Image principale séparée trouvée pour le listing ${listing.id}`);
-            listing.image = separateMainImage;
-          }
-        } catch (err) {
-          console.error(`Erreur lors de la récupération des images séparées pour le listing ${listing.id}:`, err);
+      // Récupérer les listings sans normalisation qui pourrait changer les images
+      return parsedListings.map((listing: Listing) => {
+        console.log(`Chargement du listing ${listing.id} avec ses images d'origine`);
+        
+        // Utiliser les images directement depuis le listing sans modification
+        if (listing.images) {
+          console.log(`Images originales du listing ${listing.id} préservées:`, listing.images);
         }
-        return normalizeListing(listing);
+        
+        if (listing.image) {
+          console.log(`Image principale originale du listing ${listing.id} préservée:`, listing.image);
+        }
+        
+        // Important: retourner le listing tel quel sans normalisation
+        return listing;
       });
-      
-      return enhancedListings;
     }
     
     // Si aucune donnée n'existe dans le localStorage, adapter les données mock pour Lomé
@@ -79,17 +72,15 @@ export const loadListings = (): Listing[] => {
 export const saveListings = (listings: Listing[]) => {
   try {
     console.log(`Sauvegarde de ${listings.length} listings dans localStorage`);
+    
+    // CRITIQUE: Sauvegarder les listings exactement tels quels sans normalisation
     localStorage.setItem('listings', JSON.stringify(listings));
     
-    // Sauvegarder également les images séparément pour plus de durabilité
-    listings.forEach(listing => {
-      if (listing.images && listing.images.length > 0) {
-        localStorage.setItem(`listing_images_${listing.id}`, JSON.stringify(listing.images));
-      }
-      if (listing.image) {
-        localStorage.setItem(`listing_main_image_${listing.id}`, listing.image);
-      }
-    });
+    // Timestamp pour identifier cette sauvegarde
+    const timestamp = Date.now();
+    localStorage.setItem(`listings_backup_${timestamp}`, JSON.stringify(listings));
+    
+    console.log(`Listings sauvegardés avec succès à ${new Date(timestamp).toISOString()}`);
     
     return true;
   } catch (error) {

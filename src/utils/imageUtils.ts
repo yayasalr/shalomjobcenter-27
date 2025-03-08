@@ -1,3 +1,4 @@
+
 import { FALLBACK_IMAGES } from '@/constants/images';
 import { compressImage, cleanupImageUrls } from '@/hooks/upload';
 
@@ -11,18 +12,18 @@ const UNSPLASH_FALLBACKS = [
 ];
 
 /**
- * BUGFIX: Cette fonction préservera maintenant TOUTES les URLs d'images telles quelles
- * et n'utilisera une image de secours qu'en cas d'URL complètement vide
+ * Cette fonction PRÉSERVE STRICTEMENT l'URL d'image fournie
+ * et n'utilise une image de secours QUE si l'URL est complètement vide ou undefined
  */
 export const getValidImageUrl = (imageUrl: string, index: number = 0): string => {
-  // Retourner l'URL telle quelle dans presque tous les cas
-  if (imageUrl && imageUrl !== 'undefined' && imageUrl !== 'null') {
-    console.log(`URL d'image préservée: ${imageUrl}`);
+  // CRITIQUE: Ne JAMAIS remplacer une URL d'image existante
+  if (imageUrl) {
+    console.log(`URL d'image STRICTEMENT préservée: ${imageUrl}`);
     return imageUrl;
   }
   
-  // Ne remplacer que si l'URL est complètement vide ou invalide
-  console.log(`URL d'image vide ou invalide, utilisation de secours à l'index ${index}`);
+  // Ne remplacer que si l'URL est complètement vide
+  console.log(`URL d'image vide, utilisation de secours à l'index ${index}`);
   return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
 };
 
@@ -35,10 +36,8 @@ export const normalizeImages = (images: string[] | undefined): string[] => {
     return [getRandomFallbackImage()];
   }
   
-  // Log pour le débogage
-  console.log(`Préservation stricte des ${images.length} images sans aucune modification`);
-  
   // CRITIQUE: Retourner exactement les mêmes images sans aucune modification
+  console.log(`Préservation STRICTE des ${images.length} images d'origine:`, images);
   return [...images];
 };
 
