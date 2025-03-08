@@ -1,9 +1,8 @@
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Listing } from "@/types/listing";
 import { toast } from "sonner";
 import { loadListings, saveListings } from "../useListingStorage";
-import { processStoredImages, saveListingImages } from "./listingImageUtils";
+import { processStoredImages, saveListingImages, clearListingImages, purgeAllListingImages } from "./listingImageUtils";
 
 /**
  * Hook for listing mutation operations (add, update, delete)
@@ -30,12 +29,15 @@ export const useListingMutations = () => {
         console.log("Images fournies lors de la création:", newListing.images);
         console.log("Image principale fournie lors de la création:", newListing.image);
         
+        // Ensure images array exists
+        if (!listing.images) {
+          listing.images = [];
+        }
+        
         // Save images to localStorage
         if (newListing.images && newListing.images.length > 0) {
           listing.images = [...newListing.images];
           saveListingImages(id, listing.images);
-        } else {
-          listing.images = [];
         }
         
         // Set main image
@@ -74,17 +76,22 @@ export const useListingMutations = () => {
         const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
         
         if (index !== -1) {
+          // Create backup of the existing listing
           const existingListing = currentListings[index];
           localStorage.setItem(`listing_backup_${existingListing.id}`, JSON.stringify(existingListing));
           
           console.log("Images fournies pour la mise à jour:", updatedListing.images);
           console.log("Image principale fournie pour la mise à jour:", updatedListing.image);
           
-          // Preserve existing images if none provided
+          // Clear existing images first if new images are provided
           if (updatedListing.images && updatedListing.images.length > 0) {
+            clearListingImages(updatedListing.id);
             saveListingImages(updatedListing.id, updatedListing.images);
           } else if (existingListing.images && existingListing.images.length > 0) {
+            // Keep existing images if no new ones provided
             updatedListing.images = [...existingListing.images];
+          } else {
+            updatedListing.images = [];
           }
           
           // Handle main image
@@ -129,7 +136,11 @@ export const useListingMutations = () => {
       if (index !== -1) {
         const deletedListing = currentListings[index];
         
+        // Create backup before deletion
         localStorage.setItem(`deleted_listing_${listingId}`, JSON.stringify(deletedListing));
+        
+        // Clear images from storage
+        clearListingImages(listingId);
         
         currentListings.splice(index, 1);
         saveListings(currentListings);
@@ -148,5 +159,36 @@ export const useListingMutations = () => {
     },
   });
 
-  return { addListing, updateListing, deleteListing };
+  // Clear all listing images (global operation)
+  const clearAllListingImages = useMutation({
+    mutationFn: async () => {
+      // Purge all images from localStorage
+      try {
+        purgeAllListingImages();
+        
+        // Update all listings to have empty image arrays
+        const currentListings = loadListings();
+        const updatedListings = currentListings.map(listing => ({
+          ...listing,
+          images: [],
+          image: ''
+        }));
+        
+        saveListings(updatedListings);
+        return true;
+      } catch (error) {
+        console.error("Erreur lors de la suppression de toutes les images:", error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["listings"] });
+      toast.success("Toutes les images des logements ont été supprimées");
+    },
+    onError: () => {
+      toast.error("Erreur lors de la suppression des images");
+    },
+  });
+
+  return { addListing, updateListing, deleteListing, clearAllListingImages };
 };

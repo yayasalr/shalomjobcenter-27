@@ -83,7 +83,7 @@ export const useFormSubmission = ({
         }
       }
 
-      // Gérer les images - CRITIQUE POUR LA CORRECTION
+      // Gérer les images
       if (imagePreviews && imagePreviews.length > 0) {
         console.log("UTILISATION DES IMAGES ACTUELLES POUR LA SOUMISSION:", imagePreviews);
         
@@ -98,17 +98,14 @@ export const useFormSubmission = ({
           formData.image = validImagePreviews[0];
           console.log("Image principale définie:", formData.image);
         }
-        
-        // Si on est en mode édition, associer les images au listing par ID
-        if (isEditing && selectedListing?.id) {
-          const listingId = selectedListing.id;
-          localStorage.setItem(`listing_images_${listingId}`, JSON.stringify(validImagePreviews));
-          console.log(`Images sauvegardées pour le listing ${listingId}:`, validImagePreviews);
-        }
       } else if (selectedListing && selectedListing.images && selectedListing.images.length > 0) {
         // Si pas de nouvelles images mais des images existantes, les conserver
         formData.images = [...selectedListing.images];
         formData.image = selectedListing.image || selectedListing.images[0];
+      } else {
+        // Aucune image disponible
+        formData.images = [];
+        formData.image = '';
       }
       
       console.log("Données finales du formulaire pour soumission:", formData);

@@ -65,3 +65,29 @@ export const getListingPrimaryImage = (listing: Listing): string => {
   }
   return '';
 };
+
+/**
+ * Purge all listing images from localStorage
+ * This completely clears all images for all listings
+ */
+export const purgeAllListingImages = (): void => {
+  try {
+    // Find all image-related keys in localStorage
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.includes('listing_images_')) {
+        keysToRemove.push(key);
+      }
+    }
+    
+    // Remove each key
+    keysToRemove.forEach(key => {
+      localStorage.removeItem(key);
+    });
+    
+    console.log(`${keysToRemove.length} entrées d'images de logements supprimées du localStorage`);
+  } catch (error) {
+    console.error('Erreur lors de la suppression de toutes les images:', error);
+  }
+};
