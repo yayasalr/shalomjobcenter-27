@@ -14,7 +14,7 @@ export interface UseFormSubmissionParams extends JobFormStateWithSetters {
 /**
  * Valide les données du formulaire et retourne les erreurs
  */
-const validateFormData = (formData: JobFormState): string[] => {
+const validateFormData = (formData: Partial<JobFormState>): string[] => {
   const errors = [];
   
   if (!formData.title || formData.title.trim() === '') {
@@ -107,7 +107,12 @@ const processImagesForSubmission = async (
 /**
  * Prépare les données du formulaire pour la soumission
  */
-const prepareFormData = async (formData: JobFormState): Promise<any> => {
+const prepareFormData = async (formData: Pick<JobFormState, 
+  'title' | 'domain' | 'description' | 'requirements' | 
+  'contract' | 'location' | 'salary' | 'positions' | 
+  'deadline' | 'isHousingOffer' | 'price' | 'bedrooms' | 
+  'bathrooms' | 'images' | 'isPublished' | 'featuredImage'
+>): Promise<any> => {
   const { processedImages, processedFeaturedImage } = await processImagesForSubmission(
     formData.images, 
     formData.featuredImage
@@ -168,7 +173,10 @@ export const useFormSubmission = ({
   setIsSubmitting,
   setIsOpen,
   onSave,
-  onCancel
+  onCancel,
+  isOpen,
+  isSubmitting,
+  isUploading
 }: UseFormSubmissionParams) => {
   
   const handleOpenChange = (open: boolean) => {
@@ -181,7 +189,7 @@ export const useFormSubmission = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const formData = {
+    const formDataToValidate = {
       title,
       domain,
       description,
@@ -197,10 +205,13 @@ export const useFormSubmission = ({
       bathrooms,
       images,
       isPublished,
-      featuredImage
+      featuredImage,
+      isOpen,
+      isSubmitting,
+      isUploading
     };
     
-    const errors = validateFormData(formData);
+    const errors = validateFormData(formDataToValidate);
     if (errors.length > 0) {
       toast.error(errors.join("\n"));
       return;
@@ -209,7 +220,25 @@ export const useFormSubmission = ({
     setIsSubmitting(true);
     
     try {
-      const jobData = await prepareFormData(formData);
+      const jobData = await prepareFormData({
+        title,
+        domain,
+        description,
+        requirements,
+        contract,
+        location,
+        salary,
+        positions,
+        deadline,
+        isHousingOffer,
+        price,
+        bedrooms,
+        bathrooms,
+        images,
+        isPublished,
+        featuredImage
+      });
+      
       console.log("Données finales soumises:", jobData);
       
       await onSave(jobData);
