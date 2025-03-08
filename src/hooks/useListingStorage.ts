@@ -9,12 +9,36 @@ export const loadListings = (): Listing[] => {
   try {
     const savedListings = localStorage.getItem('listings');
     if (savedListings) {
+      console.log("Chargement des listings depuis localStorage");
       const parsedListings = JSON.parse(savedListings);
-      // S'assurer que chaque listing a les propriétés requises
-      return parsedListings.map(normalizeListing);
+      
+      // Récupérer et intégrer les images stockées séparément pour chaque listing
+      const enhancedListings = parsedListings.map((listing: Listing) => {
+        try {
+          // Récupérer les images stockées séparément, si elles existent
+          const separateImages = localStorage.getItem(`listing_images_${listing.id}`);
+          if (separateImages) {
+            console.log(`Images séparées trouvées pour le listing ${listing.id}`);
+            listing.images = JSON.parse(separateImages);
+          }
+          
+          // Récupérer l'image principale stockée séparément, si elle existe
+          const separateMainImage = localStorage.getItem(`listing_main_image_${listing.id}`);
+          if (separateMainImage) {
+            console.log(`Image principale séparée trouvée pour le listing ${listing.id}`);
+            listing.image = separateMainImage;
+          }
+        } catch (err) {
+          console.error(`Erreur lors de la récupération des images séparées pour le listing ${listing.id}:`, err);
+        }
+        return normalizeListing(listing);
+      });
+      
+      return enhancedListings;
     }
     
     // Si aucune donnée n'existe dans le localStorage, adapter les données mock pour Lomé
+    console.log("Aucun listing trouvé, utilisation des données mock");
     const loméListings = MOCK_LISTINGS.map(listing => {
       // Prix adapté au marché de Lomé
       const price = Math.round((listing.price / 2) * 655.957) / 655.957; // Prix en euros divisé par 2 pour être plus réaliste
@@ -54,7 +78,19 @@ export const loadListings = (): Listing[] => {
 // Fonction pour sauvegarder les listings dans le localStorage
 export const saveListings = (listings: Listing[]) => {
   try {
+    console.log(`Sauvegarde de ${listings.length} listings dans localStorage`);
     localStorage.setItem('listings', JSON.stringify(listings));
+    
+    // Sauvegarder également les images séparément pour plus de durabilité
+    listings.forEach(listing => {
+      if (listing.images && listing.images.length > 0) {
+        localStorage.setItem(`listing_images_${listing.id}`, JSON.stringify(listing.images));
+      }
+      if (listing.image) {
+        localStorage.setItem(`listing_main_image_${listing.id}`, listing.image);
+      }
+    });
+    
     return true;
   } catch (error) {
     console.error("Erreur lors de la sauvegarde des listings:", error);

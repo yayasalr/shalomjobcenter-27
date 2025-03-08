@@ -1,74 +1,72 @@
 
-import { toast } from 'sonner';
-
 /**
- * Validates files before upload
+ * Validation utilities for image uploads
  */
 
-/**
- * Validate a single file against allowed types and size constraints
- * @param file The file to validate
- * @param allowedTypes Array of allowed MIME types
- * @param maxFileSize Maximum file size in MB
- * @returns Object containing validation result and error message if any
- */
-export const validateSingleFile = (
-  file: File, 
-  allowedTypes: string[], 
-  maxFileSize: number
-): { valid: boolean; errorMessage?: string } => {
-  // Check file type
-  if (!allowedTypes.includes(file.type)) {
-    return { 
-      valid: false, 
-      errorMessage: `Format non supporté. Formats acceptés: ${allowedTypes.map(type => type.replace('image/', '.')).join(', ')}` 
-    };
-  }
-  
-  // Check file size
-  if (file.size > maxFileSize * 1024 * 1024) {
-    return { 
-      valid: false, 
-      errorMessage: `L'image ne doit pas dépasser ${maxFileSize}MB` 
-    };
-  }
-  
-  return { valid: true };
-};
+interface ValidationResult {
+  valid: boolean;
+  errorMessage?: string;
+}
 
 /**
- * Validate multiple files against allowed types, size constraints and quantity
+ * Validate that files meet the requirements for upload
  * @param files Array of files to validate
  * @param allowedTypes Array of allowed MIME types
- * @param maxFileSize Maximum file size in MB
+ * @param maxSizeMB Maximum file size in MB
  * @param maxFiles Maximum number of files allowed
- * @returns Object containing validation result
+ * @returns Validation result
  */
 export const validateFiles = (
   files: File[],
   allowedTypes: string[],
-  maxFileSize: number,
+  maxSizeMB: number,
   maxFiles: number
-): { valid: boolean; invalidReason?: string } => {
-  // Check if too many files are selected
-  if (maxFiles && files.length > maxFiles) {
-    toast.error(`Vous ne pouvez pas télécharger plus de ${maxFiles} images à la fois`);
-    return { valid: false, invalidReason: 'too_many_files' };
+): ValidationResult => {
+  if (files.length > maxFiles) {
+    console.error(`Too many files: ${files.length} (max: ${maxFiles})`);
+    return {
+      valid: false,
+      errorMessage: `Vous ne pouvez pas télécharger plus de ${maxFiles} fichiers à la fois.`
+    };
   }
   
-  // Check file types
-  const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
-  if (invalidFiles.length > 0) {
-    toast.error(`Formats acceptés: ${allowedTypes.map(type => type.replace('image/', '.')).join(', ')}`);
-    return { valid: false, invalidReason: 'invalid_type' };
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+  
+  for (const file of files) {
+    // Check file type
+    if (!allowedTypes.includes(file.type)) {
+      console.error(`Invalid file type: ${file.type}. Allowed: ${allowedTypes.join(', ')}`);
+      return {
+        valid: false,
+        errorMessage: `Type de fichier non supporté: ${file.type}. Types acceptés: ${allowedTypes.join(', ')}`
+      };
+    }
+    
+    // Check file size
+    if (file.size > maxSizeBytes) {
+      console.error(`File too large: ${Math.round(file.size / 1024 / 1024 * 100) / 100}MB (max: ${maxSizeMB}MB)`);
+      return {
+        valid: false,
+        errorMessage: `Fichier trop volumineux (${Math.round(file.size / 1024 / 1024 * 100) / 100}MB). La taille maximale est de ${maxSizeMB}MB.`
+      };
+    }
   }
   
-  // Check file sizes
-  const oversizedFiles = files.filter(file => file.size > maxFileSize * 1024 * 1024);
-  if (oversizedFiles.length > 0) {
-    toast.error(`Les images ne doivent pas dépasser ${maxFileSize}MB`);
-    return { valid: false, invalidReason: 'too_large' };
-  }
-  
+  // All files passed validation
   return { valid: true };
+};
+
+/**
+ * Validate a single file
+ * @param file File to validate
+ * @param allowedTypes Array of allowed MIME types
+ * @param maxSizeMB Maximum file size in MB
+ * @returns Validation result
+ */
+export const validateSingleFile = (
+  file: File,
+  allowedTypes: string[],
+  maxSizeMB: number
+): ValidationResult => {
+  return validateFiles([file], allowedTypes, maxSizeMB, 1);
 };

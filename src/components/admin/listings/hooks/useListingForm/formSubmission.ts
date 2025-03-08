@@ -66,6 +66,7 @@ export const useFormSubmission = ({
         mapLocation: formState.mapLocation.trim()
       };
 
+      // Si nous sommes en mode édition, conserver l'ID et certaines propriétés
       if (selectedListing && isEditing) {
         formData.id = selectedListing.id;
         
@@ -80,27 +81,40 @@ export const useFormSubmission = ({
           formData.host = selectedListing.host;
         }
         
-        // Ne pas écraser les images si aucune nouvelle image n'est téléchargée
-        if (images.length === 0 && imagePreviews.length === 0) {
+        // En mode édition, si aucune nouvelle image n'est fournie,
+        // conserver les images existantes
+        if (imagePreviews.length === 0) {
+          console.log("Mode édition, pas de nouvelles images, conservation des images existantes:");
           if (selectedListing.image) {
             formData.image = selectedListing.image;
+            console.log("- Image principale conservée:", selectedListing.image);
           }
           if (selectedListing.images && selectedListing.images.length > 0) {
             formData.images = selectedListing.images;
+            console.log("- Images conservées:", selectedListing.images);
           }
         }
       }
 
-      // Si nous avons de nouvelles images téléchargées, utiliser leurs URLs
+      // Si nous avons de nouvelles images téléchargées, les utiliser
       if (imagePreviews.length > 0) {
         console.log("Nouvelles images à utiliser:", imagePreviews);
+        
+        // Sauvegarder les images dans localStorage pour une persistance supplémentaire
+        try {
+          localStorage.setItem('listing_last_images', JSON.stringify(imagePreviews));
+          console.log("Images sauvegardées dans localStorage");
+        } catch (err) {
+          console.error("Erreur lors de la sauvegarde des images dans localStorage:", err);
+        }
+        
         // Utiliser la première image comme image principale
         formData.image = imagePreviews[0];
         // Conserver toutes les images dans le tableau images
         formData.images = imagePreviews;
       }
 
-      console.log("Données envoyées:", formData);
+      console.log("Données envoyées pour enregistrement:", formData);
       await onSave(formData);
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");
       resetForm();

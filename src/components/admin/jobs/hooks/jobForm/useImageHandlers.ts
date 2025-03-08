@@ -15,6 +15,23 @@ export const useImageHandlers = ({
   setIsUploading
 }: UseImageHandlersParams) => {
   
+  // Fonction pour stocker les images de manière persistante
+  const storeImagesInLocalStorage = (key: string, imageUrl: string | string[]) => {
+    try {
+      if (Array.isArray(imageUrl)) {
+        localStorage.setItem(key, JSON.stringify(imageUrl));
+      } else {
+        // Pour une seule image
+        const existingImages = localStorage.getItem(key);
+        const imagesArray = existingImages ? JSON.parse(existingImages) : [];
+        imagesArray.push(imageUrl);
+        localStorage.setItem(key, JSON.stringify(imagesArray));
+      }
+    } catch (error) {
+      console.error('Erreur lors du stockage des images:', error);
+    }
+  };
+  
   // Simulate image upload with persistent URLs
   const simulateImageUpload = (callback: (url: string) => void, isHousingOffer: boolean) => {
     setIsUploading(true);
@@ -24,7 +41,6 @@ export const useImageHandlers = ({
     const randomId = Math.floor(Math.random() * 10000);
     
     // Generate a random image URL that will be consistent
-    // Using a predictable URL pattern to ensure the same image is shown on refresh
     const category = isHousingOffer ? 'apartment,house' : 'office,work';
     const imageUrl = `https://source.unsplash.com/random/800x600/?${category}&sig=${timestamp}-${randomId}`;
     
@@ -33,16 +49,11 @@ export const useImageHandlers = ({
       callback(imageUrl);
       setIsUploading(false);
       
-      // Persist images to localStorage for better durability
+      // Persist to localStorage
       if (isHousingOffer) {
-        try {
-          const storedImages = localStorage.getItem('job_housing_images') || '[]';
-          const imagesArray = JSON.parse(storedImages);
-          imagesArray.push(imageUrl);
-          localStorage.setItem('job_housing_images', JSON.stringify(imagesArray));
-        } catch (error) {
-          console.error('Error storing image URL:', error);
-        }
+        storeImagesInLocalStorage('job_housing_images', imageUrl);
+      } else {
+        storeImagesInLocalStorage('job_images', imageUrl);
       }
     }, 1500);
   };
@@ -52,12 +63,8 @@ export const useImageHandlers = ({
     simulateImageUpload((url) => {
       setFeaturedImage(url);
       
-      // Also store the featured image URL for persistence
-      try {
-        localStorage.setItem('job_featured_image', url);
-      } catch (error) {
-        console.error('Error storing featured image URL:', error);
-      }
+      // Store featured image for persistence
+      localStorage.setItem('job_featured_image', url);
       
       toast.success("Image principale téléchargée avec succès");
     }, isHousingOffer);
@@ -69,12 +76,8 @@ export const useImageHandlers = ({
       const updatedImages = [...images, url];
       setImages(updatedImages);
       
-      // Persist the full array of images
-      try {
-        localStorage.setItem('job_images', JSON.stringify(updatedImages));
-      } catch (error) {
-        console.error('Error storing images array:', error);
-      }
+      // Store all images for persistence
+      storeImagesInLocalStorage('job_images', updatedImages);
       
       toast.success("Nouvelle image ajoutée");
     }, isHousingOffer);
@@ -85,12 +88,8 @@ export const useImageHandlers = ({
     newImages.splice(index, 1);
     setImages(newImages);
     
-    // Update the stored images array
-    try {
-      localStorage.setItem('job_images', JSON.stringify(newImages));
-    } catch (error) {
-      console.error('Error updating stored images array:', error);
-    }
+    // Update stored images
+    storeImagesInLocalStorage('job_images', newImages);
     
     toast.success("Image supprimée");
   };

@@ -6,14 +6,18 @@ import { FALLBACK_IMAGES } from '@/constants/images';
 
 // Fonction pour normaliser un objet listing sans remplacer les images
 export const normalizeListing = (listing: Listing): Listing => {
+  console.log("Normalisation d'un listing:", listing.title);
+  
   // S'assurer que chaque listing a une propriété images
   const images = listing.images || [];
+  console.log("Images originales:", images);
   
   // Conserver l'image principale si elle existe, sinon utiliser la première image du tableau
-  // IMPORTANT: Ne pas remplacer les images existantes par des images de secours
+  // IMPORTANT: Ne JAMAIS remplacer les images existantes
   let mainImage = listing.image;
   if (!mainImage && images.length > 0) {
     mainImage = images[0];
+    console.log("Utilisation de la première image comme image principale:", mainImage);
   }
   
   // Assurer que chaque listing a une propriété host
@@ -24,6 +28,10 @@ export const normalizeListing = (listing: Listing): Listing => {
   const location = listing.location && listing.location.trim() !== "" 
     ? listing.location 
     : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
+  
+  // Log le résultat pour le débogage
+  console.log("Images normalisées:", images);
+  console.log("Image principale normalisée:", mainImage);
   
   return {
     ...listing,
