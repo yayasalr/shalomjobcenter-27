@@ -16,6 +16,7 @@ export const AdminJobsContent: React.FC = () => {
     isLoadingJobs,
     selectedJob,
     isJobDialogOpen,
+    setIsJobDialogOpen,
     isEditing: isEditingJob,
     searchTerm: jobSearchTerm,
     setSearchTerm: setJobSearchTerm,
@@ -97,7 +98,7 @@ export const AdminJobsContent: React.FC = () => {
         selectedJob={selectedJob}
         isEditing={isEditingJob}
         onCancel={handleCancelJob}
-        buttonText=""
+        buttonText="" // This is empty, so no button will be shown inside the Dialog
       />
       
       {/* Listing Form Dialog */}

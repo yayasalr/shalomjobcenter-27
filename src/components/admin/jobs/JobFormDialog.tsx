@@ -63,7 +63,7 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
     bathrooms,
     setBathrooms,
     images,
-    setImages, // This is now correctly included from the hook
+    setImages,
     isPublished,
     setIsPublished,
     featuredImage,
@@ -79,9 +79,9 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
   } = useJobForm({ selectedJob, onSave, onCancel });
 
   return (
-    <Dialog open={isOpen || isEditing} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        {buttonText ? (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {buttonText ? (
+        <DialogTrigger asChild>
           <Button 
             onClick={() => {
               resetForm();
@@ -92,8 +92,8 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
             <Plus className="h-4 w-4" />
             {buttonText}
           </Button>
-        ) : null}
-      </DialogTrigger>
+        </DialogTrigger>
+      ) : null}
       <DialogContent className="sm:max-w-[725px] h-[90vh] flex flex-col p-0">
         <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle>

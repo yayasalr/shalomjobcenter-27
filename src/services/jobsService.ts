@@ -1,3 +1,4 @@
+
 import { MOCK_JOBS } from "@/data/mockJobs";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Job, ApplicationStatus } from "@/types/job";
@@ -15,24 +16,39 @@ export const useJobsService = () => {
   };
 
   // Ajouter un nouveau job
-  const createJob = async (newJob: Omit<Job, "id">): Promise<Job> => {
+  const createJob = async (newJob: Omit<Job, "id"> & { id: string }): Promise<Job> => {
     const currentJobs = loadData('jobs', MOCK_JOBS);
-    const job = {
-      ...newJob,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    currentJobs.push(job);
+    
+    // Add the new job to the array
+    currentJobs.push(newJob);
+    
+    // Save to localStorage
     saveData('jobs', currentJobs);
-    return job;
+    console.log("Jobs after adding:", currentJobs);
+    
+    return newJob as Job;
   };
 
   // Mettre à jour un job
   const updateJobItem = async (updatedJob: Job): Promise<Job> => {
+    console.log("Updating job in service:", updatedJob);
     const currentJobs = loadData('jobs', MOCK_JOBS);
-    const updatedJobs = currentJobs.map(job =>
-      job.id === updatedJob.id ? updatedJob : job
-    );
-    saveData('jobs', updatedJobs);
+    
+    // Find the index of the job to update
+    const jobIndex = currentJobs.findIndex(job => job.id === updatedJob.id);
+    
+    if (jobIndex === -1) {
+      console.error("Job not found for update:", updatedJob.id);
+      throw new Error("Job not found");
+    }
+    
+    // Update the job at the found index
+    currentJobs[jobIndex] = updatedJob;
+    
+    // Save updated jobs to localStorage
+    saveData('jobs', currentJobs);
+    console.log("Jobs after updating:", currentJobs);
+    
     return updatedJob;
   };
 
@@ -41,6 +57,7 @@ export const useJobsService = () => {
     const currentJobs = loadData('jobs', MOCK_JOBS);
     const updatedJobs = currentJobs.filter(job => job.id !== jobId);
     saveData('jobs', updatedJobs);
+    console.log("Jobs after deleting:", updatedJobs);
     return jobId;
   };
 

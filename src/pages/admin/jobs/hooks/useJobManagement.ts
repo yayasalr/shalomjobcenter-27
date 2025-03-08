@@ -93,6 +93,7 @@ export const useJobManagement = () => {
     isLoadingJobs,
     selectedJob,
     isJobDialogOpen,
+    setIsJobDialogOpen,
     isEditing,
     searchTerm,
     setSearchTerm,

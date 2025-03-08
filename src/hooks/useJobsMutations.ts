@@ -1,3 +1,4 @@
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useJobsService } from "@/services/jobsService";
@@ -56,6 +57,7 @@ export const useJobsMutations = () => {
   // Mutation pour mettre à jour un job
   const updateJob = useMutation({
     mutationFn: async (updatedJob: Job) => {
+      console.log("Updating job:", updatedJob);
       return await updateJobItem(updatedJob);
     },
     onSuccess: (updatedJob) => {
@@ -65,7 +67,8 @@ export const useJobsMutations = () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success("Offre d'emploi mise à jour avec succès");
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Error updating job:", error);
       toast.error("Erreur lors de la mise à jour de l'offre d'emploi");
     },
   });
