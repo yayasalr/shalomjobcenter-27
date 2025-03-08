@@ -14,28 +14,29 @@ export const useMessageSender = (
 ) => {
   const [newMessage, setNewMessage] = useState('');
 
-  // Send a new message
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation || !userId) return;
     
+    const timestamp = new Date();
+    
     // Créer le nouveau message
     const updatedMessage: Message = {
-      id: `user-${Date.now()}`,
+      id: `msg-${Date.now()}`,
       content: newMessage,
-      timestamp: new Date(),
+      timestamp,
       read: true,
-      sender: 'user' as const,
+      sender: 'user',
     };
     
-    // Mettre à jour la conversation sélectionnée et la liste des conversations
+    // Mettre à jour la conversation localement
     const updatedSelectedConversation = {
       ...selectedConversation,
       messages: [...selectedConversation.messages, updatedMessage],
       lastMessage: {
         content: newMessage,
-        timestamp: new Date(),
+        timestamp,
         read: true,
-        sender: 'user' as const,
+        sender: 'user',
       },
     };
     
@@ -46,41 +47,25 @@ export const useMessageSender = (
     setConversations(updatedConversations);
     setSelectedConversation(updatedSelectedConversation);
     
-    // Sauvegarder dans localStorage pour persister les changements
+    // Sauvegarder dans localStorage
     localStorage.setItem(`conversations_${userId}`, JSON.stringify(updatedConversations));
+    
+    // Si c'est une conversation avec l'admin, mettre à jour sa version aussi
+    if (selectedConversation.with.id === 'admin') {
+      const currentUser = JSON.parse(localStorage.getItem('users') || '[]')
+        .find((u: any) => u.id === userId);
+        
+      updateAdminConversation(
+        userId,
+        updatedMessage,
+        null, // Pas de réponse automatique
+        currentUser
+      );
+    }
     
     // Réinitialiser le champ de message
     setNewMessage('');
-    
-    // Obtenir les données de l'utilisateur pour les messages d'admin
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const currentUser = users.find((u: any) => u.id === userId);
-    
-    // Pour les conversations avec admin ou bot d'accueil
-    if (selectedConversation.with.id === 'admin') {
-      // Gérer la réponse automatique qui ne sera envoyée qu'au premier message
-      handleAutoResponse(
-        userId,
-        selectedConversation,
-        updatedSelectedConversation,
-        updatedConversations,
-        setConversations,
-        setSelectedConversation
-      );
-      
-      // Afficher une notification à l'utilisateur
-      toast.success("Message envoyé à l'administrateur");
-    } else if (selectedConversation.with.id === 'welcome-bot') {
-      // Pour le bot d'accueil, simplement ajouter une réponse automatique
-      handleAutoResponse(
-        userId,
-        selectedConversation,
-        updatedSelectedConversation,
-        updatedConversations,
-        setConversations,
-        setSelectedConversation
-      );
-    }
+    toast.success("Message envoyé");
   };
 
   return {
