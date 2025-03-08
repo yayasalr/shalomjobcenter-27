@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from "sonner";
 import { JobFormState, JobFormStateWithSetters, UseJobFormProps } from './types';
@@ -33,10 +32,10 @@ export const useFormSubmission = ({
 }: UseFormSubmissionParams) => {
   
   const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
     if (!open) {
       onCancel();
     }
-    setIsOpen(open);
   };
 
   const validateFormData = () => {

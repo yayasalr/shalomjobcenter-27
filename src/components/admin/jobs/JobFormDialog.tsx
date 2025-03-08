@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Job } from '@/types/job';
 import { Button } from "@/components/ui/button";
@@ -137,13 +136,13 @@ export const JobFormDialog: React.FC<JobFormDialogProps> = ({
               title={title}
               setTitle={setTitle}
               domain={domain}
-              setDomain={handleDomainChange}
+              setDomain={setDomain}
               description={description}
               setDescription={setDescription}
               requirements={requirements}
               setRequirements={setRequirements}
               contract={contract}
-              setContract={handleContractChange}
+              setContract={setContract}
               location={location}
               setLocation={setLocation}
               salary={salary}

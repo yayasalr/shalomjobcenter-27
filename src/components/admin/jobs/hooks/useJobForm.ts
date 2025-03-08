@@ -103,7 +103,8 @@ export const useJobForm = (props: UseJobFormProps) => {
     handleRemoveImage,
     handleOpenChange: formSubmission.handleOpenChange,
     handleSubmit: formSubmission.handleSubmit,
-    handleDomainChange: formSubmission.handleDomainChange,
-    handleContractChange: formSubmission.handleContractChange
+    // Remove the specific type conversions as we're now using text inputs
+    handleDomainChange: (value: string) => value,
+    handleContractChange: (value: string) => value
   };
 };
