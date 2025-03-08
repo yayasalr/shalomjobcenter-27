@@ -4,29 +4,40 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Job } from '@/types/job';
+import { getDomainImage } from '../utils/jobUtils';
 
 interface JobDetailHeaderProps {
-  title: string;
-  location: string;
-  domain: string;
-  status: string;
-  isHousingOffer: boolean;
-  image: string;
-  translateDomain: (domain: string) => string;
-  getDomainImage: (domain: string) => string;
+  job: Job;
 }
 
-const JobDetailHeader = ({
-  title,
-  location,
-  domain,
-  status,
-  isHousingOffer,
-  image,
-  translateDomain,
-  getDomainImage
-}: JobDetailHeaderProps) => {
+const JobDetailHeader = ({ job }: JobDetailHeaderProps) => {
   const navigate = useNavigate();
+  
+  // Function to translate domain to French
+  const translateDomain = (domain: string): string => {
+    const domainTranslations: Record<string, string> = {
+      residential_security: "Sécurité résidentielle",
+      bodyguard: "Garde du corps",
+      private_property: "Surveillance propriétés privées",
+      industrial_security: "Sécurité industrielle",
+      office_security: "Sécurité de bureau",
+      security_patrol: "Patrouilleur",
+      access_control: "Contrôle d'accès",
+      security_systems: "Opérateur systèmes",
+      construction_security: "Sécurité chantier",
+      site_supervisor: "Surveillant travaux",
+      security_coordinator: "Coordinateur sécurité",
+      event_security: "Sécurité événementielle",
+      k9_security: "Sécurité cynophile",
+      security_manager: "Responsable sécurité",
+      security_consultant: "Consultant sécurité",
+      security_trainer: "Formateur sécurité",
+      housing_offer: "Offre de logement"
+    };
+    
+    return domainTranslations[domain] || domain;
+  };
   
   return (
     <>
@@ -43,8 +54,8 @@ const JobDetailHeader = ({
       
       <div className="relative h-56 sm:h-72 md:h-96 bg-gray-200 overflow-hidden rounded-t-2xl">
         <img 
-          src={image || getDomainImage(domain)} 
-          alt={title} 
+          src={job.image || getDomainImage(job.domain)} 
+          alt={job.title} 
           className="w-full h-full object-cover" 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
@@ -52,9 +63,9 @@ const JobDetailHeader = ({
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <div className="mb-2">
             <Badge className="bg-sholom-primary text-white border-none">
-              {isHousingOffer ? 'Logement' : translateDomain(domain)}
+              {job.isHousingOffer ? 'Logement' : translateDomain(job.domain)}
             </Badge>
-            {status === 'active' ? (
+            {job.status === 'active' ? (
               <Badge className="ml-2 bg-green-500 text-white border-none">
                 Disponible
               </Badge>
@@ -64,9 +75,9 @@ const JobDetailHeader = ({
               </Badge>
             )}
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{title}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{job.title}</h1>
           <div className="flex items-center text-white/80">
-            <span>{location}</span>
+            <span>{job.location}</span>
           </div>
         </div>
       </div>

@@ -6,15 +6,27 @@ import { Building, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Job } from '@/types/job';
-import { SiteSettings } from '@/types/siteSettings';
+import { useJobs } from '@/hooks/useJobs';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { getDomainImage } from '../utils/jobUtils';
 
 interface JobSidebarProps {
-  settings: SiteSettings;
-  similarJobs: Job[];
-  getDomainImage: (domain: string) => string;
+  job: Job;
 }
 
-const JobSidebar = ({ settings, similarJobs, getDomainImage }: JobSidebarProps) => {
+const JobSidebar = ({ job }: JobSidebarProps) => {
+  const { jobs } = useJobs();
+  const { settings } = useSiteSettings();
+  
+  // Find similar jobs (same domain, excluding current job)
+  const similarJobs = jobs
+    .filter(j => 
+      j.id !== job.id && 
+      ((job.isHousingOffer && j.isHousingOffer) || 
+       (!job.isHousingOffer && j.domain === job.domain))
+    )
+    .slice(0, 3);
+
   return (
     <div className="lg:col-span-1 space-y-6">
       <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
