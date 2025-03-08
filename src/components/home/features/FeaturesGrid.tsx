@@ -8,6 +8,29 @@ import { motion } from 'framer-motion';
 export const FeaturesGrid = () => {
   const { t } = useLanguage();
   
+  const gridVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { 
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+  
   const features = [
     {
       icon: <Shield className="h-6 w-6" />,
@@ -44,19 +67,19 @@ export const FeaturesGrid = () => {
   return (
     <motion.div 
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      variants={gridVariants}
+      initial="hidden"
+      animate="visible"
     >
       {features.map((feature, index) => (
-        <FeatureCard
-          key={index}
-          icon={feature.icon}
-          title={feature.title}
-          description={feature.description}
-          index={index}
-          style={{ animationDelay: `${index * 100}ms` }}
-        />
+        <motion.div key={index} variants={itemVariants}>
+          <FeatureCard
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+            index={index}
+          />
+        </motion.div>
       ))}
     </motion.div>
   );
