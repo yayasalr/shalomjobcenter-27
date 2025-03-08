@@ -1,32 +1,22 @@
 
-import { LOME_NEIGHBORHOODS } from "@/constants/locations";
-import { FALLBACK_IMAGES } from "@/constants/images";
-import { useFetchListings } from "./fetchListings";
-import { 
-  useAddListing, 
-  useUpdateListing, 
-  useDeleteListing, 
-  useAddReservation 
-} from "./mutationHooks";
-import { loadReservations } from "../useListingStorage";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Listing } from "@/types/listing";
+import { toast } from "sonner";
+import { loadListings, saveListings } from "../useListingStorage";
+import { useListingQueries } from "./useListingQueries";
+import { useListingMutations } from "./useListingMutations";
+import { useReservationMutations } from "./useReservationMutations";
 
-// Re-export constants for backward compatibility
 export { LOME_NEIGHBORHOODS } from "@/constants/locations";
 export { FALLBACK_IMAGES } from "@/constants/images";
 
 /**
- * Combined hook for all listing operations
+ * Main hook that combines all listing operations
  */
 export const useListings = () => {
-  const { data: listings = [], isLoading, error } = useFetchListings();
-  const addListing = useAddListing();
-  const updateListing = useUpdateListing();
-  const deleteListing = useDeleteListing();
-  const addReservation = useAddReservation();
-
-  const getReservations = () => {
-    return loadReservations();
-  };
+  const { listings, isLoading, error } = useListingQueries();
+  const { addListing, updateListing, deleteListing } = useListingMutations();
+  const { addReservation, getReservations } = useReservationMutations();
 
   return {
     listings,
