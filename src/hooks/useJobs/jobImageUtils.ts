@@ -15,6 +15,11 @@ const isValidHttpUrl = (url: string): boolean => {
   }
 };
 
+// Vérifie si une URL est au format blob
+const isBlobUrl = (url: string): boolean => {
+  return url && typeof url === 'string' && url.startsWith('blob:');
+};
+
 export const processStoredImages = (job: Job): Job => {
   if (!job.id) return job;
   
@@ -46,9 +51,9 @@ export const processStoredImages = (job: Job): Job => {
         const savedImages = JSON.parse(savedImagesStr);
         if (Array.isArray(savedImages) && savedImages.length > 0) {
           console.log(`Images récupérées depuis localStorage pour l'offre ${job.id}`);
-          job.images = savedImages;
-          if (!job.image) {
-            job.image = savedImages[0];
+          job.images = savedImages.filter(img => isBase64Image(img) || isValidHttpUrl(img));
+          if (!job.image && job.images.length > 0) {
+            job.image = job.images[0];
           }
         }
       } catch (e) {
@@ -59,9 +64,9 @@ export const processStoredImages = (job: Job): Job => {
         const latestImages = JSON.parse(latestImagesStr);
         if (Array.isArray(latestImages) && latestImages.length > 0) {
           console.log(`Images récupérées depuis 'latest' pour l'offre ${job.id}`);
-          job.images = latestImages;
-          if (!job.image) {
-            job.image = latestImages[0];
+          job.images = latestImages.filter(img => isBase64Image(img) || isValidHttpUrl(img));
+          if (!job.image && job.images.length > 0) {
+            job.image = job.images[0];
           }
         }
       } catch (e) {
@@ -76,16 +81,52 @@ export const processStoredImages = (job: Job): Job => {
       const latestFeaturedImage = localStorage.getItem('job_featured_image_latest');
       
       if (featuredImage) {
-        job.image = featuredImage.replace(/"/g, '');
-        console.log(`Image principale récupérée pour l'offre ${job.id}:`, job.image);
+        try {
+          // Essayer de nettoyer l'image
+          if (featuredImage.startsWith('"') && featuredImage.endsWith('"')) {
+            job.image = featuredImage.substring(1, featuredImage.length - 1);
+          } else {
+            job.image = featuredImage;
+          }
+          console.log(`Image principale récupérée pour l'offre ${job.id}:`, job.image);
+        } catch (e) {
+          console.error(`Erreur lors du traitement de l'image principale pour ${job.id}:`, e);
+        }
       } else if (latestFeaturedImage && !hasValidMainImage) {
-        job.image = latestFeaturedImage.replace(/"/g, '');
-        console.log(`Image principale récupérée depuis 'latest' pour l'offre ${job.id}:`, job.image);
+        try {
+          // Essayer de nettoyer l'image
+          if (latestFeaturedImage.startsWith('"') && latestFeaturedImage.endsWith('"')) {
+            job.image = latestFeaturedImage.substring(1, latestFeaturedImage.length - 1);
+          } else {
+            job.image = latestFeaturedImage;
+          }
+          console.log(`Image principale récupérée depuis 'latest' pour l'offre ${job.id}:`, job.image);
+        } catch (e) {
+          console.error(`Erreur lors du traitement de l'image principale depuis 'latest' pour ${job.id}:`, e);
+        }
       } else if (job.images && job.images.length > 0) {
         job.image = job.images[0];
         console.log(`Image principale définie à partir des images pour l'offre ${job.id}:`, job.image);
       }
     }
+    
+    // S'assurer que nous n'avons pas de blob URLs (qui ne persisteront pas)
+    if (job.image && isBlobUrl(job.image)) {
+      console.warn(`Image principale en format blob trouvée pour l'offre ${job.id}, remplacement par défaut`);
+      job.image = "https://source.unsplash.com/random/800x600/?work";
+    }
+    
+    if (job.images) {
+      const hasBlobs = job.images.some(img => isBlobUrl(img));
+      if (hasBlobs) {
+        console.warn(`Images blob trouvées pour l'offre ${job.id}, filtrage`);
+        job.images = job.images.filter(img => !isBlobUrl(img));
+        if (job.images.length === 0) {
+          job.images = ["https://source.unsplash.com/random/800x600/?work"];
+        }
+      }
+    }
+    
   } catch (error) {
     console.error(`Erreur lors de la récupération des images de l'offre ${job.id}:`, error);
   }

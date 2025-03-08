@@ -68,7 +68,7 @@ export const useImageHandlers = ({
         setItem(timestampedKey, imageArray);
         setItem(`${key}_latest_timestamp`, timestamp.toString());
         setItem(`${key}_single_${timestamp}`, base64Image);
-        setItem(`${key}_latest`, imageArray);
+        setItem(`${key}_latest`, base64Image);
         
         console.log(`Image convertie et stockée avec timestamp ${timestamp}:`, base64Image);
       }
@@ -77,6 +77,30 @@ export const useImageHandlers = ({
     }
   };
   
+  // Fonction pour télécharger l'image fournie par l'utilisateur
+  const handleImageUpload = (file: File, callback: (url: string) => void) => {
+    setIsUploading(true);
+    
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const baseUrl = reader.result as string;
+        callback(baseUrl);
+        setIsUploading(false);
+        toast.success("Image téléchargée avec succès");
+      };
+      reader.onerror = () => {
+        setIsUploading(false);
+        toast.error("Erreur lors du téléchargement de l'image");
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement de l\'image:', error);
+      setIsUploading(false);
+      toast.error("Erreur lors du téléchargement de l'image");
+    }
+  };
+
   // Simuler téléchargement d'image avec URLs persistantes
   const simulateImageUpload = async (callback: (url: string) => void, isHousingOffer: boolean) => {
     setIsUploading(true);
@@ -111,37 +135,59 @@ export const useImageHandlers = ({
 
   // Gérer le téléchargement d'image principale
   const handleFeaturedImageUpload = (isHousingOffer: boolean) => {
-    simulateImageUpload(async (url) => {
-      setFeaturedImage(url);
-      
-      // Stockage avec horodatage précis
-      const timestamp = Date.now();
-      setItem(`job_featured_image_${timestamp}`, url);
-      setItem('job_featured_image_latest_timestamp', timestamp.toString());
-      setItem('job_featured_image_latest', url);
-      
-      console.log(`Image principale téléchargée et stockée comme URL permanente: ${url}`);
-      
-      toast.success("Image principale téléchargée avec succès");
-    }, isHousingOffer);
+    // Document Input pour téléchargement d'image
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = (e: Event) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        handleImageUpload(file, async (url) => {
+          setFeaturedImage(url);
+          
+          // Stockage avec horodatage précis
+          const timestamp = Date.now();
+          setItem(`job_featured_image_${timestamp}`, url);
+          setItem('job_featured_image_latest_timestamp', timestamp.toString());
+          setItem('job_featured_image_latest', url);
+          
+          console.log(`Image principale téléchargée et stockée: ${url}`);
+        });
+      }
+    };
+    
+    input.click();
   };
 
   // Fonction pour gérer les images additionnelles
   const handleAddImage = (isHousingOffer: boolean) => {
-    simulateImageUpload(async (url) => {
-      const updatedImages = [...images, url];
-      setImages(updatedImages);
-      
-      // Stockage avec horodatage précis
-      const timestamp = Date.now();
-      setItem(`job_images_${timestamp}`, updatedImages);
-      setItem('job_images_latest_timestamp', timestamp.toString());
-      setItem('job_images_latest', updatedImages);
-      
-      console.log(`Images additionnelles mises à jour et stockées: ${JSON.stringify(updatedImages)}`);
-      
-      toast.success("Nouvelle image ajoutée");
-    }, isHousingOffer);
+    // Document Input pour téléchargement d'image
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = (e: Event) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        handleImageUpload(file, async (url) => {
+          const updatedImages = [...images, url];
+          setImages(updatedImages);
+          
+          // Stockage avec horodatage précis
+          const timestamp = Date.now();
+          setItem(`job_images_${timestamp}`, updatedImages);
+          setItem('job_images_latest_timestamp', timestamp.toString());
+          setItem('job_images_latest', updatedImages);
+          
+          console.log(`Images additionnelles mises à jour et stockées: ${JSON.stringify(updatedImages)}`);
+        });
+      }
+    };
+    
+    input.click();
   };
 
   const handleRemoveImage = (index: number) => {

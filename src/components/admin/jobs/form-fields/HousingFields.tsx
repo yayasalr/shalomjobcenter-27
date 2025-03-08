@@ -28,6 +28,12 @@ export const HousingFields: React.FC<HousingFieldsProps> = ({
   onClearAllImages,
   isUploading = false
 }) => {
+  // Filtrer les images valides (non-blob)
+  const validImages = images.filter(img => 
+    !img.startsWith('blob:') && 
+    (img.startsWith('http') || img.startsWith('data:image/'))
+  );
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -65,7 +71,7 @@ export const HousingFields: React.FC<HousingFieldsProps> = ({
             Images du logement
           </Label>
           
-          {images.length > 0 && (
+          {validImages.length > 0 && (
             <Button
               type="button"
               variant="destructive"
@@ -80,7 +86,7 @@ export const HousingFields: React.FC<HousingFieldsProps> = ({
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {images.map((image, index) => (
+          {validImages.map((image, index) => (
             <div key={index} className="relative border rounded-md overflow-hidden group">
               <img
                 src={image}
@@ -126,7 +132,7 @@ export const HousingFields: React.FC<HousingFieldsProps> = ({
           </Button>
         </div>
         
-        {images.length === 0 && (
+        {validImages.length === 0 && (
           <div className="p-4 border border-dashed rounded-md bg-gray-50 text-center text-gray-500 mb-2">
             <p>Aucune image ajoutée</p>
           </div>

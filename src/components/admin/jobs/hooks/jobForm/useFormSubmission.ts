@@ -39,15 +39,68 @@ export const useFormSubmission = ({
     setIsOpen(open);
   };
 
+  const validateFormData = () => {
+    const errors = [];
+    
+    if (!title || title.trim() === '') {
+      errors.push("Le titre est obligatoire");
+    }
+    
+    if (!description || description.trim() === '') {
+      errors.push("La description est obligatoire");
+    }
+    
+    if (!location || location.trim() === '') {
+      errors.push("La localisation est obligatoire");
+    }
+    
+    if (!deadline) {
+      errors.push("La date limite est obligatoire");
+    }
+    
+    if (isHousingOffer) {
+      if (!price || price <= 0) {
+        errors.push("Le prix du logement est obligatoire et doit être supérieur à 0");
+      }
+      
+      if (!bedrooms || bedrooms <= 0) {
+        errors.push("Le nombre de chambres doit être supérieur à 0");
+      }
+      
+      if (!bathrooms || bathrooms <= 0) {
+        errors.push("Le nombre de salles de bain doit être supérieur à 0");
+      }
+    } else {
+      if (!positions || positions <= 0) {
+        errors.push("Le nombre de postes doit être supérieur à 0");
+      }
+    }
+    
+    return errors;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !description || !location || !deadline) {
-      toast.error("Veuillez remplir tous les champs obligatoires");
+    // Validation
+    const errors = validateFormData();
+    if (errors.length > 0) {
+      toast.error(errors.join("\n"));
       return;
     }
 
     setIsSubmitting(true);
+    
+    // Nettoyer les images blob (qui ne persisteront pas)
+    const cleanBlobs = (url?: string) => {
+      if (!url) return '';
+      return url.startsWith('blob:') ? '' : url;
+    };
+    
+    // Nettoyer les tableaux d'images
+    const cleanBlobArray = (urls: string[]) => {
+      return urls.filter(url => !url.startsWith('blob:'));
+    };
     
     const formData: any = {
       title,
@@ -66,9 +119,9 @@ export const useFormSubmission = ({
       status: isPublished ? "active" : "draft"
     };
 
-    // Add featured image if available
+    // Add featured image if available (clean blob URLs)
     if (featuredImage) {
-      formData.image = featuredImage;
+      formData.image = cleanBlobs(featuredImage);
     }
 
     // Si c'est une offre de logement, ajoutez les propriétés spécifiques
@@ -77,10 +130,21 @@ export const useFormSubmission = ({
       formData.price = price;
       formData.bedrooms = bedrooms;
       formData.bathrooms = bathrooms;
-      formData.images = images;
+      
+      // Clean blob URLs
+      formData.images = cleanBlobArray(images);
     }
 
     try {
+      // Sauvegarder dans localStorage pour référence future
+      if (featuredImage) {
+        localStorage.setItem('job_featured_image_latest', featuredImage);
+      }
+      
+      if (images && images.length > 0) {
+        localStorage.setItem('job_images_latest', JSON.stringify(images));
+      }
+      
       await onSave(formData);
       toast.success("Offre publiée avec succès");
       handleOpenChange(false);
