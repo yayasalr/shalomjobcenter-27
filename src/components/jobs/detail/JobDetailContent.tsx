@@ -14,30 +14,27 @@ interface JobDetailContentProps {
 
 export const JobDetailContent: React.FC<JobDetailContentProps> = ({ job, isLoading }) => {
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!job) {
-    return <div>Job not found</div>;
+    return <div>Chargement en cours...</div>;
   }
 
   return (
-    <div className="container mx-auto mt-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          <JobDetailHeader job={job} />
-          {job.images && job.images.length > 0 && (
-            <JobGallery job={job} />
-          )}
-          <JobDescription description={job.description} />
-          <JobRequirements 
-            requirements={job.requirements}
-            isHousingOffer={job.isHousingOffer || false}
-            bedrooms={job.bedrooms}
-            bathrooms={job.bathrooms}
-          />
+    <div className="container mx-auto px-4 py-8">
+      <JobDetailHeader job={job} />
+      
+      <div className="grid md:grid-cols-3 gap-8 mt-8">
+        <div className="md:col-span-2 space-y-8">
+          {/* Gallery */}
+          <JobGallery job={job} className="w-full" />
+          
+          {/* Description */}
+          <JobDescription job={job} />
+          
+          {/* Requirements */}
+          <JobRequirements job={job} />
         </div>
-        <div>
+        
+        {/* Sidebar */}
+        <div className="md:col-span-1">
           <JobSidebar job={job} />
         </div>
       </div>
