@@ -82,27 +82,23 @@ export const useFormSubmission = ({
         }
       }
 
-      // GESTION PRIORITAIRE DES NOUVELLES IMAGES
+      // ABSOLUMENT PRIORITAIRE: Utiliser les nouvelles images téléchargées
       if (imagePreviews && imagePreviews.length > 0) {
-        console.log("PRIORITÉ ABSOLUE aux images téléchargées:", imagePreviews);
+        console.log("UTILISATION DES IMAGES TÉLÉCHARGÉES:", imagePreviews);
         
-        // Forcer l'utilisation des nouvelles images avec horodatage
+        // Enregistrer définitivement les images
         const timestamp = Date.now();
+        const permanentKey = `permanent_listing_images_${timestamp}`;
+        localStorage.setItem(permanentKey, JSON.stringify(imagePreviews));
         
-        // Enregistrer en plusieurs emplacements pour garantir la persistance
-        localStorage.setItem(`fresh_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
-        sessionStorage.setItem(`fresh_listing_images_${timestamp}`, JSON.stringify(imagePreviews));
-        
-        // Définir comme SEULES images valides
+        // Utiliser DIRECTEMENT les images prévisualisées
         formData.images = [...imagePreviews];
         
         // Définir la première comme image principale
         if (imagePreviews[0]) {
           formData.image = imagePreviews[0];
-          console.log("Image principale définie à partir des nouvelles images:", formData.image);
+          console.log("Image principale définie:", formData.image);
         }
-        
-        console.log("Images utilisées pour le nouveau listing:", formData.images);
       } 
       // En mode édition, uniquement si aucune nouvelle image n'est fournie
       else if (isEditing && selectedListing) {
@@ -115,7 +111,7 @@ export const useFormSubmission = ({
         }
       }
 
-      console.log("Données finales du formulaire avant enregistrement:", formData);
+      console.log("Données finales du formulaire:", formData);
       await onSave(formData);
       
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");

@@ -10,28 +10,37 @@ export const loadListings = (): Listing[] => {
     const savedListings = localStorage.getItem('listings');
     if (savedListings) {
       console.log("Chargement des listings depuis localStorage");
-      const parsedListings = JSON.parse(savedListings);
       
-      // Récupérer les listings sans normalisation pour préserver les images d'origine
-      return parsedListings.map((listing: Listing) => {
-        console.log(`Chargement du listing ${listing.id} avec ses images d'origine`);
+      try {
+        const parsedListings = JSON.parse(savedListings);
         
-        // Utiliser les images directement depuis le listing sans modification
-        if (listing.images) {
-          console.log(`Images originales du listing ${listing.id} préservées:`, listing.images);
+        // Vérification additionnelle que les données sont valides
+        if (!Array.isArray(parsedListings)) {
+          throw new Error("Les données chargées ne sont pas un tableau");
         }
         
-        if (listing.image) {
-          console.log(`Image principale originale du listing ${listing.id} préservée:`, listing.image);
-        }
-        
-        // IMPORTANTE: Conserver les images exactement telles quelles
-        return {
-          ...listing,
-          images: listing.images ? [...listing.images] : [],
-          image: listing.image || ''
-        };
-      });
+        // Récupérer les listings sans normalisation pour préserver les images d'origine
+        return parsedListings.map((listing: Listing) => {
+          console.log(`Chargement du listing ${listing.id || 'nouveau'} avec ses images d'origine`);
+          
+          // Vérification et correction des images
+          if (listing.images) {
+            console.log(`Images originales du listing ${listing.id} préservées:`, listing.images);
+          } else {
+            listing.images = [];
+          }
+          
+          // Création d'une copie sécurisée du listing
+          return {
+            ...listing,
+            images: listing.images ? [...listing.images] : [],
+            image: listing.image || ''
+          };
+        });
+      } catch (parseError) {
+        console.error("Erreur lors de l'analyse des listings:", parseError);
+        throw parseError; // Pour être capturé par le bloc catch extérieur
+      }
     }
     
     // Si aucune donnée n'existe dans le localStorage, adapter les données mock pour Lomé
@@ -51,6 +60,12 @@ export const loadListings = (): Listing[] => {
     
     // Sauvegarder immédiatement dans localStorage
     localStorage.setItem('listings', JSON.stringify(loméListings));
+    
+    // Sauvegarde de secours horodatée
+    const timestamp = Date.now();
+    localStorage.setItem(`listings_backup_${timestamp}`, JSON.stringify(loméListings));
+    console.log(`Sauvegarde initiale des listings à ${new Date().toISOString()}`);
+    
     return loméListings;
   } catch (error) {
     console.error("Erreur lors du chargement des listings:", error);
@@ -64,6 +79,9 @@ export const loadListings = (): Listing[] => {
     // Essayer de sauvegarder les données par défaut
     try {
       localStorage.setItem('listings', JSON.stringify(defaultListings));
+      // Sauvegarde de secours
+      const timestamp = Date.now();
+      localStorage.setItem(`listings_backup_emergency_${timestamp}`, JSON.stringify(defaultListings));
     } catch (storageError) {
       console.error("Impossible de sauvegarder les listings par défaut:", storageError);
     }
@@ -77,15 +95,37 @@ export const saveListings = (listings: Listing[]) => {
   try {
     console.log(`Sauvegarde de ${listings.length} listings dans localStorage`);
     
-    // CRITIQUE: Sauvegarder les listings exactement tels quels avec renforcement
-    localStorage.setItem('listings', JSON.stringify(listings));
+    // Vérifier que les listings ont bien des images préservées
+    const verifiedListings = listings.map(listing => {
+      // Vérifier les images
+      if (!listing.images) {
+        console.warn(`Listing ${listing.id} sans tableau d'images, correction...`);
+        listing.images = [];
+      }
+      
+      // Vérifier l'image principale
+      if (!listing.image) {
+        console.warn(`Listing ${listing.id} sans image principale, correction...`);
+        if (listing.images.length > 0) {
+          listing.image = listing.images[0];
+        }
+      }
+      
+      return listing;
+    });
+    
+    // CRITIQUE: Sauvegarder les listings avec GARANTIE de fiabilité
+    localStorage.setItem('listings', JSON.stringify(verifiedListings));
     
     // Sauvegardes additionnelles avec timestamp
     const timestamp = Date.now();
-    localStorage.setItem(`listings_backup_${timestamp}`, JSON.stringify(listings));
+    localStorage.setItem(`listings_backup_${timestamp}`, JSON.stringify(verifiedListings));
+    
+    // Sauvegarde de secours supplémentaire
+    localStorage.setItem('listings_last_backup', JSON.stringify(verifiedListings));
     
     // Sauvegarder les images de chaque listing séparément pour plus de sécurité
-    listings.forEach(listing => {
+    verifiedListings.forEach(listing => {
       if (listing.id) {
         const key = `listing_images_${listing.id}_${timestamp}`;
         if (listing.images && listing.images.length > 0) {

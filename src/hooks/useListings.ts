@@ -17,9 +17,35 @@ export const useListings = () => {
   const { data: listings = [], isLoading, error } = useQuery({
     queryKey: ["listings"],
     queryFn: async () => {
-      const currentListings = loadListings();
-      console.log("Chargement des listings:", currentListings.length);
-      return currentListings;
+      try {
+        const currentListings = loadListings();
+        console.log("Chargement des listings:", currentListings.length);
+        
+        // Vérification supplémentaire que les listings ont bien des images
+        const verifiedListings = currentListings.map(listing => {
+          if (!listing.images) listing.images = [];
+          return listing;
+        });
+        
+        return verifiedListings;
+      } catch (loadError) {
+        console.error("Erreur critique lors du chargement des listings:", loadError);
+        
+        // Tenter de récupérer une sauvegarde
+        const backupKey = localStorage.getItem('listings_last_backup');
+        if (backupKey) {
+          try {
+            const backupListings = JSON.parse(backupKey);
+            console.log("Récupération depuis sauvegarde de secours:", backupListings.length);
+            return backupListings;
+          } catch (backupError) {
+            console.error("Échec de récupération de la sauvegarde:", backupError);
+          }
+        }
+        
+        // Si rien ne fonctionne, retourner un tableau vide
+        return [];
+      }
     },
     staleTime: 0, // Toujours recharger les données
     gcTime: 0, // Ne pas mettre en cache
@@ -29,48 +55,57 @@ export const useListings = () => {
 
   const addListing = useMutation({
     mutationFn: async (newListing: Omit<Listing, "id">) => {
-      const currentListings = loadListings();
-      
-      // Créer un ID unique pour le nouveau listing
-      const id = Math.random().toString(36).substr(2, 9);
-      
-      // Créer une copie complète pour préserver toutes les données
-      const listing: Listing = {
-        ...newListing,
-        id,
-        rating: 0,
-        dates: new Date().toLocaleDateString(),
-        host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
-      };
-      
-      // TRÈS IMPORTANT: Préserver explicitement toutes les images
-      console.log("Images fournies lors de la création:", newListing.images);
-      console.log("Image principale fournie lors de la création:", newListing.image);
-      
-      if (newListing.images && newListing.images.length > 0) {
-        listing.images = [...newListing.images];
-        // Sauvegarde de sécurité des images
-        localStorage.setItem(`new_listing_${id}_images`, JSON.stringify(listing.images));
+      try {
+        const currentListings = loadListings();
         
-        // Si pas d'image principale mais des images disponibles, utiliser la première
-        if (!newListing.image && newListing.images.length > 0) {
-          listing.image = newListing.images[0];
+        // Créer un ID unique pour le nouveau listing
+        const id = Math.random().toString(36).substr(2, 9);
+        
+        // Créer une copie complète pour préserver toutes les données
+        const listing: Listing = {
+          ...newListing,
+          id,
+          rating: 0,
+          dates: new Date().toLocaleDateString(),
+          host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
+        };
+        
+        // TRÈS IMPORTANT: Préserver explicitement toutes les images
+        console.log("Images fournies lors de la création:", newListing.images);
+        console.log("Image principale fournie lors de la création:", newListing.image);
+        
+        // Double vérification pour s'assurer que les images sont présentes
+        if (newListing.images && newListing.images.length > 0) {
+          listing.images = [...newListing.images];
+          // Sauvegarde de sécurité des images
+          localStorage.setItem(`new_listing_${id}_images`, JSON.stringify(listing.images));
+          localStorage.setItem(`new_listing_images_backup_${id}`, JSON.stringify(listing.images));
+          
+          // Si pas d'image principale mais des images disponibles, utiliser la première
+          if (!newListing.image && newListing.images.length > 0) {
+            listing.image = newListing.images[0];
+            localStorage.setItem(`new_listing_${id}_main_image`, listing.image);
+          }
+        } else {
+          listing.images = [];
+        }
+        
+        if (newListing.image) {
+          listing.image = newListing.image;
           localStorage.setItem(`new_listing_${id}_main_image`, listing.image);
         }
+        
+        console.log("Données finales du nouveau listing avant ajout:", listing);
+        
+        // Ajout du listing à la liste
+        currentListings.push(listing);
+        saveListings(currentListings);
+        
+        return listing;
+      } catch (error) {
+        console.error("Erreur lors de l'ajout du listing:", error);
+        throw error;
       }
-      
-      if (newListing.image) {
-        listing.image = newListing.image;
-        localStorage.setItem(`new_listing_${id}_main_image`, listing.image);
-      }
-      
-      console.log("Données finales du nouveau listing avant ajout:", listing);
-      
-      // Ajout du listing à la liste
-      currentListings.push(listing);
-      saveListings(currentListings);
-      
-      return listing;
     },
     onSuccess: (newListing) => {
       // Mettre à jour immédiatement le cache

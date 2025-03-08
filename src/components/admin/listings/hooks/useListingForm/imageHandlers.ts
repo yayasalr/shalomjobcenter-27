@@ -15,30 +15,37 @@ export const useImageHandlers = () => {
       const newPreviews = filesArray.map(file => URL.createObjectURL(file));
       console.log("NOUVELLES IMAGES TÉLÉCHARGÉES:", newPreviews);
       
-      // TRÈS IMPORTANT: Stockage avec horodatage précis dans plusieurs emplacements
+      // IMPORTANT: AJOUTER les nouvelles prévisualisations aux existantes, pas les remplacer
+      setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
+      
+      // Stockage permanent et fiable
       try {
         const timestamp = Date.now();
         const key = `new_listing_images_${timestamp}`;
         
+        // Récupérer les prévisualisations existantes
+        const existingPreviewsStr = localStorage.getItem('latest_listing_images') || '[]';
+        const existingPreviews = JSON.parse(existingPreviewsStr);
+        
+        // Combiner avec les nouvelles
+        const allPreviews = [...existingPreviews, ...newPreviews];
+        
         // Stocker dans localStorage ET sessionStorage pour une persistance maximale
-        localStorage.setItem(key, JSON.stringify(newPreviews));
-        sessionStorage.setItem(key, JSON.stringify(newPreviews));
+        localStorage.setItem(key, JSON.stringify(allPreviews));
+        sessionStorage.setItem(key, JSON.stringify(allPreviews));
         
         // Marquer cette entrée comme la plus récente
         localStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
         sessionStorage.setItem('latest_listing_images_timestamp', timestamp.toString());
         
-        // Clé de secours
-        localStorage.setItem('latest_listing_images', JSON.stringify(newPreviews));
-        sessionStorage.setItem('latest_listing_images', JSON.stringify(newPreviews));
+        // Clé de secours avec les images combinées
+        localStorage.setItem('latest_listing_images', JSON.stringify(allPreviews));
+        sessionStorage.setItem('latest_listing_images', JSON.stringify(allPreviews));
         
-        console.log(`Nouvelles images stockées avec timestamp ${timestamp}:`, newPreviews);
+        console.log(`Images totales stockées: ${allPreviews.length}`, allPreviews);
       } catch (error) {
         console.error('Erreur lors du stockage des prévisualisations:', error);
       }
-      
-      // IMPORTANT: REMPLACER toutes les prévisualisations par les nouvelles
-      setImagePreviews(newPreviews);
     }
   };
 
@@ -84,6 +91,10 @@ export const useImageHandlers = () => {
     
     setImages([]);
     setImagePreviews([]);
+    
+    // Nettoyer également le localStorage
+    localStorage.removeItem('latest_listing_images');
+    sessionStorage.removeItem('latest_listing_images');
   };
 
   // Nettoyer les URL blob lors du démontage du composant

@@ -6,15 +6,14 @@ import { FALLBACK_IMAGES } from '@/constants/images';
 
 // Fonction pour normaliser un objet listing sans JAMAIS remplacer les images
 export const normalizeListing = (listing: Listing): Listing => {
-  console.log("Normalisation d'un listing:", listing.title);
-  
-  // CRITIQUE: TOUJOURS préserver les images existantes sans exception
   // Créer des copies profondes pour éviter les références
   const images = listing.images ? [...listing.images] : [];
   const mainImage = listing.image ? listing.image : '';
   
-  console.log("Images d'origine STRICTEMENT préservées:", images);
-  console.log("Image principale d'origine:", mainImage);
+  // CRITIQUE: TOUJOURS préserver les images existantes sans exception
+  console.log("Normalisation du listing:", listing.title);
+  console.log("Images originales:", images);
+  console.log("Image principale originale:", mainImage);
   
   // Ne plus toucher aux images, sauf si absolument aucune n'existe
   let finalMainImage = mainImage;
@@ -33,12 +32,6 @@ export const normalizeListing = (listing: Listing): Listing => {
   const location = listing.location && listing.location.trim() !== "" 
     ? listing.location 
     : `${LOME_NEIGHBORHOODS[Math.floor(Math.random() * LOME_NEIGHBORHOODS.length)]}, Lomé, Togo`;
-  
-  // Garder une copie séparée des images pour vérification
-  localStorage.setItem(`original_images_${listing.id || Date.now()}`, JSON.stringify(finalImages));
-  if (finalMainImage) {
-    localStorage.setItem(`original_main_image_${listing.id || Date.now()}`, finalMainImage);
-  }
   
   console.log("Images finales préservées:", finalImages);
   console.log("Image principale finale:", finalMainImage);
