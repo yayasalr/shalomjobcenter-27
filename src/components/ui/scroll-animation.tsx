@@ -14,6 +14,9 @@ interface ScrollAnimationProps {
   delay?: number;
   threshold?: number;
   once?: boolean;
+  distance?: number;
+  staggerChildren?: number;
+  staggerContainer?: boolean;
 }
 
 export const ScrollAnimation = ({
@@ -24,33 +27,63 @@ export const ScrollAnimation = ({
   delay = 0,
   threshold = 0.1,
   once = true,
+  distance = 100,
+  staggerChildren = 0.1,
+  staggerContainer = false,
 }: ScrollAnimationProps) => {
   const [ref, isInView] = useInView({ once, threshold });
 
-  const directionToVariant = {
-    left: { hidden: { x: -100, opacity: 0 }, visible: { x: 0, opacity: 1 } },
-    right: { hidden: { x: 100, opacity: 0 }, visible: { x: 0, opacity: 1 } },
-    up: { hidden: { y: 100, opacity: 0 }, visible: { y: 0, opacity: 1 } },
-    down: { hidden: { y: -100, opacity: 0 }, visible: { y: 0, opacity: 1 } },
+  const getDirectionVariants = (dist: number) => ({
+    left: { hidden: { x: -dist, opacity: 0 }, visible: { x: 0, opacity: 1 } },
+    right: { hidden: { x: dist, opacity: 0 }, visible: { x: 0, opacity: 1 } },
+    up: { hidden: { y: dist, opacity: 0 }, visible: { y: 0, opacity: 1 } },
+    down: { hidden: { y: -dist, opacity: 0 }, visible: { y: 0, opacity: 1 } },
     none: { hidden: { opacity: 0 }, visible: { opacity: 1 } }
-  };
+  });
 
-  const variants = directionToVariant[direction];
+  const variants = getDirectionVariants(distance)[direction];
+
+  const containerVariants = staggerContainer ? {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        staggerChildren,
+        delayChildren: delay,
+      }
+    }
+  } : variants;
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      variants={variants}
-      transition={{
+      variants={containerVariants}
+      transition={!staggerContainer ? {
         duration,
         delay,
         ease: "easeOut"
-      }}
+      } : undefined}
       className={cn(className)}
     >
-      {children}
+      {staggerContainer ? (
+        React.Children.map(children, (child) => {
+          if (!React.isValidElement(child)) return child;
+          
+          return (
+            <motion.div
+              variants={variants}
+              transition={{
+                duration,
+                ease: "easeOut"
+              }}
+            >
+              {child}
+            </motion.div>
+          );
+        })
+      ) : children}
     </motion.div>
   );
 };

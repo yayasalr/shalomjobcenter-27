@@ -14,6 +14,7 @@ import { TestimonialsSection } from '@/components/home/testimonials';
 import { Footer } from '@/components/home/Footer';
 import { useLocation } from 'react-router-dom';
 import { StatusBanner } from '@/components/home/status-banner';
+import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 const Index = () => {
   const { listings, isLoading } = useListings();
@@ -91,11 +92,13 @@ const Index = () => {
       
       {!searchTerm && <HeroSection />}
       
-      <div className="w-full py-8 bg-gradient-to-r from-slate-50 to-white">
-        <div className="container mx-auto px-4">
-          <StatusBanner />
+      <ScrollAnimation direction="down" duration={0.5}>
+        <div className="w-full py-8 bg-gradient-to-r from-slate-50 to-white">
+          <div className="container mx-auto px-4">
+            <StatusBanner />
+          </div>
         </div>
-      </div>
+      </ScrollAnimation>
       
       <div className="w-screen p-0 m-0">
         <div className="content-container py-10 p-0 m-0">
@@ -104,41 +107,53 @@ const Index = () => {
       </div>
       
       <div className="pt-4 w-screen p-0 m-0">
-        <div className="content-container p-0 m-0">
-          <CategoryFiltersSimplified />
-        </div>
+        <ScrollAnimation direction="up" duration={0.5}>
+          <div className="content-container p-0 m-0">
+            <CategoryFiltersSimplified />
+          </div>
+        </ScrollAnimation>
         
         <div className="py-4 w-screen p-0 m-0">
-          <SearchBar 
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} 
-            primaryColor={settings.primaryColor} 
-          />
+          <ScrollAnimation direction="right" duration={0.5}>
+            <SearchBar 
+              searchTerm={searchTerm} 
+              setSearchTerm={setSearchTerm} 
+              primaryColor={settings.primaryColor} 
+            />
+          </ScrollAnimation>
 
-          <div className="content-container mt-4 mb-6 p-0 m-0">
-            <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
-              {searchTerm 
-                ? `Résultats pour "${searchTerm}"` 
-                : "Logements en Afrique et partout dans le monde"}
-            </h2>
-            
-            {searchTerm && (
-              <p className="mb-4 text-sholom-muted minimal-text">
-                {filteredListings.length} résultat(s) trouvé(s)
-              </p>
-            )}
-          </div>
+          <ScrollAnimation direction="left" duration={0.5}>
+            <div className="content-container mt-4 mb-6 p-0 m-0">
+              <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
+                {searchTerm 
+                  ? `Résultats pour "${searchTerm}"` 
+                  : "Logements en Afrique et partout dans le monde"}
+              </h2>
+              
+              {searchTerm && (
+                <p className="mb-4 text-sholom-muted minimal-text">
+                  {filteredListings.length} résultat(s) trouvé(s)
+                </p>
+              )}
+            </div>
+          </ScrollAnimation>
           
-          <ListingsGrid 
-            isLoading={isLoading}
-            visibleListings={visibleListings}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filteredListings={filteredListings}
-            loadMoreListings={loadMoreListings}
-          />
+          <ScrollAnimation direction="up" staggerContainer={true} staggerChildren={0.05} delay={0.2}>
+            <ListingsGrid 
+              isLoading={isLoading}
+              visibleListings={visibleListings}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              filteredListings={filteredListings}
+              loadMoreListings={loadMoreListings}
+            />
+          </ScrollAnimation>
           
-          {!searchTerm && <PopularNeighborhoods setSearchTerm={setSearchTerm} />}
+          {!searchTerm && (
+            <ScrollAnimation direction="right" duration={0.7} delay={0.3}>
+              <PopularNeighborhoods setSearchTerm={setSearchTerm} />
+            </ScrollAnimation>
+          )}
           
           {!searchTerm && <TestimonialsSection />}
         </div>

@@ -3,33 +3,10 @@ import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Shield, Home, Medal, MapPin, Clock, CheckCircle } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
-import { motion } from 'framer-motion';
+import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 export const FeaturesGrid = () => {
   const { t } = useLanguage();
-  
-  const gridVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { 
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
   
   const features = [
     {
@@ -65,22 +42,22 @@ export const FeaturesGrid = () => {
   ];
 
   return (
-    <motion.div 
+    <ScrollAnimation 
+      direction="up"
+      staggerContainer={true}
+      staggerChildren={0.1}
+      delay={0.2}
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"
-      variants={gridVariants}
-      initial="hidden"
-      animate="visible"
     >
       {features.map((feature, index) => (
-        <motion.div key={index} variants={itemVariants}>
-          <FeatureCard
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-            index={index}
-          />
-        </motion.div>
+        <FeatureCard
+          key={index}
+          icon={feature.icon}
+          title={feature.title}
+          description={feature.description}
+          index={index}
+        />
       ))}
-    </motion.div>
+    </ScrollAnimation>
   );
 };

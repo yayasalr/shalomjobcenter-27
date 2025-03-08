@@ -8,6 +8,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import LoadingState from '@/components/jobs/detail/LoadingState';
 import NotFoundState from '@/components/jobs/detail/NotFoundState';
 import JobDetailContent from '@/components/jobs/detail/JobDetailContent';
+import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 const JobDetail = () => {
   const { id } = useParams();
@@ -68,14 +69,16 @@ const JobDetail = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <JobDetailContent 
-        job={job}
-        jobs={jobs}
-        settings={settings}
-        handleApplySubmit={handleApplySubmit}
-        applicantData={applicantData}
-        setApplicantData={setApplicantData}
-      />
+      <ScrollAnimation direction="up" duration={0.7} once={true}>
+        <JobDetailContent 
+          job={job}
+          jobs={jobs}
+          settings={settings}
+          handleApplySubmit={handleApplySubmit}
+          applicantData={applicantData}
+          setApplicantData={setApplicantData}
+        />
+      </ScrollAnimation>
     </div>
   );
 };
