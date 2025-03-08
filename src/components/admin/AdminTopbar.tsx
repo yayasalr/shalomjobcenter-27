@@ -101,13 +101,13 @@ const AdminTopbar = ({ isSidebarOpen, toggleSidebar }: AdminTopbarProps) => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/user/profile" className="cursor-pointer">
+              <Link to="/profile" className="cursor-pointer">
                 <User className="mr-2 h-4 w-4" />
                 <span>Mon Profil</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/admin/settings" className="cursor-pointer">
+              <Link to="/admin/parametres" className="cursor-pointer">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Paramètres</span>
               </Link>
