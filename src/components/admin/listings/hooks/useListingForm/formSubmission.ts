@@ -72,18 +72,21 @@ export const useFormSubmission = ({
         formData.dates = selectedListing.dates;
         formData.host = selectedListing.host;
         
-        if (images.length === 0) {
+        // Conserver les images existantes si aucune nouvelle image n'est téléchargée
+        if (images.length === 0 && !imagePreviews.length) {
           formData.image = selectedListing.image;
           formData.images = selectedListing.images;
         }
       }
 
-      if (images.length > 0) {
-        const imageUrls = images.map(file => URL.createObjectURL(file));
-        formData.image = imageUrls[0];
-        formData.images = imageUrls;
+      // Si nous avons de nouvelles images téléchargées, utiliser leurs URLs
+      if (imagePreviews.length > 0) {
+        console.log("Nouvelles images à utiliser:", imagePreviews);
+        formData.image = imagePreviews[0];
+        formData.images = imagePreviews;
       }
 
+      console.log("Données envoyées:", formData);
       await onSave(formData);
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");
       resetForm();

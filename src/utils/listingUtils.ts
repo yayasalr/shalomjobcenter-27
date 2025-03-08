@@ -1,16 +1,16 @@
 
 import { Listing } from "@/types/listing";
 import { LOME_NEIGHBORHOODS } from '@/constants/locations';
-import { getValidImageUrl, normalizeImages } from './imageUtils';
+import { getValidImageUrl } from './imageUtils';
 import { FALLBACK_IMAGES } from '@/constants/images';
 
-// Fonction pour normaliser un objet listing
+// Fonction pour normaliser un objet listing sans remplacer les images
 export const normalizeListing = (listing: Listing): Listing => {
-  // Normaliser les images
-  const normalizedImages = normalizeImages(listing.images);
+  // S'assurer que chaque listing a une propriété images
+  const images = listing.images || [];
   
-  // Assurer que l'image principale existe et est valide
-  const mainImage = getValidImageUrl(listing.image || normalizedImages[0], 0);
+  // Si aucune image principale n'est spécifiée mais qu'il y a des images, utiliser la première
+  const mainImage = listing.image || (images.length > 0 ? images[0] : getValidImageUrl("", 0));
   
   // Assurer que chaque listing a une propriété host
   const host = listing.host || { name: "Hôte", image: "/placeholder.svg" };
@@ -23,9 +23,8 @@ export const normalizeListing = (listing: Listing): Listing => {
   return {
     ...listing,
     image: mainImage,
-    images: normalizedImages,
+    images: images.length > 0 ? images : [mainImage],
     host,
     location
   };
 };
-

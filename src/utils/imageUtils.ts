@@ -22,10 +22,10 @@ export const getValidImageUrl = (imageUrl: string, index: number = 0): string =>
     return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
   }
   
-  // Traitement des URLs blob
+  // Préserver les URLs blob pour les images fraîchement téléchargées
   if (imageUrl.startsWith('blob:')) {
-    console.log("Conversion d'une URL blob en fallback:", imageUrl);
-    return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
+    console.log("Préservation d'une URL blob:", imageUrl);
+    return imageUrl;
   }
   
   // URLs HTTP(S) sont valides
@@ -48,11 +48,19 @@ export const getValidImageUrl = (imageUrl: string, index: number = 0): string =>
 };
 
 /**
- * Normalise un tableau d'images en remplaçant les URLs invalides
+ * Normalise un tableau d'images en préservant les URLs valides
  */
 export const normalizeImages = (images: string[] | undefined): string[] => {
   if (!images || images.length === 0) {
     return [getRandomFallbackImage()];
+  }
+  
+  // Vérifier si le tableau contient des URLs blob
+  const hasValidImages = images.some(img => img.startsWith('blob:') || img.startsWith('http'));
+  
+  // Si des URLs valides existent, les utiliser, sinon utiliser les fallbacks
+  if (hasValidImages) {
+    return images;
   }
   
   return images.map((img, index) => getValidImageUrl(img, index));
@@ -65,8 +73,13 @@ export { compressImage, cleanupImageUrls };
  * Obtenir une image d'avatar valide pour les propriétaires
  */
 export const getHostAvatar = (avatarUrl: string | undefined): string => {
-  if (!avatarUrl || avatarUrl.startsWith('blob:')) {
+  if (!avatarUrl) {
     return "/placeholder.svg";
+  }
+  
+  // Préserver les URLs blob
+  if (avatarUrl.startsWith('blob:')) {
+    return avatarUrl;
   }
   
   return avatarUrl;
@@ -84,8 +97,14 @@ export const getRandomFallbackImage = (): string => {
  */
 export const isImageValid = (url: string): Promise<boolean> => {
   return new Promise((resolve) => {
-    if (!url || url.startsWith('blob:')) {
+    if (!url) {
       resolve(false);
+      return;
+    }
+    
+    // Les URLs blob sont considérées comme valides
+    if (url.startsWith('blob:')) {
+      resolve(true);
       return;
     }
     

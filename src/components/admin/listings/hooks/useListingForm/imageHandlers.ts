@@ -12,6 +12,7 @@ export const useImageHandlers = () => {
       setImages(prevImages => [...prevImages, ...filesArray]);
       
       const newPreviews = filesArray.map(file => URL.createObjectURL(file));
+      console.log("Nouvelles URL de prévisualisation créées:", newPreviews);
       setImagePreviews(prevPreviews => [...prevPreviews, ...newPreviews]);
     }
   };
@@ -20,7 +21,10 @@ export const useImageHandlers = () => {
     setImages(prevImages => prevImages.filter((_, i) => i !== index));
     
     if (imagePreviews[index]) {
-      URL.revokeObjectURL(imagePreviews[index]);
+      // Seulement révoquer les URLs blob
+      if (imagePreviews[index].startsWith('blob:')) {
+        URL.revokeObjectURL(imagePreviews[index]);
+      }
     }
     setImagePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
   };
@@ -35,6 +39,17 @@ export const useImageHandlers = () => {
     setImages([]);
     setImagePreviews([]);
   };
+
+  // Nettoyage des URL blob lors du démontage du composant
+  useEffect(() => {
+    return () => {
+      imagePreviews.forEach(url => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
+  }, [imagePreviews]);
 
   return {
     images,
