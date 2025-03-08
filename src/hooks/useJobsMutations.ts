@@ -24,15 +24,21 @@ export const useJobsMutations = () => {
           status: "active",
         };
         
-        // Sauvegarder les images avec le nouveau système
+        // Sauvegarder les images avec l'ID spécifique
         if (newJob.images && newJob.images.length > 0) {
           job.images = [...newJob.images];
           saveJobImages(id, job.images);
+          
+          // Nettoyer les images "latest" après création
+          localStorage.removeItem('job_images_latest');
         }
         
         // Définir l'image principale
         if (newJob.image) {
           job.image = newJob.image;
+          
+          // Nettoyer l'image "latest" après création
+          localStorage.removeItem('job_featured_image_latest');
         } else if (job.images && job.images.length > 0) {
           job.image = job.images[0];
         }

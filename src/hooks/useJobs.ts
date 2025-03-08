@@ -11,7 +11,7 @@ export const useJobs = () => {
   const { data: jobs = [], isLoading, error } = useQuery({
     queryKey: ["jobs"],
     queryFn: loadJobs,
-    staleTime: 0,
+    staleTime: 0,  // Toujours recharger pour s'assurer d'avoir les dernières données/images
     gcTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true

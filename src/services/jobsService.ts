@@ -35,16 +35,23 @@ export const useJobsService = () => {
       if (!newJob.status) newJob.status = "active";
       if (!newJob.publishDate) newJob.publishDate = new Date().toISOString().split('T')[0];
       
-      // Sauvegarder séparément les images
+      // Sauvegarder séparément les images, uniquement avec leur propre ID
       if (newJob.images && newJob.images.length > 0) {
         saveJobImages(newJob.id, newJob.images);
         console.log(`Images sauvegardées pour le job ${newJob.id}:`, newJob.images);
+        
+        // Nettoyer les images "latest" pour éviter les mélanges
+        localStorage.removeItem('job_images_latest');
+        localStorage.removeItem('job_featured_image_latest');
       }
       
       if (newJob.image) {
-        // Sauvegarder l'image principale séparément
+        // Sauvegarder l'image principale séparément avec l'ID spécifique
         localStorage.setItem(`job_featured_image_${newJob.id}`, newJob.image);
         console.log(`Image principale sauvegardée pour le job ${newJob.id}:`, newJob.image);
+        
+        // Nettoyer l'image "latest" 
+        localStorage.removeItem('job_featured_image_latest');
       } else if (newJob.images && newJob.images.length > 0) {
         // Utiliser la première image comme image principale si non définie
         newJob.image = newJob.images[0];
@@ -79,7 +86,7 @@ export const useJobsService = () => {
         throw new Error("Job not found");
       }
       
-      // Sauvegarder séparément les images
+      // Sauvegarder séparément les images avec leur propre ID
       if (updatedJob.images && updatedJob.images.length > 0) {
         saveJobImages(updatedJob.id, updatedJob.images);
         console.log(`Images mises à jour pour le job ${updatedJob.id}:`, updatedJob.images);

@@ -24,13 +24,13 @@ export const processStoredImages = (job: Job): Job => {
       return job;
     }
     
-    // Récupérer les images depuis localStorage
+    // Récupérer les images depuis localStorage - UNIQUEMENT pour ce job spécifique
     const savedImagesKey = `job_images_${job.id}`;
     const savedImagesStr = localStorage.getItem(savedImagesKey);
     
-    const latestImagesStr = localStorage.getItem('job_images_latest');
+    // Ne plus utiliser les images "latest" comme fallback pour éviter le mélange d'images
+    // entre différentes offres
     
-    // Vérifier plusieurs sources d'images
     if (savedImagesStr) {
       try {
         const savedImages = JSON.parse(savedImagesStr);
@@ -44,26 +44,12 @@ export const processStoredImages = (job: Job): Job => {
       } catch (e) {
         console.error(`Erreur de parsing pour ${savedImagesKey}:`, e);
       }
-    } else if (latestImagesStr && !hasValidImages) {
-      try {
-        const latestImages = JSON.parse(latestImagesStr);
-        if (Array.isArray(latestImages) && latestImages.length > 0) {
-          console.log(`Images récupérées depuis 'latest' pour l'offre ${job.id}`);
-          job.images = latestImages.filter(img => isBase64Image(img) || isValidHttpUrl(img));
-          if (!job.image && job.images.length > 0) {
-            job.image = job.images[0];
-          }
-        }
-      } catch (e) {
-        console.error(`Erreur de parsing pour job_images_latest:`, e);
-      }
     }
     
-    // Récupérer l'image principale si nécessaire
+    // Récupérer l'image principale si nécessaire, uniquement depuis la clé spécifique à ce job
     if (!job.image || !isValidHttpUrl(job.image)) {
       const featuredImageKey = `job_featured_image_${job.id}`;
       const featuredImage = localStorage.getItem(featuredImageKey);
-      const latestFeaturedImage = localStorage.getItem('job_featured_image_latest');
       
       if (featuredImage) {
         try {
@@ -76,18 +62,6 @@ export const processStoredImages = (job: Job): Job => {
           console.log(`Image principale récupérée pour l'offre ${job.id}:`, job.image);
         } catch (e) {
           console.error(`Erreur lors du traitement de l'image principale pour ${job.id}:`, e);
-        }
-      } else if (latestFeaturedImage && !hasValidMainImage) {
-        try {
-          // Essayer de nettoyer l'image
-          if (latestFeaturedImage.startsWith('"') && latestFeaturedImage.endsWith('"')) {
-            job.image = latestFeaturedImage.substring(1, latestFeaturedImage.length - 1);
-          } else {
-            job.image = latestFeaturedImage;
-          }
-          console.log(`Image principale récupérée depuis 'latest' pour l'offre ${job.id}:`, job.image);
-        } catch (e) {
-          console.error(`Erreur lors du traitement de l'image principale depuis 'latest' pour ${job.id}:`, e);
         }
       } else if (job.images && job.images.length > 0) {
         job.image = job.images[0];

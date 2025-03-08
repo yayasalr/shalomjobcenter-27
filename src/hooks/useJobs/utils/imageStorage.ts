@@ -29,6 +29,8 @@ export const saveJobImages = (jobId: string, images: string[]): void => {
       if (validImages[0]) {
         localStorage.setItem(`job_featured_image_${jobId}`, validImages[0]);
       }
+      
+      // Ne plus sauvegarder dans "latest" pour éviter les conflits entre offres
     }
   } catch (error) {
     console.error(`Erreur lors de la sauvegarde des images pour l'offre ${jobId}:`, error);
@@ -59,7 +61,7 @@ export const purgeAllJobImages = (): void => {
     const keysToRemove = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.includes('job_images_')) {
+      if (key && (key.includes('job_images_') || key.includes('job_featured_image_'))) {
         keysToRemove.push(key);
       }
     }
