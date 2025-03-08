@@ -18,50 +18,118 @@ export const useImageHandlers = ({
 }: UseImageHandlersParams) => {
   const { setItem, getItem } = useLocalStorage();
   
+  // Fonction pour compresser une image avant stockage
+  const compressImage = (base64Image: string, quality = 0.7): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      try {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          // Resize if needed
+          const maxWidth = 1000;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Failed to get canvas context'));
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedBase64);
+        };
+        
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = base64Image;
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+  
   // Fonction pour stocker les images dans localStorage avec conversion blob→base64
   const storeImagesInLocalStorage = async (key: string, imageUrl: string | string[]) => {
     try {
+      // Purger les anciennes entrées pour libérer de l'espace
+      purgeOldEntries();
+      
       const timestamp = Date.now();
       
       if (Array.isArray(imageUrl)) {
-        // Convertir chaque URL blob en base64
+        // Limiter à max 3 images pour éviter de dépasser le quota
+        const limitedImages = imageUrl.slice(0, 3);
+        
+        // Convertir chaque URL blob en base64 et compresser
         const base64Images = await Promise.all(
-          imageUrl.map(async (url) => {
-            if (url.startsWith('blob:')) {
-              return await convertBlobToBase64(url);
+          limitedImages.map(async (url) => {
+            try {
+              let base64 = url;
+              if (url.startsWith('blob:')) {
+                base64 = await convertBlobToBase64(url);
+              }
+              return await compressImage(base64, 0.6);
+            } catch (error) {
+              console.error("Erreur lors du traitement de l'image:", error);
+              return '';
             }
-            return url;
           })
         );
         
         // Filtrer les images vides ou invalides
         const validImages = base64Images.filter(img => img && img.length > 0);
         
-        // Stockage avec horodatage et multiples sauvegardes
-        const timestampedKey = `${key}_${timestamp}`;
-        setItem(timestampedKey, validImages);
-        
-        // Stocker le timestamp comme référence
-        setItem(`${key}_latest_timestamp`, timestamp.toString());
-        setItem(`${key}_latest`, validImages);
-        
-        console.log(`Images converties et stockées avec timestamp ${timestamp}:`, validImages.length);
+        if (validImages.length > 0) {
+          // Stocker uniquement les plus récentes
+          setItem(`${key}_latest`, validImages);
+          console.log(`${validImages.length} images converties et stockées`);
+        }
       } else {
         // Pour une seule image
-        let base64Image = imageUrl;
-        if (imageUrl.startsWith('blob:')) {
-          base64Image = await convertBlobToBase64(imageUrl);
+        try {
+          let base64Image = imageUrl;
+          if (imageUrl.startsWith('blob:')) {
+            base64Image = await convertBlobToBase64(imageUrl);
+          }
+          
+          // Compresser l'image
+          const compressedImage = await compressImage(base64Image, 0.7);
+          
+          // Stocker uniquement les plus récentes
+          setItem(`${key}_latest`, compressedImage);
+          console.log(`Image convertie et stockée`);
+        } catch (error) {
+          console.error("Erreur lors du traitement de l'image:", error);
         }
-        
-        const timestampedKey = `${key}_${timestamp}`;
-        setItem(timestampedKey, base64Image);
-        setItem(`${key}_latest_timestamp`, timestamp.toString());
-        setItem(`${key}_latest`, base64Image);
-        
-        console.log(`Image convertie et stockée avec timestamp ${timestamp}`);
       }
     } catch (error) {
       console.error('Erreur lors du stockage des images:', error);
+    }
+  };
+  
+  // Fonction pour supprimer les anciennes entrées du localStorage
+  const purgeOldEntries = () => {
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes('job_featured_image_') || key.includes('job_images_'))) {
+          // Ne supprimer que les anciennes entrées (pas les "latest")
+          if (!key.includes('_latest')) {
+            localStorage.removeItem(key);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors du nettoyage du localStorage:', error);
     }
   };
   
@@ -70,6 +138,13 @@ export const useImageHandlers = ({
     setIsUploading(true);
     
     try {
+      // Vérifier la taille du fichier (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("L'image est trop volumineuse (max 2Mo)");
+        setIsUploading(false);
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         const baseUrl = reader.result as string;
@@ -103,13 +178,18 @@ export const useImageHandlers = ({
         handleImageUpload(file, async (url) => {
           setFeaturedImage(url);
           
-          // Stockage avec horodatage précis
-          const timestamp = Date.now();
-          setItem(`job_featured_image_${timestamp}`, url);
-          setItem('job_featured_image_latest_timestamp', timestamp.toString());
-          setItem('job_featured_image_latest', url);
-          
-          console.log(`Image principale téléchargée et stockée`);
+          // Stocker dans localStorage compressé
+          try {
+            let base64Image = url;
+            if (url.startsWith('blob:')) {
+              base64Image = await convertBlobToBase64(url);
+            }
+            const compressedImage = await compressImage(base64Image, 0.7);
+            setItem('job_featured_image_latest', compressedImage);
+            console.log(`Image principale téléchargée et stockée`);
+          } catch (error) {
+            console.error("Erreur lors du traitement de l'image:", error);
+          }
         });
       }
     };
@@ -119,6 +199,12 @@ export const useImageHandlers = ({
 
   // Fonction pour gérer les images additionnelles
   const handleAddImage = (isHousingOffer: boolean) => {
+    // Limiter le nombre d'images à 3 pour éviter les problèmes de quota
+    if (images.length >= 3) {
+      toast.warning("Maximum 3 images autorisées pour éviter les problèmes de stockage");
+      return;
+    }
+    
     // Document Input pour téléchargement d'image
     const input = document.createElement('input');
     input.type = 'file';
@@ -132,13 +218,8 @@ export const useImageHandlers = ({
           const updatedImages = [...images, url];
           setImages(updatedImages);
           
-          // Stockage avec horodatage précis
-          const timestamp = Date.now();
-          setItem(`job_images_${timestamp}`, updatedImages);
-          setItem('job_images_latest_timestamp', timestamp.toString());
-          setItem('job_images_latest', updatedImages);
-          
-          console.log(`Images additionnelles mises à jour et stockées: ${updatedImages.length}`);
+          // Stocker dans localStorage, version compressée
+          await storeImagesInLocalStorage('job_images', updatedImages);
         });
       }
     };
@@ -151,13 +232,8 @@ export const useImageHandlers = ({
     newImages.splice(index, 1);
     setImages(newImages);
     
-    // Stockage avec horodatage précis après suppression
-    const timestamp = Date.now();
-    setItem(`job_images_${timestamp}`, newImages);
-    setItem('job_images_latest_timestamp', timestamp.toString());
-    setItem('job_images_latest', newImages);
-    
-    console.log(`Images mise à jour après suppression: ${newImages.length}`);
+    // Mettre à jour localStorage
+    storeImagesInLocalStorage('job_images', newImages);
     
     toast.success("Image supprimée");
   };
@@ -165,10 +241,7 @@ export const useImageHandlers = ({
   const handleClearAllImages = () => {
     setImages([]);
     
-    // Nettoyer le localStorage
-    const timestamp = Date.now();
-    setItem(`job_images_${timestamp}`, []);
-    setItem('job_images_latest_timestamp', timestamp.toString());
+    // Nettoyer le localStorage pour cette entrée spécifique
     setItem('job_images_latest', []);
     
     toast.success("Toutes les images ont été supprimées");

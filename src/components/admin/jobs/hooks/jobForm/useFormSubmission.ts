@@ -80,6 +80,50 @@ export const useFormSubmission = ({
     return errors;
   };
 
+  // Function to compress a base64 image to reduce size
+  const compressImage = (base64Image: string, quality = 0.7): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Create an image element to load the base64 data
+        const img = new Image();
+        img.onload = () => {
+          // Create canvas and context
+          const canvas = document.createElement('canvas');
+          // Resize if the image is too large (max 1200px width)
+          const maxWidth = 1200;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw and compress
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Failed to get canvas context'));
+            return;
+          }
+          
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Get compressed base64
+          const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedBase64);
+        };
+        
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = base64Image;
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -93,35 +137,47 @@ export const useFormSubmission = ({
     setIsSubmitting(true);
     
     try {
-      // Process featured image (convert blob to base64)
-      let processedFeaturedImage = featuredImage;
-      if (featuredImage && featuredImage.startsWith('blob:')) {
+      // Process featured image (convert blob to base64 and compress)
+      let processedFeaturedImage = '';
+      if (featuredImage) {
         try {
-          processedFeaturedImage = await convertBlobToBase64(featuredImage);
-          console.log("Image principale convertie de blob vers base64");
+          let base64Image = featuredImage;
+          if (featuredImage.startsWith('blob:')) {
+            base64Image = await convertBlobToBase64(featuredImage);
+          }
+          
+          // Compress the image to reduce storage size
+          processedFeaturedImage = await compressImage(base64Image, 0.6);
+          console.log("Image principale convertie et compressée");
         } catch (error) {
           console.error("Erreur de conversion de l'image principale:", error);
-          processedFeaturedImage = ""; // Use empty string if conversion fails
         }
       }
       
-      // Process all images (convert blobs to base64)
+      // Process all images (convert blobs to base64 and compress)
       let processedImages: string[] = [];
       if (images && images.length > 0) {
-        const processPromises = images.map(async (img) => {
-          if (img.startsWith('blob:')) {
-            try {
-              return await convertBlobToBase64(img);
-            } catch (error) {
-              console.error("Erreur de conversion d'image:", error);
-              return ''; // Skip this image
+        // Limit to max 3 images to prevent localStorage quota issues
+        const limitedImages = images.slice(0, 3);
+        console.log(`Limitation à ${limitedImages.length} images pour éviter les problèmes de quota`);
+        
+        const processPromises = limitedImages.map(async (img) => {
+          try {
+            let base64Img = img;
+            if (img.startsWith('blob:')) {
+              base64Img = await convertBlobToBase64(img);
             }
+            
+            // Compress the image
+            return await compressImage(base64Img, 0.5);
+          } catch (error) {
+            console.error("Erreur de conversion d'image:", error);
+            return ''; // Skip this image
           }
-          return img;
         });
         
         processedImages = (await Promise.all(processPromises)).filter(img => img !== '');
-        console.log(`${processedImages.length} images traitées pour soumission`);
+        console.log(`${processedImages.length} images traitées et compressées pour soumission`);
       }
       
       const formData: any = {
@@ -133,7 +189,7 @@ export const useFormSubmission = ({
         location,
         salary: {
           amount: salary,
-          currency: "EUR"
+          currency: "FCFA"
         },
         positions,
         publishDate: new Date().toISOString().split('T')[0],
@@ -159,14 +215,8 @@ export const useFormSubmission = ({
         }
       }
 
-      // Sauvegarder dans localStorage pour référence future
-      if (processedFeaturedImage) {
-        localStorage.setItem('job_featured_image_latest', processedFeaturedImage);
-      }
-      
-      if (processedImages && processedImages.length > 0) {
-        localStorage.setItem('job_images_latest', JSON.stringify(processedImages));
-      }
+      // Au lieu de sauvegarder directement dans le localStorage, nous le ferons 
+      // dans le service des jobs pour éviter la duplication de code
       
       console.log("Données finales soumises:", formData);
       await onSave(formData);
