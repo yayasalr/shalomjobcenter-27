@@ -101,7 +101,10 @@ export const useLoginMutation = (
             localStorage.setItem('login_logs', JSON.stringify(loginLogs));
             
             toast.success("Connexion réussie!");
+            
+            // Redirection corrigée: utiliser /admin au lieu de /admin/dashboard
             navigate(newUser.isAdmin ? "/admin" : "/");
+            
             resolve(newUser);
             setIsPending(false);
           }, 500);

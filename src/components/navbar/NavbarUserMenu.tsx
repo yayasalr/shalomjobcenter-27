@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -86,7 +87,7 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
         <DropdownMenuSeparator />
         {user.isAdmin && (
           <DropdownMenuItem asChild>
-            <Link to="/admin/dashboard" className="cursor-pointer">
+            <Link to="/admin" className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               <span>Espace Admin</span>
             </Link>
