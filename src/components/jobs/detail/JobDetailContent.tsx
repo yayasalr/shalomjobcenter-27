@@ -27,10 +27,15 @@ export const JobDetailContent: React.FC<JobDetailContentProps> = ({ job, isLoadi
           <JobGallery job={job} className="w-full" />
           
           {/* Description */}
-          <JobDescription job={job} />
+          <JobDescription description={job.description} />
           
           {/* Requirements */}
-          <JobRequirements job={job} />
+          <JobRequirements 
+            isHousingOffer={job.isHousingOffer || false}
+            requirements={job.requirements}
+            bedrooms={job.bedrooms}
+            bathrooms={job.bathrooms}
+          />
         </div>
         
         {/* Sidebar */}
