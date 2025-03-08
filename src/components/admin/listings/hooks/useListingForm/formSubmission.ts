@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { validateListingForm } from "../../utils/formValidation";
 import { ValidationErrors } from "../../form/BasicInfoSection";
@@ -83,32 +82,33 @@ export const useFormSubmission = ({
         }
       }
 
-      // Gérer les images
+      // Gérer les images avec plus de précaution
       if (imagePreviews && imagePreviews.length > 0) {
-        console.log("UTILISATION DES IMAGES ACTUELLES POUR LA SOUMISSION:", imagePreviews);
+        console.log("Images à sauvegarder:", imagePreviews);
         
-        // Assurer que toutes les images ont des URL valides
-        const validImagePreviews = imagePreviews.filter(img => img && typeof img === 'string' && img.trim() !== '');
+        // S'assurer que toutes les images sont valides
+        const validImages = imagePreviews.filter(img => 
+          img && 
+          typeof img === 'string' && 
+          img.trim() !== '' &&
+          (img.startsWith('data:image/') || img.startsWith('blob:') || img.startsWith('http'))
+        );
         
-        // Utiliser directement les images prévisualisées
-        formData.images = [...validImagePreviews];
-        
-        // Définir la première comme image principale
-        if (validImagePreviews[0]) {
-          formData.image = validImagePreviews[0];
-          console.log("Image principale définie:", formData.image);
+        if (validImages.length > 0) {
+          formData.images = validImages;
+          formData.image = validImages[0]; // Image principale
+          console.log("Images validées pour la sauvegarde:", validImages);
+        } else {
+          console.warn("Aucune image valide trouvée dans les previews");
         }
-      } else if (selectedListing && selectedListing.images && selectedListing.images.length > 0) {
-        // Si pas de nouvelles images mais des images existantes, les conserver
+      } else if (selectedListing && selectedListing.images && selectedListing.images.length > 0 && isEditing) {
+        // Conserver les images existantes en mode édition si aucune nouvelle image
         formData.images = [...selectedListing.images];
         formData.image = selectedListing.image || selectedListing.images[0];
-      } else {
-        // Aucune image disponible
-        formData.images = [];
-        formData.image = '';
+        console.log("Conservation des images existantes:", formData.images);
       }
       
-      console.log("Données finales du formulaire pour soumission:", formData);
+      console.log("Données finales du formulaire:", formData);
       await onSave(formData);
       
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");

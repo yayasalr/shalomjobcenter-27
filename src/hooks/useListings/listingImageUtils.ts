@@ -1,4 +1,3 @@
-
 import { Listing } from "@/types/listing";
 
 /**
@@ -13,8 +12,12 @@ export const processStoredImages = (listing: Listing): Listing => {
       const savedImages = JSON.parse(savedImagesStr);
       if (Array.isArray(savedImages) && savedImages.length > 0) {
         console.log(`Images récupérées depuis localStorage pour le listing ${listing.id}:`, savedImages);
-        listing.images = savedImages;
-        if (savedImages.length > 0 && (!listing.image || listing.image.trim() === '')) {
+        // Ne pas écraser les images existantes si elles sont déjà présentes
+        if (!listing.images || listing.images.length === 0) {
+          listing.images = savedImages;
+        }
+        // Ne mettre à jour l'image principale que si elle n'existe pas
+        if (!listing.image || listing.image.trim() === '') {
           listing.image = savedImages[0];
         }
       }
@@ -27,13 +30,24 @@ export const processStoredImages = (listing: Listing): Listing => {
 };
 
 /**
- * Save listing images to localStorage
+ * Save listing images to localStorage with timestamp to avoid collisions
  */
 export const saveListingImages = (listingId: string, images: string[]): void => {
   if (!listingId || !images || images.length === 0) return;
   
   try {
-    localStorage.setItem(`listing_images_${listingId}`, JSON.stringify(images));
+    const key = `listing_images_${listingId}`;
+    const timestamp = Date.now();
+    const backupKey = `${key}_backup_${timestamp}`;
+    
+    // Sauvegarder une copie de sauvegarde d'abord
+    const existingImages = localStorage.getItem(key);
+    if (existingImages) {
+      localStorage.setItem(backupKey, existingImages);
+    }
+    
+    // Sauvegarder les nouvelles images
+    localStorage.setItem(key, JSON.stringify(images));
     console.log(`Images sauvegardées pour le listing ${listingId}:`, images);
   } catch (error) {
     console.error(`Erreur lors de la sauvegarde des images pour le listing ${listingId}:`, error);
@@ -47,7 +61,17 @@ export const clearListingImages = (listingId: string): void => {
   if (!listingId) return;
   
   try {
-    localStorage.removeItem(`listing_images_${listingId}`);
+    const timestamp = Date.now();
+    const key = `listing_images_${listingId}`;
+    const backupKey = `${key}_backup_${timestamp}`;
+    
+    // Créer une sauvegarde avant suppression
+    const existingImages = localStorage.getItem(key);
+    if (existingImages) {
+      localStorage.setItem(backupKey, existingImages);
+    }
+    
+    localStorage.removeItem(key);
     console.log(`Images supprimées pour le listing ${listingId}`);
   } catch (error) {
     console.error(`Erreur lors de la suppression des images pour le listing ${listingId}:`, error);
