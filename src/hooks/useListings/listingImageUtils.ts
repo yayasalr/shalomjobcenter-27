@@ -1,8 +1,6 @@
+
 import { Listing } from "@/types/listing";
 
-/**
- * Process stored images for a listing from localStorage
- */
 export const processStoredImages = (listing: Listing): Listing => {
   if (!listing.id) return listing;
   
@@ -11,7 +9,7 @@ export const processStoredImages = (listing: Listing): Listing => {
     if (savedImagesStr) {
       const savedImages = JSON.parse(savedImagesStr);
       if (Array.isArray(savedImages) && savedImages.length > 0) {
-        console.log(`Images récupérées depuis localStorage pour le listing ${listing.id}:`, savedImages);
+        console.log(`Images récupérées depuis localStorage pour le listing ${listing.id}`);
         // Ne pas écraser les images existantes si elles sont déjà présentes
         if (!listing.images || listing.images.length === 0) {
           listing.images = savedImages;
@@ -29,9 +27,6 @@ export const processStoredImages = (listing: Listing): Listing => {
   return listing;
 };
 
-/**
- * Save listing images to localStorage with timestamp to avoid collisions
- */
 export const saveListingImages = (listingId: string, images: string[]): void => {
   if (!listingId || !images || images.length === 0) return;
   
@@ -46,9 +41,19 @@ export const saveListingImages = (listingId: string, images: string[]): void => 
       localStorage.setItem(backupKey, existingImages);
     }
     
-    // Sauvegarder les nouvelles images
-    localStorage.setItem(key, JSON.stringify(images));
-    console.log(`Images sauvegardées pour le listing ${listingId}:`, images);
+    // Filtrer les images valides (base64 ou http/https)
+    const validImages = images.filter(img => 
+      img && 
+      typeof img === 'string' && 
+      (img.startsWith('data:image/') || 
+       img.startsWith('http') || 
+       img.startsWith('https'))
+    );
+    
+    if (validImages.length > 0) {
+      localStorage.setItem(key, JSON.stringify(validImages));
+      console.log(`Images valides sauvegardées pour le listing ${listingId}:`, validImages.length);
+    }
   } catch (error) {
     console.error(`Erreur lors de la sauvegarde des images pour le listing ${listingId}:`, error);
   }

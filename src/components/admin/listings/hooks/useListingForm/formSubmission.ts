@@ -47,6 +47,23 @@ export const useFormSubmission = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const convertBlobToBase64 = (blobUrl: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        const reader = new FileReader();
+        reader.onloadend = function() {
+          resolve(reader.result as string);
+        };
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.onerror = reject;
+      xhr.open('GET', blobUrl);
+      xhr.responseType = 'blob';
+      xhr.send();
+    });
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     
@@ -69,8 +86,6 @@ export const useFormSubmission = ({
       // Si nous sommes en mode édition, conserver l'ID et certaines propriétés
       if (selectedListing && isEditing) {
         formData.id = selectedListing.id;
-        
-        // Conserver les propriétés importantes du listing existant
         if (selectedListing.rating !== undefined) {
           formData.rating = selectedListing.rating;
         }
@@ -82,33 +97,35 @@ export const useFormSubmission = ({
         }
       }
 
-      // Gérer les images avec plus de précaution
-      if (imagePreviews && imagePreviews.length > 0) {
-        console.log("Images à sauvegarder:", imagePreviews);
-        
-        // S'assurer que toutes les images sont valides
-        const validImages = imagePreviews.filter(img => 
-          img && 
-          typeof img === 'string' && 
-          img.trim() !== '' &&
-          (img.startsWith('data:image/') || img.startsWith('blob:') || img.startsWith('http'))
-        );
-        
-        if (validImages.length > 0) {
-          formData.images = validImages;
-          formData.image = validImages[0]; // Image principale
-          console.log("Images validées pour la sauvegarde:", validImages);
-        } else {
-          console.warn("Aucune image valide trouvée dans les previews");
-        }
+      // Convertir toutes les images blob en base64
+      const processedImages = await Promise.all(
+        imagePreviews
+          .filter(img => img && typeof img === 'string')
+          .map(async (img) => {
+            if (img.startsWith('blob:')) {
+              try {
+                return await convertBlobToBase64(img);
+              } catch (error) {
+                console.error('Erreur de conversion blob vers base64:', error);
+                return null;
+              }
+            }
+            return img;
+          })
+      );
+
+      const validImages = processedImages.filter(img => img !== null) as string[];
+
+      if (validImages.length > 0) {
+        console.log("Images traitées et validées:", validImages.length);
+        formData.images = validImages;
+        formData.image = validImages[0];
       } else if (selectedListing && selectedListing.images && selectedListing.images.length > 0 && isEditing) {
-        // Conserver les images existantes en mode édition si aucune nouvelle image
         formData.images = [...selectedListing.images];
         formData.image = selectedListing.image || selectedListing.images[0];
-        console.log("Conservation des images existantes:", formData.images);
       }
-      
-      console.log("Données finales du formulaire:", formData);
+
+      console.log("Données finales du formulaire avec images converties:", formData);
       await onSave(formData);
       
       toast.success(isEditing ? "Logement mis à jour avec succès" : "Logement ajouté avec succès");
