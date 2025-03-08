@@ -68,21 +68,35 @@ export const useFormSubmission = ({
 
       if (selectedListing && isEditing) {
         formData.id = selectedListing.id;
-        formData.rating = selectedListing.rating;
-        formData.dates = selectedListing.dates;
-        formData.host = selectedListing.host;
         
-        // Conserver les images existantes si aucune nouvelle image n'est téléchargée
-        if (images.length === 0 && !imagePreviews.length) {
-          formData.image = selectedListing.image;
-          formData.images = selectedListing.images;
+        // Conserver les propriétés importantes du listing existant
+        if (selectedListing.rating !== undefined) {
+          formData.rating = selectedListing.rating;
+        }
+        if (selectedListing.dates) {
+          formData.dates = selectedListing.dates;
+        }
+        if (selectedListing.host) {
+          formData.host = selectedListing.host;
+        }
+        
+        // Ne pas écraser les images si aucune nouvelle image n'est téléchargée
+        if (images.length === 0 && imagePreviews.length === 0) {
+          if (selectedListing.image) {
+            formData.image = selectedListing.image;
+          }
+          if (selectedListing.images && selectedListing.images.length > 0) {
+            formData.images = selectedListing.images;
+          }
         }
       }
 
       // Si nous avons de nouvelles images téléchargées, utiliser leurs URLs
       if (imagePreviews.length > 0) {
         console.log("Nouvelles images à utiliser:", imagePreviews);
+        // Utiliser la première image comme image principale
         formData.image = imagePreviews[0];
+        // Conserver toutes les images dans le tableau images
         formData.images = imagePreviews;
       }
 

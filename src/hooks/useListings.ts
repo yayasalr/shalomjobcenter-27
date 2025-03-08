@@ -35,7 +35,7 @@ export const useListings = () => {
       // Créer un ID unique pour le nouveau listing
       const id = Math.random().toString(36).substr(2, 9);
       
-      // Conserver les images telles quelles sans normalisation agressive
+      // Normaliser les données du listing sans modifier les images
       const listing: Listing = {
         ...newListing,
         id,
@@ -44,8 +44,8 @@ export const useListings = () => {
         host: newListing.host || { name: "Hôte", image: "/placeholder.svg" }
       };
       
-      // Assurer que l'image principale est définie
-      if (listing.images && listing.images.length > 0 && !listing.image) {
+      // S'assurer que l'image principale est définie si nous avons des images
+      if (!listing.image && listing.images && listing.images.length > 0) {
         listing.image = listing.images[0];
       }
       
@@ -72,16 +72,22 @@ export const useListings = () => {
       const index = currentListings.findIndex(listing => listing.id === updatedListing.id);
       
       if (index !== -1) {
-        // Préserver les images sans normalisation agressive
-        console.log("Mise à jour du listing:", updatedListing);
+        // Préserver les données existantes et mettre à jour avec les nouvelles données
+        const existingListing = currentListings[index];
+        
+        // Mise à jour du listing avec conservation des propriétés importantes
         currentListings[index] = {
           ...updatedListing,
           // Garantir que tous les champs requis existent
-          rating: updatedListing.rating || currentListings[index].rating || 0,
-          host: updatedListing.host || currentListings[index].host || { name: "Hôte", image: "/placeholder.svg" }
+          rating: updatedListing.rating ?? existingListing.rating ?? 0,
+          host: updatedListing.host || existingListing.host || { name: "Hôte", image: "/placeholder.svg" },
+          // Conserver les images seulement si elles sont explicitement fournies
+          image: updatedListing.image || existingListing.image,
+          images: updatedListing.images || existingListing.images
         };
-        saveListings(currentListings);
+        
         console.log("Listing mis à jour:", currentListings[index]);
+        saveListings(currentListings);
         return currentListings[index];
       }
       return updatedListing;

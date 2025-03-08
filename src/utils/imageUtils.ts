@@ -17,34 +17,25 @@ const UNSPLASH_FALLBACKS = [
  */
 export const getValidImageUrl = (imageUrl: string, index: number = 0): string => {
   // Si pas d'URL, utiliser une image de secours
-  if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null') {
-    console.log("URL d'image manquante, utilisation d'une image de secours");
+  if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null' || imageUrl === '') {
     return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
   }
   
-  // Préserver les URLs blob pour les images fraîchement téléchargées
-  if (imageUrl.startsWith('blob:')) {
-    console.log("Préservation d'une URL blob:", imageUrl);
+  // IMPORTANT: Préserver les URLs blob et les URLs HTTP(S)
+  if (imageUrl.startsWith('blob:') || imageUrl.startsWith('http')) {
     return imageUrl;
   }
   
-  // URLs HTTP(S) sont valides
-  if (imageUrl.startsWith('http')) {
-    return imageUrl;
-  }
-  
-  // Chemins locaux valides
+  // Préserver les chemins locaux valides
   if (imageUrl.startsWith('/')) {
     if (imageUrl === '/placeholder.svg' || imageUrl.includes('lovable-uploads')) {
       return imageUrl;
     }
-    // Autres chemins locaux peuvent être invalides
-    console.log("Chemin local potentiellement invalide:", imageUrl);
   }
   
-  // Par défaut, utiliser une image de secours
-  console.log("Utilisation d'une image de secours pour:", imageUrl);
-  return UNSPLASH_FALLBACKS[index % UNSPLASH_FALLBACKS.length];
+  // Par défaut, utiliser l'URL fournie plutôt qu'une image de secours
+  // Cela permet de conserver les URLs qui pourraient être valides même si elles ne correspondent pas aux patterns ci-dessus
+  return imageUrl;
 };
 
 /**
@@ -55,15 +46,8 @@ export const normalizeImages = (images: string[] | undefined): string[] => {
     return [getRandomFallbackImage()];
   }
   
-  // Vérifier si le tableau contient des URLs blob
-  const hasValidImages = images.some(img => img.startsWith('blob:') || img.startsWith('http'));
-  
-  // Si des URLs valides existent, les utiliser, sinon utiliser les fallbacks
-  if (hasValidImages) {
-    return images;
-  }
-  
-  return images.map((img, index) => getValidImageUrl(img, index));
+  // Conserver toutes les images du tableau sans remplacement automatique
+  return images;
 };
 
 // Re-export the image utility functions from the new location
@@ -77,8 +61,8 @@ export const getHostAvatar = (avatarUrl: string | undefined): string => {
     return "/placeholder.svg";
   }
   
-  // Préserver les URLs blob
-  if (avatarUrl.startsWith('blob:')) {
+  // Préserver les URLs blob et HTTP
+  if (avatarUrl.startsWith('blob:') || avatarUrl.startsWith('http')) {
     return avatarUrl;
   }
   
