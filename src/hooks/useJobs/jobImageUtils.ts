@@ -1,4 +1,3 @@
-
 import { Job } from "@/types/job";
 
 // Vérifie si une URL est au format base64
@@ -18,6 +17,31 @@ const isValidHttpUrl = (url: string): boolean => {
 // Vérifie si une URL est au format blob
 const isBlobUrl = (url: string): boolean => {
   return url && typeof url === 'string' && url.startsWith('blob:');
+};
+
+// Convert blob URL to base64 - NEW FUNCTION
+export const convertBlobToBase64 = async (blobUrl: string): Promise<string> => {
+  if (!blobUrl || !isBlobUrl(blobUrl)) {
+    return blobUrl; // Return as is if not a blob URL
+  }
+  
+  try {
+    const response = await fetch(blobUrl);
+    const blob = await response.blob();
+    
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => {
+        console.error('Error converting blob to base64');
+        reject(new Error('Failed to convert blob to base64'));
+      };
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error('Error fetching blob URL:', error);
+    return "https://source.unsplash.com/random/800x600/?work"; // Fallback image
+  }
 };
 
 export const processStoredImages = (job: Job): Job => {

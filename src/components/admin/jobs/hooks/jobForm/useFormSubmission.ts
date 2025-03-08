@@ -1,7 +1,9 @@
+
 import { useState } from 'react';
 import { toast } from "sonner";
 import { JobFormState, JobFormStateWithSetters, UseJobFormProps } from './types';
 import { JobDomain, JobContract } from '@/types/job';
+import { convertBlobToBase64 } from '@/hooks/useJobs/jobImageUtils';
 
 export interface UseFormSubmissionParams extends JobFormStateWithSetters {
   onSave: UseJobFormProps['onSave'];
@@ -90,60 +92,83 @@ export const useFormSubmission = ({
 
     setIsSubmitting(true);
     
-    // Nettoyer les images blob (qui ne persisteront pas)
-    const cleanBlobs = (url?: string) => {
-      if (!url) return '';
-      return url.startsWith('blob:') ? '' : url;
-    };
-    
-    // Nettoyer les tableaux d'images
-    const cleanBlobArray = (urls: string[]) => {
-      return urls.filter(url => !url.startsWith('blob:'));
-    };
-    
-    const formData: any = {
-      title,
-      domain,
-      description,
-      requirements,
-      contract,
-      location,
-      salary: {
-        amount: salary,
-        currency: "EUR"
-      },
-      positions,
-      publishDate: new Date().toISOString().split('T')[0],
-      deadline,
-      status: isPublished ? "active" : "draft"
-    };
-
-    // Add featured image if available (clean blob URLs)
-    if (featuredImage) {
-      formData.image = cleanBlobs(featuredImage);
-    }
-
-    // Si c'est une offre de logement, ajoutez les propriétés spécifiques
-    if (isHousingOffer) {
-      formData.isHousingOffer = true;
-      formData.price = price;
-      formData.bedrooms = bedrooms;
-      formData.bathrooms = bathrooms;
-      
-      // Clean blob URLs
-      formData.images = cleanBlobArray(images);
-    }
-
     try {
-      // Sauvegarder dans localStorage pour référence future
-      if (featuredImage) {
-        localStorage.setItem('job_featured_image_latest', featuredImage);
+      // Process featured image (convert blob to base64)
+      let processedFeaturedImage = featuredImage;
+      if (featuredImage && featuredImage.startsWith('blob:')) {
+        try {
+          processedFeaturedImage = await convertBlobToBase64(featuredImage);
+          console.log("Image principale convertie de blob vers base64");
+        } catch (error) {
+          console.error("Erreur de conversion de l'image principale:", error);
+          processedFeaturedImage = ""; // Use empty string if conversion fails
+        }
       }
       
+      // Process all images (convert blobs to base64)
+      let processedImages: string[] = [];
       if (images && images.length > 0) {
-        localStorage.setItem('job_images_latest', JSON.stringify(images));
+        const processPromises = images.map(async (img) => {
+          if (img.startsWith('blob:')) {
+            try {
+              return await convertBlobToBase64(img);
+            } catch (error) {
+              console.error("Erreur de conversion d'image:", error);
+              return ''; // Skip this image
+            }
+          }
+          return img;
+        });
+        
+        processedImages = (await Promise.all(processPromises)).filter(img => img !== '');
+        console.log(`${processedImages.length} images traitées pour soumission`);
       }
       
+      const formData: any = {
+        title,
+        domain,
+        description,
+        requirements,
+        contract,
+        location,
+        salary: {
+          amount: salary,
+          currency: "EUR"
+        },
+        positions,
+        publishDate: new Date().toISOString().split('T')[0],
+        deadline,
+        status: isPublished ? "active" : "draft"
+      };
+
+      // Add featured image if available
+      if (processedFeaturedImage) {
+        formData.image = processedFeaturedImage;
+      }
+
+      // Si c'est une offre de logement, ajoutez les propriétés spécifiques
+      if (isHousingOffer) {
+        formData.isHousingOffer = true;
+        formData.price = price;
+        formData.bedrooms = bedrooms;
+        formData.bathrooms = bathrooms;
+        
+        // Add processed images
+        if (processedImages.length > 0) {
+          formData.images = processedImages;
+        }
+      }
+
+      // Sauvegarder dans localStorage pour référence future
+      if (processedFeaturedImage) {
+        localStorage.setItem('job_featured_image_latest', processedFeaturedImage);
+      }
+      
+      if (processedImages && processedImages.length > 0) {
+        localStorage.setItem('job_images_latest', JSON.stringify(processedImages));
+      }
+      
+      console.log("Données finales soumises:", formData);
       await onSave(formData);
       toast.success("Offre publiée avec succès");
       handleOpenChange(false);

@@ -1,6 +1,7 @@
 
 import { toast } from "sonner";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { convertBlobToBase64 } from "@/hooks/useJobs/jobImageUtils";
 
 export interface UseImageHandlersParams {
   images: string[];
@@ -17,30 +18,7 @@ export const useImageHandlers = ({
 }: UseImageHandlersParams) => {
   const { setItem, getItem } = useLocalStorage();
   
-  // Fonction pour convertir une URL blob en base64
-  const convertBlobToBase64 = async (blobUrl: string): Promise<string> => {
-    try {
-      // Si c'est déjà une URL http/https ou une donnée base64, la retourner telle quelle
-      if (!blobUrl.startsWith('blob:')) {
-        return blobUrl;
-      }
-      
-      const response = await fetch(blobUrl);
-      const blob = await response.blob();
-      
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    } catch (error) {
-      console.error('Erreur lors de la conversion blob vers base64:', error);
-      return blobUrl; // En cas d'erreur, retourner l'URL originale
-    }
-  };
-  
-  // Fonction améliorée pour garantir une persistance des images
+  // Fonction pour stocker les images dans localStorage avec conversion blob→base64
   const storeImagesInLocalStorage = async (key: string, imageUrl: string | string[]) => {
     try {
       const timestamp = Date.now();
@@ -48,29 +26,39 @@ export const useImageHandlers = ({
       if (Array.isArray(imageUrl)) {
         // Convertir chaque URL blob en base64
         const base64Images = await Promise.all(
-          imageUrl.map(url => convertBlobToBase64(url))
+          imageUrl.map(async (url) => {
+            if (url.startsWith('blob:')) {
+              return await convertBlobToBase64(url);
+            }
+            return url;
+          })
         );
+        
+        // Filtrer les images vides ou invalides
+        const validImages = base64Images.filter(img => img && img.length > 0);
         
         // Stockage avec horodatage et multiples sauvegardes
         const timestampedKey = `${key}_${timestamp}`;
-        setItem(timestampedKey, base64Images);
+        setItem(timestampedKey, validImages);
         
         // Stocker le timestamp comme référence
         setItem(`${key}_latest_timestamp`, timestamp.toString());
-        setItem(`${key}_latest`, base64Images);
+        setItem(`${key}_latest`, validImages);
         
-        console.log(`Images converties et stockées avec timestamp ${timestamp}:`, base64Images);
+        console.log(`Images converties et stockées avec timestamp ${timestamp}:`, validImages.length);
       } else {
         // Pour une seule image
-        const base64Image = await convertBlobToBase64(imageUrl);
+        let base64Image = imageUrl;
+        if (imageUrl.startsWith('blob:')) {
+          base64Image = await convertBlobToBase64(imageUrl);
+        }
+        
         const timestampedKey = `${key}_${timestamp}`;
-        const imageArray = [base64Image];
-        setItem(timestampedKey, imageArray);
+        setItem(timestampedKey, base64Image);
         setItem(`${key}_latest_timestamp`, timestamp.toString());
-        setItem(`${key}_single_${timestamp}`, base64Image);
         setItem(`${key}_latest`, base64Image);
         
-        console.log(`Image convertie et stockée avec timestamp ${timestamp}:`, base64Image);
+        console.log(`Image convertie et stockée avec timestamp ${timestamp}`);
       }
     } catch (error) {
       console.error('Erreur lors du stockage des images:', error);
@@ -83,7 +71,7 @@ export const useImageHandlers = ({
     
     try {
       const reader = new FileReader();
-      reader.onloadend = async () => {
+      reader.onloadend = () => {
         const baseUrl = reader.result as string;
         callback(baseUrl);
         setIsUploading(false);
@@ -94,38 +82,6 @@ export const useImageHandlers = ({
         toast.error("Erreur lors du téléchargement de l'image");
       };
       reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Erreur lors du téléchargement de l\'image:', error);
-      setIsUploading(false);
-      toast.error("Erreur lors du téléchargement de l'image");
-    }
-  };
-
-  // Simuler téléchargement d'image avec URLs persistantes
-  const simulateImageUpload = async (callback: (url: string) => void, isHousingOffer: boolean) => {
-    setIsUploading(true);
-    
-    try {
-      // Générer image aléatoire d'Unsplash ou utiliser une image locale
-      const timestamp = Date.now();
-      const randomId = Math.floor(Math.random() * 10000);
-      
-      // Générer URL d'image aléatoire cohérente
-      const category = isHousingOffer ? 'apartment,house' : 'office,work';
-      const imageUrl = `https://source.unsplash.com/random/800x600/?${category}&sig=${timestamp}-${randomId}`;
-      
-      // Simuler délai de téléchargement
-      setTimeout(async () => {
-        // Sauvegarde directement en URL http, pas besoin de conversion
-        callback(imageUrl);
-        setIsUploading(false);
-        
-        // Persister dans localStorage
-        const storageKey = isHousingOffer ? 'job_housing_images' : 'job_images';
-        await storeImagesInLocalStorage(storageKey, imageUrl);
-        
-        console.log(`Image téléchargée et stockée comme URL permanente: ${imageUrl}`);
-      }, 1500);
     } catch (error) {
       console.error('Erreur lors du téléchargement de l\'image:', error);
       setIsUploading(false);
@@ -153,7 +109,7 @@ export const useImageHandlers = ({
           setItem('job_featured_image_latest_timestamp', timestamp.toString());
           setItem('job_featured_image_latest', url);
           
-          console.log(`Image principale téléchargée et stockée: ${url}`);
+          console.log(`Image principale téléchargée et stockée`);
         });
       }
     };
@@ -182,7 +138,7 @@ export const useImageHandlers = ({
           setItem('job_images_latest_timestamp', timestamp.toString());
           setItem('job_images_latest', updatedImages);
           
-          console.log(`Images additionnelles mises à jour et stockées: ${JSON.stringify(updatedImages)}`);
+          console.log(`Images additionnelles mises à jour et stockées: ${updatedImages.length}`);
         });
       }
     };
@@ -201,7 +157,7 @@ export const useImageHandlers = ({
     setItem('job_images_latest_timestamp', timestamp.toString());
     setItem('job_images_latest', newImages);
     
-    console.log(`Images mise à jour après suppression: ${JSON.stringify(newImages)}`);
+    console.log(`Images mise à jour après suppression: ${newImages.length}`);
     
     toast.success("Image supprimée");
   };
