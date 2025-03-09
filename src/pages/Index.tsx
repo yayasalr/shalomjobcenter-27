@@ -87,7 +87,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white w-screen p-0 m-0">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
       {!searchTerm && <HeroSection />}
@@ -100,30 +100,32 @@ const Index = () => {
         </div>
       </ScrollAnimation>
       
-      <div className="w-screen p-0 m-0">
-        <div className="content-container py-10 p-0 m-0">
+      <div className="w-full">
+        <div className="container mx-auto py-10">
           {!searchTerm && <FeaturesSection />}
         </div>
       </div>
       
-      <div className="pt-4 w-screen p-0 m-0">
+      <div className="pt-4 w-full">
         <ScrollAnimation direction="up" duration={0.5}>
-          <div className="content-container p-0 m-0">
+          <div className="container mx-auto">
             <CategoryFiltersSimplified />
           </div>
         </ScrollAnimation>
         
-        <div className="py-4 w-screen p-0 m-0">
+        <div className="py-4 w-full">
           <ScrollAnimation direction="right" duration={0.5}>
-            <SearchBar 
-              searchTerm={searchTerm} 
-              setSearchTerm={setSearchTerm} 
-              primaryColor={settings.primaryColor} 
-            />
+            <div className="container mx-auto">
+              <SearchBar 
+                searchTerm={searchTerm} 
+                setSearchTerm={setSearchTerm} 
+                primaryColor={settings.primaryColor} 
+              />
+            </div>
           </ScrollAnimation>
 
           <ScrollAnimation direction="left" duration={0.5}>
-            <div className="content-container mt-4 mb-6 p-0 m-0">
+            <div className="container mx-auto mt-4 mb-6">
               <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
                 {searchTerm 
                   ? `Résultats pour "${searchTerm}"` 
@@ -151,7 +153,9 @@ const Index = () => {
           
           {!searchTerm && (
             <ScrollAnimation direction="right" duration={0.7} delay={0.3}>
-              <PopularNeighborhoods setSearchTerm={setSearchTerm} />
+              <div className="container mx-auto">
+                <PopularNeighborhoods setSearchTerm={setSearchTerm} />
+              </div>
             </ScrollAnimation>
           )}
           

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import useLocalStorage from '@/hooks/useLocalStorage';
-import { useSiteSettings } from '@/hooks/settings';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { toast } from 'sonner';
 
 export interface UserPreferences {
@@ -22,7 +22,7 @@ export const usePreferences = () => {
   const { updateSettings } = useSiteSettings();
   
   const [preferences, setPreferences] = useState<UserPreferences>({
-    accentColor: getItem('user_accent_color', 'purple'),
+    accentColor: getItem('user_accent_color', '#FF385C'),
     layout: getItem('user_layout', 'default'),
     notifications: getItem('user_notification_preferences', {
       email: true,
@@ -49,7 +49,7 @@ export const usePreferences = () => {
     
     // Update settings in context if needed
     updateSettings({ 
-      primaryColor: document.documentElement.style.getPropertyValue('--accent-color') || '#8B5CF6',
+      primaryColor: preferences.accentColor || '#FF385C',
       language: 'fr' // Toujours définir sur "fr"
     });
     

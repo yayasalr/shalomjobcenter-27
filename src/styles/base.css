@@ -54,6 +54,12 @@
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease-in-out;
     direction: ltr; /* Force left-to-right text direction */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    font-family: sans-serif;
   }
   
   /* Message content should always display left-to-right */
@@ -117,5 +123,27 @@
     border: 1px solid #e2e8f0 !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
     z-index: 50 !important;
+  }
+
+  /* Reset styles for #root */
+  #root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  /* Global container */
+  .content-container {
+    width: 90%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* Fix for elements with fixed position */
+  .fixed {
+    position: fixed;
+    z-index: 50;
   }
 }
