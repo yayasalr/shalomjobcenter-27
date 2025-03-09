@@ -91,19 +91,19 @@ export const useConversationLoader = (userId: string | undefined) => {
         id: 'user1',
         name: 'Jean Dupont',
         avatar: '/placeholder.svg',
-        role: 'user'
+        role: 'user' as const
       },
       {
         id: 'user2',
         name: 'Marie Martin',
         avatar: '/placeholder.svg',
-        role: 'user'
+        role: 'user' as const
       },
       {
         id: 'user3',
         name: 'Thomas Bernard',
         avatar: '/placeholder.svg',
-        role: 'user'
+        role: 'user' as const
       }
     ];
 
