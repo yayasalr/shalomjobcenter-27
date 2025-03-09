@@ -22,7 +22,7 @@ export const HousingSwitch: React.FC<HousingSwitchProps> = ({
         checked={showHousingOnly}
         onCheckedChange={onHousingChange}
       />
-      <Label htmlFor="housing-only">Voir uniquement les logements</Label>
+      <Label htmlFor="housing-only">{t('filter_by_housing')}</Label>
     </div>
   );
 };
