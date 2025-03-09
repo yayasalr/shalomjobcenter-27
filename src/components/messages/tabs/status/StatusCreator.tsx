@@ -76,12 +76,9 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
       avatar: "/placeholder.svg", // You can replace with actual user avatar
       isViewed: false,
       timestamp: new Date(),
-      image: selectedImage
+      image: selectedImage,
+      content: textStatus.trim() !== '' ? textStatus : undefined
     };
-    
-    if (textStatus.trim() !== '') {
-      newStatus.content = textStatus;
-    }
     
     onStatusCreated(newStatus);
     handleCancel();

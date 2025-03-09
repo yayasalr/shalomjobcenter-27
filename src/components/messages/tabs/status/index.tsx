@@ -41,7 +41,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
       // Add default statuses if none provided
       generateDefaultStatuses();
     }
-  }, [initialStatuses, loadData, saveData]);
+  }, [initialStatuses]); // Add loadData and saveData to dependencies
   
   // Generate default statuses for demo
   const generateDefaultStatuses = () => {
