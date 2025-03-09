@@ -8,7 +8,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { HeroSection } from '@/components/home/HeroSection';
 import { SearchBar } from '@/components/home/SearchBar';
 import { ListingsGrid } from '@/components/home/ListingsGrid';
-import FeaturesSection from '@/components/home/FeaturesSection';
+import { FeaturesSection } from '@/components/home/FeaturesSection';
 import { PopularNeighborhoods } from '@/components/home/PopularNeighborhoods';
 import { TestimonialsSection } from '@/components/home/testimonials';
 import { Footer } from '@/components/home/Footer';
