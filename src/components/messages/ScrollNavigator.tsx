@@ -14,6 +14,7 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
   const [userIsScrolling, setUserIsScrolling] = useState(false);
   const scrollTimerRef = useRef<number | null>(null);
+  const throttleTimerRef = useRef<number | null>(null);
 
   // Optimized function to check scroll position
   const checkScrollPosition = useCallback(() => {
@@ -40,7 +41,9 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     if (Math.abs(currentPosition - lastScrollPosition) > 5) {
       setUserIsScrolling(true);
       // Reset after a delay
-      clearTimeout(scrollTimerRef.current || undefined);
+      if (scrollTimerRef.current) {
+        clearTimeout(scrollTimerRef.current);
+      }
       scrollTimerRef.current = window.setTimeout(() => {
         setUserIsScrolling(false);
       }, 500);
@@ -57,12 +60,11 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     checkScrollPosition();
 
     // Optimize scroll listening with throttling
-    let throttleTimer: number | null = null;
     const handleScroll = () => {
-      if (!throttleTimer) {
-        throttleTimer = window.setTimeout(() => {
+      if (!throttleTimerRef.current) {
+        throttleTimerRef.current = window.setTimeout(() => {
           checkScrollPosition();
-          throttleTimer = null;
+          throttleTimerRef.current = null;
         }, 100);
       }
     };
@@ -76,7 +78,7 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     return () => {
       container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkScrollPosition);
-      if (throttleTimer) clearTimeout(throttleTimer);
+      if (throttleTimerRef.current) clearTimeout(throttleTimerRef.current);
       if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     };
   }, [containerRef, checkScrollPosition]);

@@ -151,6 +151,7 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
           conversation={conversation}
           reactions={reactions}
           addReaction={addReaction}
+          removeReaction={removeReaction}
           isFavorite={isFavorite}
           addFavorite={addFavorite}
           removeFavorite={removeFavorite}

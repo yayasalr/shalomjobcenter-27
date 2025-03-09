@@ -21,6 +21,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
   conversation,
   reactions,
   addReaction,
+  removeReaction,
   isFavorite,
   addFavorite,
   removeFavorite,
@@ -45,6 +46,7 @@ const MessageArea: React.FC<MessageAreaProps> = ({
           conversationName={conversation.with.name}
           messageReactions={reactions[message.id] || []}
           onAddReaction={addReaction}
+          onRemoveReaction={removeReaction}
           onToggleFavorite={() => {
             if (isFavorite(message.id)) {
               removeFavorite(message.id);
