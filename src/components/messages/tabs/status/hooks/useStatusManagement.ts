@@ -16,39 +16,55 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
       const storedData = loadData<any>('user-statuses', []);
       let processedStatuses: Status[] = [];
       
-      // Handle different data formats that might come from local storage
+      // Process stored data to ensure it's a flat array of Status objects
       if (Array.isArray(storedData)) {
-        // Check if it's a flat array of Status objects
+        // Handle flat array of Status objects
         if (storedData.length === 0 || (storedData.length > 0 && 
             typeof storedData[0] === 'object' && storedData[0] !== null && 
             'id' in storedData[0])) {
           processedStatuses = storedData as Status[];
         } 
-        // Check if it's a nested array and flatten it
+        // Handle nested array and flatten it
         else if (storedData.length > 0 && Array.isArray(storedData[0])) {
-          const flattened = storedData.flat();
-          if (flattened.length > 0 && typeof flattened[0] === 'object' && 
-              flattened[0] !== null && 'id' in flattened[0]) {
-            processedStatuses = flattened as Status[];
-          }
+          const flattened = storedData.flat().filter(item => 
+            item && typeof item === 'object' && 'id' in item
+          );
+          processedStatuses = flattened as Status[];
         }
       }
       
-      // Aussi vérifier les statuts admin et les inclure
-      const adminStatuses = loadData<Status[]>('admin-statuses', []);
-      if (Array.isArray(adminStatuses) && adminStatuses.length > 0) {
+      // Load admin statuses if available
+      const adminStatusMessages = loadData<any>('admin-status-messages', []);
+      if (Array.isArray(adminStatusMessages) && adminStatusMessages.length > 0) {
+        // Convert admin status messages to user status format
+        const adminStatuses: Status[] = adminStatusMessages
+          .filter(msg => msg && typeof msg === 'object' && 'id' in msg)
+          .map(msg => ({
+            id: Number(msg.id),
+            user: "Admin",
+            avatar: "/placeholder.svg",
+            isViewed: false,
+            timestamp: new Date(msg.createdAt),
+            content: msg.text,
+            image: msg.imageUrl
+          }));
+        
         processedStatuses = [...processedStatuses, ...adminStatuses];
       }
       
-      // Tenter de charger tous les statuts des utilisateurs
+      // Try to load statuses from individual users
       const usersList = loadData<any[]>('users', []);
-      if (Array.isArray(usersList) && usersList.length > 0) {
+      if (Array.isArray(usersList)) {
         for (const user of usersList) {
-          if (user && user.id) {
+          if (user && typeof user === 'object' && user.id) {
             const userStatusKey = `status_${user.id}`;
             const userStatuses = loadData<Status[]>(userStatusKey, []);
             if (Array.isArray(userStatuses) && userStatuses.length > 0) {
-              processedStatuses = [...processedStatuses, ...userStatuses];
+              // Only add valid status objects
+              const validUserStatuses = userStatuses.filter(status => 
+                status && typeof status === 'object' && 'id' in status
+              );
+              processedStatuses = [...processedStatuses, ...validUserStatuses];
             }
           }
         }
@@ -148,7 +164,7 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
     setStatuses(updatedStatuses);
     saveData('user-statuses', updatedStatuses);
     
-    // Aussi sauvegarder dans les statuts spécifiques à l'utilisateur
+    // Also save to user-specific statuses
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     if (currentUser && currentUser.id) {
       const userStatusKey = `status_${currentUser.id}`;
@@ -160,10 +176,10 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
     toast.success("Statut publié avec succès! Il sera visible pendant 24 heures.");
   };
   
-  // When in admin view, auto-load additional example statuses
+  // When in admin view, load additional example statuses
   useEffect(() => {
     if (window.location.pathname.includes('/admin')) {
-      // Add some example statuses for admin view if statuses is empty
+      // Add example statuses for admin view if statuses is empty
       if (statuses.length === 0) {
         generateDefaultStatuses();
       }
