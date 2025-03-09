@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Phone, Video, X, Microphone, Volume2 } from 'lucide-react';
+import { Phone, Video, X, Mic, Volume2 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -266,7 +266,7 @@ const CallsTab: React.FC = () => {
                     size="icon" 
                     className="h-12 w-12 rounded-full"
                   >
-                    <Microphone className="h-6 w-6 text-blue-500" />
+                    <Mic className="h-6 w-6 text-blue-500" />
                   </Button>
                 </>
               ) : (
@@ -283,7 +283,7 @@ const CallsTab: React.FC = () => {
                     size="icon" 
                     className="h-12 w-12 rounded-full"
                   >
-                    <Microphone className="h-6 w-6 text-blue-500" />
+                    <Mic className="h-6 w-6 text-blue-500" />
                   </Button>
                 </>
               )}
