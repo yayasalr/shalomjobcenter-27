@@ -165,16 +165,10 @@ export const commonTranslations: TranslationDictionary = {
   "update": {
     fr: "Mettre à jour"
   },
-  "add": {
-    fr: "Ajouter"
-  },
   "no_applications_found": {
     fr: "Aucune candidature trouvée"
   },
   "no_applications_matching": {
     fr: "Aucune candidature ne correspond à vos critères de recherche."
-  },
-  "all_statuses": {
-    fr: "Tous les statuts"
   }
 };
