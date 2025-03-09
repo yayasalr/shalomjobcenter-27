@@ -31,7 +31,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         </Avatar>
       )}
       
-      <div className={`max-w-[75%] ${isAdmin ? 'whatsapp-user-message' : 'whatsapp-other-message'} rounded-lg p-3 shadow-sm relative`}>
+      <div className={`max-w-[75%] ${isAdmin ? 'whatsapp-user-message' : 'whatsapp-other-message'}`}>
         {!isAdmin && (
           <div className="font-medium text-xs text-gray-600 mb-1">{senderName}</div>
         )}

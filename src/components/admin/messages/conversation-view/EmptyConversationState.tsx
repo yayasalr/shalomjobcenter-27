@@ -4,7 +4,7 @@ import { MessageSquare } from 'lucide-react';
 
 export const EmptyConversationState: React.FC = () => {
   return (
-    <div className="col-span-2 flex flex-col h-full justify-center items-center rounded-r-lg bg-[#e5ddd5]">
+    <div className="col-span-2 flex flex-col h-full justify-center items-center whatsapp-message-area">
       <div className="text-center p-8 max-w-md bg-white/80 rounded-lg shadow-sm">
         <div className="flex justify-center mb-4">
           <MessageSquare className="h-16 w-16 text-[#00a884] opacity-70" />

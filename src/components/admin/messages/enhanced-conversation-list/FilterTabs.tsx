@@ -17,14 +17,14 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue={filter} className="w-full" onValueChange={(value) => setFilter(value as any)}>
-      <TabsList className="grid grid-cols-3 w-full bg-gray-100">
-        <TabsTrigger value="all" className="text-xs sm:text-sm py-2">
+      <TabsList className="grid grid-cols-3 w-full bg-[#f0f2f5] border-b">
+        <TabsTrigger value="all" className="text-xs sm:text-sm py-2 rounded-none data-[state=active]:bg-white data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-b-[#00a884]">
           Tous
         </TabsTrigger>
-        <TabsTrigger value="unread" className="text-xs sm:text-sm py-2">
+        <TabsTrigger value="unread" className="text-xs sm:text-sm py-2 rounded-none data-[state=active]:bg-white data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-b-[#00a884]">
           Non lus ({totalUnread})
         </TabsTrigger>
-        <TabsTrigger value="important" className="text-xs sm:text-sm py-2">
+        <TabsTrigger value="important" className="text-xs sm:text-sm py-2 rounded-none data-[state=active]:bg-white data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-b-[#00a884]">
           Importants ({totalImportant})
         </TabsTrigger>
       </TabsList>

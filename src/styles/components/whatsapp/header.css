@@ -57,7 +57,6 @@
   }
 }
 
-.high-contrast .whatsapp-header {
-  background-color: black;
-  border-bottom: 1px solid white;
+.dark-mode .whatsapp-header {
+  background-color: var(--whatsapp-dark-header);
 }

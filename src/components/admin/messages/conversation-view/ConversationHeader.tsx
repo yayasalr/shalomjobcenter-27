@@ -4,6 +4,14 @@ import { ArrowLeft, Phone, Video, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Conversation } from '@/components/messages/types';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 interface ConversationHeaderProps {
   conversation: Conversation;
@@ -17,7 +25,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onBackClick
 }) => {
   return (
-    <div className="whatsapp-header flex items-center gap-2 p-2 bg-[#008069]">
+    <div className="whatsapp-header flex items-center gap-2 p-3">
       <Button 
         variant="ghost" 
         size="icon" 
@@ -45,15 +53,44 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
       </div>
       
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-white">
+        <Button variant="ghost" size="icon" className="text-white" onClick={() => toast.success("Appel vidéo à venir")}>
           <Video className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white">
+        <Button variant="ghost" size="icon" className="text-white" onClick={() => toast.success("Appel vocal à venir")}>
           <Phone className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white">
-          <MoreVertical className="h-5 w-5" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="text-white">
+              <MoreVertical className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => toast.success("Info contact")}>
+              Info contact
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Médias partagés")}>
+              Médias partagés
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Rechercher")}>
+              Rechercher
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast.success("Notifications")}>
+              Notifications
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast.success("Messages éphémères")}>
+              Messages éphémères
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => toast.success("Bloquer l'utilisateur")}>
+              Bloquer
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500" onClick={() => toast.success("Conversation supprimée")}>
+              Supprimer la conversation
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

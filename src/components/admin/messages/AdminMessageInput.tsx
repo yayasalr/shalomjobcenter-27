@@ -1,8 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Send, Loader2, Eye, Paperclip, Smile, Mic } from 'lucide-react';
+import { Send, Loader2, Paperclip, Smile, Mic } from 'lucide-react';
 import { QuickResponses } from './QuickResponses';
 import { MessagePreview } from './MessagePreview';
 import { Conversation } from '@/components/messages/types';
@@ -105,7 +104,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="text-gray-500 hover:bg-gray-200 rounded-full"
+          className="whatsapp-emoji-button"
         >
           <Smile className="h-5 w-5" />
         </Button>
@@ -113,7 +112,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          className="text-gray-500 hover:bg-gray-200 rounded-full"
+          className="whatsapp-attach-button"
         >
           <Paperclip className="h-5 w-5" />
         </Button>
@@ -127,23 +126,11 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
-              if (!isPreviewMode) {
-                previewMessage();
-              }
+              sendMessage();
             }
           }}
           suppressContentEditableWarning={true}
         ></div>
-        
-        <Button
-          variant="outline"
-          onClick={previewMessage}
-          disabled={isSending || !newMessage.trim()}
-          className="rounded-full mr-1"
-          size="icon"
-        >
-          <Eye className="h-4 w-4" />
-        </Button>
         
         <Button 
           onClick={sendMessage} 

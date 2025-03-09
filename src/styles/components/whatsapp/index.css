@@ -7,39 +7,3 @@
 @import './conversation-list.css';
 @import './responsive.css';
 @import './status-indicators.css';
-
-:root {
-  --whatsapp-green: #25d366;
-  --whatsapp-light-green: #dcf8c6;
-  --whatsapp-blue: #34b7f1;
-  --whatsapp-header: #008069;
-  --whatsapp-chat-background: #efeae2;
-  --whatsapp-message-out: #d9fdd3;
-  --whatsapp-message-in: #ffffff;
-  --whatsapp-online: #25d366;
-  --whatsapp-offline: #bdbdbd;
-  --whatsapp-icon: #54656f;
-  --whatsapp-message-time: #667781;
-}
-
-.whatsapp-theme {
-  font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
-}
-
-.dark-mode .whatsapp-container {
-  --whatsapp-header: #1f2c34;
-  --whatsapp-chat-background: #0b141a;
-  --whatsapp-message-out: #005c4b;
-  --whatsapp-message-in: #1f2c34;
-  --whatsapp-icon: #8696a0;
-  --whatsapp-message-time: #8696a0;
-}
-
-.high-contrast .whatsapp-container {
-  --whatsapp-header: #000000;
-  --whatsapp-chat-background: #ffffff;
-  --whatsapp-message-out: #000000;
-  --whatsapp-message-in: #ffffff;
-  --whatsapp-icon: #000000;
-  --whatsapp-message-time: #000000;
-}

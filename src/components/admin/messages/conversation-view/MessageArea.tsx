@@ -24,7 +24,7 @@ export const MessageArea: React.FC<MessageAreaProps> = ({
   }, [messages]);
 
   return (
-    <div className="whatsapp-message-area flex-1 overflow-y-auto bg-[#e5ddd5]">
+    <div className="whatsapp-message-area flex-1 overflow-y-auto">
       <div className="space-y-2 px-4 py-4">
         {messages.map((message) => (
           <MessageBubble 
