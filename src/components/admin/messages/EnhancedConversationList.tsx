@@ -8,6 +8,10 @@ import ConversationList from './conversation-list/ConversationList';
 import NewConversationButton from './conversation-list/NewConversationButton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Image, Phone } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import StatusTabContent from '@/components/messages/tabs/StatusTabContent';
+import CallsTabContent from '@/components/messages/tabs/CallsTabContent';
 
 interface EnhancedConversationListProps {
   conversations: Conversation[];
@@ -76,6 +80,19 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
     }
   };
 
+  // Gérer les actions des onglets Statut et Appels
+  const handleViewStatus = (status: any) => {
+    toast.info(`Visualisation du statut de ${status.user}`);
+  };
+
+  const handleStatusCreated = (status: any) => {
+    toast.success("Statut créé avec succès");
+  };
+
+  const handleStartCall = (isVideo: boolean) => {
+    toast.info(`Démarrage d'un appel ${isVideo ? 'vidéo' : 'audio'}`);
+  };
+
   return (
     <div className="flex flex-col h-full bg-gray-50 border-r">
       {/* Header Component */}
@@ -106,27 +123,15 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
       )}
       
       {activeTab === 'STATUS' && (
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="bg-gray-200 rounded-full p-3 mb-3">
-            <Image className="h-8 w-8 text-gray-600" />
-          </div>
-          <h3 className="text-lg font-medium mb-1">Status</h3>
-          <p className="text-gray-500 text-center max-w-xs">
-            Partagez des mises à jour sous forme de texte, photo ou vidéo qui disparaissent après 24 heures.
-          </p>
-        </div>
+        <StatusTabContent 
+          statuses={[]}
+          onViewStatus={handleViewStatus}
+          onStatusCreated={handleStatusCreated}
+        />
       )}
       
       {activeTab === 'APPELS' && (
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="bg-gray-200 rounded-full p-3 mb-3">
-            <Phone className="h-8 w-8 text-gray-600" />
-          </div>
-          <h3 className="text-lg font-medium mb-1">Appels</h3>
-          <p className="text-gray-500 text-center max-w-xs">
-            Passez des appels audio et vidéo avec vos contacts.
-          </p>
-        </div>
+        <CallsTabContent calls={[]} />
       )}
     </div>
   );
