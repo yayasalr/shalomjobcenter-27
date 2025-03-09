@@ -88,6 +88,13 @@ export const useLanguageProvider = () => {
       'starting_today': 'Démarrage immédiat',
       'filter_by_housing': 'Filtrer par logements inclus',
       
+      // Job feature descriptions
+      'housing_included_desc': 'Logements de qualité fournis',
+      'job_description': 'Description du poste',
+      'job_description_desc': 'Missions claires et détaillées',
+      'benefits': 'Avantages',
+      'benefits_desc': 'Packages attractifs et compétitifs',
+      
       // Listings
       'listing_not_found': 'Logement non trouvé',
       'listing_not_exist': 'Le logement que vous recherchez n\'existe pas ou a été supprimé.',
@@ -103,13 +110,6 @@ export const useLanguageProvider = () => {
       'save_as_pdf': 'Enregistrer en PDF',
       'add_to_calendar': 'Ajouter au calendrier',
       'add_to_google': 'Ajouter à Google',
-
-      // Jobs descriptions
-      'housing_included_desc': 'Logements de qualité fournis',
-      'job_description': 'Description du poste',
-      'job_description_desc': 'Missions claires et détaillées',
-      'benefits': 'Avantages',
-      'benefits_desc': 'Packages attractifs et compétitifs'
     };
     
     // Return the translation or the key if not found
