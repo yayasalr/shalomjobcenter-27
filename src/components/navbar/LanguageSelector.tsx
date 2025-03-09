@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/language';
 import { Globe } from 'lucide-react';
 import {
   DropdownMenu,
@@ -11,15 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const LanguageSelector = () => {
-  const { language, setLanguage, t } = useLanguage();
-
-  // Force French language if not already set
-  React.useEffect(() => {
-    if (language !== 'fr') {
-      setLanguage('fr');
-    }
-  }, [language, setLanguage]);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,11 +21,8 @@ export const LanguageSelector = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem 
-          onClick={() => setLanguage('fr')}
-          className="bg-muted"
-        >
-          🇫🇷 Français (uniquement)
+        <DropdownMenuItem className="bg-muted">
+          🇫🇷 Français
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

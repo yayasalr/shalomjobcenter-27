@@ -15,8 +15,6 @@ export const LanguageRegionCard: React.FC<LanguageRegionCardProps> = ({ onSavePr
   const { setItem } = useLocalStorage();
 
   const handleSavePreferences = () => {
-    // Français est la seule option, donc on le définit explicitement
-    setItem('user_language', 'fr');
     onSavePreferences();
     toast.success("Préférences enregistrées avec succès");
   };
@@ -24,25 +22,11 @@ export const LanguageRegionCard: React.FC<LanguageRegionCardProps> = ({ onSavePr
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Langue et région</CardTitle>
+        <CardTitle>Région</CardTitle>
         <CardDescription>Définissez vos préférences régionales</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="language">Langue</Label>
-            <div className="flex items-center space-x-2">
-              <Globe className="h-4 w-4 text-gray-500" />
-              <div className="flex-1 border rounded-md px-3 py-2 bg-gray-50">
-                <span className="flex items-center gap-1">
-                  <span>Français</span>
-                  <Check className="h-4 w-4 text-green-500 ml-1" />
-                </span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Le français est la seule langue disponible pour le moment.</p>
-          </div>
-          
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div className="space-y-2">
             <Label htmlFor="region">Région</Label>
             <div className="flex items-center space-x-2">

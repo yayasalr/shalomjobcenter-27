@@ -1,20 +1,17 @@
 
 import React from 'react';
 import { Building, BriefcaseBusiness, CheckCircle } from 'lucide-react';
-import { useLanguage } from '@/hooks/language';
 
 export const JobsFeatures = () => {
-  const { t } = useLanguage();
-  
   return (
     <div className="bg-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-serif font-bold text-sholom-dark mb-4">
-            {t('security_jobs')}
+            Emplois de sécurité
           </h2>
           <p className="text-sholom-muted text-lg max-w-2xl mx-auto">
-            {t('premium_housing_desc')}
+            Sélectionnés pour leur qualité et confort
           </p>
         </div>
         
@@ -22,18 +19,18 @@ export const JobsFeatures = () => {
           {[
             {
               icon: <Building className="h-8 w-8" />,
-              title: t('housing_included'),
-              description: t('housing_included_desc')
+              title: "Logement inclus",
+              description: "Logements de qualité fournis"
             },
             {
               icon: <BriefcaseBusiness className="h-8 w-8" />,
-              title: t('job_description'),
-              description: t('job_description_desc')
+              title: "Description du poste",
+              description: "Missions claires et détaillées"
             },
             {
               icon: <CheckCircle className="h-8 w-8" />,
-              title: t('benefits'),
-              description: t('benefits_desc')
+              title: "Avantages",
+              description: "Packages attractifs et compétitifs"
             }
           ].map((feature, index) => (
             <div 

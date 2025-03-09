@@ -13,7 +13,6 @@ export interface UserPreferences {
     reservation: boolean;
     promotional: boolean;
   };
-  language: "fr"; // Modifié pour n'accepter que "fr"
   region: string;
 }
 
@@ -30,7 +29,6 @@ export const usePreferences = () => {
       reservation: true,
       promotional: false
     }),
-    language: "fr", // Toujours définir sur "fr"
     region: getItem('user_region', 'TG')
   });
 
@@ -49,8 +47,7 @@ export const usePreferences = () => {
     
     // Update settings in context if needed
     updateSettings({ 
-      primaryColor: preferences.accentColor || '#FF385C',
-      language: 'fr' // Toujours définir sur "fr"
+      primaryColor: preferences.accentColor || '#FF385C'
     });
     
     toast.success("Préférences enregistrées avec succès");

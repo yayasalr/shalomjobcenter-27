@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/language';
 import { Reservation } from '@/hooks/reservations';
 import { Calendar, MoreHorizontal, Download, FileText } from 'lucide-react';
 import { 
@@ -32,8 +31,6 @@ export const CardActions = ({
   onViewDetails,
   onCancel 
 }: CardActionsProps) => {
-  const { t } = useLanguage();
-  
   const handleAddToCalendar = (e: React.MouseEvent, type: 'ical' | 'google') => {
     e.preventDefault();
     e.stopPropagation();
@@ -59,7 +56,7 @@ export const CardActions = ({
   return (
     <div className="flex gap-2">
       <Button variant="outline" className="w-full" onClick={onViewDetails}>
-        {t('details') || 'Détails'}
+        Détails
       </Button>
       
       {reservation && (
@@ -72,19 +69,19 @@ export const CardActions = ({
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={handleExportPDF}>
               <FileText className="mr-2 h-4 w-4" />
-              {t('save_as_pdf') || 'Enregistrer en PDF'}
+              Enregistrer en PDF
             </DropdownMenuItem>
             
             <DropdownMenuSeparator />
             
             <DropdownMenuItem onClick={(e) => handleAddToCalendar(e, 'ical')}>
               <Calendar className="mr-2 h-4 w-4" />
-              {t('add_to_calendar') || 'Ajouter au calendrier'}
+              Ajouter au calendrier
             </DropdownMenuItem>
             
             <DropdownMenuItem onClick={(e) => handleAddToCalendar(e, 'google')}>
               <Calendar className="mr-2 h-4 w-4" />
-              {t('add_to_google') || 'Ajouter à Google'}
+              Ajouter à Google
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -92,7 +89,7 @@ export const CardActions = ({
       
       {status !== 'cancelled' && onCancel && (
         <Button variant="destructive" className="w-full" onClick={onCancel}>
-          {t('cancel') || 'Annuler'}
+          Annuler
         </Button>
       )}
     </div>

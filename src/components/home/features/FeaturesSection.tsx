@@ -1,13 +1,10 @@
 
 import React from 'react';
-import { useLanguage } from '@/hooks/language';
 import { SectionHeader } from './SectionHeader';
 import { FeaturesGrid } from './FeaturesGrid';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 export const FeaturesSection = () => {
-  const { t } = useLanguage();
-  
   return (
     <ScrollAnimation 
       direction="right" 
@@ -16,8 +13,8 @@ export const FeaturesSection = () => {
     >
       <div className="container mx-auto px-4">
         <SectionHeader 
-          title={t('features_title')}
-          subtitle={t('features_subtitle')}
+          title="Votre expérience de logement supérieure"
+          subtitle="Des logements de qualité avec des services exceptionnels"
         />
         
         <FeaturesGrid />

@@ -5,11 +5,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
-import { useLanguage } from '@/hooks/language';
 
 export const HeroSection = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
   
   const handleFindListing = () => {
     navigate('/', { state: { focusSearch: true } });
@@ -47,10 +45,10 @@ export const HeroSection = () => {
           >
             <motion.div className="lg:w-1/2 space-y-6" variants={itemVariants}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-sholom-dark leading-tight">
-                {t('discover_home')} <span className="text-sholom-primary italic">chez-vous</span> à Lomé
+                Découvrez votre <span className="text-sholom-primary italic">chez-vous</span> à Lomé
               </h1>
               <p className="text-xl text-sholom-muted max-w-2xl">
-                {t('hero_housing_desc')}
+                Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
@@ -58,7 +56,7 @@ export const HeroSection = () => {
                   className="bg-sholom-primary hover:bg-sholom-primary/90 text-white font-medium"
                   onClick={handleFindListing}
                 >
-                  {t('find_housing')}
+                  Trouver un logement
                 </Button>
                 <Link to="/emplois">
                   <Button 
@@ -67,13 +65,13 @@ export const HeroSection = () => {
                     className="font-medium"
                   >
                     <Briefcase className="mr-2 h-5 w-5" />
-                    {t('job_offers')}
+                    Offres d'emploi
                   </Button>
                 </Link>
               </div>
               
               <div className="pt-8">
-                <p className="text-sholom-dark font-medium mb-3">{t('popular_neighborhoods')}</p>
+                <p className="text-sholom-dark font-medium mb-3">Quartiers populaires</p>
                 <div className="flex flex-wrap gap-2">
                   {LOME_NEIGHBORHOODS.slice(0, 5).map((neighborhood, index) => (
                     <Button
@@ -92,9 +90,9 @@ export const HeroSection = () => {
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4">
                 {[
-                  { icon: <Home className="h-5 w-5" />, text: t('verified_housing') },
-                  { icon: <Shield className="h-5 w-5" />, text: t('secure_payments') },
-                  { icon: <Building className="h-5 w-5" />, text: t('local_support') }
+                  { icon: <Home className="h-5 w-5" />, text: "Logements vérifiés" },
+                  { icon: <Shield className="h-5 w-5" />, text: "Paiements sécurisés" },
+                  { icon: <Building className="h-5 w-5" />, text: "Support local" }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-center gap-2 text-sholom-dark">
                     <div className="text-sholom-primary">{benefit.icon}</div>

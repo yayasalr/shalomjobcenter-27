@@ -1,6 +1,6 @@
 
-// Ré-exporte depuis le nouveau système simplifié
+// Fichier de compatibilité - renvoie à la nouvelle implémentation simplifiée
 import { LanguageContext, useLanguageProvider, useLanguage } from './language';
 
-// Re-export everything
+// Re-export pour la compatibilité
 export { LanguageContext, useLanguageProvider, useLanguage };

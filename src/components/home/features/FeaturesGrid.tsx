@@ -1,43 +1,40 @@
 
 import React from 'react';
-import { useLanguage } from '@/hooks/language';
 import { Shield, Home, Medal, MapPin, Clock, CheckCircle } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 export const FeaturesGrid = () => {
-  const { t } = useLanguage();
-  
   const features = [
     {
       icon: <Shield className="h-6 w-6" />,
-      title: t('secure_payment'),
-      description: t('secure_payment_desc')
+      title: "Paiement sécurisé",
+      description: "Transactions protégées par cryptage avancé"
     },
     {
       icon: <Home className="h-6 w-6" />,
-      title: t('premium_housing'),
-      description: t('premium_housing_desc')
+      title: "Logements premium",
+      description: "Sélectionnés pour leur qualité et confort"
     },
     {
       icon: <Medal className="h-6 w-6" />,
-      title: t('quality_verified'),
-      description: t('quality_verified_desc')
+      title: "Qualité vérifiée",
+      description: "Tous nos logements sont inspectés"
     },
     {
       icon: <MapPin className="h-6 w-6" />,
-      title: t('prime_locations'),
-      description: t('prime_locations_desc')
+      title: "Emplacements privilégiés",
+      description: "Dans les meilleurs quartiers de Lomé"
     },
     {
       icon: <Clock className="h-6 w-6" />,
-      title: t('24_7_support'),
-      description: t('24_7_support_desc')
+      title: "Support 24/7",
+      description: "Notre équipe est toujours disponible"
     },
     {
       icon: <CheckCircle className="h-6 w-6" />,
-      title: t('satisfaction_guarantee'),
-      description: t('satisfaction_guarantee_desc')
+      title: "Satisfaction garantie",
+      description: "Votre satisfaction est notre priorité"
     }
   ];
 
