@@ -4,7 +4,7 @@ import { uiTranslations } from './ui';
 import { statusTranslations } from './status';
 import { locationTranslations } from './locations';
 import { timeTranslations } from './time';
-import { generalTranslations } from './general';
+import { generalTranslations, reviewsTranslations, housingTranslations, actionsTranslations, usersTranslations, miscTranslations } from './general';
 
 // Merge all common translations into a single dictionary
 const mergeTranslations = (...dictionaries: TranslationDictionary[]): TranslationDictionary => {
@@ -26,5 +26,11 @@ export {
   statusTranslations,
   locationTranslations,
   timeTranslations,
-  generalTranslations
+  generalTranslations,
+  // New subcategories
+  reviewsTranslations,
+  housingTranslations,
+  actionsTranslations,
+  usersTranslations,
+  miscTranslations
 };
