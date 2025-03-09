@@ -86,7 +86,7 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-12 w-12 rounded-full border-2 border-blue-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="relative h-14 w-14 rounded-full border-2 border-blue-200 shadow-sm hover:border-primary hover:border-opacity-80 focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Menu utilisateur"
         >
           <Avatar className="h-full w-full">
@@ -94,9 +94,9 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
               key={avatarKey}
               src={avatarSrc} 
               alt={user.name || "Utilisateur"}
-              className="user-avatar-display object-cover"
+              className="user-avatar-display object-cover w-full h-full"
             />
-            <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
+            <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">
               {initials}
             </AvatarFallback>
           </Avatar>

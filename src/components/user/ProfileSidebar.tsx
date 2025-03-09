@@ -67,14 +67,14 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
     <Card className="border-0 shadow-md overflow-hidden">
       <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="mx-auto relative mb-4 group">
-          <Avatar className="h-28 w-28 mx-auto border-4 border-white shadow-md">
+          <Avatar className="h-36 w-36 mx-auto border-4 border-white shadow-md">
             <AvatarImage 
               key={avatarKey}
               src={avatar} 
               alt={user?.name || "Utilisateur"}
-              className="user-avatar-display object-cover"
+              className="user-avatar-display object-cover w-full h-full"
             />
-            <AvatarFallback className="bg-blue-100 text-blue-700 text-2xl">
+            <AvatarFallback className="bg-blue-100 text-blue-700 text-3xl">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </AvatarFallback>
           </Avatar>
