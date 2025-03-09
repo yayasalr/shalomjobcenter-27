@@ -1,14 +1,10 @@
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React from 'react';
 import { Conversation } from '../types';
 import ConversationHeader from '../ConversationHeader';
-import MessageInput from '../MessageInput';
-import MessageArea from './MessageArea';
-import SearchBar from './SearchBar';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import FavoriteMessages from '../FavoriteMessages';
-import MessageShareDialog from '../MessageShareDialog';
-import { X } from 'lucide-react';
+import SearchContainer from './components/SearchContainer';
+import MessageInteractionArea from './components/MessageInteractionArea';
+import DialogsContainer from './components/DialogsContainer';
 
 interface ConversationViewContentProps {
   conversation: Conversation;
@@ -88,40 +84,8 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
   onImageSelect = () => {},
   onClearImage = () => {}
 }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Function to scroll to bottom (memoized)
-  const scrollToBottom = useCallback(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
-
-  // Scroll to bottom when new messages arrive or when conversation changes
-  useEffect(() => {
-    scrollToBottom();
-  }, [conversation.messages, scrollToBottom, conversation.id]);
-
-  // Auto-scroll when sending a new message
-  useEffect(() => {
-    const messageInputField = document.querySelector('.message-input');
-    
-    // Add event listener to input field to auto-scroll when user starts typing
-    const handleFocus = () => {
-      setTimeout(scrollToBottom, 100);
-    };
-    
-    if (messageInputField) {
-      messageInputField.addEventListener('focus', handleFocus);
-      
-      return () => {
-        messageInputField.removeEventListener('focus', handleFocus);
-      };
-    }
-  }, [scrollToBottom]);
-
   // Apply search when query changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (searchQuery) {
       handleSearch(searchQuery);
     }
@@ -144,20 +108,21 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
         onShowFavorites={() => setShowFavorites(true)}
       />
       
-      {/* Search bar */}
-      {showSearch && (
-        <SearchBar 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          clearSearch={clearSearch}
-          onClose={() => setShowSearch(false)}
-        />
-      )}
+      <SearchContainer 
+        showSearch={showSearch}
+        setShowSearch={setShowSearch}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        clearSearch={clearSearch}
+      />
       
       {/* Message area with ref forwarding */}
       <div ref={forwardRef}>
-        <MessageArea 
+        <MessageInteractionArea 
           conversation={conversation}
+          newMessage={newMessage}
+          setNewMessage={setNewMessage}
+          handleSendMessage={handleSendMessage}
           reactions={reactions}
           addReaction={addReaction}
           removeReaction={removeReaction}
@@ -165,44 +130,28 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
           addFavorite={addFavorite}
           removeFavorite={removeFavorite}
           openShareDialog={openShareDialog}
-          messagesEndRef={messagesEndRef}
           searchResults={searchResults}
           searchQuery={searchQuery}
+          selectedImage={selectedImage}
+          onImageSelect={onImageSelect}
+          onClearImage={onClearImage}
         />
       </div>
       
-      <MessageInput
-        value={newMessage}
-        onChange={setNewMessage}
-        onSend={handleSendMessage}
-        placeholder="Écrivez un message..."
-        selectedImage={selectedImage}
-        onImageSelect={onImageSelect}
-        onClearImage={onClearImage}
-      />
-      
-      {/* Message sharing dialog */}
-      <MessageShareDialog
-        message={messageToShare}
-        isOpen={isShareDialogOpen}
-        onClose={closeShareDialog}
-        conversations={conversations}
+      <DialogsContainer 
+        showFavorites={showFavorites}
+        setShowFavorites={setShowFavorites}
+        favorites={favorites}
+        removeFavorite={removeFavorite}
+        navigateToConversation={navigateToConversation}
+        messageToShare={messageToShare}
+        isShareDialogOpen={isShareDialogOpen}
         selectedConversations={selectedConversations}
-        onToggleConversation={toggleConversationSelection}
-        onShare={shareMessage}
+        closeShareDialog={closeShareDialog}
+        toggleConversationSelection={toggleConversationSelection}
+        shareMessage={shareMessage}
+        conversations={conversations}
       />
-      
-      {/* Favorites dialog */}
-      <Dialog open={showFavorites} onOpenChange={setShowFavorites}>
-        <DialogContent className="sm:max-w-[600px] p-0">
-          <FavoriteMessages
-            favorites={favorites}
-            onRemoveFavorite={removeFavorite}
-            onNavigateToConversation={navigateToConversation}
-            onClose={() => setShowFavorites(false)}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
