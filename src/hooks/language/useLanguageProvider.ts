@@ -32,9 +32,9 @@ const getRouteTranslations = (pathname: string): TranslationDictionary => {
 
 export const useLanguageProvider = () => {
   const { settings, updateSettings } = useSiteSettings();
-  const { setItem, getItem } = useLocalStorage();
+  const { setItem } = useLocalStorage();
   // Toujours utiliser 'fr' comme langue par défaut
-  const [language, setLanguageState] = useState<SupportedLanguage>('fr');
+  const [language] = useState<SupportedLanguage>('fr');
   
   // État pour stocker les traductions basées sur la route actuelle
   const [translations, setTranslations] = useState<TranslationDictionary>({ ...defaultTranslations });
@@ -77,8 +77,7 @@ export const useLanguageProvider = () => {
   }, []);
 
   // Fonction pour changer la langue (même si nous n'avons que le français)
-  const setLanguage = (lang: SupportedLanguage) => {
-    setLanguageState('fr');
+  const setLanguage = () => {
     setItem('userLanguage', 'fr');
     updateSettings({ language: 'fr' });
   };
@@ -97,11 +96,6 @@ export const useLanguageProvider = () => {
     }
     return translation;
   };
-
-  // Initialisation
-  useEffect(() => {
-    setLanguageState('fr');
-  }, []);
 
   return {
     language: 'fr' as SupportedLanguage,

@@ -3,12 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BriefcaseBusiness, Filter, Home, Building, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/hooks/language';
 
 interface JobsHeroProps {
   onToggleFilters?: () => void;
 }
 
 export const JobsHero = ({ onToggleFilters }: JobsHeroProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +39,7 @@ export const JobsHero = ({ onToggleFilters }: JobsHeroProps) => {
                   className="font-medium"
                 >
                   <Home className="mr-2 h-5 w-5" />
-                  Voir les logements
+                  {t('view_housing')}
                 </Button>
               </Link>
             </div>
@@ -45,7 +48,7 @@ export const JobsHero = ({ onToggleFilters }: JobsHeroProps) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8">
               {[
                 { icon: <BriefcaseBusiness className="h-5 w-5" />, text: "Carrières stables" },
-                { icon: <Building className="h-5 w-5" />, text: "Logements inclus" },
+                { icon: <Building className="h-5 w-5" />, text: t('housing_included') },
                 { icon: <CheckCircle className="h-5 w-5" />, text: "Formations continues" }
               ].map((benefit, index) => (
                 <div key={index} className="flex items-center gap-2 text-sholom-dark">
