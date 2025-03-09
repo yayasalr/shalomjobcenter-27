@@ -1,4 +1,3 @@
-
 import React from "react";
 import ImageGallery from "./ImageGallery";
 import MainContent from "./MainContent";
@@ -72,7 +71,7 @@ const ListingDetailContainer = ({
       </ScrollAnimation>
 
       <ScrollAnimation direction="up" duration={0.6} delay={0.1} once={true}>
-        <ImageGallery images={processedImages} alt={listing.title} />
+        <ImageGallery images={processedImages} />
       </ScrollAnimation>
 
       {/* Social Bar */}
