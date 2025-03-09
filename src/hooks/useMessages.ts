@@ -7,7 +7,6 @@ import { useConversationManager } from './messages/useConversationManager';
 export const useMessages = (userId: string | undefined) => {
   const {
     conversations,
-    setConversations,
     selectedConversation,
     setSelectedConversation,
     getUnreadCount,
@@ -22,9 +21,9 @@ export const useMessages = (userId: string | undefined) => {
   } = useMessageSender(
     userId,
     conversations,
-    setConversations,
     selectedConversation,
-    setSelectedConversation
+    setSelectedConversation,
+    updateConversationWithMessage
   );
 
   const {

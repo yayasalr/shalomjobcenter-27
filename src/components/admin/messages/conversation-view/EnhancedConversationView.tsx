@@ -2,9 +2,9 @@
 import React, { useEffect } from 'react';
 import { Conversation } from '@/components/messages/types';
 import AdminMessageInput from '../AdminMessageInput';
-import { ConversationHeader } from './ConversationHeader';
-import { MessageArea } from './MessageArea';
-import { EmptyConversationState } from './EmptyConversationState';
+import ConversationHeader from '@/components/messages/ConversationHeader';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import MessageBubble from '@/components/messages/MessageBubble';
 
 interface EnhancedConversationViewProps {
   conversation: Conversation | null;
@@ -50,39 +50,45 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
     }
   };
   
-  // Effet pour créer un "canal" de communication WebSocket simulé
   useEffect(() => {
-    // Configurer une vérification périodique pour les nouveaux messages
+    // Simulated websocket connection for message updates
     const intervalId = setInterval(() => {
-      // Cette fonction serait remplacée par une véritable connexion WebSocket
-      // pour l'instant, nous simulons une mise à jour périodique
-      
-      // Déclencher l'événement personnalisé pour notifier les mises à jour
       window.dispatchEvent(new CustomEvent('admin-messages-updated'));
-      
-    }, 3000); // Vérifier toutes les 3 secondes
+    }, 3000);
     
-    // Nettoyer l'intervalle lorsque le composant est démonté
     return () => clearInterval(intervalId);
   }, []);
 
   if (!conversation) {
-    return <EmptyConversationState />;
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-50">
+        <div className="text-center p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune conversation sélectionnée</h3>
+          <p className="text-gray-500">Sélectionnez une conversation pour commencer à discuter</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="col-span-2 flex flex-col h-full whatsapp-container">
+    <div className="col-span-2 flex flex-col h-full bg-white">
       <ConversationHeader 
         conversation={conversation}
         isOnline={isOnline}
-        onBackClick={handleBackClick}
+        onBack={handleBackClick}
       />
       
-      <MessageArea 
-        messages={conversation.messages}
-        senderAvatar={conversation.with.avatar || ''}
-        senderName={conversation.with.name}
-      />
+      <ScrollArea className="flex-1 p-4 bg-gray-50">
+        <div className="space-y-2">
+          {conversation.messages.map((message) => (
+            <MessageBubble 
+              key={message.id}
+              message={message}
+              isUser={message.sender === 'admin'}
+            />
+          ))}
+        </div>
+      </ScrollArea>
       
       <AdminMessageInput
         newMessage={newMessage}

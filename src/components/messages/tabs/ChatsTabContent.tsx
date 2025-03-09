@@ -2,8 +2,7 @@
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Conversation } from '../types';
-import WhatsAppConversationItem from '../WhatsAppConversationItem';
-import { AlertCircle } from 'lucide-react';
+import ConversationItem from '../ConversationItem';
 
 export interface ChatsTabContentProps {
   filteredConversations: Conversation[];
@@ -22,14 +21,14 @@ const ChatsTabContent: React.FC<ChatsTabContentProps> = ({
 }) => {
   return (
     <ScrollArea className="flex-1">
-      <div className="whatsapp-conversation-list">
+      <div className="conversation-list">
         {filteredConversations.length === 0 ? (
           <div className="p-4 text-center text-gray-500">
             Aucune conversation trouvée. Utilisez le bouton "Nouvelle conversation" ci-dessus pour en démarrer une.
           </div>
         ) : (
           filteredConversations.map(conversation => (
-            <WhatsAppConversationItem 
+            <ConversationItem 
               key={conversation.id}
               conversation={conversation}
               isSelected={selectedConversation?.id === conversation.id}
