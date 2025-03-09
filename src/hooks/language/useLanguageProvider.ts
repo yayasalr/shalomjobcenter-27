@@ -4,7 +4,7 @@ import { SupportedLanguage, TranslationDictionary } from './types';
 import useLocalStorage from '../useLocalStorage';
 import { useSiteSettings } from '../settings';
 import { defaultTranslations } from './translations/index';
-import { getTranslation } from './translation-utils';
+import { getTranslation, makeReadableKey } from './translation-utils';
 
 export const useLanguageProvider = () => {
   const { settings, updateSettings } = useSiteSettings();
@@ -24,8 +24,22 @@ export const useLanguageProvider = () => {
   const t = (key: string): string => {
     if (!key) return '';
     
-    // Si la clé est très longue, c'est probablement un texte déjà en français
-    if (key.length > 30 && key.includes(' ')) return key;
+    // Liste des phrases qui sont déjà en français
+    const frenchPhrases = [
+      "Superbe villa avec vue", "Logement de luxe à Lomé", "Villa de luxe",
+      "Tokoin, Lomé", "Adakpamé", "Lomé", "Bè", "Tokoin", "Adidogomé",
+      "Agoè", "Kodjoviakopé", "Nyékonakpoè", "Hédzranawoé", "Baguida", "Doulassamé"
+    ];
+    
+    // Si c'est déjà une phrase française connue, la retourner directement
+    if (frenchPhrases.includes(key)) {
+      return key;
+    }
+    
+    // Si la clé est très longue ou contient plusieurs mots, c'est probablement déjà en français
+    if ((key.length > 15 && key.includes(' ')) || (key.includes(' à ')) || (key.includes('é'))) {
+      return key;
+    }
     
     const translation = getTranslation(key, 'fr', translations);
     
@@ -33,7 +47,7 @@ export const useLanguageProvider = () => {
     if (translation === key) {
       console.log(`Clé de traduction manquante: ${key}`);
       // Transformer la clé en texte lisible
-      return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+      return makeReadableKey(key);
     }
     
     return translation;

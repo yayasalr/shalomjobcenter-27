@@ -2,6 +2,11 @@
 import { TranslationDictionary } from '../../types';
 
 export const neighborhoodsTranslations: TranslationDictionary = {
+  // Section quartiers
+  "popular_neighborhoods": {
+    fr: "Quartiers populaires"
+  },
+  
   // Quartiers de Lomé
   "Tokoin": {
     fr: "Tokoin"

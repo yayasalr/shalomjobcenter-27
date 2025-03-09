@@ -1,4 +1,3 @@
-
 import { TranslationDictionary } from '../types';
 
 export const commonTranslations: TranslationDictionary = {
@@ -206,5 +205,23 @@ export const commonTranslations: TranslationDictionary = {
   },
   "Lomé": {
     fr: "Lomé"
+  },
+  "Luxury housing Lome": {
+    fr: "Logement de luxe à Lomé"
+  },
+  "Luxury villa": {
+    fr: "Villa de luxe"
+  },
+  "february": {
+    fr: "février"
+  },
+  "feb": {
+    fr: "févr."
+  },
+  "15-20 feb": {
+    fr: "15-20 févr."
+  },
+  "Tokoin, Lomé": {
+    fr: "Tokoin, Lomé"
   }
 };

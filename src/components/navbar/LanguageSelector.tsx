@@ -35,7 +35,7 @@ export const LanguageSelector = () => {
           onClick={() => setLanguage('fr')}
           className="bg-muted"
         >
-          🇫🇷 Français
+          🇫🇷 Français (uniquement)
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
