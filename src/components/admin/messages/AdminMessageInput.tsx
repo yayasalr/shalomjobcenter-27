@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Conversation } from '@/components/messages/types';
 import { Button } from '@/components/ui/button';
 import { Smile, Paperclip, Mic, Send } from 'lucide-react';
@@ -36,6 +36,8 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
   sendFromPreview,
   cancelPreview
 }) => {
+  const inputRef = useRef<HTMLDivElement>(null);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -43,6 +45,34 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         handleSendMessage();
       }
     }
+  };
+
+  // Fix cursor position and focus input on mount
+  useEffect(() => {
+    if (inputRef.current) {
+      // Focus the input
+      inputRef.current.focus();
+      
+      // Place cursor at the end
+      const range = document.createRange();
+      const sel = window.getSelection();
+      if (inputRef.current.lastChild) {
+        range.setStartAfter(inputRef.current.lastChild);
+      } else {
+        range.setStart(inputRef.current, 0);
+      }
+      range.collapse(true);
+      
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  }, []);
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    // Update message content
+    setNewMessage(e.currentTarget.textContent || '');
   };
 
   return (
@@ -74,17 +104,18 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         </Button>
         
         <div 
+          ref={inputRef}
           className="flex-1 min-h-[40px] bg-white rounded-md px-3 py-2 focus:outline-none"
           contentEditable
-          onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
+          onInput={handleInput}
           onKeyDown={handleKeyDown}
           data-placeholder="Écrivez un message..."
-          dangerouslySetInnerHTML={{__html: newMessage}}
+          suppressContentEditableWarning={true}
           style={{
             padding: '10px 12px', 
             borderRadius: '20px'
           }}
-        />
+        >{newMessage}</div>
         
         <Button 
           variant="ghost" 

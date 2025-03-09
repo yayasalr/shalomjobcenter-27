@@ -6,7 +6,10 @@ import { Conversation, Message } from '@/components/messages/types';
  */
 export const loadAdminConversations = (): Conversation[] => {
   try {
-    return JSON.parse(localStorage.getItem('admin_conversations') || '[]', (k, v) => {
+    const storedConversations = localStorage.getItem('admin_conversations');
+    if (!storedConversations) return [];
+    
+    return JSON.parse(storedConversations, (k, v) => {
       if (k === 'timestamp' && typeof v === 'string') {
         return new Date(v);
       }
@@ -15,6 +18,33 @@ export const loadAdminConversations = (): Conversation[] => {
   } catch (error) {
     console.error("Erreur lors du chargement des conversations admin:", error);
     return [];
+  }
+};
+
+/**
+ * Saves admin conversations to localStorage
+ */
+export const saveAdminConversations = (conversations: Conversation[]): void => {
+  try {
+    localStorage.setItem('admin_conversations', JSON.stringify(conversations));
+    
+    // Déclencher un événement pour indiquer que les données ont changé
+    try {
+      const event = new CustomEvent('admin-messages-updated');
+      window.dispatchEvent(event);
+      
+      // Notifier les autres onglets via BroadcastChannel
+      const channel = new BroadcastChannel('admin-messaging-channel');
+      channel.postMessage({
+        type: 'refresh-conversations',
+        timestamp: Date.now()
+      });
+      setTimeout(() => channel.close(), 100);
+    } catch (error) {
+      console.error("Erreur lors de la diffusion de l'événement:", error);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la sauvegarde des conversations admin:", error);
   }
 };
 
@@ -95,17 +125,8 @@ export const updateAdminConversation = (
   }
   
   // Sauvegarder les conversations admin mises à jour dans localStorage
-  localStorage.setItem('admin_conversations', JSON.stringify(adminConversations));
+  saveAdminConversations(adminConversations);
   
   // Log pour le debug
   console.log(`Message de l'utilisateur ${userId} mis à jour côté admin`, messagesToAdd);
-  
-  // Déclencher un événement pour indiquer que les données ont changé
-  // Cela permet aux autres onglets ou fenêtres de détecter les changements
-  try {
-    const event = new CustomEvent('admin-messages-updated', { detail: { userId } });
-    window.dispatchEvent(event);
-  } catch (error) {
-    console.error("Erreur lors de la diffusion de l'événement:", error);
-  }
 }

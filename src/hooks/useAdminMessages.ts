@@ -4,7 +4,8 @@ import { Conversation } from '@/components/messages/types';
 import { 
   loadAdminConversations, 
   getUnreadCount, 
-  getTotalUnreadCount 
+  getTotalUnreadCount,
+  saveAdminConversations
 } from '@/utils/adminMessageUtils';
 import { useAdminConversationActions } from './useAdminConversationActions';
 
@@ -36,6 +37,13 @@ export const useAdminMessages = () => {
     }
   }, [selectedConversation]);
   
+  // Sauvegarder les conversations à chaque modification
+  useEffect(() => {
+    if (conversations.length > 0) {
+      saveAdminConversations(conversations);
+    }
+  }, [conversations]);
+  
   // Charger les conversations au démarrage
   useEffect(() => {
     loadAndRefreshConversations();
@@ -43,7 +51,7 @@ export const useAdminMessages = () => {
     // Configurer un intervalle pour vérifier périodiquement les nouveaux messages (plus fréquent)
     const interval = setInterval(() => {
       loadAndRefreshConversations();
-    }, 1000); // Vérifier toutes les secondes pour une mise à jour plus réactive
+    }, 5000); // Vérifier toutes les 5 secondes pour une mise à jour plus réactive
     
     // Écouter l'événement personnalisé pour les mises à jour de messages admin
     const handleAdminMessagesUpdated = () => {

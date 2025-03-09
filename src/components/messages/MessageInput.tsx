@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Send } from 'lucide-react';
 
@@ -16,6 +16,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
   onSend,
   placeholder = "Écrivez un message..."
 }) => {
+  const inputRef = useRef<HTMLDivElement>(null);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -25,16 +27,44 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  // Fix cursor position and focus input on mount
+  useEffect(() => {
+    if (inputRef.current) {
+      // Focus the input
+      inputRef.current.focus();
+      
+      // Place cursor at the end
+      const range = document.createRange();
+      const sel = window.getSelection();
+      if (inputRef.current.lastChild) {
+        range.setStartAfter(inputRef.current.lastChild);
+      } else {
+        range.setStart(inputRef.current, 0);
+      }
+      range.collapse(true);
+      
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+  }, []);
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    onChange(e.currentTarget.textContent || '');
+  };
+
   return (
     <div className="message-input-area">
       <div
+        ref={inputRef}
         className="message-input"
         contentEditable
-        onInput={(e) => onChange(e.currentTarget.textContent || '')}
+        onInput={handleInput}
         onKeyDown={handleKeyDown}
         data-placeholder={placeholder}
-        dangerouslySetInnerHTML={{__html: value}}
-      />
+        suppressContentEditableWarning={true}
+      >{value}</div>
       
       <Button 
         onClick={onSend}
