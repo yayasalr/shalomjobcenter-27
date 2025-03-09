@@ -102,7 +102,14 @@ export const useLanguageProvider = () => {
       // Reservations
       'save_as_pdf': 'Enregistrer en PDF',
       'add_to_calendar': 'Ajouter au calendrier',
-      'add_to_google': 'Ajouter à Google'
+      'add_to_google': 'Ajouter à Google',
+
+      // Jobs descriptions
+      'housing_included_desc': 'Logements de qualité fournis',
+      'job_description': 'Description du poste',
+      'job_description_desc': 'Missions claires et détaillées',
+      'benefits': 'Avantages',
+      'benefits_desc': 'Packages attractifs et compétitifs'
     };
     
     // Return the translation or the key if not found
