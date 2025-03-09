@@ -2,23 +2,12 @@
 import { TranslationDictionary } from '../../types';
 
 export const neighborhoodsTranslations: TranslationDictionary = {
-  // Sections de quartiers
-  "popular_neighborhoods": {
-    fr: "Quartiers populaires"
-  },
-  
   // Quartiers de Lomé
   "Tokoin": {
     fr: "Tokoin"
   },
   "Bè": {
     fr: "Bè"
-  },
-  "Doulassamé": {
-    fr: "Doulassamé"
-  },
-  "Hédzranawoé": {
-    fr: "Hédzranawoé"
   },
   "Adidogomé": {
     fr: "Adidogomé"
@@ -32,7 +21,16 @@ export const neighborhoodsTranslations: TranslationDictionary = {
   "Nyékonakpoè": {
     fr: "Nyékonakpoè"
   },
+  "Hédzranawoé": {
+    fr: "Hédzranawoé"
+  },
   "Baguida": {
     fr: "Baguida"
   },
+  "Doulassamé": {
+    fr: "Doulassamé"
+  },
+  "Adakpamé": {
+    fr: "Adakpamé"
+  }
 };

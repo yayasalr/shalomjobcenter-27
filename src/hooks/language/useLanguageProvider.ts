@@ -24,6 +24,9 @@ export const useLanguageProvider = () => {
   const t = (key: string): string => {
     if (!key) return '';
     
+    // Si la clé est très longue, c'est probablement un texte déjà en français
+    if (key.length > 30 && key.includes(' ')) return key;
+    
     const translation = getTranslation(key, 'fr', translations);
     
     // Si la traduction est exactement la même que la clé, c'est qu'elle n'a pas été trouvée

@@ -7,6 +7,11 @@ export const getTranslation = (
   language: SupportedLanguage,
   translations: TranslationDictionary
 ): string => {
+  // Si la clé contient des espaces, c'est probablement déjà un texte en français
+  if (key.includes(' ') && key.length > 5) {
+    return key;
+  }
+  
   if (!translations[key]) {
     // Pour le développement, loggons les traductions manquantes
     console.log(`Traduction manquante pour la clé: ${key}`);

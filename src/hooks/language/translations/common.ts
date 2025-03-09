@@ -191,5 +191,20 @@ export const commonTranslations: TranslationDictionary = {
   },
   "loading": {
     fr: "Chargement..."
+  },
+  "jobs": {
+    fr: "Emplois"
+  },
+  "listings": {
+    fr: "Logements"
+  },
+  "Superbe villa avec vue": {
+    fr: "Superbe villa avec vue"
+  },
+  "Bas": {
+    fr: "Bas"
+  },
+  "Lomé": {
+    fr: "Lomé"
   }
 };
