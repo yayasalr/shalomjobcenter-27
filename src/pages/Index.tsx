@@ -127,7 +127,7 @@ const Index = () => {
               <h2 className="text-2xl font-medium text-sholom-dark elegant-title">
                 {searchTerm 
                   ? `Résultats pour "${searchTerm}"` 
-                  : "Logements en Afrique et partout dans le monde"}
+                  : "Coup de cœur voyageurs en Logements partout à Lomé"}
               </h2>
               
               {searchTerm && (

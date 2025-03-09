@@ -27,10 +27,10 @@ export const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4">Nos Services</h3>
             <ul className="space-y-3">
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Gardiennage</Link></li>
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Protection rapprochée</Link></li>
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Conseil en sécurité</Link></li>
-              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors">Installation de systèmes</Link></li>
+              <li><Link to="/services/gardiennage" className="text-gray-300 hover:text-white transition-colors">Gardiennage</Link></li>
+              <li><Link to="/services/protection" className="text-gray-300 hover:text-white transition-colors">Protection rapprochée</Link></li>
+              <li><Link to="/services/conseil" className="text-gray-300 hover:text-white transition-colors">Conseil en sécurité</Link></li>
+              <li><Link to="/services/installation" className="text-gray-300 hover:text-white transition-colors">Installation de systèmes</Link></li>
             </ul>
           </div>
           

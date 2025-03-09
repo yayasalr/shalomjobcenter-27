@@ -16,8 +16,8 @@ export const FeaturesSection = () => {
     >
       <div className="container mx-auto px-4">
         <SectionHeader 
-          title={t('recommended_places')}
-          subtitle={t('premium_housing')}
+          title="Logements recommandés"
+          subtitle="Des logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure."
         />
         
         <FeaturesGrid />
