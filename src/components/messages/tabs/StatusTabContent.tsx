@@ -26,9 +26,59 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
   const [isUploading, setIsUploading] = useState(false);
   const [textStatus, setTextStatus] = useState('');
   const [showTextInput, setShowTextInput] = useState(false);
-  const [statuses, setStatuses] = useState<Status[]>(initialStatuses);
+  const [statuses, setStatuses] = useState<Status[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [viewingStatus, setViewingStatus] = useState<Status | null>(null);
+  
+  // Initialiser avec des statuts par défaut si aucun n'est fourni
+  useEffect(() => {
+    if (initialStatuses && initialStatuses.length > 0) {
+      setStatuses(initialStatuses);
+    } else {
+      // Ajouter des statuts par défaut si aucun n'est fourni
+      generateDefaultStatuses();
+    }
+  }, [initialStatuses]);
+  
+  // Génération de statuts par défaut pour la démo
+  const generateDefaultStatuses = () => {
+    const defaultStatuses: Status[] = [
+      {
+        id: 1001,
+        user: "Marie Dupont",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible sur le portail."
+      },
+      {
+        id: 1002,
+        user: "Jean Martin",
+        avatar: "/placeholder.svg",
+        isViewed: true,
+        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
+      },
+      {
+        id: 1003,
+        user: "Sophie Bernard",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(Date.now() - 1000 * 60 * 180), // 3 hours ago
+        content: "Rappel: Réunion importante demain à 9h."
+      },
+      {
+        id: 1004,
+        user: "Thomas Lefebvre",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(Date.now() - 1000 * 60 * 240), // 4 hours ago
+        image: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop"
+      }
+    ];
+    
+    setStatuses(defaultStatuses);
+  };
   
   // Handling status creation
   const handleCreateStatus = (type: 'photo' | 'text') => {
@@ -123,35 +173,9 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
   // When in admin view, auto-load additional example statuses
   useEffect(() => {
     if (window.location.pathname.includes('/admin')) {
-      // Add some example statuses for admin view if none exist
+      // Add some example statuses for admin view if statuses is empty
       if (statuses.length === 0) {
-        const adminExampleStatuses: Status[] = [
-          {
-            id: 1001,
-            user: "Marie Dupont",
-            avatar: "/placeholder.svg",
-            isViewed: false,
-            timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-            content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible sur le portail."
-          },
-          {
-            id: 1002,
-            user: "Jean Martin",
-            avatar: "/placeholder.svg",
-            isViewed: true,
-            timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
-            image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
-          },
-          {
-            id: 1003,
-            user: "Sophie Bernard",
-            avatar: "/placeholder.svg",
-            isViewed: false,
-            timestamp: new Date(Date.now() - 1000 * 60 * 180), // 3 hours ago
-            content: "Rappel: Réunion importante demain à 9h."
-          }
-        ];
-        setStatuses(adminExampleStatuses);
+        generateDefaultStatuses();
       }
     }
   }, []);

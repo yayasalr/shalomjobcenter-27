@@ -33,6 +33,7 @@
   bottom: -2px;
   border-radius: 50%;
   border: 2px solid #00A884;
+  z-index: 1;
 }
 
 .status-ring-viewed::after {
@@ -68,4 +69,60 @@
 
 .whatsapp-single-tick {
   color: #a8a8a8;
+}
+
+/* WhatsApp call icons */
+.call-icon-missed {
+  color: #F25757;
+  transform: rotate(135deg);
+}
+
+.call-icon-incoming {
+  color: #25D366;
+}
+
+.call-icon-outgoing {
+  color: #0088CC;
+}
+
+/* Status view card */
+.status-view-card {
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+}
+
+.status-view-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.status-view-progress-bar {
+  height: 100%;
+  background-color: white;
+  animation: status-progress 5s linear forwards;
+}
+
+/* Call animation */
+@keyframes call-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+.call-active-icon {
+  animation: call-pulse 1.5s infinite;
 }

@@ -85,6 +85,51 @@ export const useConversationLoader = (userId: string | undefined) => {
       sender: 'admin',
     };
 
+    // Créer au moins 5 conversations pour avoir plus de données d'exemple
+    const testUsers = [
+      {
+        id: 'user1',
+        name: 'Jean Dupont',
+        avatar: '/placeholder.svg',
+        role: 'user'
+      },
+      {
+        id: 'user2',
+        name: 'Marie Martin',
+        avatar: '/placeholder.svg',
+        role: 'user'
+      },
+      {
+        id: 'user3',
+        name: 'Thomas Bernard',
+        avatar: '/placeholder.svg',
+        role: 'user'
+      }
+    ];
+
+    // Créer des conversations avec des utilisateurs de test
+    const testConversations = testUsers.map(user => {
+      const testMessage: Message = {
+        id: `test-${Date.now()}-${user.id}`,
+        content: `Bonjour, je m'appelle ${user.name}. Pouvez-vous m'aider avec une question sur le site?`,
+        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Random time in the last 24h
+        read: Math.random() > 0.5,
+        sender: 'user',
+      };
+
+      return {
+        id: `conv-${user.id}-${Date.now()}`,
+        with: user,
+        lastMessage: {
+          content: testMessage.content,
+          timestamp: testMessage.timestamp,
+          read: testMessage.read,
+          sender: 'user',
+        },
+        messages: [testMessage],
+      };
+    });
+
     const initialConversations: Conversation[] = [
       {
         id: `welcome-${Date.now()}`,
@@ -107,7 +152,8 @@ export const useConversationLoader = (userId: string | undefined) => {
           sender: 'admin',
         },
         messages: [adminWelcomeMessage],
-      }
+      },
+      ...testConversations
     ];
 
     setConversations(initialConversations);
