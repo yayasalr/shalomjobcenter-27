@@ -42,6 +42,12 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
           setIsUploading(false);
           setAvatarKey(Date.now()); // Générer une nouvelle clé pour forcer le rechargement
           
+          // Immediately display the new avatar
+          document.querySelectorAll('.user-avatar-display').forEach((el) => {
+            (el as HTMLImageElement).src = previewUrl;
+            (el as HTMLImageElement).setAttribute('key', String(Date.now()));
+          });
+          
           // Save to localStorage to persist across refreshes
           localStorage.setItem('userAvatar', previewUrl);
           
@@ -58,17 +64,17 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
   };
 
   return (
-    <Card>
-      <CardHeader className="text-center">
+    <Card className="border-0 shadow-md overflow-hidden">
+      <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="mx-auto relative mb-4 group">
           <Avatar className="h-24 w-24 mx-auto border-4 border-white shadow-md">
             <AvatarImage 
               key={avatarKey}
               src={avatar} 
               alt={user?.name || "Utilisateur"}
-              className="object-cover"
+              className="user-avatar-display object-cover"
             />
-            <AvatarFallback className="bg-primary/10 text-primary text-xl">
+            <AvatarFallback className="bg-blue-100 text-blue-700 text-xl">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </AvatarFallback>
           </Avatar>
@@ -83,33 +89,33 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
             />
           </div>
         </div>
-        <CardTitle>{user?.name || "Utilisateur"}</CardTitle>
-        <CardDescription>Membre depuis {new Date().toLocaleDateString()}</CardDescription>
+        <CardTitle className="text-white">{user?.name || "Utilisateur"}</CardTitle>
+        <CardDescription className="text-blue-100">Membre depuis {new Date().toLocaleDateString()}</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex items-center space-x-3 text-sm text-gray-500">
-          <User className="h-4 w-4" />
+      <CardContent className="space-y-4 pt-6">
+        <div className="flex items-center space-x-3 text-sm text-gray-700">
+          <User className="h-4 w-4 text-blue-600" />
           <span>{user?.name || "Non spécifié"}</span>
         </div>
-        <div className="flex items-center space-x-3 text-sm text-gray-500">
-          <Mail className="h-4 w-4" />
+        <div className="flex items-center space-x-3 text-sm text-gray-700">
+          <Mail className="h-4 w-4 text-blue-600" />
           <span>{user?.email || "email@exemple.com"}</span>
         </div>
-        <div className="flex items-center space-x-3 text-sm text-gray-500">
-          <Phone className="h-4 w-4" />
+        <div className="flex items-center space-x-3 text-sm text-gray-700">
+          <Phone className="h-4 w-4 text-blue-600" />
           <span>+228 XX XX XX XX</span>
         </div>
-        <div className="flex items-center space-x-3 text-sm text-gray-500">
-          <MapPin className="h-4 w-4" />
+        <div className="flex items-center space-x-3 text-sm text-gray-700">
+          <MapPin className="h-4 w-4 text-blue-600" />
           <span>Lomé, Togo</span>
         </div>
-        <div className="flex items-center space-x-3 text-sm text-gray-500">
-          <Calendar className="h-4 w-4" />
+        <div className="flex items-center space-x-3 text-sm text-gray-700">
+          <Calendar className="h-4 w-4 text-blue-600" />
           <span>Inscrit le {new Date().toLocaleDateString()}</span>
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" className="w-full">Modifier mon profil</Button>
+        <Button variant="outline" className="w-full border-blue-500 text-blue-700 hover:bg-blue-50">Modifier mon profil</Button>
       </CardFooter>
     </Card>
   );

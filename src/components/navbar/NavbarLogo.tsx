@@ -35,7 +35,7 @@ export const NavbarLogo = () => {
   }, [settings.logo]);
   
   return (
-    <Link to="/" className="flex items-center gap-5 sm:gap-6">
+    <Link to="/" className="flex items-center gap-8 sm:gap-10">
       <motion.div 
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }}

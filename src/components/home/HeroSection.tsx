@@ -1,10 +1,10 @@
+
 import React from 'react';
 import { Briefcase, Home, Building, Shield, MapPin } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
-import { MagicBook } from '@/components/ui/magic-book';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export const HeroSection = () => {
@@ -38,14 +38,6 @@ export const HeroSection = () => {
   return (
     <>
       <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16 relative">
-        <div className="absolute right-8 bottom-8 transform z-10 hidden md:block">
-          <MagicBook 
-            position="bottom-right"
-            isOpen={false}
-            title={t('housing_in_africa')}
-          />
-        </div>
-        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="flex flex-col lg:flex-row items-center justify-between gap-12"

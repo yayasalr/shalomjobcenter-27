@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   DropdownMenu,
@@ -29,6 +29,32 @@ interface NavbarUserMenuProps {
 
 const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuProps) => {
   const { user, logout } = useAuth();
+  const [avatarSrc, setAvatarSrc] = useState<string | undefined>(user?.avatar);
+  const [avatarKey, setAvatarKey] = useState(Date.now());
+
+  useEffect(() => {
+    // Check for avatar in localStorage first (for immediate updates)
+    const storedAvatar = localStorage.getItem('userAvatar');
+    if (storedAvatar) {
+      setAvatarSrc(storedAvatar);
+      setAvatarKey(Date.now());
+    } else if (user?.avatar) {
+      setAvatarSrc(user.avatar);
+      setAvatarKey(Date.now());
+    }
+
+    // Set up listener for avatar changes
+    const checkForAvatarUpdates = () => {
+      const currentStoredAvatar = localStorage.getItem('userAvatar');
+      if (currentStoredAvatar && currentStoredAvatar !== avatarSrc) {
+        setAvatarSrc(currentStoredAvatar);
+        setAvatarKey(Date.now());
+      }
+    };
+
+    const intervalId = setInterval(checkForAvatarUpdates, 2000);
+    return () => clearInterval(intervalId);
+  }, [user?.avatar]);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,14 +86,15 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-10 w-10 rounded-full border-2 border-gray-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="relative h-10 w-10 rounded-full border-2 border-blue-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Menu utilisateur"
         >
           <Avatar className="h-full w-full">
             <AvatarImage 
-              src={user.avatar} 
+              key={avatarKey}
+              src={avatarSrc} 
               alt={user.name || "Utilisateur"}
-              className="object-cover"
+              className="user-avatar-display object-cover"
             />
             <AvatarFallback className="bg-primary/10 text-primary">
               {initials}

@@ -14,14 +14,14 @@
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 1.5em rgba(255, 56, 92, 0.7)); /* Ombre colorée au survol */
+  filter: drop-shadow(0 0 1.5em rgba(79, 70, 229, 0.7)); /* Ombre colorée au survol */
   transform: scale(1.05) rotate(5deg); /* Légère rotation et agrandissement au survol */
 }
 
 .site-name {
   font-family: 'Playfair Display', serif;
   letter-spacing: 0.5px;
-  background: linear-gradient(90deg, #8B5CF6, #6C2BD9);
+  background: linear-gradient(90deg, #4F46E5, #6366F1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -31,11 +31,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 300ms ease;
-  margin-left: 0.5rem;
+  margin-left: 1rem;
 }
 
 .site-name:hover {
   letter-spacing: 1px; /* Espacement légèrement plus grand au survol */
+  transform: translateY(-1px);
 }
 
 @keyframes logo-spin {
@@ -60,7 +61,7 @@
     font-size: 0.95rem;
     letter-spacing: 0;
     display: inline-block !important;
-    margin-left: 0.25rem;
+    margin-left: 0.75rem;
   }
 }
 
@@ -69,5 +70,6 @@
   .site-name {
     display: inline-block !important;
     max-width: 200px !important;
+    margin-left: 0.75rem;
   }
 }
