@@ -1,11 +1,13 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useListings } from "@/hooks/useListings";
-import { useSiteSettings } from "@/hooks/settings/useSiteSettings";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useReviews } from "@/hooks/useReviews";
 import { useReservations } from "@/hooks/reservations";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Import our utility functions
 import { processListingImages } from "./utils/imageProcessing";
@@ -28,6 +30,7 @@ export const useListingDetail = () => {
   const { reviews, addReview } = useReviews();
   const { user } = useAuth();
   const { addReservation } = useReservations();
+  const queryClient = useQueryClient();
   
   // State management
   const [startDate, setStartDate] = useState<string>("");

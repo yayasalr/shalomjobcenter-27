@@ -25,17 +25,25 @@ const ReviewForm = ({
 }: ReviewFormProps) => {
   const navigate = useNavigate();
 
-  const handleSubmitReview = () => {
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!isAuthenticated) {
       toast.error("Veuillez vous connecter pour laisser un avis");
       setTimeout(() => navigate('/login'), 1500);
       return;
     }
+    
+    if (reviewText.trim().length < 3) {
+      toast.error("Votre commentaire est trop court. Veuillez entrer au moins 3 caractères.");
+      return;
+    }
+    
     onSubmit();
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md">
+    <form onSubmit={handleSubmitReview} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md">
       <h3 className="text-lg font-medium mb-4 text-airbnb-gray-400">Laisser un avis</h3>
       <div className="flex items-center mb-4">
         <div className="flex mr-4">
@@ -68,15 +76,17 @@ const ReviewForm = ({
         value={reviewText}
         onChange={(e) => setReviewText(e.target.value)}
         disabled={!isAuthenticated}
+        minLength={3}
+        required={isAuthenticated}
       />
       <Button
-        onClick={handleSubmitReview}
-        disabled={!isAuthenticated || reviewText.trim() === ""}
+        type="submit"
+        disabled={!isAuthenticated || reviewText.trim().length < 3}
         className="w-full sm:w-auto bg-airbnb-red hover:bg-airbnb-red/90 transition-all duration-300 hover:-translate-y-[2px]"
       >
         {isAuthenticated ? "Publier" : "Connectez-vous pour publier"}
       </Button>
-    </div>
+    </form>
   );
 };
 
