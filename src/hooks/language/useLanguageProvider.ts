@@ -27,7 +27,7 @@ export const useLanguageProvider = () => {
     const translation = getTranslation(key, 'fr', translations);
     
     if (translation === key) {
-      console.log(`Traduction manquante pour la clé: ${key}`);
+      console.log(`Clé de traduction manquante: ${key}`);
       return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
     

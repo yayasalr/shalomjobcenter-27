@@ -10,6 +10,5 @@ export interface LanguageContextType {
 export interface TranslationDictionary {
   [key: string]: {
     fr: string;
-    en?: string; // Gardons la compatibilité avec les traductions existantes
   };
 }
