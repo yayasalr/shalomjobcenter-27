@@ -85,14 +85,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         )}
         
-        <div className="whatsapp-message-time">
+        <div className="whatsapp-message-time text-[var(--whatsapp-message-timestamp)]">
           {formatTime(new Date(message.timestamp))}
           {isAdmin && (
-            <span className="ml-1 inline-flex">
+            <span className="whatsapp-message-status ml-1">
               {message.read ? (
-                <CheckCheck className="h-3.5 w-3.5 text-[#53bdeb]" />
+                <CheckCheck className="h-3.5 w-3.5 whatsapp-tick-read" />
               ) : (
-                <Check className="h-3.5 w-3.5 text-gray-400" />
+                <Check className="h-3.5 w-3.5 whatsapp-tick-single" />
               )}
             </span>
           )}

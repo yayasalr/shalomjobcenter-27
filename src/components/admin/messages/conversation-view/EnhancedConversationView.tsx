@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Conversation } from '@/components/messages/types';
 import AdminMessageInput from '../AdminMessageInput';
 import { ConversationHeader } from './ConversationHeader';
@@ -49,6 +49,22 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
       conversationView.classList.add('hidden');
     }
   };
+  
+  // Effet pour créer un "canal" de communication WebSocket simulé
+  useEffect(() => {
+    // Configurer une vérification périodique pour les nouveaux messages
+    const intervalId = setInterval(() => {
+      // Cette fonction serait remplacée par une véritable connexion WebSocket
+      // pour l'instant, nous simulons une mise à jour périodique
+      
+      // Déclencher l'événement personnalisé pour notifier les mises à jour
+      window.dispatchEvent(new CustomEvent('admin-messages-updated'));
+      
+    }, 3000); // Vérifier toutes les 3 secondes
+    
+    // Nettoyer l'intervalle lorsque le composant est démonté
+    return () => clearInterval(intervalId);
+  }, []);
 
   if (!conversation) {
     return <EmptyConversationState />;

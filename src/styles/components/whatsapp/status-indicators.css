@@ -27,3 +27,67 @@
 .whatsapp-status-text {
   font-size: 12px;
 }
+
+/* Indicateurs de lecture de message */
+.whatsapp-message-status {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.whatsapp-tick-single {
+  color: var(--whatsapp-tick-delivered);
+}
+
+.whatsapp-tick-double {
+  color: var(--whatsapp-tick-delivered);
+}
+
+.whatsapp-tick-read {
+  color: var(--whatsapp-tick-read);
+}
+
+/* Indicateur de saisie */
+.whatsapp-typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 2px 6px;
+  background-color: var(--whatsapp-bubble-other);
+  border-radius: 8px;
+  width: fit-content;
+  margin: 4px 0;
+}
+
+.whatsapp-typing-dots {
+  display: flex;
+}
+
+.whatsapp-typing-dot {
+  width: 6px;
+  height: 6px;
+  margin: 0 1px;
+  background-color: var(--whatsapp-icon-color);
+  border-radius: 50%;
+  animation: typingAnimation 1.5s infinite ease-in-out;
+}
+
+.whatsapp-typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.whatsapp-typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.whatsapp-typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
