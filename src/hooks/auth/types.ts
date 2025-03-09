@@ -25,7 +25,7 @@ export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
-  twoFactorCode?: string; // Added to support 2FA
+  twoFactorCode?: string; // This was already added but making sure it's here
 }
 
 // Registration Data Type

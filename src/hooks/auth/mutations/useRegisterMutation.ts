@@ -19,7 +19,7 @@ export const useRegisterMutation = (
   };
 
   const register = {
-    mutateAsync: async (data: RegisterData): Promise<void> => {
+    mutateAsync: async (data: RegisterData): Promise<User | void> => {
       setIsPending(true);
       return new Promise((resolve, reject) => {
         try {
@@ -38,8 +38,9 @@ export const useRegisterMutation = (
             const newUser: User = {
               id: `user-${Date.now()}`,
               email: data.email,
-              name: data.name,
+              name: data.name || data.email.split('@')[0],
               role: 'user',
+              isAdmin: false, // Add the required isAdmin property
               created: new Date().toISOString(),
               lastLogin: new Date().toISOString(),
               loginCount: 1,
@@ -63,7 +64,7 @@ export const useRegisterMutation = (
             });
             localStorage.setItem('security_logs', JSON.stringify(securityLogs));
             
-            resolve();
+            resolve(newUser);
             setIsPending(false);
           }, 500);
         } catch (error) {

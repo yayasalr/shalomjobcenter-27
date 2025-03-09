@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import useAuth from '@/hooks/useAuth';
@@ -15,13 +14,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false 
 }) => {
-  const { user, isLoading, isAuthenticated, isAdmin } = useAuth();
+  const { user, isLoading, isAuthenticated, isAdmin, refreshSession } = useAuth();
   const location = useLocation();
   const { getItem, setItem } = useLocalStorage();
 
   useEffect(() => {
     // Enhanced session validation
     if (isAuthenticated && user) {
+      // Call refreshSession if available
+      if (refreshSession) {
+        refreshSession();
+      }
+      
       // Verify session integrity using fingerprinting
       const currentFingerprint = `${navigator.userAgent}-${navigator.language}-${screen.width}x${screen.height}`;
       const storedFingerprint = getItem<string>(`fingerprint_${user?.id}`, '');
@@ -77,7 +81,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         setItem('security_incidents', securityIncidents);
       }
     }
-  }, [location.pathname, isAuthenticated, requireAdmin, user, getItem, setItem, isAdmin]);
+  }, [location.pathname, isAuthenticated, requireAdmin, user, getItem, setItem, isAdmin, refreshSession]);
 
   // If loading, show loading state
   if (isLoading) {

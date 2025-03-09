@@ -89,7 +89,11 @@ const Register = () => {
     try {
       // On supprime le champ confirmPassword avant d'envoyer les données
       const { confirmPassword, ...registerData } = formData;
-      await register.mutateAsync(registerData);
+      // Add the required acceptTerms field
+      await register.mutateAsync({
+        ...registerData,
+        acceptTerms: true
+      });
       navigate("/login");
       toast.success("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
     } catch (error) {
