@@ -17,7 +17,7 @@
     --primary: 348 100% 61%;
     --primary-foreground: 0 0% 100%;
  
-    --secondary: 0 0% 98%;
+    --secondary: 0 0% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
  
     --muted: 210 40% 96.1%;
@@ -38,7 +38,7 @@
     /* SHALOM variables */
     --sholom-primary: 348 100% 61%;
     --sholom-primary-dark: 348 83% 47%;
-    --sholom-secondary: 0 0% 98%;
+    --sholom-secondary: 0 0% 96%;
     --sholom-accent: 348 100% 61%;
     --sholom-dark: 0 0% 13%;
     --sholom-light: 0 0% 98%;

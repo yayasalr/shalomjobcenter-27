@@ -2,7 +2,7 @@
 import { SiteSettings } from '@/types/siteSettings';
 
 export const defaultSettings: Partial<SiteSettings> = {
-  primaryColor: '#007BFF',
+  primaryColor: '#FF385C',
   secondaryColor: '#6C757D',
   logo: '/logo.png',
   logoUrl: '/logo.png',

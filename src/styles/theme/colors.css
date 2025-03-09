@@ -1,16 +1,16 @@
 
 /* Background colors */
 .bg-sholom-primary {
-  background-color: var(--primary-color, #8B5CF6);
+  background-color: var(--primary-color, #FF385C);
 }
 .bg-sholom-primary-dark {
-  background-color: var(--button-primary-hover, #7c4df0);
+  background-color: var(--button-primary-hover, #e63553);
 }
 .bg-sholom-primary-lighter {
-  background-color: var(--sholom-primary-lighter, #a78bfa);
+  background-color: var(--sholom-primary-lighter, #ff6b87);
 }
 .bg-sholom-primary-lightest {
-  background-color: var(--sholom-primary-lightest, #ddd6fe);
+  background-color: var(--sholom-primary-lightest, #ffccd4);
 }
 .bg-sholom-secondary {
   background-color: var(--button-secondary, #f3f4f6);
@@ -19,10 +19,10 @@
   background-color: var(--sholom-secondary-darker, #9ca3af);
 }
 .bg-sholom-accent {
-  background-color: var(--button-accent, #f59e0b);
+  background-color: var(--button-accent, #FF385C);
 }
 .bg-sholom-accent-darker {
-  background-color: var(--sholom-accent-darker, #d97706);
+  background-color: var(--sholom-accent-darker, #e63553);
 }
 .bg-sholom-dark {
   background-color: var(--text-dark, #1A1F2C);
@@ -48,36 +48,36 @@
 
 /* Hover background colors */
 .hover\:bg-sholom-primary:hover {
-  background-color: var(--button-primary, #8B5CF6);
+  background-color: var(--button-primary, #FF385C);
 }
 .hover\:bg-sholom-primary-dark:hover {
-  background-color: var(--button-primary-hover, #7c4df0);
+  background-color: var(--button-primary-hover, #e63553);
 }
 .hover\:bg-sholom-primary-lighter:hover {
-  background-color: var(--sholom-primary-lighter, #a78bfa);
+  background-color: var(--sholom-primary-lighter, #ff6b87);
 }
 .hover\:bg-sholom-accent:hover {
-  background-color: var(--button-accent, #f59e0b);
+  background-color: var(--button-accent, #FF385C);
 }
 .hover\:bg-sholom-accent-darker:hover {
-  background-color: var(--sholom-accent-darker, #d97706);
+  background-color: var(--sholom-accent-darker, #e63553);
 }
 
 /* Text colors with improved contrast */
 .text-sholom-primary {
-  color: var(--primary-color, #8B5CF6);
+  color: var(--primary-color, #FF385C);
 }
 .text-sholom-primary-dark {
-  color: var(--button-primary-hover, #7c4df0);
+  color: var(--button-primary-hover, #e63553);
 }
 .text-sholom-primary-lighter {
-  color: var(--sholom-primary-lighter, #a78bfa);
+  color: var(--sholom-primary-lighter, #ff6b87);
 }
 .text-sholom-secondary {
   color: var(--button-secondary, #f3f4f6);
 }
 .text-sholom-accent {
-  color: var(--button-accent, #f59e0b);
+  color: var(--button-accent, #FF385C);
 }
 .text-sholom-dark {
   color: var(--text-dark, #1A1F2C);
@@ -103,13 +103,13 @@
 
 /* Border colors */
 .border-sholom-primary {
-  border-color: var(--primary-color, #8B5CF6);
+  border-color: var(--primary-color, #FF385C);
 }
 .border-sholom-secondary {
   border-color: var(--button-secondary, #f3f4f6);
 }
 .border-sholom-accent {
-  border-color: var(--button-accent, #f59e0b);
+  border-color: var(--button-accent, #FF385C);
 }
 .border-sholom-error {
   border-color: var(--sholom-error, #ef4444);
@@ -175,11 +175,11 @@
 }
 
 .legal-link {
-  color: var(--legal-link-color, #8B5CF6);
+  color: var(--legal-link-color, #FF385C);
   text-decoration: underline;
   transition: color 0.2s ease;
 }
 
 .legal-link:hover {
-  color: var(--button-primary-hover, #7c4df0);
+  color: var(--button-primary-hover, #e63553);
 }

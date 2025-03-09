@@ -37,7 +37,7 @@ export const HeroSection = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-sholom-light to-blue-50 pt-28 pb-16 relative">
+      <div className="bg-gradient-to-br from-slate-50 to-blue-50 pt-28 pb-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="flex flex-col lg:flex-row items-center justify-between gap-12"
@@ -50,7 +50,7 @@ export const HeroSection = () => {
                 {t('discover_home')} <span className="text-sholom-primary italic">chez-vous</span> à Lomé
               </h1>
               <p className="text-xl text-sholom-muted max-w-2xl">
-                {t('premium_housing')}
+                {t('hero_housing_desc')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button 
@@ -84,7 +84,7 @@ export const HeroSection = () => {
                       onClick={() => navigate('/', { state: { searchTerm: neighborhood } })}
                     >
                       <MapPin className="h-3.5 w-3.5 mr-1 text-sholom-primary" />
-                      {t(neighborhood)}
+                      {neighborhood}
                     </Button>
                   ))}
                 </div>
