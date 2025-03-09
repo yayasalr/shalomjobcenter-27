@@ -12,6 +12,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isUser }) => {
     return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   };
 
+  // Format timestamp consistently
+  const timestamp = message.timestamp instanceof Date 
+    ? message.timestamp 
+    : new Date(message.timestamp);
+
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 relative`}>
       <div 
@@ -25,7 +30,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isUser }) => {
         <div className="whitespace-pre-wrap break-words">{message.content}</div>
         
         <div className="whatsapp-message-time">
-          {formatTime(new Date(message.timestamp))}
+          {formatTime(timestamp)}
           {message.sender === 'user' && (
             <span className="whatsapp-tick ml-1">
               {message.read ? (

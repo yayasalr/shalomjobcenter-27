@@ -1,11 +1,16 @@
 
 import React, { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusViewerProps } from './types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { formatTimeElapsed } from './utils/statusUtils';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
   const [progress, setProgress] = useState(0);
+  const [showViewers, setShowViewers] = useState(false);
+  const { loadData, saveData } = useLocalStorage();
   
   useEffect(() => {
     if (!status) return;
@@ -29,13 +34,54 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
       onClose();
     }, 5000);
     
+    // Record view if not already viewed
+    if (status) {
+      const viewedStatuses = loadData('viewed-statuses', {});
+      
+      if (!viewedStatuses[status.id]) {
+        // Record the viewer
+        const currentUser = loadData('currentUser', { id: 'user-1', name: 'Utilisateur', avatar: '/placeholder.svg' });
+        
+        // Get existing viewers
+        const statusViewers = loadData(`status-viewers-${status.id}`, []);
+        
+        // Add current user to viewers if not already there
+        if (!statusViewers.some((viewer: any) => viewer.id === currentUser.id)) {
+          const updatedViewers = [
+            ...statusViewers,
+            {
+              id: currentUser.id,
+              name: currentUser.name,
+              avatar: currentUser.avatar || '/placeholder.svg',
+              viewedAt: new Date().toISOString()
+            }
+          ];
+          
+          saveData(`status-viewers-${status.id}`, updatedViewers);
+        }
+        
+        // Mark as viewed
+        viewedStatuses[status.id] = true;
+        saveData('viewed-statuses', viewedStatuses);
+      }
+    }
+    
     return () => {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-  }, [status, onClose]);
+  }, [status, onClose, loadData, saveData]);
   
   if (!status) return null;
+
+  // Load viewers
+  const viewers = loadData(`status-viewers-${status.id}`, []);
+  const viewCount = viewers.length;
+
+  const toggleViewers = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowViewers(!showViewers);
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
@@ -57,11 +103,18 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
               className="h-full w-full object-cover"
             />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-white font-medium">{status.user}</p>
             <p className="text-gray-300 text-xs">
-              {new Date(status.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+              {formatTimeElapsed(status.timestamp)}
             </p>
+          </div>
+          <div 
+            className="flex items-center text-white cursor-pointer"
+            onClick={toggleViewers}
+          >
+            <Eye className="h-4 w-4 mr-1" />
+            <span className="text-sm">{viewCount}</span>
           </div>
         </div>
         
@@ -78,6 +131,32 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
               alt="Status" 
               className="max-h-[80vh] max-w-full"
             />
+          </div>
+        )}
+        
+        {showViewers && (
+          <div className="absolute bottom-16 right-4 bg-gray-900 rounded-lg p-3 w-64 max-h-48 overflow-y-auto">
+            <h3 className="text-white font-medium mb-2 text-sm">Vu par ({viewCount})</h3>
+            {viewers.length > 0 ? (
+              <div className="space-y-2">
+                {viewers.map((viewer: any) => (
+                  <div key={viewer.id} className="flex items-center">
+                    <Avatar className="h-8 w-8 mr-2">
+                      <AvatarImage src={viewer.avatar} />
+                      <AvatarFallback>{viewer.name.substring(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-white text-sm">{viewer.name}</p>
+                      <p className="text-gray-400 text-xs">
+                        {new Date(viewer.viewedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">Personne n'a encore vu ce statut</p>
+            )}
           </div>
         )}
         

@@ -35,3 +35,10 @@ export interface StatusTabContentProps {
   onViewStatus?: (status: Status) => void;
   onStatusCreated?: (status: Status) => void;
 }
+
+export interface StatusViewer {
+  id: string;
+  name: string;
+  avatar: string;
+  viewedAt: string;
+}

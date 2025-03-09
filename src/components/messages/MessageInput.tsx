@@ -33,29 +33,23 @@ const MessageInput: React.FC<MessageInputProps> = ({
       // Focus the input
       inputRef.current.focus();
       
-      // Clear existing content and set it properly to fix cursor position
-      const content = value;
+      // Clear existing content
       inputRef.current.innerHTML = '';
       
-      // Create and append text node
-      if (content) {
-        const textNode = document.createTextNode(content);
+      // Create and append text node if there's content
+      if (value) {
+        const textNode = document.createTextNode(value);
         inputRef.current.appendChild(textNode);
       }
       
       // Place cursor at the end
       const range = document.createRange();
       const sel = window.getSelection();
-      if (inputRef.current.childNodes.length > 0) {
-        const lastChild = inputRef.current.childNodes[inputRef.current.childNodes.length - 1];
-        range.setStartAfter(lastChild);
-      } else {
-        range.setStart(inputRef.current, 0);
-      }
-      range.collapse(true);
       
       if (sel) {
         sel.removeAllRanges();
+        range.selectNodeContents(inputRef.current);
+        range.collapse(false); // collapse to end
         sel.addRange(range);
       }
     }
