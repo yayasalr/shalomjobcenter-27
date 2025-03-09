@@ -37,6 +37,13 @@
   color: #333;
 }
 
+/* Add styling for empty input placeholder */
+.message-input[data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: #888;
+  pointer-events: none;
+}
+
 .message-bubble {
   position: relative;
   padding: 8px 12px;

@@ -1,23 +1,23 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Send, Mic } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface SendButtonProps {
-  hasContent: boolean;
-  isSending: boolean;
   onClick: () => void;
+  disabled: boolean;
 }
 
-const SendButton: React.FC<SendButtonProps> = ({ hasContent, isSending, onClick }) => {
+const SendButton: React.FC<SendButtonProps> = ({ onClick, disabled }) => {
   return (
     <Button 
       onClick={onClick}
-      disabled={isSending}
-      className="whatsapp-send-button touch-manipulation"
+      disabled={disabled}
+      className="rounded-full bg-blue-500 hover:bg-blue-600"
       size="icon"
+      aria-label="Envoyer le message"
     >
-      {hasContent ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+      <Send className="h-5 w-5" />
     </Button>
   );
 };
