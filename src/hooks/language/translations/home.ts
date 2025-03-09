@@ -189,5 +189,34 @@ export const homeTranslations: TranslationDictionary = {
   },
   "per_month": {
     fr: "par mois"
+  },
+  
+  // Traductions manquantes
+  "jobs": {
+    fr: "Emplois"
+  },
+  "listings": {
+    fr: "Logements"
+  },
+  "security_jobs": {
+    fr: "Emplois de sécurité"
+  },
+  "housing_included": {
+    fr: "Logement inclus"
+  },
+  "housing_included_desc": {
+    fr: "Possibilité de logement sur place pour de nombreux postes"
+  },
+  "job_description": {
+    fr: "Description du poste"
+  },
+  "job_description_desc": {
+    fr: "Des descriptions détaillées de tous les postes disponibles"
+  },
+  "benefits": {
+    fr: "Avantages"
+  },
+  "benefits_desc": {
+    fr: "Des avantages concurrentiels pour tous nos employés"
   }
 };

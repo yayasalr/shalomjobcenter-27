@@ -15,18 +15,7 @@ import { getTranslation } from './translation-utils';
 
 // Fonction pour déterminer les traductions à charger en fonction de la route
 const getRouteTranslations = (pathname: string): TranslationDictionary => {
-  // Détecter la route actuelle pour charger uniquement les traductions nécessaires
-  if (pathname.includes('/jobs') || pathname.includes('/job/') || pathname.includes('/emplois')) {
-    return { ...commonTranslations, ...jobsTranslations };
-  } else if (pathname.includes('/listings') || pathname.includes('/listing/') || pathname.includes('/logements')) {
-    return { ...commonTranslations, ...listingsTranslations };
-  } else if (pathname.includes('/profile') || pathname.includes('/user/') || pathname.includes('/profil')) {
-    return { ...commonTranslations, ...profileTranslations };
-  } else if (pathname === '/' || pathname.includes('/home') || pathname.includes('/accueil') || pathname.includes('/index')) {
-    return { ...commonTranslations, ...homeTranslations, ...jobsTranslations };
-  }
-  
-  // Route par défaut: charger toutes les traductions
+  // Chargeons toutes les traductions par défaut pour résoudre le problème
   return defaultTranslations;
 };
 
@@ -41,39 +30,12 @@ export const useLanguageProvider = () => {
 
   // Mettre à jour les traductions basées sur la route actuelle
   useEffect(() => {
-    const updateTranslationsForRoute = () => {
-      const routeTranslations = getRouteTranslations(window.location.pathname);
-      setTranslations({ ...routeTranslations });
-    };
-
-    // Mettre à jour les traductions au chargement initial
-    updateTranslationsForRoute();
-
-    // Écouter les changements de route
-    const handleRouteChange = () => {
-      updateTranslationsForRoute();
-    };
-
-    // Écouter les événements de navigation
-    window.addEventListener('popstate', handleRouteChange);
+    // Force l'application à charger toutes les traductions
+    setTranslations({ ...defaultTranslations });
     
-    // Créer un observateur pour détecter les changements dans l'URL
-    const observer = new MutationObserver(() => {
-      if (window.location.pathname !== currentPathname) {
-        currentPathname = window.location.pathname;
-        updateTranslationsForRoute();
-      }
-    });
-    
-    let currentPathname = window.location.pathname;
-    
-    // Observer les changements dans le document
-    observer.observe(document, { subtree: true, childList: true });
-
-    return () => {
-      window.removeEventListener('popstate', handleRouteChange);
-      observer.disconnect();
-    };
+    // Assurons-nous que le paramètre language est toujours 'fr'
+    updateSettings({ language: 'fr' });
+    setItem('userLanguage', 'fr');
   }, []);
 
   // Fonction pour changer la langue (même si nous n'avons que le français)
@@ -88,6 +50,7 @@ export const useLanguageProvider = () => {
     if (!key) return '';
     
     const translation = getTranslation(key, 'fr', translations);
+    
     // Si la traduction est la même que la clé, c'est que la traduction n'existe pas
     if (translation === key) {
       console.log(`Traduction manquante pour la clé: ${key}`);

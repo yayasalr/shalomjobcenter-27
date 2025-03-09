@@ -2,144 +2,212 @@
 import { TranslationDictionary } from '../types';
 
 export const jobsTranslations: TranslationDictionary = {
-  // Emplois
-  "job_type": {
-    fr: "Type d'emploi"
+  // Offres d'emploi - En-têtes et bannières
+  "find_your_career": {
+    fr: "Trouvez votre"
   },
-  "salary": {
-    fr: "Salaire"
+  "professional_opportunities": {
+    fr: "Des opportunités professionnelles adaptées à vos compétences et ambitions, avec un processus de candidature simplifié."
   },
-  "experience": {
-    fr: "Expérience"
-  },
-  "apply_now": {
-    fr: "Postuler"
-  },
-  "requirements": {
-    fr: "Exigences"
-  },
-  "job_description": {
-    fr: "Description du poste"
-  },
-  "security_jobs": {
-    fr: "Emplois de sécurité"
-  },
-  "housing_included": {
-    fr: "Logement inclus"
-  },
-  "benefits": {
-    fr: "Avantages"
-  },
-  // Descriptions pour la section emplois
-  "premium_housing_desc": {
-    fr: "Des logements de qualité supérieure inclus avec nos offres d'emploi de sécurité."
-  },
-  "housing_included_desc": {
-    fr: "Hébergement de qualité fourni pour tous nos employés de sécurité."
-  },
-  "job_description_desc": {
-    fr: "Missions variées adaptées à vos compétences et à votre expérience."
-  },
-  "benefits_desc": {
-    fr: "Nombreux avantages sociaux, formation continue et perspectives d'évolution."
-  },
-  // Filtres emplois
-  "all_jobs": {
-    fr: "Tous les emplois"
-  },
-  "reset_filters": {
-    fr: "Réinitialiser les filtres"
-  },
-  "no_jobs_found": {
-    fr: "Aucune offre trouvée"
-  },
-  "no_jobs_matching": {
-    fr: "Aucune offre ne correspond à vos critères de recherche."
+  "filter_offers": {
+    fr: "Filtrer les offres"
   },
   "view_housing": {
     fr: "Voir les logements"
   },
-  "filter_by_housing": {
-    fr: "Voir uniquement les logements"
+  "starting_today": {
+    fr: "Début immédiat"
   },
+  "premium_security_agent": {
+    fr: "Agent de sécurité premium"
+  },
+  
+  // Types d'emploi
+  "security_jobs": {
+    fr: "Emplois de sécurité"
+  },
+  "customer_service": {
+    fr: "Service client"
+  },
+  "administrative": {
+    fr: "Administratif"
+  },
+  "technical": {
+    fr: "Technique"
+  },
+  "management": {
+    fr: "Management"
+  },
+  "other": {
+    fr: "Autre"
+  },
+  
+  // Avantages emploi
+  "stable_careers": {
+    fr: "Carrières stables"
+  },
+  "housing_included": {
+    fr: "Logement inclus"
+  },
+  "continuous_training": {
+    fr: "Formation continue"
+  },
+  
+  // Filtres d'emploi
   "contract_type": {
     fr: "Type de contrat"
+  },
+  "location": {
+    fr: "Localisation"
   },
   "domain": {
     fr: "Domaine"
   },
-  "all_domains": {
-    fr: "Tous les domaines"
+  "salary_range": {
+    fr: "Fourchette de salaire"
   },
-  "residential_security": {
-    fr: "Sécurité résidentielle"
+  "full_time": {
+    fr: "Temps plein"
   },
-  "bodyguard": {
-    fr: "Garde du corps"
+  "part_time": {
+    fr: "Temps partiel"
   },
-  "housing_offer": {
-    fr: "Offre de logement"
+  "internship": {
+    fr: "Stage"
   },
-  // Nouveaux ajouts
-  "discover_home": {
-    fr: "Découvrez votre chez-vous à Lomé"
+  "freelance": {
+    fr: "Freelance"
   },
-  "premium_housing": {
-    fr: "Logements de qualité supérieure"
+  "cdd": {
+    fr: "CDD"
   },
-  "find_housing": {
-    fr: "Trouver un logement"
+  "cdi": {
+    fr: "CDI"
   },
-  "job_offers": {
-    fr: "Offres d'emploi"
+  "min_salary": {
+    fr: "Salaire minimum"
   },
-  "popular_neighborhoods": {
-    fr: "Quartiers populaires"
+  "max_salary": {
+    fr: "Salaire maximum"
   },
-  "verified_housing": {
-    fr: "Logements vérifiés"
+  "currency": {
+    fr: "FCFA"
   },
-  "secure_payments": {
-    fr: "Paiements sécurisés"
+  "apply_filters": {
+    fr: "Appliquer les filtres"
   },
-  "local_support": {
-    fr: "Support local"
+  "reset_filters": {
+    fr: "Réinitialiser les filtres"
   },
-  "features_title": {
-    fr: "Logements recommandés"
+  "with_housing": {
+    fr: "Avec logement"
   },
-  "features_subtitle": {
-    fr: "Des logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure."
+  
+  // Détails de l'emploi
+  "job_details": {
+    fr: "Détails de l'emploi"
   },
-  "secure_payment": {
-    fr: "Paiement sécurisé"
+  "job_requirements": {
+    fr: "Exigences du poste"
   },
-  "secure_payment_desc": {
-    fr: "Transactions protégées par cryptage avancé pour garantir la sécurité de vos données financières."
+  "application_deadline": {
+    fr: "Date limite de candidature"
   },
-  "quality_verified": {
-    fr: "Qualité vérifiée"
+  "positions_available": {
+    fr: "Postes disponibles"
   },
-  "quality_verified_desc": {
-    fr: "Tous nos logements sont inspectés pour garantir qu'ils répondent à nos standards de qualité."
+  "position": {
+    fr: "Poste"
   },
-  "prime_locations": {
-    fr: "Emplacements privilégiés"
+  "positions": {
+    fr: "Postes"
   },
-  "prime_locations_desc": {
-    fr: "Des propriétés situées dans les meilleurs quartiers, à proximité des commodités essentielles."
+  "apply_now": {
+    fr: "Postuler maintenant"
   },
-  "24_7_support": {
-    fr: "Assistance 24/7"
+  "share_job": {
+    fr: "Partager l'offre"
   },
-  "24_7_support_desc": {
-    fr: "Notre équipe est disponible à tout moment pour répondre à vos questions et résoudre vos problèmes."
+  "save_job": {
+    fr: "Sauvegarder l'offre"
   },
-  "satisfaction_guarantee": {
-    fr: "Garantie satisfaction"
+  "similar_jobs": {
+    fr: "Offres similaires"
   },
-  "satisfaction_guarantee_desc": {
-    fr: "Nous nous engageons à assurer votre satisfaction ou nous vous proposons des solutions alternatives."
+  "posted_on": {
+    fr: "Publié le"
+  },
+  "salary": {
+    fr: "Salaire"
+  },
+  "monthly": {
+    fr: "Mensuel"
+  },
+  
+  // Candidature
+  "apply_for_job": {
+    fr: "Postuler à cette offre"
+  },
+  "full_name": {
+    fr: "Nom complet"
+  },
+  "phone_number": {
+    fr: "Numéro de téléphone"
+  },
+  "resume": {
+    fr: "CV"
+  },
+  "cover_letter": {
+    fr: "Lettre de motivation"
+  },
+  "upload_resume": {
+    fr: "Télécharger votre CV"
+  },
+  "optional": {
+    fr: "Optionnel"
+  },
+  "submit_application": {
+    fr: "Soumettre ma candidature"
+  },
+  "application_sent": {
+    fr: "Candidature envoyée"
+  },
+  "application_received": {
+    fr: "Nous avons bien reçu votre candidature. Nous vous contacterons prochainement."
+  },
+  
+  // Pas de résultats
+  "no_jobs_found": {
+    fr: "Aucune offre d'emploi trouvée"
+  },
+  "no_jobs_matching": {
+    fr: "Il n'y a pas d'offres d'emploi correspondant à vos critères de recherche."
+  },
+  "try_adjusting_filters": {
+    fr: "Essayez d'ajuster vos filtres ou revenez plus tard pour découvrir de nouvelles opportunités."
+  },
+  "refresh": {
+    fr: "Actualiser"
+  },
+  "browse_all_jobs": {
+    fr: "Parcourir toutes les offres"
+  },
+  
+  // Nouvelles traductions pour spécifique à la page d'emploi
+  "security_and_protection": {
+    fr: "Sécurité et protection"
+  },
+  "hospitality": {
+    fr: "Hôtellerie"
+  },
+  "real_estate": {
+    fr: "Immobilier"
+  },
+  "healthcare": {
+    fr: "Santé"
+  },
+  "education": {
+    fr: "Éducation"
   },
   "jobs": {
     fr: "Emplois"
@@ -147,25 +215,22 @@ export const jobsTranslations: TranslationDictionary = {
   "listings": {
     fr: "Logements"
   },
-  "find_your_career": {
-    fr: "Trouvez votre carrière à Lomé"
+  "posted_x_days_ago": {
+    fr: "Publié il y a {days} jours"
   },
-  "professional_opportunities": {
-    fr: "Des opportunités professionnelles dans la sécurité et des logements exclusifs pour nos employés dans toute la ville de Lomé."
+  "housing_included_desc": {
+    fr: "Possibilité de logement sur place pour de nombreux postes"
   },
-  "filter_offers": {
-    fr: "Filtrer les offres"
+  "job_description": {
+    fr: "Description du poste"
   },
-  "stable_careers": {
-    fr: "Carrières stables"
+  "job_description_desc": {
+    fr: "Des descriptions détaillées de tous les postes disponibles"
   },
-  "continuous_training": {
-    fr: "Formations continues"
+  "benefits": {
+    fr: "Avantages"
   },
-  "premium_security_agent": {
-    fr: "Agent de sécurité premium"
-  },
-  "starting_today": {
-    fr: "Dès aujourd'hui"
+  "benefits_desc": {
+    fr: "Des avantages concurrentiels pour tous nos employés"
   }
 };
