@@ -17,7 +17,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onBackClick
 }) => {
   return (
-    <div className="whatsapp-header flex items-center gap-2 p-2">
+    <div className="whatsapp-header flex items-center gap-2 p-2 bg-[#00a884]">
       <Button 
         variant="ghost" 
         size="icon" 
@@ -30,7 +30,8 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
       <div className="flex items-center flex-1 gap-3">
         <div className="relative">
           <Avatar className="whatsapp-user-avatar h-10 w-10 border-2 border-white/10">
-            <img src={conversation.with.avatar || "/placeholder.svg"} alt={conversation.with.name} />
+            <AvatarImage src={conversation.with.avatar || "/placeholder.svg"} alt={conversation.with.name} />
+            <AvatarFallback>{conversation.with.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className={isOnline ? "whatsapp-online-indicator" : "whatsapp-offline-indicator"}></div>
         </div>
