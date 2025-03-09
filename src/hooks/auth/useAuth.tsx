@@ -1,95 +1,65 @@
 
-import { useState, useEffect, createContext, useContext } from "react";
-import { User, AuthContextType } from "./types";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "./mutations/useLoginMutation";
+import { useRegisterMutation } from "./mutations/useRegisterMutation";
+import { useLogoutMutation } from "./mutations/useLogoutMutation";
+import { AuthContextType, User, LoginCredentials, RegisterData } from "./types";
 import { LocalStorageKeys } from "./authUtils";
-import { useSecurityFeatures } from "./useSecurityFeatures";
-import { useAuthMutations } from "./useAuthMutations";
 
-// Create authentication context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const initialContext: AuthContextType = {
+  user: null,
+  login: {
+    mutateAsync: async () => {},
+    isPending: false,
+  },
+  register: {
+    mutateAsync: async () => {},
+    isPending: false,
+  },
+  logout: () => {},
+  isLoading: true,
+};
 
-// Authentication provider component
+const AuthContext = createContext<AuthContextType>(initialContext);
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
-  // Check if user is already logged in on load
+  const { login } = useLoginMutation(setUser);
+  const { register } = useRegisterMutation(setUser);
+  const { logout } = useLogoutMutation(setUser);
+
   useEffect(() => {
-    const storedUser = localStorage.getItem(LocalStorageKeys.USER);
-    if (storedUser) {
+    const loadUser = () => {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        
-        // Check if the account is locked
-        if (parsedUser.lockedUntil && new Date(parsedUser.lockedUntil) > new Date()) {
-          console.log("Account locked until", new Date(parsedUser.lockedUntil));
-          // Don't connect the user if their account is locked
-        } else {
-          setUser(parsedUser);
+        const storedUser = localStorage.getItem(LocalStorageKeys.USER);
+        if (storedUser) {
+          setUser(JSON.parse(storedUser));
         }
       } catch (error) {
-        console.error("Failed to parse user data:", error);
-        localStorage.removeItem(LocalStorageKeys.USER);
+        console.error("Error restoring auth state:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
-    setLoading(false);
+    };
+
+    loadUser();
   }, []);
 
-  // Get security features
-  const securityFeatures = useSecurityFeatures(user);
-  
-  // Get authentication mutations
-  const authMutations = useAuthMutations(user, setUser);
-
-  // Computed properties
-  const isAuthenticated = !!user;
-  const isAdmin = !!user?.isAdmin;
-  const isLoading = loading;
-
-  // Default implementations for required interface methods
-  const checkDeviceTrusted = (userId: string) => {
-    // Implementation of device trust verification
-    const trustedDevices = JSON.parse(localStorage.getItem(`trusted_devices_${userId}`) || '[]');
-    const currentDeviceId = localStorage.getItem('current_device_id');
-    return trustedDevices.includes(currentDeviceId);
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    isLoading,
   };
 
-  const handleSecurityAlert = (type: string, details: any) => {
-    // Basic implementation to log security alerts
-    console.warn(`Security Alert [${type}]:`, details);
-    const securityAlerts = JSON.parse(localStorage.getItem('security_alerts') || '[]');
-    securityAlerts.push({
-      type,
-      details,
-      timestamp: new Date().toISOString()
-    });
-    localStorage.setItem('security_alerts', JSON.stringify(securityAlerts));
-  };
-
-  return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading,
-      isLoading,
-      isAuthenticated,
-      isAdmin,
-      ...authMutations,
-      ...securityFeatures,
-      checkDeviceTrusted,
-      handleSecurityAlert
-    }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook to access auth context
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+const useAuth = () => useContext(AuthContext);
 
 export default useAuth;
