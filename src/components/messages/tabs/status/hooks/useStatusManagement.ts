@@ -34,6 +34,26 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
         }
       }
       
+      // Aussi vérifier les statuts admin et les inclure
+      const adminStatuses = loadData<Status[]>('admin-statuses', []);
+      if (Array.isArray(adminStatuses) && adminStatuses.length > 0) {
+        processedStatuses = [...processedStatuses, ...adminStatuses];
+      }
+      
+      // Tenter de charger tous les statuts des utilisateurs
+      const usersList = loadData<any[]>('users', []);
+      if (Array.isArray(usersList) && usersList.length > 0) {
+        for (const user of usersList) {
+          if (user && user.id) {
+            const userStatusKey = `status_${user.id}`;
+            const userStatuses = loadData<Status[]>(userStatusKey, []);
+            if (Array.isArray(userStatuses) && userStatuses.length > 0) {
+              processedStatuses = [...processedStatuses, ...userStatuses];
+            }
+          }
+        }
+      }
+      
       if (processedStatuses.length > 0) {
         // Filter out expired statuses (older than 24 hours)
         const validStatuses = filterExpiredStatuses(processedStatuses);
@@ -127,6 +147,15 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
     const updatedStatuses = [newStatus, ...statuses];
     setStatuses(updatedStatuses);
     saveData('user-statuses', updatedStatuses);
+    
+    // Aussi sauvegarder dans les statuts spécifiques à l'utilisateur
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (currentUser && currentUser.id) {
+      const userStatusKey = `status_${currentUser.id}`;
+      const userStatuses = loadData<Status[]>(userStatusKey, []);
+      const updatedUserStatuses = [newStatus, ...(userStatuses || [])];
+      saveData(userStatusKey, updatedUserStatuses);
+    }
     
     toast.success("Statut publié avec succès! Il sera visible pendant 24 heures.");
   };

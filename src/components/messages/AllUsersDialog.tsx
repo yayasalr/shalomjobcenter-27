@@ -56,6 +56,14 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
     } catch (error) {
       console.error("Erreur lors du chargement des utilisateurs:", error);
       toast.error("Impossible de charger la liste des utilisateurs");
+      
+      // Ajouter des utilisateurs de secours en cas d'erreur
+      const fallbackUsers = [
+        { id: 'admin', name: 'Administrateur', avatar: '/placeholder.svg', role: 'admin' },
+        { id: 'user1', name: 'Jean Dupont', avatar: '/placeholder.svg', role: 'user' },
+        { id: 'user2', name: 'Marie Martin', avatar: '/placeholder.svg', role: 'user' },
+      ];
+      setUsers(fallbackUsers);
     } finally {
       setLoading(false);
     }
@@ -74,12 +82,6 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          <UserPlus className="h-4 w-4" />
-          <span className="hidden md:inline">Nouvelle conversation</span>
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Tous les utilisateurs</DialogTitle>

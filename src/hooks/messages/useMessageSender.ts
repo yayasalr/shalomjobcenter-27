@@ -68,6 +68,46 @@ export const useMessageSender = (
         description: "L'administrateur recevra votre message instantanément."
       });
     } else {
+      // Pour les autres utilisateurs, simuler une réponse après un délai
+      setTimeout(() => {
+        const autoReply: Message = {
+          id: `reply-${Date.now()}`,
+          content: `Ceci est une réponse automatique de ${selectedConversation.with.name}. Votre message a bien été reçu.`,
+          timestamp: new Date(),
+          read: false,
+          sender: 'other',
+        };
+        
+        // Mettre à jour la conversation avec la réponse
+        const conversationWithReply = {
+          ...updatedSelectedConversation,
+          messages: [...updatedSelectedConversation.messages, autoReply],
+          lastMessage: {
+            content: autoReply.content,
+            timestamp: autoReply.timestamp,
+            read: false,
+            sender: 'other' as const,
+          },
+        };
+        
+        const newUpdatedConversations = updatedConversations.map(conv => 
+          conv.id === selectedConversation.id ? conversationWithReply : conv
+        );
+        
+        setConversations(newUpdatedConversations);
+        
+        // Si la conversation est toujours sélectionnée, mettre à jour
+        if (updatedSelectedConversation.id === selectedConversation.id) {
+          setSelectedConversation(conversationWithReply);
+        }
+        
+        // Sauvegarder dans localStorage
+        localStorage.setItem(`conversations_${userId}`, JSON.stringify(newUpdatedConversations));
+        
+        // Notification de nouvelle réponse
+        toast.info(`Nouvelle réponse de ${selectedConversation.with.name}`);
+      }, 3000); // Réponse après 3 secondes
+      
       toast.success("Message envoyé");
     }
     

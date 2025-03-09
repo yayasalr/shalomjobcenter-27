@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Plus, MessageCircle, Phone, Image } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Conversation } from './types';
@@ -70,6 +70,22 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
 
+  // Au chargement, définir les utilisateurs en ligne de façon aléatoire
+  useEffect(() => {
+    const mockOnlineStatus = () => {
+      const online: Record<string, boolean> = {};
+      conversations.forEach(conv => {
+        online[conv.with.id] = Math.random() > 0.3; // 70% chance d'être en ligne
+      });
+      setOnlineUsers(online);
+    };
+    
+    mockOnlineStatus();
+    const interval = setInterval(mockOnlineStatus, 60000); // Actualiser toutes les minutes
+    
+    return () => clearInterval(interval);
+  }, [conversations]);
+
   const filteredConversations = useMemo(() => {
     if (!searchQuery.trim()) return conversations;
     
@@ -77,7 +93,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
     return conversations.filter(
       (conversation) => 
         conversation.with.name.toLowerCase().includes(query) ||
-        conversation.lastMessage.content.toLowerCase().includes(query)
+        (conversation.lastMessage.content && 
+         conversation.lastMessage.content.toLowerCase().includes(query))
     );
   }, [conversations, searchQuery]);
 
@@ -91,6 +108,28 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   const handleStatusCreated = (newStatus: Status) => {
     setStatuses(currentStatuses => [newStatus, ...currentStatuses]);
+  };
+
+  // Gérer la sélection d'un utilisateur pour une nouvelle conversation
+  const handleSelectUser = (user: any) => {
+    console.log("Selected user for new conversation:", user);
+    
+    // Vérifier si une conversation avec cet utilisateur existe déjà
+    const existingConversation = conversations.find(
+      conv => conv.with.id === user.id
+    );
+    
+    if (existingConversation) {
+      // Si elle existe, sélectionner cette conversation
+      handleSelectConversation(existingConversation);
+    } else {
+      // Sinon, créer une nouvelle conversation avec cet utilisateur
+      // (cette fonctionnalité serait implémentée dans un contexte réel)
+      console.log("Créer une nouvelle conversation avec:", user);
+    }
+    
+    // Fermer la boîte de dialogue
+    setShowAllUsers(false);
   };
 
   return (
@@ -167,10 +206,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       <AllUsersDialog
         onOpenChange={setShowAllUsers}
         open={showAllUsers}
-        onSelectUser={(user) => {
-          console.log("Selected user for new conversation:", user);
-          setShowAllUsers(false);
-        }}
+        onSelectUser={handleSelectUser}
       />
     </div>
   );
