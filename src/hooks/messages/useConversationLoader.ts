@@ -1,174 +1,185 @@
 
-import { useState, useEffect } from 'react';
-import { Conversation, Message, ADMIN_USER, WELCOME_BOT } from '@/components/messages/types';
+import { useState, useEffect, useCallback } from 'react';
+import { useLocalStorage } from '../useLocalStorage';
+import { Message, Conversation, ADMIN_USER, WELCOME_BOT } from '@/components/messages/types';
+import { faker } from '@faker-js/faker';
 
 export const useConversationLoader = (userId: string | undefined) => {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [conversations, setConversations] = useLocalStorage<Conversation[]>('conversations', []);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
 
-  // Load conversations from localStorage
+  // Initialize with demo data if no conversations exist
   useEffect(() => {
-    if (userId) {
-      const savedConversations = localStorage.getItem(`conversations_${userId}`);
-      
-      if (savedConversations) {
-        try {
-          // Convert date strings to Date objects
-          const parsedConversations = JSON.parse(savedConversations, (key, value) => {
-            if (key === 'timestamp' && typeof value === 'string') {
-              return new Date(value);
-            }
-            return value;
-          });
-          
-          setConversations(parsedConversations);
-          
-          // Retrieve selected conversation from session storage if available
-          const lastSelectedId = sessionStorage.getItem(`selected_conversation_${userId}`);
-          
-          if (lastSelectedId) {
-            const lastSelected = parsedConversations.find(c => c.id === lastSelectedId);
-            if (lastSelected) {
-              setSelectedConversation(lastSelected);
-            } else if (parsedConversations.length > 0) {
-              setSelectedConversation(parsedConversations[0]);
-              sessionStorage.setItem(`selected_conversation_${userId}`, parsedConversations[0].id);
-            }
-          } else if (parsedConversations.length > 0) {
-            setSelectedConversation(parsedConversations[0]);
-            sessionStorage.setItem(`selected_conversation_${userId}`, parsedConversations[0].id);
-          }
-        } catch (error) {
-          console.error("Erreur lors de la lecture des conversations:", error);
-          initializeDefaultConversations(userId);
-        }
-      } else {
-        // No conversations found, initialize with default conversations
-        initializeDefaultConversations(userId);
-      }
-    }
-  }, [userId]);
-
-  // Save conversations to localStorage when they change
-  useEffect(() => {
-    if (userId && conversations.length > 0) {
-      localStorage.setItem(`conversations_${userId}`, JSON.stringify(conversations));
-    }
-  }, [conversations, userId]);
-  
-  // Remember selected conversation
-  useEffect(() => {
-    if (userId && selectedConversation) {
-      sessionStorage.setItem(`selected_conversation_${userId}`, selectedConversation.id);
-    }
-  }, [selectedConversation, userId]);
-
-  // Initialize default conversations for a new user
-  const initializeDefaultConversations = (userId: string) => {
     if (!userId) return;
-
-    // Create welcome conversation with bot
-    const welcomeMessage: Message = {
-      id: `welcome-${Date.now()}`,
-      content: `Bienvenue ${userId} sur SHALOM JOB CENTER ! Nous sommes ravis de vous accueillir. N'hésitez pas à parcourir les offres d'emploi et les logements disponibles. Si vous avez des questions, contactez notre équipe d'assistance.`,
-      timestamp: new Date(),
-      read: false,
-      sender: 'system',
-    };
-
-    // Create conversation with admin
-    const adminWelcomeMessage: Message = {
-      id: `admin-welcome-${Date.now()}`,
-      content: `Bonjour ${userId}, je suis l'administrateur de la plateforme. N'hésitez pas à me contacter si vous avez des questions.`,
-      timestamp: new Date(),
-      read: false,
-      sender: 'admin',
-    };
-
-    // Créer au moins 5 conversations pour avoir plus de données d'exemple
-    const testUsers = [
-      {
-        id: 'user1',
-        name: 'Jean Dupont',
-        avatar: '/placeholder.svg',
-        role: 'user' as const
-      },
-      {
-        id: 'user2',
-        name: 'Marie Martin',
-        avatar: '/placeholder.svg',
-        role: 'user' as const
-      },
-      {
-        id: 'user3',
-        name: 'Thomas Bernard',
-        avatar: '/placeholder.svg',
-        role: 'user' as const
-      }
-    ];
-
-    // Créer des conversations avec des utilisateurs de test
-    const testConversations = testUsers.map(user => {
-      const testMessage: Message = {
-        id: `test-${Date.now()}-${user.id}`,
-        content: `Bonjour, je m'appelle ${user.name}. Pouvez-vous m'aider avec une question sur le site?`,
-        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000), // Random time in the last 24h
-        read: Math.random() > 0.5,
-        sender: 'user',
-      };
-
-      return {
-        id: `conv-${user.id}-${Date.now()}`,
-        with: user,
-        lastMessage: {
-          content: testMessage.content,
-          timestamp: testMessage.timestamp,
-          read: testMessage.read,
-          sender: 'user',
-        },
-        messages: [testMessage],
-      };
-    });
-
-    const initialConversations: Conversation[] = [
-      {
-        id: `welcome-${Date.now()}`,
-        with: WELCOME_BOT,
-        lastMessage: {
-          content: welcomeMessage.content,
-          timestamp: welcomeMessage.timestamp,
-          read: welcomeMessage.read,
-          sender: 'system',
-        },
-        messages: [welcomeMessage],
-      },
-      {
-        id: `admin-${Date.now()}`,
-        with: ADMIN_USER,
-        lastMessage: {
-          content: adminWelcomeMessage.content,
-          timestamp: adminWelcomeMessage.timestamp,
-          read: adminWelcomeMessage.read,
-          sender: 'admin',
-        },
-        messages: [adminWelcomeMessage],
-      },
-      ...testConversations
-    ];
-
-    setConversations(initialConversations);
-    setSelectedConversation(initialConversations[0]);
     
-    // Save to localStorage immediately
-    localStorage.setItem(`conversations_${userId}`, JSON.stringify(initialConversations));
-    sessionStorage.setItem(`selected_conversation_${userId}`, initialConversations[0].id);
-  };
+    if (conversations.length === 0) {
+      try {
+        // Generate some demo conversations
+        const demoConversations = generateDemoConversations(userId);
+        setConversations(demoConversations);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to load conversations'));
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [userId, conversations.length, setConversations]);
+
+  // Get the count of unread messages in a conversation
+  const getUnreadCount = useCallback((conversation: Conversation) => {
+    return conversation.messages.filter(
+      msg => !msg.read && msg.sender !== 'user' && msg.sender !== 'admin'
+    ).length;
+  }, []);
+
+  // Mark all messages in a conversation as read
+  const markConversationAsRead = useCallback((conversationId: string) => {
+    setConversations(prevConversations => 
+      prevConversations.map(conv => {
+        if (conv.id === conversationId) {
+          const updatedMessages = conv.messages.map(msg => ({
+            ...msg,
+            read: true
+          }));
+          
+          return {
+            ...conv,
+            messages: updatedMessages,
+            lastMessage: {
+              ...conv.lastMessage,
+              read: true
+            }
+          };
+        }
+        return conv;
+      })
+    );
+  }, [setConversations]);
+
+  // Update a conversation when a new message is sent
+  const updateConversationWithMessage = useCallback((conversationId: string, newMessage: Message) => {
+    setConversations(prevConversations => 
+      prevConversations.map(conv => {
+        if (conv.id === conversationId) {
+          return {
+            ...conv,
+            messages: [...conv.messages, newMessage],
+            lastMessage: {
+              content: newMessage.content,
+              timestamp: newMessage.timestamp,
+              read: newMessage.read,
+              sender: newMessage.sender
+            }
+          };
+        }
+        return conv;
+      })
+    );
+  }, [setConversations]);
 
   return {
+    isLoading,
+    error,
     conversations,
-    setConversations,
     selectedConversation,
     setSelectedConversation,
-    initializeDefaultConversations
+    getUnreadCount,
+    markConversationAsRead,
+    updateConversationWithMessage
   };
 };
+
+// Helper to generate demo conversations
+const generateDemoConversations = (userId: string): Conversation[] => {
+  // Generate a welcome conversation with the welcome bot
+  const welcomeConversation: Conversation = {
+    id: 'welcome',
+    with: WELCOME_BOT,
+    messages: [
+      {
+        id: 'welcome-1',
+        content: "Bienvenue sur notre plateforme! Comment puis-je vous aider aujourd'hui?",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+        read: true,
+        sender: 'system'
+      }
+    ],
+    lastMessage: {
+      content: "Bienvenue sur notre plateforme! Comment puis-je vous aider aujourd'hui?",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
+      read: true,
+      sender: 'system'
+    }
+  };
+
+  // Generate a conversation with the admin
+  const adminConversation: Conversation = {
+    id: 'admin',
+    with: ADMIN_USER,
+    messages: [
+      {
+        id: 'admin-1',
+        content: "Bonjour, je suis l'administrateur du site. N'hésitez pas à me contacter si vous avez des questions!",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48), // 2 days ago
+        read: true,
+        sender: 'admin'
+      }
+    ],
+    lastMessage: {
+      content: "Bonjour, je suis l'administrateur du site. N'hésitez pas à me contacter si vous avez des questions!",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
+      read: true,
+      sender: 'admin'
+    }
+  };
+
+  // Generate some random user conversations
+  const randomUserConversations: Conversation[] = Array.from({ length: 5 }, (_, i) => {
+    const userName = faker.person.fullName();
+    const userId = `user-${i + 1}`;
+    const lastMessageTime = new Date(Date.now() - 1000 * 60 * 60 * (i + 1)); // Staggered times
+    
+    const messages: Message[] = [
+      {
+        id: `msg-${userId}-1`,
+        content: faker.lorem.sentence(5),
+        timestamp: new Date(lastMessageTime.getTime() - 1000 * 60 * 30),
+        read: true,
+        sender: 'other'
+      },
+      {
+        id: `msg-${userId}-2`,
+        content: faker.lorem.sentence(8),
+        timestamp: lastMessageTime,
+        read: i > 1, // Some messages are unread
+        sender: 'other'
+      }
+    ];
+    
+    return {
+      id: userId,
+      with: {
+        id: userId,
+        name: userName,
+        email: faker.internet.email(),
+        avatar: '/placeholder.svg',
+        role: 'user'
+      },
+      messages,
+      lastMessage: {
+        content: messages[messages.length - 1].content,
+        timestamp: messages[messages.length - 1].timestamp,
+        read: messages[messages.length - 1].read,
+        sender: messages[messages.length - 1].sender
+      }
+    };
+  });
+
+  return [welcomeConversation, adminConversation, ...randomUserConversations];
+};
+
+export default useConversationLoader;

@@ -1,16 +1,19 @@
 
-import React, { useState, useEffect } from 'react';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
+import React, { useState, useMemo } from 'react';
+import { Search, Plus, MessageCircle, Phone, Image } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Conversation } from './types';
-import { ImageUploader } from '@/components/shared/ImageUploader';
-import { toast } from 'sonner';
-
-// Import the components we just created
-import ConversationHeader from './ConversationHeader';
 import ConversationTabsNav from './ConversationTabsNav';
-import ChatsTabContent from './tabs/ChatsTabContent';
+import { Input } from '@/components/ui/input';
+import { Avatar } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import AllUsersDialog from './AllUsersDialog';
+import { Status } from './tabs/status/types';
 import StatusTabContent from './tabs/StatusTabContent';
 import CallsTabContent from './tabs/CallsTabContent';
+import ChatsTabContent from './tabs/ChatsTabContent';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -27,168 +30,154 @@ const ConversationList: React.FC<ConversationListProps> = ({
   searchQuery,
   setSearchQuery,
   handleSelectConversation,
-  getUnreadCount
+  getUnreadCount,
 }) => {
-  const [activeTab, setActiveTab] = useState('chats');
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('chats');
+  const [showAllUsers, setShowAllUsers] = useState<boolean>(false);
   
-  // Simulation aléatoire de l'état en ligne
-  const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
-  
-  // Statuts pour l'onglet Status
-  const [statuses, setStatuses] = useState<any[]>([]);
-  
-  // Appels pour l'onglet Calls
-  const [calls, setCalls] = useState<any[]>([]);
-  
-  // Initialiser les données de démonstration au chargement du composant
-  useEffect(() => {
-    initializeData();
-  }, [conversations]);
-  
-  // Fonction d'initialisation des données de démonstration
-  const initializeData = () => {
-    if (conversations.length === 0) return;
-    
-    // Générer des utilisateurs en ligne aléatoires
-    const online: Record<string, boolean> = {};
-    conversations.forEach(conv => {
-      online[conv.id] = Math.random() > 0.5;
-    });
-    setOnlineUsers(online);
-    
-    // Générer des statuts aléatoires basés sur les conversations
+  // Example statuses for demo
+  const [statuses, setStatuses] = useState<Status[]>(() => {
     const now = new Date();
-    const randomStatuses = conversations
-      .filter(() => Math.random() > 0.3) // Prendre un sous-ensemble aléatoire
-      .map((conv, index) => ({
-        id: index + 1,
-        user: conv.with.name,
-        avatar: conv.with.avatar || '/placeholder.svg',
-        isViewed: Math.random() > 0.5,
-        timestamp: new Date(now.getTime() - Math.random() * 24 * 60 * 60 * 1000), // Dans les dernières 24h
-        content: Math.random() > 0.5 
-          ? "Statut de " + conv.with.name 
-          : undefined,
-        image: Math.random() > 0.5 
-          ? "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop" 
-          : undefined
-      }));
     
-    // S'assurer qu'il y a au moins quelques statuts
-    if (randomStatuses.length < 3) {
-      randomStatuses.push(
-        {
-          id: 1001,
-          user: "Marie Dupont",
-          avatar: "/placeholder.svg",
-          isViewed: false,
-          timestamp: new Date(now.getTime() - 1000 * 60 * 30),
-          content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible."
-        },
-        {
-          id: 1002,
-          user: "Jean Martin",
-          avatar: "/placeholder.svg",
-          isViewed: true,
-          timestamp: new Date(now.getTime() - 1000 * 60 * 120),
-          image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
-        }
-      );
-    }
-    
-    setStatuses(randomStatuses);
-    
-    // Générer un historique d'appels aléatoire basé sur les conversations
-    const randomCalls = conversations
-      .filter(() => Math.random() > 0.2) // Prendre un sous-ensemble aléatoire
-      .map((conv, index) => ({
-        id: index + 1,
-        user: conv.with.name,
-        avatar: conv.with.avatar || '/placeholder.svg',
-        type: Math.random() > 0.5 ? 'incoming' : 'outgoing' as const,
-        timestamp: new Date(now.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Dans la dernière semaine
-        missed: Math.random() > 0.7,
-        isVideo: Math.random() > 0.7
-      }));
-    
-    // S'assurer qu'il y a au moins quelques appels
-    if (randomCalls.length < 3) {
-      randomCalls.push(
-        {
-          id: 1001,
-          user: "Marie Dupont",
-          avatar: "/placeholder.svg",
-          type: "incoming" as const,
-          timestamp: new Date(now.getTime() - 1000 * 60 * 15),
-          missed: false,
-          isVideo: false
-        },
-        {
-          id: 1002,
-          user: "Jean Martin",
-          avatar: "/placeholder.svg",
-          type: "outgoing" as const,
-          timestamp: new Date(now.getTime() - 1000 * 60 * 60),
-          missed: true,
-          isVideo: true
-        }
-      );
-    }
-    
-    setCalls(randomCalls);
-  };
-  
-  const filteredConversations = conversations.filter(
-    conversation => conversation.with.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    return [
+      {
+        id: 1,
+        user: "Marie Dupont",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(now.getTime() - 1000 * 60 * 30),
+        content: "En réunion toute la journée, merci de me contacter par email."
+      },
+      {
+        id: 2,
+        user: "Thomas Martin",
+        avatar: "/placeholder.svg",
+        isViewed: true,
+        timestamp: new Date(now.getTime() - 1000 * 60 * 120),
+        image: "/placeholder.svg"
+      },
+      {
+        id: 3,
+        user: "Sophie Bernard",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(now.getTime() - 1000 * 60 * 240),
+        content: "Vacances en Italie! 🌞🍕",
+        image: "/placeholder.svg"
+      }
+    ];
+  });
 
-  const handleProfileImageUpload = (file: File) => {
-    setIsUploading(true);
+  // Filter conversations based on search query
+  const filteredConversations = useMemo(() => {
+    if (!searchQuery.trim()) return conversations;
     
-    // This would normally upload the image to a server
-    setTimeout(() => {
-      toast.success("Photo de profil mise à jour");
-      setIsUploading(false);
-    }, 1500);
+    const query = searchQuery.toLowerCase();
+    return conversations.filter(
+      (conversation) => 
+        conversation.with.name.toLowerCase().includes(query) ||
+        conversation.lastMessage.content.toLowerCase().includes(query)
+    );
+  }, [conversations, searchQuery]);
+
+  // View a status
+  const handleViewStatus = (status: Status) => {
+    // Mark status as viewed
+    setStatuses(currentStatuses => 
+      currentStatuses.map(s => 
+        s.id === status.id ? { ...s, isViewed: true } : s
+      )
+    );
+  };
+
+  // Add a new status
+  const handleStatusCreated = (newStatus: Status) => {
+    setStatuses(currentStatuses => [newStatus, ...currentStatuses]);
   };
 
   return (
-    <div className="border-r h-full flex flex-col bg-white md:rounded-l-lg shadow-sm">
-      {/* Header with search */}
-      <ConversationHeader 
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        setIsProfileOpen={setIsProfileOpen}
-      />
+    <div className="flex flex-col h-full">
+      {/* Tabs for different conversation types */}
+      <div className="p-2 border-b">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full">
+            <TabsTrigger value="chats" className="flex-1">
+              <MessageCircle className="h-4 w-4 mr-1" />
+              Chats
+            </TabsTrigger>
+            <TabsTrigger value="statuses" className="flex-1">
+              <Image className="h-4 w-4 mr-1" />
+              Status
+            </TabsTrigger>
+            <TabsTrigger value="calls" className="flex-1">
+              <Phone className="h-4 w-4 mr-1" />
+              Appels
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
       
-      {/* Tabs container */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        {/* Tab buttons */}
-        <ConversationTabsNav activeTab={activeTab} setActiveTab={setActiveTab} />
-        
-        {/* Tab contents */}
-        <TabsContent value="chats" className="flex-1 flex flex-col px-0 py-0 mt-0">
-          <ChatsTabContent
-            filteredConversations={filteredConversations}
+      {/* Search bar - shown only for chats tab */}
+      {activeTab === 'chats' && (
+        <div className="p-2 border-b">
+          <div className="relative">
+            <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Rechercher une conversation..."
+              className="pl-9"
+            />
+          </div>
+        </div>
+      )}
+      
+      {/* Tab content */}
+      <div className="flex-1 overflow-hidden">
+        {activeTab === 'chats' && (
+          <ChatsTabContent 
+            conversations={filteredConversations}
             selectedConversation={selectedConversation}
             handleSelectConversation={handleSelectConversation}
             getUnreadCount={getUnreadCount}
-            onlineUsers={onlineUsers}
           />
-        </TabsContent>
+        )}
         
-        <TabsContent value="status" className="flex-1 flex flex-col px-0 py-0 mt-0">
-          <StatusTabContent statuses={statuses} />
-        </TabsContent>
+        {activeTab === 'statuses' && (
+          <StatusTabContent 
+            statuses={statuses}
+            onViewStatus={handleViewStatus}
+            onStatusCreated={handleStatusCreated}
+          />
+        )}
         
-        <TabsContent value="calls" className="flex-1 flex flex-col px-0 py-0 mt-0">
-          <CallsTabContent calls={calls} />
-        </TabsContent>
-      </Tabs>
+        {activeTab === 'calls' && (
+          <CallsTabContent calls={[]} />
+        )}
+      </div>
       
-      {/* Profile dialog would go here */}
+      {/* New conversation button - shown only for chats tab */}
+      {activeTab === 'chats' && (
+        <div className="p-3 border-t">
+          <Button 
+            onClick={() => setShowAllUsers(true)}
+            className="w-full"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Nouvelle conversation
+          </Button>
+        </div>
+      )}
+      
+      {/* All users dialog */}
+      <AllUsersDialog
+        open={showAllUsers}
+        onOpenChange={setShowAllUsers}
+        onSelectUser={(user) => {
+          console.log("Selected user for new conversation:", user);
+          setShowAllUsers(false);
+        }}
+      />
     </div>
   );
 };
