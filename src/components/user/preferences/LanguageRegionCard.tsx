@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Globe, Check } from 'lucide-react';
-import { useLanguage } from '@/hooks/language';
 import { toast } from 'sonner';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
@@ -13,7 +12,6 @@ interface LanguageRegionCardProps {
 }
 
 export const LanguageRegionCard: React.FC<LanguageRegionCardProps> = ({ onSavePreferences }) => {
-  const { language } = useLanguage();
   const { setItem } = useLocalStorage();
 
   const handleSavePreferences = () => {

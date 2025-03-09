@@ -2,24 +2,42 @@
 import { TranslationDictionary } from '../types';
 
 export const commonTranslations: TranslationDictionary = {
-  // Interface utilisateur commune
-  "login": {
-    fr: "Connexion"
+  // Boutons et actions
+  "search": {
+    fr: "Rechercher"
   },
-  "logout": {
-    fr: "Déconnexion"
+  "view": {
+    fr: "Voir"
   },
-  "register": {
-    fr: "S'inscrire"
+  "details": {
+    fr: "Détails"
   },
-  "email": {
-    fr: "Email"
+  "book_now": {
+    fr: "Réserver maintenant"
   },
-  "password": {
-    fr: "Mot de passe"
+  "apply": {
+    fr: "Postuler"
   },
   "submit": {
     fr: "Soumettre"
+  },
+  "contact_us": {
+    fr: "Contactez-nous"
+  },
+  "learn_more": {
+    fr: "En savoir plus"
+  },
+  "read_more": {
+    fr: "Lire plus"
+  },
+  "show_more": {
+    fr: "Voir plus"
+  },
+  "hide": {
+    fr: "Masquer"
+  },
+  "confirm": {
+    fr: "Confirmer"
   },
   "cancel": {
     fr: "Annuler"
@@ -27,155 +45,23 @@ export const commonTranslations: TranslationDictionary = {
   "save": {
     fr: "Enregistrer"
   },
-  "delete": {
-    fr: "Supprimer"
-  },
   "edit": {
     fr: "Modifier"
   },
-  "career": {
-    fr: "carrière"
+  "delete": {
+    fr: "Supprimer"
   },
-  
-  // Navigation
-  "home": {
-    fr: "Accueil"
+  "remove": {
+    fr: "Retirer"
   },
-  "listings": {
-    fr: "Logements"
+  "add": {
+    fr: "Ajouter"
   },
-  "jobs": {
-    fr: "Emplois"
+  "upload": {
+    fr: "Télécharger"
   },
-  "messages": {
-    fr: "Messages"
-  },
-  "profile": {
-    fr: "Profil"
-  },
-  "settings": {
-    fr: "Paramètres"
-  },
-  "about": {
-    fr: "À propos"
-  },
-  "contact": {
-    fr: "Contact"
-  },
-  
-  // Messages d'erreur
-  "error_occurred": {
-    fr: "Une erreur s'est produite"
-  },
-  "not_found": {
-    fr: "Page non trouvée"
-  },
-  "server_error": {
-    fr: "Erreur serveur"
-  },
-  
-  // Statuts de réservation
-  "confirmed": {
-    fr: "Confirmée"
-  },
-  "pending": {
-    fr: "En attente"
-  },
-  "cancelled": {
-    fr: "Annulée"
-  },
-  "unknown": {
-    fr: "Inconnu"
-  },
-  
-  // Actions sociales
-  "like": {
-    fr: "J'aime"
-  },
-  "comment": {
-    fr: "Commenter"
-  },
-  "share": {
-    fr: "Partager"
-  },
-  
-  // Dates et détails de réservation
-  "arrival": {
-    fr: "Arrivée"
-  },
-  "departure": {
-    fr: "Départ"
-  },
-  "travelers": {
-    fr: "Voyageurs"
-  },
-  "traveler": {
-    fr: "Voyageur"
-  },
-  "reserved_on": {
-    fr: "Réservé le"
-  },
-  "total": {
-    fr: "Total"
-  },
-  
-  // Actions réservation
-  "details": {
-    fr: "Détails"
-  },
-  "save_as_pdf": {
-    fr: "Enregistrer en PDF"
-  },
-  "add_to_calendar": {
-    fr: "Ajouter au calendrier"
-  },
-  "add_to_google": {
-    fr: "Ajouter à Google"
-  },
-  
-  // Réservations
-  "processing": {
-    fr: "Traitement en cours"
-  },
-  "book": {
-    fr: "Réserver"
-  },
-  "night": {
-    fr: "nuit"
-  },
-  "nights": {
-    fr: "nuits"
-  },
-  "reviews": {
-    fr: "avis"
-  },
-  "service_fee": {
-    fr: "Frais de service"
-  },
-  "remove_from_favorites": {
-    fr: "Retirer des favoris"
-  },
-  "add_to_favorites": {
-    fr: "Ajouter aux favoris"
-  },
-  
-  // Logements
-  "stay_at": {
-    fr: "Séjour chez"
-  },
-  "per_month": {
-    fr: "par mois"
-  },
-  "today": {
-    fr: "Aujourd'hui"
-  },
-  "contact_host": {
-    fr: "Contacter l'hôte"
-  },
-  
-  // Nouvelles traductions pour termes généraux
-  "search": {
-    fr: "Rechercher"
+  "select": {
+    fr: "Sélectionner"
   },
   "filter": {
     fr: "Filtrer"
@@ -183,65 +69,43 @@ export const commonTranslations: TranslationDictionary = {
   "sort": {
     fr: "Trier"
   },
-  "add": {
-    fr: "Ajouter"
-  },
-  "adding": {
-    fr: "Ajout en cours"
-  },
-  "update": {
-    fr: "Mettre à jour"
-  },
-  "updating": {
-    fr: "Mise à jour en cours"
-  },
-  "close": {
-    fr: "Fermer"
-  },
-  "apply": {
-    fr: "Appliquer"
-  },
   "reset": {
     fr: "Réinitialiser"
   },
-  "search_by": {
-    fr: "Rechercher par"
+  "back": {
+    fr: "Retour"
   },
-  "all_statuses": {
-    fr: "Tous les statuts"
+  "next": {
+    fr: "Suivant"
   },
-  "all_types": {
-    fr: "Tous les types"
+  "previous": {
+    fr: "Précédent"
   },
-  "see_more": {
-    fr: "Voir plus"
+
+  // Statuts et notifications
+  "loading": {
+    fr: "Chargement..."
   },
-  "see_less": {
-    fr: "Voir moins"
+  "error": {
+    fr: "Erreur"
   },
-  "name": {
-    fr: "Nom"
+  "success": {
+    fr: "Succès"
   },
-  "phone": {
-    fr: "Téléphone"
+  "warning": {
+    fr: "Avertissement"
   },
-  "location": {
-    fr: "Emplacement"
+  "pending": {
+    fr: "En attente"
   },
-  "address": {
-    fr: "Adresse"
+  "completed": {
+    fr: "Terminé"
   },
-  "date": {
-    fr: "Date"
+  "confirmed": {
+    fr: "Confirmé"
   },
-  "status": {
-    fr: "Statut"
-  },
-  "actions": {
-    fr: "Actions"
-  },
-  "view_details": {
-    fr: "Voir les détails"
+  "cancelled": {
+    fr: "Annulé"
   },
   "accept": {
     fr: "Accepter"
@@ -249,7 +113,36 @@ export const commonTranslations: TranslationDictionary = {
   "reject": {
     fr: "Refuser"
   },
-  "back": {
-    fr: "Retour"
+
+  // Termes généraux
+  "hello": {
+    fr: "Bonjour"
+  },
+  "welcome": {
+    fr: "Bienvenue"
+  },
+  "yes": {
+    fr: "Oui"
+  },
+  "no": {
+    fr: "Non"
+  },
+  "or": {
+    fr: "ou"
+  },
+  "and": {
+    fr: "et"
+  },
+  "date": {
+    fr: "Date"
+  },
+  "time": {
+    fr: "Heure"
+  },
+  "price": {
+    fr: "Prix"
+  },
+  "total": {
+    fr: "Total"
   }
 };
