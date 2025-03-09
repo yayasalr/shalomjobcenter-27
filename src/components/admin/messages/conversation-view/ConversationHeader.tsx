@@ -31,13 +31,12 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         
         <div className="relative">
           <Avatar className="whatsapp-user-avatar">
-            <AvatarImage src={conversation.with.avatar} />
+            <AvatarImage src={conversation.with.avatar || "/placeholder.svg"} />
             <AvatarFallback>
               {conversation.with.name.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          {isOnline && <div className="whatsapp-online-indicator"></div>}
-          {!isOnline && <div className="whatsapp-offline-indicator"></div>}
+          <div className={isOnline ? "whatsapp-online-indicator" : "whatsapp-offline-indicator"}></div>
         </div>
         
         <div className="whatsapp-user-info">

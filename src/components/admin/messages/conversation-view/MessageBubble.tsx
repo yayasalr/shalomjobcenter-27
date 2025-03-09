@@ -31,19 +31,22 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         </Avatar>
       )}
       
-      <div className={`max-w-[75%] ${isAdmin ? 'bg-blue-500 text-white' : 'bg-white border'} rounded-lg p-3 shadow-sm`}>
+      <div className={`max-w-[75%] ${isAdmin ? 'whatsapp-user-message' : 'whatsapp-other-message'} rounded-lg p-3 shadow-sm relative`}>
         {!isAdmin && (
           <div className="font-medium text-xs text-gray-600 mb-1">{senderName}</div>
         )}
         
         <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
         
-        <div className={`text-xs mt-1 flex items-center gap-1 justify-end ${isAdmin ? 'text-blue-100' : 'text-gray-400'}`}>
+        <div className={`text-xs mt-1 flex items-center gap-1 justify-end ${isAdmin ? 'text-gray-500' : 'text-gray-400'}`}>
           <span>{formattedTime}</span>
           {isAdmin && (
-            <span>{message.read ? <CheckCheck size={14} /> : <Check size={14} />}</span>
+            <span className="whatsapp-tick">{message.read ? <CheckCheck size={14} className="whatsapp-read-tick" /> : <Check size={14} className="whatsapp-single-tick" />}</span>
           )}
         </div>
+        
+        {/* Ajouter les queues de messages WhatsApp */}
+        {isAdmin ? <div className="whatsapp-tail-out"></div> : <div className="whatsapp-tail-in"></div>}
       </div>
       
       {isAdmin && (
