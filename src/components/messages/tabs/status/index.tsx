@@ -8,7 +8,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
 
 const StatusTabContent: React.FC<StatusTabContentProps> = ({ 
-  statuses: initialStatuses, 
+  statuses: initialStatuses = [], 
   onViewStatus,
   onStatusCreated
 }) => {
@@ -41,7 +41,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
       // Add default statuses if none provided
       generateDefaultStatuses();
     }
-  }, [initialStatuses]);
+  }, [initialStatuses, loadData, saveData]);
   
   // Generate default statuses for demo
   const generateDefaultStatuses = () => {
@@ -132,7 +132,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
         generateDefaultStatuses();
       }
     }
-  }, []);
+  }, [statuses.length]);
 
   return (
     <div className="flex flex-col h-full">
