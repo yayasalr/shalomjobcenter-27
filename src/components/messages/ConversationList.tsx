@@ -46,7 +46,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
         avatar: "/placeholder.svg",
         isViewed: false,
         timestamp: new Date(now.getTime() - 1000 * 60 * 30),
-        content: "En réunion toute la journée, merci de me contacter par email."
+        content: "En réunion toute la journée, merci de me contacter par email.",
+        image: "/placeholder.svg" // Add default image
       },
       {
         id: 2,

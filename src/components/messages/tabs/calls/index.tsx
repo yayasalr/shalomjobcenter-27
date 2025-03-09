@@ -1,159 +1,166 @@
 
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { faker } from '@faker-js/faker';
 import { Call, CallsTabContentProps } from './types';
 import CallHeader from './CallHeader';
 import CallsList from './CallsList';
 import ActiveCall from './ActiveCall';
 
-const CallsTabContent: React.FC<CallsTabContentProps> = ({ calls: initialCalls }) => {
-  const [calls, setCalls] = useState<Call[]>([]);
+const CallsTabContent: React.FC<CallsTabContentProps> = ({ calls: initialCalls = [] }) => {
+  const [calls, setCalls] = useState<Call[]>(initialCalls.length > 0 ? initialCalls : generateDemoCalls());
   const [activeCall, setActiveCall] = useState<Call | null>(null);
-  const [callTimer, setCallTimer] = useState(0);
-  const [callTimerInterval, setCallTimerInterval] = useState<NodeJS.Timeout | null>(null);
-  
-  // Initialize with default calls if none provided
-  useEffect(() => {
-    if (initialCalls && initialCalls.length > 0) {
-      setCalls(initialCalls);
-    } else {
-      // Add default calls if none provided
-      generateDefaultCalls();
-    }
-  }, [initialCalls]);
-  
-  // Generate default calls for demo
-  const generateDefaultCalls = () => {
-    const now = new Date();
-    const defaultCalls: Call[] = [
-      {
-        id: 1,
-        user: "Marie Dupont",
-        avatar: "/placeholder.svg",
-        type: "incoming",
-        timestamp: new Date(now.getTime() - 1000 * 60 * 15), // 15 minutes ago
-        missed: false,
-        isVideo: false
-      },
-      {
-        id: 2,
-        user: "Jean Martin",
-        avatar: "/placeholder.svg",
-        type: "outgoing",
-        timestamp: new Date(now.getTime() - 1000 * 60 * 60), // 1 hour ago
-        missed: false,
-        isVideo: true
-      },
-      {
-        id: 3,
-        user: "Sophie Bernard",
-        avatar: "/placeholder.svg",
-        type: "incoming",
-        timestamp: new Date(now.getTime() - 1000 * 60 * 60 * 3), // 3 hours ago
-        missed: true,
-        isVideo: false
-      },
-      {
-        id: 4,
-        user: "Thomas Lefebvre",
-        avatar: "/placeholder.svg",
-        type: "outgoing",
-        timestamp: new Date(now.getTime() - 1000 * 60 * 60 * 5), // 5 hours ago
-        missed: true,
-        isVideo: false
-      }
-    ];
-    
-    setCalls(defaultCalls);
-  };
+  const [callTimer, setCallTimer] = useState<number>(0);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
 
-  // Start a new call
-  const startCall = (isVideo: boolean = false) => {
+  // Handle starting a new call
+  const handleStartCall = (isVideo: boolean) => {
+    // Get a random user from the calls list or create a new one
+    const randomUser = calls.length > 0 
+      ? calls[Math.floor(Math.random() * calls.length)]
+      : {
+          id: Date.now(),
+          user: faker.person.fullName(),
+          avatar: '/placeholder.svg',
+          type: 'outgoing' as const,
+          timestamp: new Date(),
+          missed: false,
+          isVideo: isVideo
+        };
+    
     // Create a new outgoing call
     const newCall: Call = {
+      ...randomUser,
       id: Date.now(),
-      user: "Nouveau contact",
-      avatar: "/placeholder.svg",
-      type: "outgoing",
+      type: 'outgoing',
       timestamp: new Date(),
       missed: false,
-      isVideo
+      isVideo: isVideo
     };
     
+    // Add the call to the calls list
+    setCalls(prevCalls => [newCall, ...prevCalls]);
+    
+    // Set the active call
     setActiveCall(newCall);
+    
+    // Start the timer
+    startTimer();
+    
+    // Show a toast notification
+    toast.success(`Appel ${isVideo ? 'vidéo' : 'audio'} en cours avec ${newCall.user}`);
+  };
+
+  // Handle calling a user from the call list
+  const handleCallUser = (call: Call) => {
+    // Create a new outgoing call based on the selected user
+    const newCall: Call = {
+      ...call,
+      id: Date.now(),
+      type: 'outgoing',
+      timestamp: new Date(),
+      missed: false
+    };
+    
+    // Add the call to the calls list
+    setCalls(prevCalls => [newCall, ...prevCalls]);
+    
+    // Set the active call
+    setActiveCall(newCall);
+    
+    // Start the timer
+    startTimer();
+    
+    // Show a toast notification
+    toast.success(`Appel ${newCall.isVideo ? 'vidéo' : 'audio'} en cours avec ${newCall.user}`);
+  };
+
+  // Handle ending a call
+  const handleEndCall = () => {
+    // Stop the timer
+    stopTimer();
+    
+    // Clear the active call
+    setActiveCall(null);
+    
+    // Reset the timer
     setCallTimer(0);
     
-    // Start call timer
+    // Show a toast notification
+    toast.info('Appel terminé');
+  };
+
+  // Start the call timer
+  const startTimer = () => {
+    // Clear any existing interval
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+    
+    // Start a new interval to increment the timer every second
     const interval = setInterval(() => {
-      setCallTimer(prev => prev + 1);
+      setCallTimer(prevTimer => prevTimer + 1);
     }, 1000);
     
-    setCallTimerInterval(interval);
-    
-    // Add new call to list after a few seconds (simulates connection)
-    setTimeout(() => {
-      setCalls(prev => [newCall, ...prev]);
-    }, 2000);
-    
-    toast.success(`Appel ${isVideo ? 'vidéo' : 'audio'} en cours...`);
+    // Save the interval ID
+    setTimerInterval(interval);
   };
 
-  // End active call
-  const endCall = () => {
-    if (callTimerInterval) {
-      clearInterval(callTimerInterval);
-      setCallTimerInterval(null);
+  // Stop the call timer
+  const stopTimer = () => {
+    // Clear the interval
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      setTimerInterval(null);
     }
-    
-    setActiveCall(null);
-    toast.info("Appel terminé");
-    
-    // Update call in list
-    if (activeCall) {
-      const duration = callTimer;
-      
-      if (duration < 5) {
-        // Mark call as missed if it lasted less than 5 seconds
-        const missedCall = { ...activeCall, missed: true };
-        setCalls(prev => prev.map(call => 
-          call.id === activeCall.id ? missedCall : call
-        ));
-        
-        toast.error("Appel manqué - trop court");
-      }
-    }
-    
-    // Reset call state
-    setTimeout(() => {
-      setCallTimer(0);
-    }, 500);
   };
 
-  // Cleanup timer on unmount
+  // Clean up the timer interval when the component unmounts
   useEffect(() => {
     return () => {
-      if (callTimerInterval) {
-        clearInterval(callTimerInterval);
+      if (timerInterval) {
+        clearInterval(timerInterval);
       }
     };
-  }, [callTimerInterval]);
-  
-  // For admin, ensure there are always calls to display
-  useEffect(() => {
-    if (window.location.pathname.includes('/admin')) {
-      if (calls.length === 0) {
-        generateDefaultCalls();
-      }
-    }
-  }, []);
+  }, [timerInterval]);
 
   return (
     <div className="flex flex-col h-full">
-      <CallHeader onStartCall={startCall} />
-      <CallsList calls={calls} onCallUser={(call) => startCall(call.isVideo)} />
-      <ActiveCall activeCall={activeCall} callTimer={callTimer} onEndCall={endCall} />
+      {activeCall ? (
+        <ActiveCall 
+          activeCall={activeCall} 
+          callTimer={callTimer} 
+          onEndCall={handleEndCall} 
+        />
+      ) : (
+        <>
+          <CallHeader onStartCall={handleStartCall} />
+          <CallsList calls={calls} onCallUser={handleCallUser} />
+        </>
+      )}
     </div>
   );
+};
+
+// Generate some demo calls for the initial state
+const generateDemoCalls = (): Call[] => {
+  const now = new Date();
+  
+  return Array(5).fill(null).map((_, index) => {
+    const isIncoming = Math.random() > 0.5;
+    const isMissed = Math.random() > 0.7;
+    const isVideo = Math.random() > 0.7;
+    
+    return {
+      id: index + 1,
+      user: faker.person.fullName(),
+      avatar: '/placeholder.svg',
+      type: isIncoming ? 'incoming' : 'outgoing',
+      timestamp: new Date(now.getTime() - Math.random() * 86400000 * 7), // Random time within the last week
+      missed: isMissed,
+      isVideo: isVideo
+    };
+  });
 };
 
 export default CallsTabContent;

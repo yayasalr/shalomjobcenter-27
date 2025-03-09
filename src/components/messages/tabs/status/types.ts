@@ -6,16 +6,12 @@ export interface Status {
   isViewed: boolean;
   timestamp: Date;
   content?: string;
-  image?: string;
+  image?: string; // Make image optional
 }
 
 export interface StatusViewerProps {
-  status: Status | null;
+  status: Status;
   onClose: () => void;
-}
-
-export interface StatusCreatorProps {
-  onStatusCreated: (newStatus: Status) => void;
 }
 
 export interface StatusListProps {
@@ -23,6 +19,17 @@ export interface StatusListProps {
   onViewStatus: (status: Status) => void;
 }
 
-export interface StatusTabContentProps {
-  statuses: Status[];
+export interface StatusCreatorProps {
+  onStatusCreated: (status: Status) => void;
+}
+
+export interface TextStatusFormProps {
+  onSubmit: (content: string) => void;
+  onCancel: () => void;
+}
+
+export interface ImageStatusPreviewProps {
+  image: string;
+  onSubmit: () => void;
+  onCancel: () => void;
 }

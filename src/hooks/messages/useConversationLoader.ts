@@ -167,7 +167,7 @@ const generateDemoConversations = (userId: string): Conversation[] => {
         name: userName,
         email: faker.internet.email(),
         avatar: '/placeholder.svg',
-        role: 'user'
+        role: 'user' as const, // Ensure role is correctly typed
       },
       messages,
       lastMessage: {
