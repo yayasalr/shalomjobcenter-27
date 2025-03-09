@@ -111,6 +111,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
 
   // Handle creating a new status
   const handleStatusCreated = (newStatus: Status) => {
+    // Make sure we're adding to the existing array, not creating a nested array
     const updatedStatuses = [newStatus, ...statuses];
     setStatuses(updatedStatuses);
     saveData('user-statuses', updatedStatuses);
