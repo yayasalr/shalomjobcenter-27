@@ -17,7 +17,7 @@ export const StatusBanner: React.FC = () => {
     currentMessage
   } = useStatusMessages();
   
-  // Wait for messages to load and return null if not visible
+  // Attendre que les messages se chargent et retourner null si pas visible
   if (!hasLoaded || !isVisible || isDismissed || !messages || messages.length === 0) {
     return null;
   }
@@ -39,15 +39,15 @@ export const StatusBanner: React.FC = () => {
             border: '1px solid #f0f0f0'
           }}
         >
-          {/* Background abstract elements */}
+          {/* Éléments abstraits en arrière-plan */}
           <BannerBackground />
           
-          {/* Scrolling content */}
+          {/* Contenu défilant */}
           <div className="relative flex items-center justify-center w-full h-full px-4">
             <StatusContent message={currentMessage?.text || ""} />
           </div>
           
-          {/* Close button */}
+          {/* Bouton de fermeture */}
           <CloseButton onClose={() => setIsDismissed(true)} />
         </div>
       </motion.div>

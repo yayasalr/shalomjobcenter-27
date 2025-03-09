@@ -1,17 +1,17 @@
 
 import { SupportedLanguage, TranslationDictionary } from './types';
 
-// Function to get a translation for a key
+// Fonction pour obtenir une traduction pour une clé
 export const getTranslation = (
   key: string,
   language: SupportedLanguage,
   translations: TranslationDictionary
 ): string => {
   if (!translations[key]) {
-    // For development, log missing translations
-    console.log(`Missing translation for key: ${key}`);
+    // Pour le développement, loggons les traductions manquantes
+    console.log(`Traduction manquante pour la clé: ${key}`);
     return key;
   }
   
-  return translations[key][language] || translations[key]['fr'] || key;
+  return translations[key][language] || key;
 };

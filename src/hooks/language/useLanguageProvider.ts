@@ -9,36 +9,29 @@ import { getTranslation } from './translation-utils';
 export const useLanguageProvider = () => {
   const { settings, updateSettings } = useSiteSettings();
   const { setItem, getItem } = useLocalStorage();
-  const [language, setLanguageState] = useState<SupportedLanguage>(settings.language || 'fr');
+  // Toujours utiliser 'fr' comme langue
+  const [language, setLanguageState] = useState<SupportedLanguage>('fr');
   const [translations, setTranslations] = useState(defaultTranslations);
 
-  // Function to change the language
+  // Fonction pour changer la langue (même si nous n'avons que le français)
   const setLanguage = (lang: SupportedLanguage) => {
-    setLanguageState(lang);
-    setItem('userLanguage', lang);
-    updateSettings({ language: lang });
+    setLanguageState('fr');
+    setItem('userLanguage', 'fr');
+    updateSettings({ language: 'fr' });
   };
 
-  // Function to translate a text
+  // Fonction pour traduire un texte
   const t = (key: string): string => {
-    return getTranslation(key, language, translations);
+    return getTranslation(key, 'fr', translations);
   };
 
-  // Load saved language
+  // Initialisation
   useEffect(() => {
-    const savedLanguage = getItem<SupportedLanguage>('userLanguage', settings.language || 'fr');
-    setLanguageState(savedLanguage);
-  }, [settings.language]);
-
-  // Force French language if not already set
-  useEffect(() => {
-    if (language !== 'fr') {
-      setLanguage('fr');
-    }
-  }, [language]);
+    setLanguageState('fr');
+  }, []);
 
   return {
-    language,
+    language: 'fr',
     setLanguage,
     t,
   };

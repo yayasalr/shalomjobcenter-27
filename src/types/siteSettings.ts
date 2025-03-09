@@ -4,7 +4,7 @@ export interface SiteSettings {
   logo: string;
   primaryColor: string;
   secondaryColor: string;
-  language: 'fr' | 'en';
+  language: 'fr';
   footer: {
     contact: string;
     about: string;

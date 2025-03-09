@@ -8,7 +8,7 @@ export const defaultSettings: Partial<SiteSettings> = {
   logoUrl: '/logo.png',
   siteName: 'Shalom Job Center',
   favicon: '/favicon.ico',
-  language: 'fr',
+  language: 'fr', // Uniquement français
   facebookUrl: 'https://facebook.com',
   twitterUrl: 'https://twitter.com',
   instagramUrl: 'https://instagram.com',
