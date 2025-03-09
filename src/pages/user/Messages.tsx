@@ -30,7 +30,8 @@ const Messages = () => {
     handleSendMessage,
     handleSelectConversation,
     getUnreadCount,
-    onlineUsers
+    onlineUsers,
+    updateConversationWithMessage
   } = useMessages(user?.id);
 
   // Track window size to determine mobile view
@@ -100,6 +101,7 @@ const Messages = () => {
               <div className={`col-span-2 ${!showMobileConversation && isMobile ? 'hidden' : 'block'} md:block`}>
                 <ConversationView 
                   conversation={selectedConversation}
+                  conversations={conversations}
                   newMessage={newMessage}
                   setNewMessage={setNewMessage}
                   handleSendMessage={handleSendMessage}
@@ -107,6 +109,7 @@ const Messages = () => {
                     ? onlineUsers[selectedConversation.with.id] 
                     : false}
                   onBack={handleMobileBack}
+                  updateConversationWithMessage={updateConversationWithMessage}
                 />
               </div>
             ) : (
