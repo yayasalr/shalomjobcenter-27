@@ -14,7 +14,7 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
   useEffect(() => {
     const storedStatuses = loadData<Status[]>('user-statuses', []);
     
-    if (storedStatuses && storedStatuses.length > 0) {
+    if (storedStatuses && Array.isArray(storedStatuses) && storedStatuses.length > 0) {
       // Filter out expired statuses (older than 24 hours)
       const validStatuses = filterExpiredStatuses(storedStatuses);
       
