@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Facebook, Twitter, Github, Linkedin } from 'lucide-react';
 import { toast } from 'sonner';
 import { SocialAccount } from './types';
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 
 export const useSocialAccounts = () => {
   const { user } = useAuth();
