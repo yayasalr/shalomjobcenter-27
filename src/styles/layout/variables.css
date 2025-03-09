@@ -47,4 +47,33 @@
   --button-bg-secondary: #F8FAFC;
   --button-text-primary: #FFFFFF;
   --button-text-secondary: #1A1F2C;
+  
+  /* Custom accent color (will be set via JS) */
+  --accent-color: #8B5CF6;
+  --primary-color: #8B5CF6;
+  
+  /* Layout variables */
+  --content-spacing: 1.5rem;
+  --card-padding: 1.5rem;
+}
+
+/* Standard layout styles */
+.layout-default {
+  --content-spacing: 1.5rem;
+  --card-padding: 1.5rem;
+}
+
+/* Compact layout styles */
+.layout-compact {
+  --content-spacing: 0.75rem;
+  --card-padding: 1rem;
+}
+
+/* Apply layout spacing globally */
+.card {
+  padding: var(--card-padding);
+}
+
+.content-container {
+  gap: var(--content-spacing);
 }

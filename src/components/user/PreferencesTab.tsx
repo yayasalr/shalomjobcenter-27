@@ -1,21 +1,120 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Check, Sun, BellRing, Bell, Globe, Layout } from 'lucide-react';
+import { Check, Sun, Bell, Globe, Layout } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { useLanguage } from '@/hooks/useLanguage';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from '@/components/ui/separator';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 export const PreferencesTab: React.FC = () => {
   const { settings, updateSettings } = useSiteSettings();
   const { t, language, setLanguage } = useLanguage();
-  const [selectedColor, setSelectedColor] = useState('purple');
+  const { getItem, setItem } = useLocalStorage();
   
+  // Get stored preferences or use defaults
+  const [selectedColor, setSelectedColor] = useState(() => 
+    getItem('user_accent_color', 'purple')
+  );
+  
+  const [selectedLayout, setSelectedLayout] = useState(() => 
+    getItem('user_layout', 'default')
+  );
+  
+  // Initialize notification preferences from localStorage
+  const [notificationPrefs, setNotificationPrefs] = useState(() => {
+    return getItem('user_notification_preferences', {
+      email: true,
+      push: true,
+      reservation: true,
+      promotional: false
+    });
+  });
+
+  // Apply the selected accent color to the document
+  useEffect(() => {
+    const applyAccentColor = () => {
+      const colors: Record<string, string> = {
+        'purple': '#8B5CF6',
+        'blue': '#3B82F6',
+        'green': '#10B981',
+        'orange': '#F97316',
+        'red': '#EF4444',
+        'teal': '#14B8A6'
+      };
+      
+      const colorValue = colors[selectedColor] || colors.purple;
+      document.documentElement.style.setProperty('--accent-color', colorValue);
+      document.documentElement.style.setProperty('--primary-color', colorValue);
+      
+      // Store selected color
+      setItem('user_accent_color', selectedColor);
+    };
+    
+    applyAccentColor();
+  }, [selectedColor, setItem]);
+  
+  // Apply layout preference
+  useEffect(() => {
+    const applyLayout = () => {
+      const body = document.body;
+      
+      // Remove previous layout classes
+      body.classList.remove('layout-default', 'layout-compact');
+      
+      // Add selected layout class
+      body.classList.add(`layout-${selectedLayout}`);
+      
+      // Apply specific styles based on layout
+      if (selectedLayout === 'compact') {
+        document.documentElement.style.setProperty('--content-spacing', '0.75rem');
+        document.documentElement.style.setProperty('--card-padding', '1rem');
+      } else {
+        document.documentElement.style.setProperty('--content-spacing', '1.5rem');
+        document.documentElement.style.setProperty('--card-padding', '1.5rem');
+      }
+      
+      // Store selected layout
+      setItem('user_layout', selectedLayout);
+    };
+    
+    applyLayout();
+  }, [selectedLayout, setItem]);
+
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    toast.success(`Thème de couleur ${color} appliqué`);
+  };
+  
+  const handleLayoutChange = (value: string) => {
+    setSelectedLayout(value);
+    toast.success(`Disposition ${value === 'default' ? 'standard' : 'compacte'} appliquée`);
+  };
+  
+  const handleNotificationChange = (key: string, value: boolean) => {
+    setNotificationPrefs(prev => {
+      const updated = { ...prev, [key]: value };
+      setItem('user_notification_preferences', updated);
+      return updated;
+    });
+  };
+
   const savePreferences = () => {
+    // Save all preferences at once
+    setItem('user_accent_color', selectedColor);
+    setItem('user_layout', selectedLayout);
+    setItem('user_notification_preferences', notificationPrefs);
+    
+    // Update global settings
+    updateSettings({ 
+      primaryColor: document.documentElement.style.getPropertyValue('--accent-color') || '#8B5CF6'
+    });
+    
     toast.success("Préférences enregistrées avec succès");
   };
 
@@ -23,12 +122,7 @@ export const PreferencesTab: React.FC = () => {
     const newLanguage = e.target.value as 'fr' | 'en';
     setLanguage(newLanguage);
     updateSettings({ language: newLanguage });
-  };
-
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color);
-    // Dans une application réelle, nous mettrions à jour le thème de couleur ici
-    toast.success(`Thème de couleur ${color} appliqué`);
+    setItem('user_language', newLanguage);
   };
 
   return (
@@ -69,15 +163,22 @@ export const PreferencesTab: React.FC = () => {
           <div className="space-y-2">
             <div className="font-medium mb-2">Couleur d'accent</div>
             <div className="flex flex-wrap gap-2">
-              {['purple', 'blue', 'green', 'orange', 'red', 'teal'].map((color) => (
+              {[
+                { name: 'purple', color: '#8B5CF6' },
+                { name: 'blue', color: '#3B82F6' },
+                { name: 'green', color: '#10B981' },
+                { name: 'orange', color: '#F97316' }, 
+                { name: 'red', color: '#EF4444' },
+                { name: 'teal', color: '#14B8A6' }
+              ].map((colorObj) => (
                 <button
-                  key={color}
-                  className={`w-8 h-8 rounded-full transition-all ${
-                    selectedColor === color ? 'ring-2 ring-offset-2 ring-black' : ''
+                  key={colorObj.name}
+                  className={`w-8 h-8 rounded-full transition-all transform ${
+                    selectedColor === colorObj.name ? 'ring-2 ring-offset-2 ring-black scale-110' : 'hover:scale-105'
                   }`}
-                  style={{ backgroundColor: `var(--${color}-500, ${color})` }}
-                  onClick={() => handleColorChange(color)}
-                  aria-label={`Thème ${color}`}
+                  style={{ backgroundColor: colorObj.color }}
+                  onClick={() => handleColorChange(colorObj.name)}
+                  aria-label={`Thème ${colorObj.name}`}
                 />
               ))}
             </div>
@@ -88,7 +189,8 @@ export const PreferencesTab: React.FC = () => {
           <div className="space-y-2">
             <div className="font-medium mb-2">Disposition</div>
             <RadioGroup 
-              defaultValue="default" 
+              value={selectedLayout}
+              onValueChange={handleLayoutChange}
               className="grid grid-cols-2 gap-4"
             >
               <div>
@@ -99,7 +201,9 @@ export const PreferencesTab: React.FC = () => {
                 />
                 <Label
                   htmlFor="layout-default"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-white p-4 hover:bg-gray-100 hover:border-gray-200 cursor-pointer [&:has([data-state=checked])]:border-primary"
+                  className={`flex flex-col items-center justify-between rounded-md border-2 ${
+                    selectedLayout === 'default' ? 'border-primary' : 'border-muted'
+                  } bg-white p-4 hover:bg-gray-100 hover:border-gray-200 cursor-pointer`}
                 >
                   <Layout className="mb-2 h-6 w-6" />
                   <span>Standard</span>
@@ -113,7 +217,9 @@ export const PreferencesTab: React.FC = () => {
                 />
                 <Label
                   htmlFor="layout-compact"
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-white p-4 hover:bg-gray-100 hover:border-gray-200 cursor-pointer [&:has([data-state=checked])]:border-primary"
+                  className={`flex flex-col items-center justify-between rounded-md border-2 ${
+                    selectedLayout === 'compact' ? 'border-primary' : 'border-muted'
+                  } bg-white p-4 hover:bg-gray-100 hover:border-gray-200 cursor-pointer`}
                 >
                   <Layout className="mb-2 h-6 w-6" />
                   <span>Compact</span>
@@ -136,7 +242,10 @@ export const PreferencesTab: React.FC = () => {
                 <div className="font-medium">Notifications par email</div>
                 <div className="text-sm text-muted-foreground">Recevoir des mises à jour par email</div>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notificationPrefs.email} 
+                onCheckedChange={(checked) => handleNotificationChange('email', checked)}
+              />
             </div>
             
             <div className="flex items-center justify-between">
@@ -144,7 +253,10 @@ export const PreferencesTab: React.FC = () => {
                 <div className="font-medium">Notifications push</div>
                 <div className="text-sm text-muted-foreground">Recevoir des notifications sur votre appareil</div>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notificationPrefs.push} 
+                onCheckedChange={(checked) => handleNotificationChange('push', checked)}
+              />
             </div>
             
             <div className="flex items-center justify-between">
@@ -152,7 +264,10 @@ export const PreferencesTab: React.FC = () => {
                 <div className="font-medium">Notifications de réservation</div>
                 <div className="text-sm text-muted-foreground">Mises à jour concernant vos réservations</div>
               </div>
-              <Switch defaultChecked />
+              <Switch 
+                checked={notificationPrefs.reservation} 
+                onCheckedChange={(checked) => handleNotificationChange('reservation', checked)}
+              />
             </div>
             
             <div className="flex items-center justify-between">
@@ -160,7 +275,10 @@ export const PreferencesTab: React.FC = () => {
                 <div className="font-medium">Notifications promotionnelles</div>
                 <div className="text-sm text-muted-foreground">Offres spéciales et réductions</div>
               </div>
-              <Switch />
+              <Switch 
+                checked={notificationPrefs.promotional} 
+                onCheckedChange={(checked) => handleNotificationChange('promotional', checked)}
+              />
             </div>
           </div>
         </CardContent>
@@ -196,6 +314,7 @@ export const PreferencesTab: React.FC = () => {
                 <select 
                   id="region"
                   className="flex-1 border rounded-md px-3 py-2"
+                  defaultValue="TG"
                 >
                   <option value="TG">Togo</option>
                   <option value="FR">France</option>
