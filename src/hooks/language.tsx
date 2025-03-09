@@ -21,7 +21,7 @@ export const useLanguage = () => useContext(LanguageContext);
 // Hook for provider to use
 export const useLanguageProvider = () => {
   // Always return French since we're simplifying
-  const language = 'fr';
+  const language = 'fr' as const;
   
   // Translation function (returns hard-coded French text)
   const t = (key: string): string => {
@@ -52,7 +52,7 @@ export const useLanguageProvider = () => {
       
       // Hero section
       'discover_home': 'Découvrez votre chez-vous',
-      'premium_housing': 'Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.',
+      'premium_housing_desc': 'Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.',
       'verified_housing': 'Logements vérifiés',
       'secure_payments': 'Paiements sécurisés',
       'local_support': 'Support local',
