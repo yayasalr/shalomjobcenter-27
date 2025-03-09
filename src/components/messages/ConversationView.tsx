@@ -30,6 +30,8 @@ const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
 }, ref) => {
   const [showSearch, setShowSearch] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   
   // Message reactions
   const { 
@@ -72,13 +74,49 @@ const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
     loadReactionsFromStorage();
   }, [loadReactionsFromStorage]);
 
+  // Handle image selection
+  const handleImageSelect = (file: File) => {
+    setImageFile(file);
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+  };
+
+  // Clear selected image
+  const handleClearImage = () => {
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage);
+    }
+    setSelectedImage(null);
+    setImageFile(null);
+  };
+
+  // Custom send handler to include image
+  const handleSendWithImage = () => {
+    if (imageFile) {
+      // In a real app, you would upload the image to a server
+      // and then get a URL back. For demo purposes, we'll use the
+      // object URL we created locally.
+      const imageUrl = selectedImage;
+      
+      // Call the original send handler, which will be enhanced in
+      // useMessageSender.ts to handle the image parameter
+      handleSendMessage();
+      
+      // Clear the image after sending
+      handleClearImage();
+    } else {
+      // Just text, no image
+      handleSendMessage();
+    }
+  };
+
   return (
     <ConversationViewContent
       conversation={conversation}
       conversations={conversations}
       newMessage={newMessage}
       setNewMessage={setNewMessage}
-      handleSendMessage={handleSendMessage}
+      handleSendMessage={handleSendWithImage}
       isOnline={isOnline}
       onBack={onBack}
       updateConversationWithMessage={updateConversationWithMessage}
@@ -106,6 +144,10 @@ const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
       toggleConversationSelection={toggleConversationSelection}
       shareMessage={shareMessage}
       forwardRef={ref}
+      // Image handling
+      selectedImage={selectedImage}
+      onImageSelect={handleImageSelect}
+      onClearImage={handleClearImage}
     />
   );
 });

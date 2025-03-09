@@ -8,6 +8,7 @@ import SearchBar from './SearchBar';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import FavoriteMessages from '../FavoriteMessages';
 import MessageShareDialog from '../MessageShareDialog';
+import { X } from 'lucide-react';
 
 interface ConversationViewContentProps {
   conversation: Conversation;
@@ -43,6 +44,10 @@ interface ConversationViewContentProps {
   toggleConversationSelection: (id: string) => void;
   shareMessage: () => void;
   forwardRef: React.ForwardedRef<HTMLDivElement>;
+  // Image handling
+  selectedImage?: string | null;
+  onImageSelect?: (file: File) => void;
+  onClearImage?: () => void;
 }
 
 const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
@@ -77,7 +82,11 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
   closeShareDialog,
   toggleConversationSelection,
   shareMessage,
-  forwardRef
+  forwardRef,
+  // Image handling
+  selectedImage = null,
+  onImageSelect = () => {},
+  onClearImage = () => {}
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -165,12 +174,11 @@ const ConversationViewContent: React.FC<ConversationViewContentProps> = ({
       <MessageInput
         value={newMessage}
         onChange={setNewMessage}
-        onSend={() => {
-          handleSendMessage();
-          // Ensure scroll to bottom happens after sending the message
-          setTimeout(scrollToBottom, 100);
-        }}
+        onSend={handleSendMessage}
         placeholder="Écrivez un message..."
+        selectedImage={selectedImage}
+        onImageSelect={onImageSelect}
+        onClearImage={onClearImage}
       />
       
       {/* Message sharing dialog */}

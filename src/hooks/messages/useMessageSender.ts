@@ -13,9 +13,10 @@ export const useMessageSender = (
 ) => {
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleSendMessage = useCallback(() => {
-    if (!newMessage.trim() || !selectedConversation || !userId || isSending) return;
+    if ((!newMessage.trim() && !selectedImage) || !selectedConversation || !userId || isSending) return;
     
     // Prévenir l'envoi de messages multiples
     setIsSending(true);
@@ -30,13 +31,18 @@ export const useMessageSender = (
       read: true,
       sender: 'user',
     };
+
+    // Add image to message if selected
+    if (selectedImage) {
+      updatedMessage.image = selectedImage;
+    }
     
     // Mettre à jour la conversation localement
     const updatedSelectedConversation = {
       ...selectedConversation,
       messages: [...selectedConversation.messages, updatedMessage],
       lastMessage: {
-        content: newMessage,
+        content: newMessage || (selectedImage ? "📷 Image" : ""),
         timestamp,
         read: true,
         sender: 'user' as const,
@@ -50,8 +56,9 @@ export const useMessageSender = (
     setConversations(updatedConversations);
     setSelectedConversation(updatedSelectedConversation);
     
-    // Vider le champ de message immédiatement
+    // Vider le champ de message et l'image immédiatement
     setNewMessage('');
+    setSelectedImage(null);
     
     // Sauvegarder dans localStorage
     try {
@@ -125,12 +132,30 @@ export const useMessageSender = (
       // Autoriser l'envoi de nouveaux messages
       setIsSending(false);
     }
-  }, [newMessage, selectedConversation, userId, conversations, setConversations, setSelectedConversation, isSending]);
+  }, [newMessage, selectedImage, selectedConversation, userId, conversations, setConversations, setSelectedConversation, isSending]);
+
+  // Handle image selection
+  const handleImageSelect = (file: File) => {
+    // Create a URL for the image
+    const imageUrl = URL.createObjectURL(file);
+    setSelectedImage(imageUrl);
+  };
+
+  // Clear selected image
+  const handleClearImage = () => {
+    if (selectedImage) {
+      URL.revokeObjectURL(selectedImage);
+    }
+    setSelectedImage(null);
+  };
 
   return {
     newMessage,
     setNewMessage,
     handleSendMessage,
-    isSending
+    isSending,
+    selectedImage,
+    handleImageSelect,
+    handleClearImage
   };
 };

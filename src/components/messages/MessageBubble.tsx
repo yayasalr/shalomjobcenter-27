@@ -27,7 +27,20 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isUser }) => {
         {isUser && <div className="whatsapp-tail-out"></div>}
         {!isUser && <div className="whatsapp-tail-in"></div>}
         
-        <div className="whitespace-pre-wrap break-words">{message.content}</div>
+        {/* Display image if present */}
+        {message.image && (
+          <div className="mb-2">
+            <img 
+              src={message.image} 
+              alt="Message attachment" 
+              className="rounded-md max-w-full max-h-60 object-contain"
+            />
+          </div>
+        )}
+        
+        {message.content && (
+          <div className="whitespace-pre-wrap break-words">{message.content}</div>
+        )}
         
         <div className="whatsapp-message-time">
           {formatTime(timestamp)}
