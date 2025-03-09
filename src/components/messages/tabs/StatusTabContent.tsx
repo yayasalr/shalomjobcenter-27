@@ -2,7 +2,7 @@
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Plus, Camera, Image, Edit } from 'lucide-react';
+import { Plus, Camera, Image, Edit, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Status {
@@ -91,7 +91,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses }) => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-8">
-              <Image className="h-12 w-12 text-gray-400 mb-2" />
+              <ImageIcon className="h-12 w-12 text-gray-400 mb-2" />
               <p className="text-gray-500 text-center">
                 Aucun statut récent.<br />Les statuts disparaissent après 24 heures.
               </p>
