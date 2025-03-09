@@ -13,7 +13,7 @@ export interface UserPreferences {
     reservation: boolean;
     promotional: boolean;
   };
-  language: string;
+  language: "fr" | "en";
   region: string;
 }
 
@@ -30,7 +30,7 @@ export const usePreferences = () => {
       reservation: true,
       promotional: false
     }),
-    language: getItem('user_language', 'fr'),
+    language: getItem('user_language', 'fr') as "fr" | "en",
     region: getItem('user_region', 'TG')
   });
 

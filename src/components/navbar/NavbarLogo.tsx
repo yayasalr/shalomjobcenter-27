@@ -35,13 +35,13 @@ export const NavbarLogo = () => {
   }, [settings.logo]);
   
   return (
-    <Link to="/" className="flex items-center gap-8 sm:gap-10">
+    <Link to="/" className="flex items-center gap-8 sm:gap-12 md:gap-16 mr-8">
       <motion.div 
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }}
         className="relative"
       >
-        <div className="h-8 sm:h-10 md:h-12 w-auto flex items-center justify-center overflow-hidden">
+        <div className="h-10 sm:h-12 md:h-14 w-auto flex items-center justify-center overflow-hidden">
           {!logoError ? (
             <img 
               src={currentLogo} 
@@ -57,19 +57,19 @@ export const NavbarLogo = () => {
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <div className="h-full w-8 sm:w-10 md:w-12 rounded-full bg-yellow-600 flex items-center justify-center">
+            <div className="h-full w-10 sm:w-12 md:w-14 rounded-full bg-yellow-600 flex items-center justify-center">
               <span className="text-white font-bold text-xl">
-                {settings.siteName ? settings.siteName.substring(0, 2) : 'SS'}
+                {settings.siteName ? settings.siteName.substring(0, 2) : 'SJ'}
               </span>
             </div>
           )}
         </div>
       </motion.div>
       <motion.span 
-        className="text-lg sm:text-xl md:text-2xl font-bold site-name inline-block font-serif tracking-wide truncate max-w-[180px] xs:max-w-[180px] sm:max-w-none" 
+        className="text-xl sm:text-2xl md:text-3xl font-bold site-name inline-block font-serif tracking-wide truncate max-w-[180px] xs:max-w-[180px] sm:max-w-none" 
         whileHover={{ scale: 1.05 }}
       >
-        {settings.siteName || 'Shalom Security'}
+        {settings.siteName || 'Shalom Job Center'}
       </motion.span>
     </Link>
   );

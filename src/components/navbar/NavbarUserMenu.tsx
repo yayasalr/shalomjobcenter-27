@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -85,7 +86,7 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-10 w-10 rounded-full border-2 border-blue-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="relative h-12 w-12 rounded-full border-2 border-blue-200 shadow-sm hover:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="Menu utilisateur"
         >
           <Avatar className="h-full w-full">
@@ -95,7 +96,7 @@ const NavbarUserMenu = ({ mobileMenuOpen, setMobileMenuOpen }: NavbarUserMenuPro
               alt={user.name || "Utilisateur"}
               className="user-avatar-display object-cover"
             />
-            <AvatarFallback className="bg-primary/10 text-primary">
+            <AvatarFallback className="bg-primary/10 text-primary text-lg font-bold">
               {initials}
             </AvatarFallback>
           </Avatar>
