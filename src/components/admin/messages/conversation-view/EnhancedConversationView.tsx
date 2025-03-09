@@ -1,10 +1,10 @@
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Conversation } from '@/components/messages/types';
 import AdminMessageInput from '../AdminMessageInput';
-import ConversationHeader from '@/components/messages/ConversationHeader';
-import MessageBubble from '@/components/messages/MessageBubble';
 import EmptyConversationState from '../EmptyConversationState';
+import AdminConversationHeader from './ConversationHeader';
+import MessageArea from './MessageArea';
 
 interface EnhancedConversationViewProps {
   conversation: Conversation | null;
@@ -39,9 +39,7 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
   sendFromPreview,
   cancelPreview
 }) => {
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Handler pour le bouton retour sur mobile
+  // Handler for the back button on mobile
   const handleBackClick = () => {
     const conversationList = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:first-child');
     const conversationView = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:last-child');
@@ -51,13 +49,6 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
       conversationView.classList.add('hidden');
     }
   };
-  
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [conversation?.messages]);
 
   if (!conversation) {
     return <EmptyConversationState />;
@@ -65,22 +56,13 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
 
   return (
     <div className="flex flex-col h-full bg-gray-100">
-      <ConversationHeader 
+      <AdminConversationHeader 
         conversation={conversation}
         isOnline={isOnline}
-        onBack={handleBackClick}
+        onBackClick={handleBackClick}
       />
       
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
-        {conversation.messages.map((message) => (
-          <MessageBubble 
-            key={message.id}
-            message={message}
-            isUser={message.sender === 'admin'}
-          />
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+      <MessageArea conversation={conversation} />
       
       <AdminMessageInput
         newMessage={newMessage}

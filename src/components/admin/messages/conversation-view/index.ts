@@ -1,6 +1,3 @@
 
-export * from './ConversationHeader';
-export * from './EmptyConversationState';
-export * from './MessageArea';
-export * from './MessageBubble';
-export * from './EnhancedConversationView';
+export { default as MessageArea } from './MessageArea';
+export { default as AdminConversationHeader } from './ConversationHeader';
