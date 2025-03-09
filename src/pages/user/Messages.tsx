@@ -10,7 +10,7 @@ import { OfflineIndicator } from '@/components/messages/OfflineIndicator';
 
 // Message components
 import ConversationList from '@/components/messages/ConversationList';
-import ConversationView from '@/components/messages/ConversationView';
+import EnhancedConversationView from '@/components/messages/EnhancedConversationView';
 import EmptyConversation from '@/components/messages/EmptyConversation';
 import NotAuthenticated from '@/components/messages/NotAuthenticated';
 
@@ -99,7 +99,7 @@ const Messages = () => {
             {/* Conversation View - Show on mobile only when a conversation is selected */}
             {selectedConversation ? (
               <div className={`col-span-2 ${!showMobileConversation && isMobile ? 'hidden' : 'block'} md:block`}>
-                <ConversationView 
+                <EnhancedConversationView 
                   conversation={selectedConversation}
                   conversations={conversations}
                   newMessage={newMessage}
