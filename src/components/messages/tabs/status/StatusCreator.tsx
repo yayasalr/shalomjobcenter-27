@@ -1,134 +1,145 @@
 
-import React, { useState, useRef, ChangeEvent } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Camera, Layout, X } from 'lucide-react';
+import { Camera, Edit, X } from 'lucide-react';
+import { StatusCreatorProps } from './types';
 import TextStatusForm from './TextStatusForm';
-import ImageStatusPreview from './ImageStatusPreview';
-import { Status, StatusCreatorProps } from './types';
+import { createNewStatus, isValidTextStatus } from './utils/statusUtils';
 
 const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
-  const [creatorMode, setCreatorMode] = useState<'closed' | 'text' | 'image'>('closed');
+  const [showTextForm, setShowTextForm] = useState(false);
   const [textStatus, setTextStatus] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewMode, setPreviewMode] = useState<'text' | 'image' | null>(null);
   
-  // Handle opening the text status creator
-  const handleOpenTextCreator = () => {
-    setCreatorMode('text');
-    setSelectedImage(null);
-  };
-  
-  // Handle opening the image status creator
-  const handleOpenImageCreator = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-  
-  // Handle image selection
-  const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedImage(imageUrl);
-      setCreatorMode('image');
-    }
-  };
-  
-  // Handle canceling the status creation
-  const handleCancel = () => {
-    setCreatorMode('closed');
-    setTextStatus('');
-    setSelectedImage(null);
-    
-    // Reset file input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-  
-  // Handle submitting a text status
   const handleTextSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (textStatus.trim() === '') return;
+    if (!isValidTextStatus(textStatus)) {
+      return;
+    }
     
-    const newStatus: Status = {
-      id: Date.now(),
-      user: "You", // Current user
-      avatar: "/placeholder.svg", // You can replace with actual user avatar
-      isViewed: false,
-      timestamp: new Date(),
-      content: textStatus
-    };
+    // Create and publish text status
+    const newStatus = createNewStatus(
+      { name: "Moi", avatar: "/placeholder.svg" },
+      textStatus
+    );
     
     onStatusCreated(newStatus);
-    handleCancel();
+    
+    // Reset form
+    setTextStatus('');
+    setShowTextForm(false);
   };
   
-  // Handle publishing an image status
-  const handleImagePublish = () => {
+  const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setSelectedImage(event.target.result as string);
+          setPreviewMode('image');
+        }
+      };
+      
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+  
+  const handleImageSubmit = () => {
     if (!selectedImage) return;
     
-    const newStatus: Status = {
-      id: Date.now(),
-      user: "You", // Current user
-      avatar: "/placeholder.svg", // You can replace with actual user avatar
-      isViewed: false,
-      timestamp: new Date(),
-      image: selectedImage,
-      content: textStatus.trim() !== '' ? textStatus : undefined
-    };
+    // Create and publish image status
+    const newStatus = createNewStatus(
+      { name: "Moi", avatar: "/placeholder.svg" },
+      undefined,
+      selectedImage
+    );
     
     onStatusCreated(newStatus);
-    handleCancel();
+    
+    // Reset form
+    setSelectedImage(null);
+    setPreviewMode(null);
   };
+  
+  const handleCancel = () => {
+    setShowTextForm(false);
+    setTextStatus('');
+    setSelectedImage(null);
+    setPreviewMode(null);
+  };
+  
+  if (previewMode === 'image') {
+    return (
+      <div className="p-3 border-b">
+        <div className="relative border rounded-lg overflow-hidden">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-2 right-2 text-white z-10 bg-black/50"
+            onClick={handleCancel}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+          
+          <img 
+            src={selectedImage || ''} 
+            alt="Status preview" 
+            className="w-full h-48 object-cover" 
+          />
+          
+          <div className="p-3 flex justify-end">
+            <Button 
+              className="bg-green-500 hover:bg-green-600 text-white"
+              onClick={handleImageSubmit}
+            >
+              Publier
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="p-3 border-b">
-      {creatorMode === 'closed' && (
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="outline" 
-            className="flex-1 bg-gray-50"
-            onClick={handleOpenTextCreator}
-          >
-            <Layout className="h-4 w-4 mr-2" />
-            Create Status
-          </Button>
-          
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="bg-gray-50"
-            onClick={handleOpenImageCreator}
-          >
-            <Camera className="h-4 w-4" />
-          </Button>
-          
-          <input 
-            type="file" 
-            ref={fileInputRef}
-            accept="image/*" 
-            onChange={handleImageSelect}
-            className="hidden"
-          />
+      {!showTextForm ? (
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="font-medium">Créer un statut</h3>
+          <div className="flex space-x-1">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-gray-500"
+              onClick={() => setShowTextForm(true)}
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="text-gray-500"
+              onClick={() => document.getElementById('image-input')?.click()}
+            >
+              <Camera className="h-4 w-4" />
+              <input 
+                type="file" 
+                id="image-input" 
+                className="hidden" 
+                accept="image/*"
+                onChange={handleImageSelected}
+              />
+            </Button>
+          </div>
         </div>
-      )}
-      
-      {creatorMode === 'text' && (
-        <TextStatusForm
+      ) : (
+        <TextStatusForm 
           textStatus={textStatus}
           setTextStatus={setTextStatus}
           onSubmit={handleTextSubmit}
-          onCancel={handleCancel}
-        />
-      )}
-      
-      {creatorMode === 'image' && selectedImage && (
-        <ImageStatusPreview
-          imageUrl={selectedImage}
-          onPublish={handleImagePublish}
           onCancel={handleCancel}
         />
       )}

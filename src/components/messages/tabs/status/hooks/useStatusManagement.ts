@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { Status } from '../types';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { toast } from 'sonner';
+import { filterExpiredStatuses, createNewStatus } from '../utils/statusUtils';
 
-export const useStatusManagement = (initialStatuses: Status[] = []) => {
+const useStatusManagement = (initialStatuses: Status[] = []) => {
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [viewingStatus, setViewingStatus] = useState<Status | null>(null);
   const { loadData, saveData } = useLocalStorage();
@@ -15,12 +16,7 @@ export const useStatusManagement = (initialStatuses: Status[] = []) => {
     
     if (storedStatuses && storedStatuses.length > 0) {
       // Filter out expired statuses (older than 24 hours)
-      const now = new Date();
-      const validStatuses = storedStatuses.filter(status => {
-        const statusDate = new Date(status.timestamp);
-        const hoursDiff = (now.getTime() - statusDate.getTime()) / (1000 * 60 * 60);
-        return hoursDiff < 24; // Keep statuses less than 24 hours old
-      });
+      const validStatuses = filterExpiredStatuses(storedStatuses);
       
       setStatuses(validStatuses);
       
