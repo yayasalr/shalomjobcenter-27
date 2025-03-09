@@ -1,6 +1,6 @@
 
 const useLocalStorage = () => {
-  const loadData = <T>(key: string, defaultData: T[]): T[] => {
+  const loadData = <T>(key: string, defaultData: T): T => {
     try {
       const savedData = localStorage.getItem(key);
       if (savedData) {
@@ -17,7 +17,7 @@ const useLocalStorage = () => {
     }
   };
 
-  const saveData = <T>(key: string, data: T[]): boolean => {
+  const saveData = <T>(key: string, data: T): boolean => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
       console.log(`Données sauvegardées pour ${key}:`, data);
