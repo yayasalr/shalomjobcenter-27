@@ -81,25 +81,74 @@ export const commonTranslations: TranslationDictionary = {
   "previous": {
     fr: "Précédent"
   },
-
-  // Statuts et notifications
-  "loading": {
-    fr: "Chargement..."
+  "all_statuses": {
+    fr: "Tous les statuts"
   },
-  "error": {
-    fr: "Erreur"
+  "reset_filters": {
+    fr: "Réinitialiser les filtres"
   },
-  "success": {
-    fr: "Succès"
+  "filter_by_housing": {
+    fr: "Filtrer par logement inclus"
   },
-  "warning": {
-    fr: "Avertissement"
+  "night": {
+    fr: "nuit"
+  },
+  "reviews": {
+    fr: "avis"
+  },
+  "travelers": {
+    fr: "VOYAGEURS"
+  },
+  "traveler": {
+    fr: "voyageur"
+  },
+  "processing": {
+    fr: "Traitement en cours..."
+  },
+  "book": {
+    fr: "Réserver"
+  },
+  "remove_from_favorites": {
+    fr: "Retirer des favoris"
+  },
+  "add_to_favorites": {
+    fr: "Ajouter aux favoris"
+  },
+  "service_fee": {
+    fr: "Frais de service"
+  },
+  "nights": {
+    fr: "nuits"
+  },
+  "today": {
+    fr: "Aujourd'hui"
+  },
+  "per_month": {
+    fr: "par mois"
+  },
+  "stay_at": {
+    fr: "Séjour chez"
+  },
+  "contact_host": {
+    fr: "Contacter l'hôte"
+  },
+  "listing_not_found": {
+    fr: "Logement non trouvé"
+  },
+  "listing_not_exist": {
+    fr: "Le logement que vous recherchez n'existe pas ou a été supprimé."
+  },
+  "back_to_home": {
+    fr: "Retour à l'accueil"
+  },
+  "approved": {
+    fr: "Approuvé"
   },
   "pending": {
     fr: "En attente"
   },
-  "completed": {
-    fr: "Terminé"
+  "rejected": {
+    fr: "Rejeté"
   },
   "confirmed": {
     fr: "Confirmé"
@@ -107,42 +156,25 @@ export const commonTranslations: TranslationDictionary = {
   "cancelled": {
     fr: "Annulé"
   },
-  "accept": {
-    fr: "Accepter"
+  "updating": {
+    fr: "Mise à jour..."
   },
-  "reject": {
-    fr: "Refuser"
+  "adding": {
+    fr: "Ajout..."
   },
-
-  // Termes généraux
-  "hello": {
-    fr: "Bonjour"
+  "update": {
+    fr: "Mettre à jour"
   },
-  "welcome": {
-    fr: "Bienvenue"
+  "add": {
+    fr: "Ajouter"
   },
-  "yes": {
-    fr: "Oui"
+  "no_applications_found": {
+    fr: "Aucune candidature trouvée"
   },
-  "no": {
-    fr: "Non"
+  "no_applications_matching": {
+    fr: "Aucune candidature ne correspond à vos critères de recherche."
   },
-  "or": {
-    fr: "ou"
-  },
-  "and": {
-    fr: "et"
-  },
-  "date": {
-    fr: "Date"
-  },
-  "time": {
-    fr: "Heure"
-  },
-  "price": {
-    fr: "Prix"
-  },
-  "total": {
-    fr: "Total"
+  "all_statuses": {
+    fr: "Tous les statuts"
   }
 };
