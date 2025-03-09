@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -13,17 +13,18 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [lastScrollPosition, setLastScrollPosition] = useState(0);
   const [userIsScrolling, setUserIsScrolling] = useState(false);
+  const scrollTimerRef = useRef<number | null>(null);
 
-  // Fonction optimisée pour vérifier la position de défilement
+  // Optimized function to check scroll position
   const checkScrollPosition = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const { scrollTop, scrollHeight, clientHeight } = container;
     
-    // Calculer les marges pour déterminer si on est au sommet ou en bas
-    const topThreshold = 50; // Plus généreux pour la détection du haut
-    const bottomThreshold = 100; // Plus généreux pour la détection du bas
+    // Calculate margins to determine if at top or bottom
+    const topThreshold = 50; // More generous for top detection
+    const bottomThreshold = 100; // More generous for bottom detection
     
     const atTop = scrollTop <= topThreshold;
     const atBottom = scrollTop + clientHeight >= scrollHeight - bottomThreshold;
@@ -31,16 +32,16 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     setIsAtTop(atTop);
     setIsAtBottom(atBottom);
     
-    // Ne montrer les boutons que si la hauteur de défilement est suffisante
+    // Only show buttons if scroll height is sufficient
     setShowScroller(scrollHeight > clientHeight + 200);
     
-    // Détecter si l'utilisateur est en train de défiler
+    // Detect if user is scrolling
     const currentPosition = scrollTop;
     if (Math.abs(currentPosition - lastScrollPosition) > 5) {
       setUserIsScrolling(true);
-      // Réinitialiser après un délai
-      clearTimeout(window.scrollTimer);
-      window.scrollTimer = setTimeout(() => {
+      // Reset after a delay
+      clearTimeout(scrollTimerRef.current || undefined);
+      scrollTimerRef.current = window.setTimeout(() => {
         setUserIsScrolling(false);
       }, 500);
     }
@@ -52,10 +53,10 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Vérifier la position initiale
+    // Check initial position
     checkScrollPosition();
 
-    // Optimiser l'écoute du défilement avec throttling
+    // Optimize scroll listening with throttling
     let throttleTimer: number | null = null;
     const handleScroll = () => {
       if (!throttleTimer) {
@@ -66,17 +67,17 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
       }
     };
     
-    // Ajouter les écouteurs d'événement
+    // Add event listeners
     container.addEventListener('scroll', handleScroll);
     
-    // Aussi vérifier la position lors de changements de taille
+    // Also check position on size changes
     window.addEventListener('resize', checkScrollPosition);
     
     return () => {
       container.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', checkScrollPosition);
       if (throttleTimer) clearTimeout(throttleTimer);
-      if (window.scrollTimer) clearTimeout(window.scrollTimer);
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     };
   }, [containerRef, checkScrollPosition]);
 
@@ -98,15 +99,15 @@ const ScrollNavigator: React.FC<ScrollNavigatorProps> = ({ containerRef }) => {
     }
   };
 
-  // Ne pas afficher si rien à défiler
+  // Don't display if nothing to scroll
   if (!showScroller) return null;
 
-  // Calculer les classes de style dynamiques
+  // Calculate dynamic style classes
   const buttonBaseClass = "h-8 w-8 rounded-full shadow-md transition-all duration-300";
   const visibleButtonClass = "opacity-80 hover:opacity-100";
   const hiddenButtonClass = "opacity-0 pointer-events-none";
   
-  // Style conditionnel pour apparaître uniquement pendant un défilement actif
+  // Conditional style to appear only during active scrolling
   const containerClass = userIsScrolling 
     ? "opacity-100 transition-opacity duration-300" 
     : "opacity-70 hover:opacity-100 transition-opacity duration-300";
