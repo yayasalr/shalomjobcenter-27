@@ -13,6 +13,7 @@ export const defaultSettings: Partial<SiteSettings> = {
   instagramUrl: 'https://instagram.com',
   linkedinUrl: 'https://linkedin.com',
   darkMode: false, // Toujours désactivé
+  defaultLanguage: 'fr', // Ajout du français comme langue par défaut
   footer: {
     contact: 'Contactez-nous pour plus d\'informations',
     about: 'SHALOM JOB CENTER est une agence de placement spécialisée dans le recrutement et le placement de personnel qualifié à Lomé, Togo.',
