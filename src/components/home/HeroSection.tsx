@@ -45,7 +45,7 @@ export const HeroSection = () => {
           >
             <motion.div className="lg:w-1/2 space-y-6" variants={itemVariants}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-sholom-dark leading-tight">
-                Découvrez votre <span className="text-sholom-primary italic">chez-vous</span> à Lomé
+                SHALOM JOB CENTER : <span className="text-sholom-primary italic">Votre logement et vos opportunités d'emploi à Lomé.</span>
               </h1>
               <p className="text-xl text-sholom-muted max-w-2xl">
                 Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.
