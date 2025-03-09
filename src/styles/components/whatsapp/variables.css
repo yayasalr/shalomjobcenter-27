@@ -3,30 +3,24 @@
   /* WhatsApp color variables */
   --whatsapp-green: #00a884;
   --whatsapp-light-green: #dcf8c6;
-  --whatsapp-background: #efeae2;
-  --whatsapp-header: #00a884;
+  --whatsapp-background: #f0f2f5;
+  --whatsapp-header: #008069;
   --whatsapp-chat-background: #e5ddd5;
-  --whatsapp-bubble-me: #dcf8c6;
+  --whatsapp-bubble-me: #d9fdd3;
   --whatsapp-bubble-other: #ffffff;
-  --whatsapp-icon-color: #919191;
+  --whatsapp-icon-color: #54656f;
   --whatsapp-online: #25d366;
   --whatsapp-offline: #8e8e8e;
   
   /* Light mode WhatsApp colors - now the default */
-  --whatsapp-light-green: #dcf8c6;
-  --whatsapp-background: #efeae2;
-  --whatsapp-chat-background: #e5ddd5;
-  --whatsapp-bubble-me: #dcf8c6;
-  --whatsapp-bubble-other: #ffffff;
-  --whatsapp-header: #00a884;
-  --whatsapp-icon-color: #919191;
+  --whatsapp-chat-background: #efeae2;
+  --whatsapp-header: #008069;
+  --whatsapp-icon-color: #54656f;
   
   /* Accessibility variables */
   --font-size-factor: 1; /* Will be adjusted for accessibility */
   --contrast-factor: 1; /* Will be adjusted for high contrast mode */
 }
-
-/* Suppression des variables pour le dark mode */
 
 .high-contrast {
   --whatsapp-green: #00d4a0;

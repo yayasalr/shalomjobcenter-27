@@ -12,14 +12,14 @@
   --whatsapp-green: #25d366;
   --whatsapp-light-green: #dcf8c6;
   --whatsapp-blue: #34b7f1;
-  --whatsapp-header: #075e54;
-  --whatsapp-chat-background: #e5ddd5;
-  --whatsapp-message-out: #dcf8c6;
+  --whatsapp-header: #008069;
+  --whatsapp-chat-background: #efeae2;
+  --whatsapp-message-out: #d9fdd3;
   --whatsapp-message-in: #ffffff;
   --whatsapp-online: #25d366;
   --whatsapp-offline: #bdbdbd;
-  --whatsapp-icon: #919191;
-  --whatsapp-message-time: #8c8c8c;
+  --whatsapp-icon: #54656f;
+  --whatsapp-message-time: #667781;
 }
 
 .whatsapp-theme {

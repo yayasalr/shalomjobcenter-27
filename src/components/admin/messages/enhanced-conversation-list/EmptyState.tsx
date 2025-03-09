@@ -23,7 +23,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ filter, hasSearchQuery =
   } else {
     switch(filter) {
       case 'all':
-        message = 'Aucune conversation importante';
+        message = 'Aucune conversation';
         subMessage = 'Revenez plus tard ou vérifiez un autre filtre';
         break;
       case 'unread':
@@ -41,7 +41,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({ filter, hasSearchQuery =
   }
   
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gray-50">
       <Icon className="mx-auto h-16 w-16 text-gray-400 mb-3" />
       <p className="text-xl font-medium text-gray-700 mb-1">
         {message}

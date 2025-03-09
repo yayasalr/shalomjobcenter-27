@@ -55,7 +55,7 @@ export const ConversationListContent: React.FC<ConversationListContentProps> = (
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh-380px)]">
+    <ScrollArea className="h-[calc(100vh-380px)] bg-white">
       {filteredConversations.length > 0 ? (
         filteredConversations.map((conversation) => (
           <ConversationListItem

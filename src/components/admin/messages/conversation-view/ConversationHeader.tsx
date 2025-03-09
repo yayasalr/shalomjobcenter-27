@@ -17,7 +17,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onBackClick
 }) => {
   return (
-    <div className="whatsapp-header flex items-center gap-2 p-2 bg-[#00a884]">
+    <div className="whatsapp-header flex items-center gap-2 p-2 bg-[#008069]">
       <Button 
         variant="ghost" 
         size="icon" 

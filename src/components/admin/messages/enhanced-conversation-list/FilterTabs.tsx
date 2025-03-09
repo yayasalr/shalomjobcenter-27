@@ -17,14 +17,14 @@ export const FilterTabs: React.FC<FilterTabsProps> = ({
 }) => {
   return (
     <Tabs defaultValue={filter} className="w-full" onValueChange={(value) => setFilter(value as any)}>
-      <TabsList className="grid grid-cols-3 w-full">
-        <TabsTrigger value="all" className="text-xs sm:text-sm">
+      <TabsList className="grid grid-cols-3 w-full bg-gray-100">
+        <TabsTrigger value="all" className="text-xs sm:text-sm py-2">
           Tous
         </TabsTrigger>
-        <TabsTrigger value="unread" className="text-xs sm:text-sm">
+        <TabsTrigger value="unread" className="text-xs sm:text-sm py-2">
           Non lus ({totalUnread})
         </TabsTrigger>
-        <TabsTrigger value="important" className="text-xs sm:text-sm">
+        <TabsTrigger value="important" className="text-xs sm:text-sm py-2">
           Importants ({totalImportant})
         </TabsTrigger>
       </TabsList>
