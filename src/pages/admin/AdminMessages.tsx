@@ -1,14 +1,10 @@
-
 import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { Card, CardContent } from "@/components/ui/card";
 import { useAdminMessages } from '@/hooks/useAdminMessages';
 import { EnhancedConversationList } from '@/components/admin/messages/EnhancedConversationList';
 import { EnhancedConversationView } from '@/components/admin/messages/conversation-view/EnhancedConversationView';
 import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -28,7 +24,6 @@ const AdminMessages: React.FC = () => {
   
   const [showNewConversationOption, setShowNewConversationOption] = useState(false);
   
-  // Utiliser les fonctionnalités simplifiées de messagerie
   const {
     onlineUsers,
     advancedSearchQuery,
@@ -50,19 +45,13 @@ const AdminMessages: React.FC = () => {
     setNewMessage
   );
   
-  // Ensure onlineUsers is correctly typed as a Record<string, boolean>
   const typedOnlineUsers: Record<string, boolean> = onlineUsers as Record<string, boolean>;
   
-  // Type for search results
-  type SearchResult = { conversation: any; message: any };
-  
-  // Recherche simple - résultats
-  const searchResults: SearchResult[] = advancedSearchQuery 
-    ? (performAdvancedSearch(advancedSearchQuery) as unknown as SearchResult[])
+  const searchResults: any[] = advancedSearchQuery 
+    ? (performAdvancedSearch(advancedSearchQuery) as unknown as any[])
     : [];
     
   const handleCreateNewConversation = () => {
-    // In a real application, this would open a dialog to select users
     setShowNewConversationOption(true);
   };
 
@@ -76,7 +65,6 @@ const AdminMessages: React.FC = () => {
         <main className="flex flex-1 flex-col p-0">
           <div className="h-[calc(100vh-64px)]">
             <div className="grid grid-cols-1 md:grid-cols-3 h-full">
-              {/* Liste des conversations simplifiée */}
               <EnhancedConversationList
                 conversations={conversations}
                 selectedConversation={selectedConversation}
@@ -98,7 +86,6 @@ const AdminMessages: React.FC = () => {
                 handleCreateNewConversation={handleCreateNewConversation}
               />
               
-              {/* Vue de conversation simplifiée */}
               <div className="col-span-2">
                 <EnhancedConversationView
                   conversation={selectedConversation}
@@ -122,7 +109,6 @@ const AdminMessages: React.FC = () => {
         </main>
       </div>
       
-      {/* Option to create new conversation - appears when "New conversation" button is clicked */}
       {showNewConversationOption && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
