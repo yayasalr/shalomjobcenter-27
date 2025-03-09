@@ -2,6 +2,7 @@
 import React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { StatusListProps } from './types';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 const StatusList: React.FC<StatusListProps> = ({ statuses, onViewStatus }) => {
   // Function to format time elapsed
@@ -32,13 +33,13 @@ const StatusList: React.FC<StatusListProps> = ({ statuses, onViewStatus }) => {
                 onClick={() => onViewStatus(status)}
               >
                 <div className={`relative ${status.isViewed ? 'border-gray-300' : 'border-green-500'} border-2 rounded-full p-0.5`}>
-                  <div className="h-12 w-12 rounded-full overflow-hidden">
-                    <img 
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage 
                       src={status.avatar} 
-                      alt={status.user} 
-                      className="h-full w-full object-cover"
+                      alt={status.user}
                     />
-                  </div>
+                    <AvatarFallback>{status.user.substring(0, 2)}</AvatarFallback>
+                  </Avatar>
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{status.user}</p>
