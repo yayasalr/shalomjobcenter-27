@@ -16,7 +16,8 @@ export const getTranslation = (
   const frenchPhrases = [
     "Superbe villa avec vue", "Logement de luxe à Lomé", "Villa de luxe",
     "Tokoin, Lomé", "Adakpamé", "Lomé", "Bè", "Tokoin", "Adidogomé",
-    "Agoè", "Kodjoviakopé", "Nyékonakpoè", "Hédzranawoé", "Baguida", "Doulassamé"
+    "Agoè", "Kodjoviakopé", "Nyékonakpoè", "Hédzranawoé", "Baguida", "Doulassamé",
+    "Bas", "Aujourd'hui"
   ];
   
   if (frenchPhrases.includes(key)) {
@@ -27,7 +28,7 @@ export const getTranslation = (
     // Pour le développement, loggons les traductions manquantes
     console.log(`Traduction manquante pour la clé: ${key}`);
     // Transformer la clé en texte lisible
-    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return makeReadableKey(key);
   }
   
   return translations[key][language] || key;

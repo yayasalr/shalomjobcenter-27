@@ -28,7 +28,8 @@ export const useLanguageProvider = () => {
     const frenchPhrases = [
       "Superbe villa avec vue", "Logement de luxe à Lomé", "Villa de luxe",
       "Tokoin, Lomé", "Adakpamé", "Lomé", "Bè", "Tokoin", "Adidogomé",
-      "Agoè", "Kodjoviakopé", "Nyékonakpoè", "Hédzranawoé", "Baguida", "Doulassamé"
+      "Agoè", "Kodjoviakopé", "Nyékonakpoè", "Hédzranawoé", "Baguida", "Doulassamé",
+      "Aujourd'hui", "Bas"
     ];
     
     // Si c'est déjà une phrase française connue, la retourner directement
