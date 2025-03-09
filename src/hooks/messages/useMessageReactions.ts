@@ -55,10 +55,13 @@ export const useMessageReactions = () => {
     saveReactionsToStorage();
   }, [user]);
 
-  const removeReaction = useCallback((messageId: string, index: number) => {
+  const removeReaction = useCallback((messageId: string, emoji: string) => {
     setReactions(prev => {
       const messageReactions = prev[messageId] || [];
-      if (index < 0 || index >= messageReactions.length) return prev;
+      
+      // Find the index of the reaction with the given emoji
+      const index = messageReactions.findIndex(r => r.emoji === emoji);
+      if (index < 0) return prev;
       
       const updatedReactions = [...messageReactions];
       updatedReactions.splice(index, 1);
