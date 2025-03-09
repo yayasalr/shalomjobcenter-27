@@ -24,17 +24,17 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       {status === 'approved' ? (
         <>
           <Check className="mr-1 h-3.5 w-3.5" />
-          {t('approved') || 'Acceptée'}
+          {t('approved')}
         </>
       ) : status === 'pending' ? (
         <>
           <Clock className="mr-1 h-3.5 w-3.5" />
-          {t('pending') || 'En attente'}
+          {t('pending')}
         </>
       ) : (
         <>
           <X className="mr-1 h-3.5 w-3.5" />
-          {t('rejected') || 'Refusée'}
+          {t('rejected')}
         </>
       )}
     </Badge>

@@ -39,10 +39,10 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {isEditing ? t('updating') || "Mise à jour..." : t('adding') || "Ajout..."}
+            {isEditing ? t('updating') : t('adding')}
           </>
         ) : (
-          isEditing ? t('update') || "Mettre à jour" : t('add') || "Ajouter"
+          isEditing ? t('update') : t('add')
         )}
       </Button>
     </>

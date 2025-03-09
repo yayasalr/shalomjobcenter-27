@@ -15,14 +15,14 @@ import { getTranslation } from './translation-utils';
 
 // Fonction pour déterminer les traductions à charger en fonction de la route
 const getRouteTranslations = (pathname: string): TranslationDictionary => {
-  // Détecter la route actuelle
-  if (pathname.includes('/jobs') || pathname.includes('/job/')) {
+  // Détecter la route actuelle pour charger uniquement les traductions nécessaires
+  if (pathname.includes('/jobs') || pathname.includes('/job/') || pathname.includes('/emplois')) {
     return { ...commonTranslations, ...jobsTranslations };
-  } else if (pathname.includes('/listings') || pathname.includes('/listing/')) {
+  } else if (pathname.includes('/listings') || pathname.includes('/listing/') || pathname.includes('/logements')) {
     return { ...commonTranslations, ...listingsTranslations };
-  } else if (pathname.includes('/profile') || pathname.includes('/user/')) {
+  } else if (pathname.includes('/profile') || pathname.includes('/user/') || pathname.includes('/profil')) {
     return { ...commonTranslations, ...profileTranslations };
-  } else if (pathname === '/' || pathname.includes('/home')) {
+  } else if (pathname === '/' || pathname.includes('/home') || pathname.includes('/accueil') || pathname.includes('/index')) {
     return { ...commonTranslations, ...homeTranslations };
   }
   
@@ -33,7 +33,7 @@ const getRouteTranslations = (pathname: string): TranslationDictionary => {
 export const useLanguageProvider = () => {
   const { settings, updateSettings } = useSiteSettings();
   const { setItem, getItem } = useLocalStorage();
-  // Toujours utiliser 'fr' comme langue
+  // Toujours utiliser 'fr' comme langue par défaut
   const [language, setLanguageState] = useState<SupportedLanguage>('fr');
   
   // État pour stocker les traductions basées sur la route actuelle
@@ -85,7 +85,14 @@ export const useLanguageProvider = () => {
 
   // Fonction pour traduire un texte
   const t = (key: string): string => {
-    return getTranslation(key, 'fr', translations);
+    const translation = getTranslation(key, 'fr', translations);
+    // Si la traduction est la même que la clé, c'est que la traduction n'existe pas
+    if (translation === key) {
+      console.log(`Traduction manquante pour la clé: ${key}`);
+      // Retourner une version plus lisible de la clé si pas de traduction
+      return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+    return translation;
   };
 
   // Initialisation
@@ -94,7 +101,7 @@ export const useLanguageProvider = () => {
   }, []);
 
   return {
-    language: 'fr' as SupportedLanguage, // Assurez-vous de typer correctement
+    language: 'fr' as SupportedLanguage,
     setLanguage,
     t,
   };

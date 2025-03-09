@@ -151,5 +151,34 @@ export const homeTranslations: TranslationDictionary = {
   },
   "rejected": {
     fr: "Refusée"
+  },
+  
+  // Nouveaux termes pour la page d'accueil
+  "explore": {
+    fr: "Explorer"
+  },
+  "view_all": {
+    fr: "Voir tout"
+  },
+  "featured": {
+    fr: "À la une"
+  },
+  "most_popular": {
+    fr: "Les plus populaires"
+  },
+  "newest": {
+    fr: "Nouveautés"
+  },
+  "browse_by_category": {
+    fr: "Parcourir par catégorie"
+  },
+  "compare_listings": {
+    fr: "Comparer les logements"
+  },
+  "safety_tips": {
+    fr: "Conseils de sécurité"
+  },
+  "about_shalom": {
+    fr: "À propos de Shalom"
   }
 };

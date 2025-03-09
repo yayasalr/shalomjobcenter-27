@@ -168,5 +168,85 @@ export const commonTranslations: TranslationDictionary = {
   },
   "contact_host": {
     fr: "Contacter l'hôte"
+  },
+  
+  // Nouvelles traductions pour termes généraux
+  "search": {
+    fr: "Rechercher"
+  },
+  "filter": {
+    fr: "Filtrer"
+  },
+  "sort": {
+    fr: "Trier"
+  },
+  "add": {
+    fr: "Ajouter"
+  },
+  "adding": {
+    fr: "Ajout en cours"
+  },
+  "update": {
+    fr: "Mettre à jour"
+  },
+  "updating": {
+    fr: "Mise à jour en cours"
+  },
+  "close": {
+    fr: "Fermer"
+  },
+  "apply": {
+    fr: "Appliquer"
+  },
+  "reset": {
+    fr: "Réinitialiser"
+  },
+  "search_by": {
+    fr: "Rechercher par"
+  },
+  "all_statuses": {
+    fr: "Tous les statuts"
+  },
+  "all_types": {
+    fr: "Tous les types"
+  },
+  "see_more": {
+    fr: "Voir plus"
+  },
+  "see_less": {
+    fr: "Voir moins"
+  },
+  "name": {
+    fr: "Nom"
+  },
+  "phone": {
+    fr: "Téléphone"
+  },
+  "location": {
+    fr: "Emplacement"
+  },
+  "address": {
+    fr: "Adresse"
+  },
+  "date": {
+    fr: "Date"
+  },
+  "status": {
+    fr: "Statut"
+  },
+  "actions": {
+    fr: "Actions"
+  },
+  "view_details": {
+    fr: "Voir les détails"
+  },
+  "accept": {
+    fr: "Accepter"
+  },
+  "reject": {
+    fr: "Refuser"
+  },
+  "back": {
+    fr: "Retour"
   }
 };

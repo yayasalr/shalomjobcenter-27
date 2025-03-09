@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { useLanguage } from '@/hooks/language';
 
 interface ApplicationDialogProps {
   isOpen: boolean;
@@ -43,8 +44,8 @@ const ApplicationDialog = ({
   setApplicantData,
   isHousingOffer
 }: ApplicationDialogProps) => {
-  // Handle form submission with loading state
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { t } = useLanguage();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +83,7 @@ const ApplicationDialog = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Nom complet <span className="text-red-500">*</span>
+              {t('name')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -99,7 +100,7 @@ const ApplicationDialog = ({
           
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
-              Email <span className="text-red-500">*</span>
+              {t('email')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -117,7 +118,7 @@ const ApplicationDialog = ({
           
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-1">
-              Téléphone <span className="text-red-500">*</span>
+              {t('phone')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -168,7 +169,7 @@ const ApplicationDialog = ({
           
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
-              Annuler
+              {t('cancel')}
             </Button>
             <Button 
               type="submit" 
