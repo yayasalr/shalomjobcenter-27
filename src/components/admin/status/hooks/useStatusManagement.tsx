@@ -29,12 +29,44 @@ export const useStatusManagement = () => {
         }
       }
       
-      setStatusMessages(processedMessages);
+      // Filter out expired status messages (older than 24 hours)
+      const now = new Date();
+      const validMessages = processedMessages.filter(msg => {
+        const messageDate = new Date(msg.createdAt);
+        const hoursDiff = (now.getTime() - messageDate.getTime()) / (1000 * 60 * 60);
+        return hoursDiff < 24;
+      });
       
-      // If we fixed the data format, save it back properly
-      if (processedMessages.length > 0 && JSON.stringify(rawData) !== JSON.stringify(processedMessages)) {
-        saveData('admin-status-messages', processedMessages);
+      setStatusMessages(validMessages);
+      
+      // If we fixed the data format or filtered expired messages, save it back properly
+      if (JSON.stringify(rawData) !== JSON.stringify(validMessages)) {
+        saveData('admin-status-messages', validMessages);
       }
+      
+      // Also save to user-statuses for the messaging interface
+      const userStatusFormat = validMessages.map(msg => ({
+        id: Number(msg.id),
+        user: "Admin",
+        avatar: "/placeholder.svg",
+        isViewed: false,
+        timestamp: new Date(msg.createdAt),
+        content: msg.text,
+        image: msg.imageUrl
+      }));
+      
+      const existingUserStatuses = loadData('user-statuses', []);
+      
+      // Merge with existing user statuses
+      const combinedStatuses = [...userStatusFormat, ...existingUserStatuses];
+      
+      // Remove duplicates based on id
+      const uniqueStatuses = combinedStatuses.filter((status, index, self) =>
+        index === self.findIndex(s => s.id === status.id)
+      );
+      
+      saveData('user-statuses', uniqueStatuses);
+      
     } catch (error) {
       console.error('Error loading status messages:', error);
       setStatusMessages([]);
@@ -45,6 +77,9 @@ export const useStatusManagement = () => {
   useEffect(() => {
     if (statusMessages.length > 0) {
       saveData('admin-status-messages', statusMessages);
+      
+      // Trigger a storage event to notify other components
+      window.dispatchEvent(new Event('storage'));
     }
   }, [statusMessages, saveData]);
 
@@ -73,8 +108,25 @@ export const useStatusManagement = () => {
     
     toast({
       title: "Statut publié",
-      description: "Votre statut a été publié avec succès"
+      description: "Votre statut a été publié avec succès et sera visible pendant 24 heures"
     });
+    
+    // Also save to user-statuses for the messaging interface
+    const userStatus = {
+      id: Number(newStatus.id),
+      user: "Admin",
+      avatar: "/placeholder.svg",
+      isViewed: false,
+      timestamp: new Date(newStatus.createdAt),
+      content: newStatus.text,
+      image: newStatus.imageUrl
+    };
+    
+    const existingUserStatuses = loadData('user-statuses', []);
+    saveData('user-statuses', [userStatus, ...existingUserStatuses]);
+    
+    // Trigger storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
   };
 
   const toggleStatusActive = (id: string) => {
@@ -93,10 +145,18 @@ export const useStatusManagement = () => {
   const deleteStatus = (id: string) => {
     setStatusMessages(statusMessages.filter(status => status.id !== id));
     
+    // Also remove from user-statuses
+    const existingUserStatuses = loadData('user-statuses', []);
+    const updatedUserStatuses = existingUserStatuses.filter((status: any) => status.id !== Number(id));
+    saveData('user-statuses', updatedUserStatuses);
+    
     toast({
       title: "Statut supprimé",
       description: "Le statut a été supprimé avec succès"
     });
+    
+    // Trigger storage event to notify other components
+    window.dispatchEvent(new Event('storage'));
   };
 
   return {

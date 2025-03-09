@@ -52,7 +52,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
     
     onStatusCreated(newStatus);
     setSelectedImage(null);
-    toast.success("Photo status published successfully");
+    toast.success("Statut photo publié avec succès!");
   };
   
   // Handle text status submission
@@ -73,7 +73,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
     onStatusCreated(newStatus);
     setTextStatus('');
     setShowTextInput(false);
-    toast.success("Text status published successfully");
+    toast.success("Statut texte publié avec succès!");
   };
   
   // Cancel any status creation
@@ -92,8 +92,8 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
           </div>
         </div>
         <div className="ml-3">
-          <p className="text-sm font-medium">My status</p>
-          <p className="text-xs text-gray-500">Tap to add status update</p>
+          <p className="text-sm font-medium">Mon statut</p>
+          <p className="text-xs text-gray-500">Appuyez pour ajouter un statut</p>
         </div>
       </div>
       
@@ -133,7 +133,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
               onClick={() => handleCreateStatus('text')}
             >
               <Edit className="h-4 w-4 mr-1" />
-              Text
+              Texte
             </Button>
           </div>
         )
@@ -145,7 +145,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
           <ImageUploader
             onImageUpload={handleImageUpload}
             isUploading={isUploading}
-            label="Add a photo for your status"
+            label="Ajouter une photo pour votre statut"
             className="w-full"
             buttonVariant="outline"
             buttonSize="default"

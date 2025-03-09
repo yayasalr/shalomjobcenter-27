@@ -1,10 +1,40 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusViewerProps } from './types';
 
 const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
+  const [progress, setProgress] = useState(0);
+  
+  useEffect(() => {
+    if (!status) return;
+    
+    // Reset progress when a new status is viewed
+    setProgress(0);
+    
+    // Animate progress over 5 seconds
+    const interval = setInterval(() => {
+      setProgress(prevProgress => {
+        if (prevProgress >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prevProgress + 2;
+      });
+    }, 100);
+    
+    // Auto-close after 5 seconds
+    const timeout = setTimeout(() => {
+      onClose();
+    }, 5000);
+    
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [status, onClose]);
+  
   if (!status) return null;
 
   return (
@@ -30,7 +60,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
           <div>
             <p className="text-white font-medium">{status.user}</p>
             <p className="text-gray-300 text-xs">
-              {status.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+              {new Date(status.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
             </p>
           </div>
         </div>
@@ -53,7 +83,10 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
         
         <div className="absolute bottom-0 w-full px-4 pb-4">
           <div className="w-full bg-gray-700 h-1 rounded-full overflow-hidden mb-4">
-            <div className="bg-white h-full animate-[status-progress_5s_linear]"></div>
+            <div 
+              className="bg-white h-full" 
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
         </div>
       </div>

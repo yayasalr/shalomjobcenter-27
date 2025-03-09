@@ -4,6 +4,21 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { StatusListProps } from './types';
 
 const StatusList: React.FC<StatusListProps> = ({ statuses, onViewStatus }) => {
+  // Function to format time elapsed
+  const formatTimeElapsed = (timestamp: Date): string => {
+    const now = new Date();
+    const statusDate = new Date(timestamp);
+    const diffMs = now.getTime() - statusDate.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    
+    if (diffHours >= 1) {
+      return `Il y a ${diffHours} h`;
+    } else {
+      return `Il y a ${diffMins} min`;
+    }
+  };
+
   return (
     <ScrollArea className="flex-1 overflow-y-auto">
       <div className="p-3">
@@ -28,7 +43,7 @@ const StatusList: React.FC<StatusListProps> = ({ statuses, onViewStatus }) => {
                 <div className="flex-1">
                   <p className="font-medium">{status.user}</p>
                   <p className="text-xs text-gray-500">
-                    {new Date(status.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {formatTimeElapsed(status.timestamp)}
                   </p>
                 </div>
               </div>
