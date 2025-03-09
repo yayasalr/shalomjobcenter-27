@@ -1,324 +1,312 @@
 
 import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Phone, Video, X, Microphone, Volume2 } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
-import { Phone, Video, PhoneIncoming, PhoneOutgoing, PhoneMissed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-
-interface Call {
-  id: string;
-  type: 'audio' | 'video';
-  direction: 'incoming' | 'outgoing' | 'missed';
-  user: {
-    id: string;
-    name: string;
-    avatar: string;
-  };
-  time: Date;
-  duration?: number; // en secondes, undefined pour les appels manqués
-}
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const CallsTab: React.FC = () => {
-  const [newCallOpen, setNewCallOpen] = useState(false);
-  const [callType, setCallType] = useState<'audio' | 'video'>('audio');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCallOpen, setActiveCallOpen] = useState(false);
-  const [activeCallUser, setActiveCallUser] = useState<{id: string, name: string, avatar: string} | null>(null);
-  const [activeCallType, setActiveCallType] = useState<'audio' | 'video'>('audio');
-  const [callDuration, setCallDuration] = useState(0);
+  const [activeCallDialog, setActiveCallDialog] = useState(false);
+  const [callDetails, setCallDetails] = useState<{
+    type: 'audio' | 'video';
+    user: { id: string; name: string; avatar: string; online: boolean };
+  } | null>(null);
   
-  // Simulation des appels récents
-  const calls: Call[] = [
-    {
-      id: '1',
-      type: 'audio',
-      direction: 'outgoing',
-      user: { id: 'user1', name: 'Sarah Dupont', avatar: '/placeholder.svg' },
-      time: new Date(Date.now() - 3600000),
-      duration: 125
+  // Simuler l'historique des appels
+  const recentCalls = [
+    { 
+      id: 'call1', 
+      user: { id: 'user1', name: 'Sarah Dupont', avatar: '/placeholder.svg', online: true }, 
+      type: 'incoming', 
+      callType: 'audio',
+      status: 'missed',
+      timestamp: new Date(Date.now() - 3600000)
     },
-    {
-      id: '2',
-      type: 'video',
-      direction: 'incoming',
-      user: { id: 'user3', name: 'Lucie Bernard', avatar: '/placeholder.svg' },
-      time: new Date(Date.now() - 7200000),
-      duration: 304
+    { 
+      id: 'call2', 
+      user: { id: 'user2', name: 'Thomas Martin', avatar: '/placeholder.svg', online: false }, 
+      type: 'outgoing', 
+      callType: 'video',
+      status: 'completed',
+      timestamp: new Date(Date.now() - 86400000)
     },
-    {
-      id: '3',
-      type: 'audio',
-      direction: 'missed',
-      user: { id: 'user2', name: 'Thomas Martin', avatar: '/placeholder.svg' },
-      time: new Date(Date.now() - 86400000)
-    },
-    {
-      id: '4',
-      type: 'audio',
-      direction: 'outgoing',
-      user: { id: 'user4', name: 'Marc Robert', avatar: '/placeholder.svg' },
-      time: new Date(Date.now() - 172800000),
-      duration: 62
+    { 
+      id: 'call3', 
+      user: { id: 'user3', name: 'Lucie Bernard', avatar: '/placeholder.svg', online: true }, 
+      type: 'incoming', 
+      callType: 'audio',
+      status: 'completed',
+      timestamp: new Date(Date.now() - 172800000)
     }
   ];
-
-  // Contacts pour la boîte de dialogue
-  const contacts = [
-    { id: 'user1', name: 'Sarah Dupont', avatar: '/placeholder.svg', online: true },
-    { id: 'user2', name: 'Thomas Martin', avatar: '/placeholder.svg', online: false },
-    { id: 'user3', name: 'Lucie Bernard', avatar: '/placeholder.svg', online: true },
-    { id: 'user4', name: 'Marc Robert', avatar: '/placeholder.svg', online: true },
-    { id: 'user5', name: 'Emma Petit', avatar: '/placeholder.svg', online: false },
-  ];
-
-  const filteredContacts = contacts.filter(contact => 
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const formatCallTime = (time: Date): string => {
+  
+  const handleStartCall = (type: 'audio' | 'video', user: { id: string; name: string; avatar: string; online: boolean }) => {
+    setCallDetails({ type, user });
+    setActiveCallDialog(true);
+  };
+  
+  const handleEndCall = () => {
+    toast.info(`Appel terminé avec ${callDetails?.user.name}`);
+    setActiveCallDialog(false);
+    setCallDetails(null);
+  };
+  
+  // Formater la date
+  const formatCallTime = (date: Date) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-
-    if (time > today) {
-      return `Aujourd'hui ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    } else if (time > yesterday) {
-      return `Hier ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    
+    if (date >= today) {
+      return `Aujourd'hui, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    } else if (date >= yesterday) {
+      return `Hier, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     } else {
-      return time.toLocaleDateString([], { day: 'numeric', month: 'short' });
+      return date.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: '2-digit' });
     }
-  };
-
-  const formatCallDuration = (seconds?: number): string => {
-    if (!seconds) return 'Appel manqué';
-    
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    
-    return `${min}:${sec.toString().padStart(2, '0')}`;
-  };
-
-  const handleCallButton = (type: 'audio' | 'video') => {
-    setCallType(type);
-    setNewCallOpen(true);
-  };
-
-  const startCall = (contact: typeof contacts[0]) => {
-    setActiveCallUser(contact);
-    setActiveCallType(callType);
-    setCallDuration(0);
-    setNewCallOpen(false);
-    setActiveCallOpen(true);
-    
-    // Simulation de la durée d'appel qui s'incrémente
-    const interval = setInterval(() => {
-      setCallDuration(prev => prev + 1);
-    }, 1000);
-    
-    // Nettoyer l'intervalle quand la boîte de dialogue est fermée
-    return () => clearInterval(interval);
-  };
-
-  const formatActiveDuration = (seconds: number): string => {
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    return `${min}:${sec.toString().padStart(2, '0')}`;
-  };
-
-  const handleEndCall = () => {
-    toast.info(`Appel terminé après ${formatActiveDuration(callDuration)}`);
-    setActiveCallOpen(false);
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Boutons pour passer un nouvel appel */}
-      <div className="p-3 border-b">
-        <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            className="flex-1"
-            onClick={() => handleCallButton('audio')}
-          >
-            <Phone className="h-4 w-4 mr-2" /> Appel vocal
-          </Button>
-          <Button 
-            variant="outline" 
-            className="flex-1"
-            onClick={() => handleCallButton('video')}
-          >
-            <Video className="h-4 w-4 mr-2" /> Appel vidéo
-          </Button>
-        </div>
-      </div>
-      
-      {/* Liste des appels */}
-      <ScrollArea className="flex-1">
-        <div className="p-3">
-          <h3 className="font-medium mb-2">Appels récents</h3>
-          <div className="space-y-2">
-            {calls.map(call => (
-              <div 
-                key={call.id}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
-                onClick={() => {
-                  if (call.direction !== 'missed') {
-                    setCallType(call.type);
-                    startCall(call.user);
-                  } else {
-                    toast.info(`Rappeler ${call.user.name}`);
-                    setCallType('audio');
-                    startCall(call.user);
-                  }
-                }}
-              >
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <img src={call.user.avatar} alt={call.user.name} />
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{call.user.name}</p>
-                    <div className="flex items-center text-xs text-gray-500">
-                      {call.direction === 'incoming' ? (
-                        <PhoneIncoming className="h-3 w-3 mr-1 text-green-500" />
-                      ) : call.direction === 'outgoing' ? (
-                        <PhoneOutgoing className="h-3 w-3 mr-1 text-blue-500" />
-                      ) : (
-                        <PhoneMissed className="h-3 w-3 mr-1 text-red-500" />
-                      )}
-                      {formatCallTime(call.time)}
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="grid grid-cols-3 p-0">
+          <TabsTrigger value="all" className="text-xs">Tous</TabsTrigger>
+          <TabsTrigger value="missed" className="text-xs">Manqués</TabsTrigger>
+          <TabsTrigger value="completed" className="text-xs">Terminés</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="all" className="mt-0">
+          <ScrollArea className="h-[calc(100vh-150px)]">
+            <div className="p-1">
+              {recentCalls.map(call => (
+                <div 
+                  key={call.id}
+                  className="flex items-center justify-between p-3 hover:bg-gray-100 cursor-pointer border-b"
+                  onClick={() => handleStartCall(
+                    call.callType as 'audio' | 'video', 
+                    call.user
+                  )}
+                >
+                  <div className="flex items-center">
+                    <Avatar className="h-12 w-12 mr-3">
+                      <img src={call.user.avatar} alt={call.user.name} />
+                    </Avatar>
+                    <div>
+                      <p className={`font-medium ${call.status === 'missed' && call.type === 'incoming' ? 'text-red-500' : ''}`}>
+                        {call.user.name}
+                      </p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        {call.type === 'incoming' ? 
+                          <Phone className="h-3 w-3 mr-1 rotate-90" /> : 
+                          <Phone className="h-3 w-3 mr-1 -rotate-90" />
+                        }
+                        <span>{call.type === 'incoming' ? 'Entrant' : 'Sortant'}</span>
+                      </div>
                     </div>
                   </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-gray-500">
+                      {formatCallTime(call.timestamp)}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className={`h-8 w-8 ${call.callType === 'audio' ? 'text-green-500' : 'text-blue-500'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartCall(call.callType as 'audio' | 'video', call.user);
+                      }}
+                    >
+                      {call.callType === 'audio' ? <Phone className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center">
-                  <span className="text-xs text-gray-500 mr-2">
-                    {formatCallDuration(call.duration)}
-                  </span>
-                  {call.type === 'audio' ? (
-                    <Phone className="h-4 w-4 text-gray-500" />
-                  ) : (
-                    <Video className="h-4 w-4 text-gray-500" />
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+        
+        <TabsContent value="missed" className="mt-0">
+          <ScrollArea className="h-[calc(100vh-150px)]">
+            <div className="p-1">
+              {recentCalls.filter(call => call.status === 'missed').map(call => (
+                <div 
+                  key={call.id}
+                  className="flex items-center justify-between p-3 hover:bg-gray-100 cursor-pointer border-b"
+                  onClick={() => handleStartCall(
+                    call.callType as 'audio' | 'video', 
+                    call.user
                   )}
+                >
+                  <div className="flex items-center">
+                    <Avatar className="h-12 w-12 mr-3">
+                      <img src={call.user.avatar} alt={call.user.name} />
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-red-500">{call.user.name}</p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Phone className="h-3 w-3 mr-1 rotate-90" />
+                        <span>Appel manqué</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-gray-500">
+                      {formatCallTime(call.timestamp)}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className={`h-8 w-8 ${call.callType === 'audio' ? 'text-green-500' : 'text-blue-500'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartCall(call.callType as 'audio' | 'video', call.user);
+                      }}
+                    >
+                      {call.callType === 'audio' ? <Phone className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </ScrollArea>
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+        
+        <TabsContent value="completed" className="mt-0">
+          <ScrollArea className="h-[calc(100vh-150px)]">
+            <div className="p-1">
+              {recentCalls.filter(call => call.status === 'completed').map(call => (
+                <div 
+                  key={call.id}
+                  className="flex items-center justify-between p-3 hover:bg-gray-100 cursor-pointer border-b"
+                  onClick={() => handleStartCall(
+                    call.callType as 'audio' | 'video', 
+                    call.user
+                  )}
+                >
+                  <div className="flex items-center">
+                    <Avatar className="h-12 w-12 mr-3">
+                      <img src={call.user.avatar} alt={call.user.name} />
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{call.user.name}</p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        {call.type === 'incoming' ? 
+                          <Phone className="h-3 w-3 mr-1 rotate-90" /> : 
+                          <Phone className="h-3 w-3 mr-1 -rotate-90" />
+                        }
+                        <span>{call.type === 'incoming' ? 'Entrant' : 'Sortant'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-gray-500">
+                      {formatCallTime(call.timestamp)}
+                    </span>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className={`h-8 w-8 ${call.callType === 'audio' ? 'text-green-500' : 'text-blue-500'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartCall(call.callType as 'audio' | 'video', call.user);
+                      }}
+                    >
+                      {call.callType === 'audio' ? <Phone className="h-4 w-4" /> : <Video className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
       
-      {/* Boîte de dialogue pour passer un nouvel appel */}
-      <Dialog open={newCallOpen} onOpenChange={setNewCallOpen}>
+      {/* Active Call Dialog */}
+      <Dialog open={activeCallDialog} onOpenChange={setActiveCallDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {callType === 'audio' ? 'Appel vocal' : 'Appel vidéo'}
+              {callDetails?.type === 'audio' ? 'Appel vocal' : 'Appel vidéo'} avec {callDetails?.user.name}
             </DialogTitle>
           </DialogHeader>
-          <div className="mb-4">
-            <Input
-              placeholder="Rechercher un contact..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="mb-2"
-            />
-            <ScrollArea className="h-60">
-              <div className="space-y-2">
-                {filteredContacts.map(contact => (
-                  <div 
-                    key={contact.id}
-                    className="flex items-center justify-between p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
-                    onClick={() => startCall(contact)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar>
-                        <img src={contact.avatar} alt={contact.name} />
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{contact.name}</p>
-                        <p className="text-xs text-gray-500">
-                          {contact.online ? 'En ligne' : 'Hors ligne'}
-                        </p>
-                      </div>
-                    </div>
-                    <Button size="sm" variant="ghost">
-                      {callType === 'audio' ? (
-                        <Phone className="h-4 w-4" />
-                      ) : (
-                        <Video className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                ))}
+          
+          <div className="flex flex-col items-center py-6">
+            <Avatar className="h-24 w-24 mb-4">
+              <img src={callDetails?.user.avatar || '/placeholder.svg'} alt={callDetails?.user.name || ''} />
+            </Avatar>
+            
+            {callDetails?.type === 'video' && (
+              <div className="bg-gray-200 rounded-lg w-full h-40 mb-4 flex items-center justify-center">
+                <Video className="h-10 w-10 text-gray-400" />
               </div>
-            </ScrollArea>
+            )}
+            
+            <p className="text-lg font-semibold mb-2">{callDetails?.user.name}</p>
+            <p className="text-sm text-gray-500 mb-6">
+              {callDetails?.type === 'audio' ? 'Appel vocal en cours...' : 'Appel vidéo en cours...'}
+            </p>
+            
+            <div className="flex gap-4">
+              {callDetails?.type === 'audio' ? (
+                <>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full"
+                  >
+                    <Volume2 className="h-6 w-6 text-blue-500" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full"
+                  >
+                    <Microphone className="h-6 w-6 text-blue-500" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full"
+                  >
+                    <Video className="h-6 w-6 text-blue-500" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-full"
+                  >
+                    <Microphone className="h-6 w-6 text-blue-500" />
+                  </Button>
+                </>
+              )}
+              <Button 
+                variant="destructive" 
+                size="icon" 
+                className="h-12 w-12 rounded-full"
+                onClick={handleEndCall}
+              >
+                <Phone className="h-6 w-6 rotate-135" />
+              </Button>
+            </div>
           </div>
+          
           <DialogFooter>
             <Button 
               type="button" 
               variant="secondary" 
-              onClick={() => setNewCallOpen(false)}
+              onClick={handleEndCall}
             >
-              Annuler
+              Terminer l'appel
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Boîte de dialogue d'appel actif */}
-      <Dialog open={activeCallOpen} onOpenChange={setActiveCallOpen}>
-        <DialogContent className="sm:max-w-md">
-          <div className="flex flex-col items-center justify-center py-8">
-            <Avatar className="h-24 w-24 mb-4">
-              <img 
-                src={activeCallUser?.avatar || '/placeholder.svg'} 
-                alt={activeCallUser?.name || 'Contact'} 
-              />
-            </Avatar>
-            <h3 className="text-xl font-bold mb-2">{activeCallUser?.name}</h3>
-            <p className="text-gray-500 mb-6">
-              {activeCallType === 'audio' ? 'Appel vocal' : 'Appel vidéo'} en cours...
-            </p>
-            <p className="text-2xl font-mono mb-8">{formatActiveDuration(callDuration)}</p>
-            
-            {activeCallType === 'video' && (
-              <div className="bg-gray-200 w-full h-40 rounded-lg mb-8 flex items-center justify-center">
-                <p className="text-gray-500">Flux vidéo simulé</p>
-              </div>
-            )}
-            
-            <div className="flex space-x-4">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full h-12 w-12"
-                onClick={() => toast.info('Microphone mis en sourdine')}
-              >
-                <Phone className="h-6 w-6" />
-              </Button>
-              <Button 
-                variant="destructive" 
-                size="icon" 
-                className="rounded-full h-12 w-12"
-                onClick={handleEndCall}
-              >
-                <PhoneMissed className="h-6 w-6" />
-              </Button>
-              {activeCallType === 'video' && (
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  className="rounded-full h-12 w-12"
-                  onClick={() => toast.info('Caméra désactivée')}
-                >
-                  <Video className="h-6 w-6" />
-                </Button>
-              )}
-            </div>
-          </div>
         </DialogContent>
       </Dialog>
     </div>
