@@ -33,3 +33,9 @@ export interface ImageStatusPreviewProps {
   onSubmit: () => void;
   onCancel: () => void;
 }
+
+export interface StatusTabContentProps {
+  statuses: Status[];
+  onViewStatus: (status: Status) => void;
+  onStatusCreated: (status: Status) => void;
+}

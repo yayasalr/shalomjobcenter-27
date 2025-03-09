@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, MessageCircle, Phone, Image } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,7 +8,7 @@ import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import AllUsersDialog from './AllUsersDialog';
+import { AllUsersDialog } from './AllUsersDialog';
 import { Status } from './tabs/status/types';
 import StatusTabContent from './tabs/StatusTabContent';
 import CallsTabContent from './tabs/CallsTabContent';
@@ -35,7 +34,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [activeTab, setActiveTab] = useState<string>('chats');
   const [showAllUsers, setShowAllUsers] = useState<boolean>(false);
   
-  // Example statuses for demo
   const [statuses, setStatuses] = useState<Status[]>(() => {
     const now = new Date();
     
@@ -69,7 +67,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
     ];
   });
 
-  // Filter conversations based on search query
+  const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
+
   const filteredConversations = useMemo(() => {
     if (!searchQuery.trim()) return conversations;
     
@@ -81,9 +80,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
     );
   }, [conversations, searchQuery]);
 
-  // View a status
   const handleViewStatus = (status: Status) => {
-    // Mark status as viewed
     setStatuses(currentStatuses => 
       currentStatuses.map(s => 
         s.id === status.id ? { ...s, isViewed: true } : s
@@ -91,14 +88,12 @@ const ConversationList: React.FC<ConversationListProps> = ({
     );
   };
 
-  // Add a new status
   const handleStatusCreated = (newStatus: Status) => {
     setStatuses(currentStatuses => [newStatus, ...currentStatuses]);
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Tabs for different conversation types */}
       <div className="p-2 border-b">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full">
@@ -118,7 +113,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
         </Tabs>
       </div>
       
-      {/* Search bar - shown only for chats tab */}
       {activeTab === 'chats' && (
         <div className="p-2 border-b">
           <div className="relative">
@@ -133,14 +127,14 @@ const ConversationList: React.FC<ConversationListProps> = ({
         </div>
       )}
       
-      {/* Tab content */}
       <div className="flex-1 overflow-hidden">
         {activeTab === 'chats' && (
           <ChatsTabContent 
-            conversations={filteredConversations}
+            filteredConversations={filteredConversations}
             selectedConversation={selectedConversation}
             handleSelectConversation={handleSelectConversation}
             getUnreadCount={getUnreadCount}
+            onlineUsers={onlineUsers}
           />
         )}
         
@@ -157,7 +151,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
         )}
       </div>
       
-      {/* New conversation button - shown only for chats tab */}
       {activeTab === 'chats' && (
         <div className="p-3 border-t">
           <Button 
@@ -170,7 +163,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
         </div>
       )}
       
-      {/* All users dialog */}
       <AllUsersDialog
         open={showAllUsers}
         onOpenChange={setShowAllUsers}

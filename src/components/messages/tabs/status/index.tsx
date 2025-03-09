@@ -1,12 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { Status } from './types';
+import { Status, StatusTabContentProps } from './types';
 import StatusViewer from './StatusViewer';
 import StatusCreator from './StatusCreator';
 import StatusList from './StatusList';
-import { StatusTabContentProps } from './types';
 
-const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialStatuses }) => {
+const StatusTabContent: React.FC<StatusTabContentProps> = ({ 
+  statuses: initialStatuses, 
+  onViewStatus,
+  onStatusCreated
+}) => {
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [viewingStatus, setViewingStatus] = useState<Status | null>(null);
   
@@ -60,12 +63,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
     setStatuses(defaultStatuses);
   };
   
-  // Handler for adding a new status
-  const handleStatusCreated = (newStatus: Status) => {
-    setStatuses([newStatus, ...statuses]);
-  };
-  
-  // View a status
+  // Handle viewing a status
   const handleViewStatus = (status: Status) => {
     // Mark status as viewed
     const updatedStatuses = statuses.map(s => 
@@ -74,10 +72,25 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
     setStatuses(updatedStatuses);
     setViewingStatus(status);
     
+    // Call the parent handler
+    if (onViewStatus) {
+      onViewStatus(status);
+    }
+    
     // Auto-close the status after 5 seconds
     setTimeout(() => {
       setViewingStatus(null);
     }, 5000);
+  };
+
+  // Handle creating a new status
+  const handleStatusCreated = (newStatus: Status) => {
+    setStatuses([newStatus, ...statuses]);
+    
+    // Call the parent handler
+    if (onStatusCreated) {
+      onStatusCreated(newStatus);
+    }
   };
 
   // When in admin view, auto-load additional example statuses

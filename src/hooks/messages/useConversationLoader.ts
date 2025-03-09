@@ -1,33 +1,38 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { useLocalStorage } from '../useLocalStorage';
+import useLocalStorage from '../useLocalStorage';
 import { Message, Conversation, ADMIN_USER, WELCOME_BOT } from '@/components/messages/types';
 import { faker } from '@faker-js/faker';
 
 export const useConversationLoader = (userId: string | undefined) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [conversations, setConversations] = useLocalStorage<Conversation[]>('conversations', []);
+  const { loadData, saveData } = useLocalStorage();
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
 
   // Initialize with demo data if no conversations exist
   useEffect(() => {
     if (!userId) return;
     
-    if (conversations.length === 0) {
-      try {
+    try {
+      // Load conversations from local storage
+      const storedConversations = loadData<Conversation>('conversations', []);
+      
+      if (storedConversations.length === 0) {
         // Generate some demo conversations
         const demoConversations = generateDemoConversations(userId);
         setConversations(demoConversations);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error('Failed to load conversations'));
-        setIsLoading(false);
+        saveData('conversations', demoConversations);
+      } else {
+        setConversations(storedConversations);
       }
-    } else {
+      setIsLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to load conversations'));
       setIsLoading(false);
     }
-  }, [userId, conversations.length, setConversations]);
+  }, [userId, loadData, saveData]);
 
   // Get the count of unread messages in a conversation
   const getUnreadCount = useCallback((conversation: Conversation) => {
@@ -38,8 +43,8 @@ export const useConversationLoader = (userId: string | undefined) => {
 
   // Mark all messages in a conversation as read
   const markConversationAsRead = useCallback((conversationId: string) => {
-    setConversations(prevConversations => 
-      prevConversations.map(conv => {
+    setConversations(prevConversations => {
+      const updatedConversations = prevConversations.map(conv => {
         if (conv.id === conversationId) {
           const updatedMessages = conv.messages.map(msg => ({
             ...msg,
@@ -56,14 +61,19 @@ export const useConversationLoader = (userId: string | undefined) => {
           };
         }
         return conv;
-      })
-    );
-  }, [setConversations]);
+      });
+      
+      // Save updated conversations to localStorage
+      saveData('conversations', updatedConversations);
+      
+      return updatedConversations;
+    });
+  }, [saveData]);
 
   // Update a conversation when a new message is sent
   const updateConversationWithMessage = useCallback((conversationId: string, newMessage: Message) => {
-    setConversations(prevConversations => 
-      prevConversations.map(conv => {
+    setConversations(prevConversations => {
+      const updatedConversations = prevConversations.map(conv => {
         if (conv.id === conversationId) {
           return {
             ...conv,
@@ -77,14 +87,20 @@ export const useConversationLoader = (userId: string | undefined) => {
           };
         }
         return conv;
-      })
-    );
-  }, [setConversations]);
+      });
+      
+      // Save updated conversations to localStorage
+      saveData('conversations', updatedConversations);
+      
+      return updatedConversations;
+    });
+  }, [saveData]);
 
   return {
     isLoading,
     error,
     conversations,
+    setConversations,
     selectedConversation,
     setSelectedConversation,
     getUnreadCount,

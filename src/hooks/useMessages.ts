@@ -1,5 +1,6 @@
 
-import { useConversationLoader } from './messages/useConversationLoader';
+import { useState } from 'react';
+import useConversationLoader from './messages/useConversationLoader';
 import { useMessageSender } from './messages/useMessageSender';
 import { useConversationManager } from './messages/useConversationManager';
 
@@ -8,7 +9,10 @@ export const useMessages = (userId: string | undefined) => {
     conversations,
     setConversations,
     selectedConversation,
-    setSelectedConversation
+    setSelectedConversation,
+    getUnreadCount,
+    markConversationAsRead,
+    updateConversationWithMessage
   } = useConversationLoader(userId);
 
   const {
@@ -20,14 +24,14 @@ export const useMessages = (userId: string | undefined) => {
     conversations,
     setConversations,
     selectedConversation,
-    setSelectedConversation
+    setSelectedConversation,
+    updateConversationWithMessage
   );
 
   const {
     searchQuery,
     setSearchQuery,
     handleSelectConversation,
-    getUnreadCount,
     onlineUsers,
     isUserOnline
   } = useConversationManager(
