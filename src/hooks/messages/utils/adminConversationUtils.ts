@@ -96,4 +96,7 @@ export const updateAdminConversation = (
   
   // Sauvegarder les conversations admin mises à jour dans localStorage
   localStorage.setItem('admin_conversations', JSON.stringify(adminConversations));
-};
+  
+  // Log pour le debug
+  console.log(`Message de l'utilisateur ${userId} mis à jour côté admin`, messagesToAdd);
+}

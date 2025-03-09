@@ -36,7 +36,7 @@ export const useMessageSender = (
         content: newMessage,
         timestamp,
         read: true,
-        sender: 'user' as const,  // Explicitly type as a literal "user" type
+        sender: 'user' as const,
       },
     };
     
@@ -52,20 +52,28 @@ export const useMessageSender = (
     
     // Si c'est une conversation avec l'admin, mettre à jour sa version aussi
     if (selectedConversation.with.id === 'admin') {
+      // Récupérer les informations de l'utilisateur actuel
       const currentUser = JSON.parse(localStorage.getItem('users') || '[]')
         .find((u: any) => u.id === userId);
-        
+      
+      // Mettre à jour immédiatement la conversation admin
       updateAdminConversation(
         userId,
         updatedMessage,
         null, // Pas de réponse automatique
-        currentUser
+        currentUser || { name: 'Utilisateur inconnu', email: '', avatar: '/placeholder.svg' }
       );
+      
+      // Ajouter une notification pour indiquer que le message a été envoyé à l'admin
+      toast.success("Message envoyé à l'administrateur", {
+        description: "L'administrateur recevra votre message instantanément."
+      });
+    } else {
+      toast.success("Message envoyé");
     }
     
     // Réinitialiser le champ de message
     setNewMessage('');
-    toast.success("Message envoyé");
   };
 
   return {

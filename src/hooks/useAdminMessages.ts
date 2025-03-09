@@ -40,9 +40,21 @@ export const useAdminMessages = () => {
     // Configurer un intervalle pour vérifier périodiquement les nouveaux messages
     const interval = setInterval(() => {
       loadAndRefreshConversations();
-    }, 10000); // Vérifier toutes les 10 secondes
+    }, 3000); // Vérifier toutes les 3 secondes (au lieu de 10)
     
-    return () => clearInterval(interval);
+    // Ajouter un écouteur d'événements pour les mises à jour de localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'admin_conversations') {
+        loadAndRefreshConversations();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [selectedConversation]);
 
   const { 
