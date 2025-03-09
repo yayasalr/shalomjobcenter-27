@@ -1,6 +1,4 @@
 
-import { useLanguage } from '@/hooks/language';
-
 export const translateDomain = (domain: string) => {
   const domains: {[key: string]: string} = {
     'residential_security': 'Sécurité résidentielle',

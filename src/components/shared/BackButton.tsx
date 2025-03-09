@@ -3,12 +3,10 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/language';
 
 export const BackButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
   
   // Ne pas afficher le bouton retour sur la page d'accueil
   if (location.pathname === '/' || location.pathname === '/index') {
@@ -27,7 +25,7 @@ export const BackButton = () => {
       size="sm"
     >
       <ChevronLeft className="mr-1 h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-      <span>{t('back')}</span>
+      <span>Retour</span>
     </Button>
   );
 };

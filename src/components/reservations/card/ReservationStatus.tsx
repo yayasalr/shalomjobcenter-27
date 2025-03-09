@@ -2,15 +2,12 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Reservation } from '@/hooks/reservations';
-import { useLanguage } from '@/hooks/language';
 
 interface ReservationStatusProps {
   status: Reservation['status'];
 }
 
 export const ReservationStatus = ({ status }: ReservationStatusProps) => {
-  const { t } = useLanguage();
-  
   const getBadgeVariant = (status: Reservation['status']) => {
     switch (status) {
       case 'confirmed':
@@ -27,13 +24,13 @@ export const ReservationStatus = ({ status }: ReservationStatusProps) => {
   const getStatusText = (status: Reservation['status']) => {
     switch (status) {
       case 'confirmed':
-        return t('confirmed') || 'Confirmée';
+        return 'Confirmée';
       case 'pending':
-        return t('pending') || 'En attente';
+        return 'En attente';
       case 'cancelled':
-        return t('cancelled') || 'Annulée';
+        return 'Annulée';
       default:
-        return t('unknown') || 'Inconnu';
+        return 'Inconnu';
     }
   };
 

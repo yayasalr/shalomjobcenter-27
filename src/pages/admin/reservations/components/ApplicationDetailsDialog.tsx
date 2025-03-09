@@ -23,7 +23,6 @@ import {
 import { JobApplication } from '@/types/job';
 import { formatDate } from '../utils/formatUtils';
 import { Badge } from '@/components/ui/badge';
-import { useLanguage } from '@/hooks/language';
 
 interface ApplicationDetailsDialogProps {
   application: JobApplication | null;
@@ -42,8 +41,6 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
   onClose,
   onUpdateStatus
 }) => {
-  const { t } = useLanguage();
-  
   if (!application) return null;
 
   return (
@@ -59,7 +56,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
         <div className="space-y-6">
           {/* Status badge */}
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">{t('status')}</h3>
+            <h3 className="text-lg font-semibold">Statut</h3>
             <Badge
               className={`${
                 application.status === 'approved'
@@ -72,17 +69,17 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               {application.status === 'approved' ? (
                 <>
                   <Check className="mr-1 h-4 w-4" />
-                  {t('approved')}
+                  Approuvé
                 </>
               ) : application.status === 'pending' ? (
                 <>
                   <Clock className="mr-1 h-4 w-4" />
-                  {t('pending')}
+                  En attente
                 </>
               ) : (
                 <>
                   <X className="mr-1 h-4 w-4" />
-                  {t('rejected')}
+                  Rejeté
                 </>
               )}
             </Badge>
@@ -101,7 +98,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               </div>
               <div className="flex items-center text-gray-700">
                 <Phone className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium mr-2">{t('phone')}:</span>
+                <span className="font-medium mr-2">Téléphone:</span>
                 <a href={`tel:${application.phone}`} className="text-blue-600 hover:underline">
                   {application.phone}
                 </a>
@@ -125,7 +122,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               </div>
               <div className="flex items-center text-gray-700">
                 <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium mr-2">{t('location')}:</span>
+                <span className="font-medium mr-2">Lieu:</span>
                 <span>{jobLocation}</span>
               </div>
             </div>
@@ -164,7 +161,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               disabled={application.status === 'rejected'}
             >
               <X className="h-4 w-4 mr-2" />
-              {t('reject')}
+              Rejeter
             </Button>
             <Button 
               variant="outline"
@@ -172,7 +169,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               disabled={application.status === 'pending'}
             >
               <Clock className="h-4 w-4 mr-2" />
-              {t('pending')}
+              En attente
             </Button>
             <Button 
               variant="default" 
@@ -181,7 +178,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
               disabled={application.status === 'approved'}
             >
               <Check className="h-4 w-4 mr-2" />
-              {t('accept')}
+              Accepter
             </Button>
           </div>
           <Button 
@@ -190,7 +187,7 @@ const ApplicationDetailsDialog: React.FC<ApplicationDetailsDialogProps> = ({
             onClick={onClose} 
             className="order-1 sm:order-2"
           >
-            {t('close')}
+            Fermer
           </Button>
         </DialogFooter>
       </DialogContent>

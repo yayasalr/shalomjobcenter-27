@@ -3,7 +3,6 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
-import { useLanguage } from '@/hooks/language';
 import {
   Select,
   SelectContent,
@@ -27,8 +26,6 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
   setStatusFilter,
   type
 }) => {
-  const { t } = useLanguage();
-  
   const handleClearFilters = () => {
     setSearchQuery('');
     setStatusFilter('all');
@@ -64,23 +61,23 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
             <SelectTrigger>
               <div className="flex items-center">
                 <Filter className="mr-2 h-4 w-4" />
-                <SelectValue placeholder={t('all_statuses')} />
+                <SelectValue placeholder="Tous les statuts" />
               </div>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t('all_statuses')}</SelectItem>
+              <SelectItem value="all">Tous les statuts</SelectItem>
               {type === 'reservations' ? (
                 <>
-                  <SelectItem value="pending">{t('pending')}</SelectItem>
-                  <SelectItem value="confirmed">{t('confirmed')}</SelectItem>
-                  <SelectItem value="cancelled">{t('cancelled')}</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
+                  <SelectItem value="confirmed">Confirmé</SelectItem>
+                  <SelectItem value="cancelled">Annulé</SelectItem>
                   <SelectItem value="completed">Terminée</SelectItem>
                 </>
               ) : (
                 <>
-                  <SelectItem value="pending">{t('pending')}</SelectItem>
-                  <SelectItem value="approved">{t('approved')}</SelectItem>
-                  <SelectItem value="rejected">{t('rejected')}</SelectItem>
+                  <SelectItem value="pending">En attente</SelectItem>
+                  <SelectItem value="approved">Approuvé</SelectItem>
+                  <SelectItem value="rejected">Rejeté</SelectItem>
                 </>
               )}
             </SelectContent>
@@ -89,7 +86,7 @@ const SearchAndFilterBar: React.FC<SearchAndFilterBarProps> = ({
 
         {(searchQuery || statusFilter !== 'all') && (
           <Button variant="outline" onClick={handleClearFilters}>
-            {t('reset')}
+            Réinitialiser
           </Button>
         )}
       </div>

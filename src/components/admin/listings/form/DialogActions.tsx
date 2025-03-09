@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useLanguage } from '@/hooks/language';
 
 interface DialogActionsProps {
   onCancel: () => void;
@@ -17,8 +16,6 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
   isEditing,
   isSubmitting = false
 }) => {
-  const { t } = useLanguage();
-  
   return (
     <>
       <Button 
@@ -28,7 +25,7 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
         disabled={isSubmitting}
         type="button"
       >
-        {t('cancel')}
+        Annuler
       </Button>
       <Button 
         onClick={onSubmit}
@@ -39,10 +36,10 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {isEditing ? t('updating') : t('adding')}
+            {isEditing ? "Mise à jour..." : "Ajout..."}
           </>
         ) : (
-          isEditing ? t('update') : t('add')
+          isEditing ? "Mettre à jour" : "Ajouter"
         )}
       </Button>
     </>
