@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { Conversation } from '@/components/messages/types';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Phone, Video } from 'lucide-react';
+import { ArrowLeft, Phone, Video, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Conversation } from '@/components/messages/types';
 
 interface ConversationHeaderProps {
   conversation: Conversation;
@@ -18,48 +17,41 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   onBackClick
 }) => {
   return (
-    <div className="whatsapp-header">
-      <div className="flex items-center flex-1">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="mr-2 text-white md:hidden whatsapp-back-button touch-manipulation" 
-          onClick={onBackClick}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        
+    <div className="whatsapp-header flex items-center gap-2 p-2">
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="whatsapp-back-button text-white" 
+        onClick={onBackClick}
+      >
+        <ArrowLeft className="h-5 w-5" />
+      </Button>
+      
+      <div className="flex items-center flex-1 gap-3">
         <div className="relative">
-          <Avatar className="whatsapp-user-avatar">
-            <AvatarImage src={conversation.with.avatar || "/placeholder.svg"} />
-            <AvatarFallback>
-              {conversation.with.name.charAt(0)}
-            </AvatarFallback>
+          <Avatar className="whatsapp-user-avatar h-10 w-10 border-2 border-white/10">
+            <img src={conversation.with.avatar || "/placeholder.svg"} alt={conversation.with.name} />
           </Avatar>
           <div className={isOnline ? "whatsapp-online-indicator" : "whatsapp-offline-indicator"}></div>
         </div>
         
-        <div className="whatsapp-user-info">
-          <h3 className="font-semibold text-white truncate">{conversation.with.name}</h3>
-          <div className="flex items-center gap-2">
-            <div className="text-xs text-white/80">
-              {isOnline ? 'En ligne' : 'Hors ligne'}
-            </div>
-            {conversation.with.role && (
-              <Badge variant="outline" className="text-xs bg-emerald-700 text-white border-emerald-600">
-                {conversation.with.role === 'admin' ? 'Administrateur' : conversation.with.role}
-              </Badge>
-            )}
+        <div className="whatsapp-user-info text-white">
+          <div className="font-semibold truncate">{conversation.with.name}</div>
+          <div className="text-xs opacity-80">
+            {isOnline ? 'En ligne' : 'Hors ligne'}
           </div>
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="text-white touch-manipulation">
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="text-white">
           <Video className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="text-white touch-manipulation">
+        <Button variant="ghost" size="icon" className="text-white">
           <Phone className="h-5 w-5" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white">
+          <MoreVertical className="h-5 w-5" />
         </Button>
       </div>
     </div>

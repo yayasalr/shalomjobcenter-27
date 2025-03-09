@@ -45,7 +45,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
           )}
         </div>
         
-        {/* Ajouter les queues de messages WhatsApp */}
+        {/* Message tails for WhatsApp style */}
         {isAdmin ? <div className="whatsapp-tail-out"></div> : <div className="whatsapp-tail-in"></div>}
       </div>
       
