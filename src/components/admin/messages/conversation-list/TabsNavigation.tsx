@@ -1,40 +1,38 @@
 
 import React from 'react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageCircle, Image, Phone } from 'lucide-react';
+import { MessageSquare, Phone, CircleUser } from 'lucide-react';
 
 interface TabsNavigationProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
 
-export const TabsNavigation: React.FC<TabsNavigationProps> = ({ 
-  activeTab, 
-  setActiveTab 
-}) => {
+const TabsNavigation: React.FC<TabsNavigationProps> = ({ activeTab, setActiveTab }) => {
+  const tabs = [
+    { id: 'CHATS', icon: <MessageSquare className="h-5 w-5" />, label: 'Chats' },
+    { id: 'STATUS', icon: <CircleUser className="h-5 w-5" />, label: 'Status' },
+    { id: 'APPELS', icon: <Phone className="h-5 w-5" />, label: 'Appels' },
+  ];
+
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="w-full h-10 bg-gray-50 grid grid-cols-3">
-        <TabsTrigger 
-          value="CHATS" 
-          className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-green-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none flex items-center justify-center"
+    <div className="flex items-center bg-white border-b">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          className={`flex-1 flex items-center justify-center py-3 px-4 transition-colors ${
+            activeTab === tab.id
+              ? 'text-green-500 border-b-2 border-green-500'
+              : 'text-gray-500 hover:bg-gray-50'
+          }`}
+          onClick={() => setActiveTab(tab.id)}
         >
-          <MessageCircle className="h-4 w-4 mr-2" /> Chats
-        </TabsTrigger>
-        <TabsTrigger 
-          value="STATUS" 
-          className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-green-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none flex items-center justify-center"
-        >
-          <Image className="h-4 w-4 mr-2" /> Status
-        </TabsTrigger>
-        <TabsTrigger 
-          value="APPELS" 
-          className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-green-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none flex items-center justify-center"
-        >
-          <Phone className="h-4 w-4 mr-2" /> Appels
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+          <div className="flex flex-col items-center">
+            {tab.icon}
+            <span className="text-xs mt-1">{tab.label}</span>
+          </div>
+        </button>
+      ))}
+    </div>
   );
 };
 

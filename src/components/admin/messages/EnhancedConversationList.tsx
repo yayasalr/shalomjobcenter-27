@@ -10,8 +10,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Image, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import StatusTabContent from '@/components/messages/tabs/StatusTabContent';
-import CallsTabContent from '@/components/messages/tabs/CallsTabContent';
+import StatusTab from './conversation-list/StatusTab';
+import CallsTab from './conversation-list/CallsTab';
 
 interface EnhancedConversationListProps {
   conversations: Conversation[];
@@ -80,23 +80,10 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
     }
   };
 
-  // Gérer les actions des onglets Statut et Appels
-  const handleViewStatus = (status: any) => {
-    toast.info(`Visualisation du statut de ${status.user}`);
-  };
-
-  const handleStatusCreated = (status: any) => {
-    toast.success("Statut créé avec succès");
-  };
-
-  const handleStartCall = (isVideo: boolean) => {
-    toast.info(`Démarrage d'un appel ${isVideo ? 'vidéo' : 'audio'}`);
-  };
-
   return (
     <div className="flex flex-col h-full bg-gray-50 border-r">
       {/* Header Component */}
-      <Header title="Messages" />
+      <Header title="Shalom Job Center Message" />
       
       {/* Tabs Component */}
       <TabsNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -122,17 +109,9 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
         </>
       )}
       
-      {activeTab === 'STATUS' && (
-        <StatusTabContent 
-          statuses={[]}
-          onViewStatus={handleViewStatus}
-          onStatusCreated={handleStatusCreated}
-        />
-      )}
+      {activeTab === 'STATUS' && <StatusTab />}
       
-      {activeTab === 'APPELS' && (
-        <CallsTabContent calls={[]} />
-      )}
+      {activeTab === 'APPELS' && <CallsTab />}
     </div>
   );
 };
