@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
 import { toast } from 'sonner';
-import { handleAutoResponse } from './utils/autoResponseUtils';
 import { updateAdminConversation } from './utils/adminConversationUtils';
 
 export const useMessageSender = (

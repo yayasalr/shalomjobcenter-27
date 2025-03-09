@@ -11,7 +11,8 @@ export const useMessages = (userId: string | undefined) => {
     setSelectedConversation,
     getUnreadCount,
     markConversationAsRead,
-    updateConversationWithMessage
+    updateConversationWithMessage,
+    setConversations
   } = useConversationLoader(userId);
 
   const {
@@ -21,9 +22,9 @@ export const useMessages = (userId: string | undefined) => {
   } = useMessageSender(
     userId,
     conversations,
+    setConversations,
     selectedConversation,
-    setSelectedConversation,
-    updateConversationWithMessage
+    setSelectedConversation
   );
 
   const {
