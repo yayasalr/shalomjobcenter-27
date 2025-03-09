@@ -13,38 +13,39 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
   // Load statuses from local storage
   useEffect(() => {
     try {
-      const storedData = loadData<any>('user-statuses', []);
+      // Load user statuses
+      const storedData = loadData<Status[]>('user-statuses', []);
       let processedStatuses: Status[] = [];
       
-      // Process stored data to ensure it's a flat array of Status objects
       if (Array.isArray(storedData)) {
-        // Handle flat array of Status objects
-        if (storedData.length === 0 || (storedData.length > 0 && 
-            typeof storedData[0] === 'object' && storedData[0] !== null && 
-            'id' in storedData[0])) {
-          processedStatuses = storedData as Status[];
-        } 
-        // Handle nested array and flatten it
-        else if (storedData.length > 0 && Array.isArray(storedData[0])) {
-          const flattened = storedData.flat().filter(item => 
-            item && typeof item === 'object' && 'id' in item
-          );
-          processedStatuses = flattened as Status[];
-        }
+        // Handle only valid Status objects
+        processedStatuses = storedData.filter((item): item is Status => 
+          item !== null && 
+          typeof item === 'object' && 
+          'id' in item &&
+          'user' in item &&
+          'avatar' in item &&
+          'isViewed' in item &&
+          'timestamp' in item
+        );
       }
       
-      // Load admin statuses if available
-      const adminStatusMessages = loadData<any>('admin-status-messages', []);
+      // Load admin status messages if available
+      const adminStatusMessages = loadData<any[]>('admin-status-messages', []);
       if (Array.isArray(adminStatusMessages) && adminStatusMessages.length > 0) {
         // Convert admin status messages to user status format
         const adminStatuses: Status[] = adminStatusMessages
-          .filter((msg: any) => msg && typeof msg === 'object' && 'id' in msg)
-          .map((msg: any) => ({
+          .filter((msg: any): msg is any => 
+            msg !== null && 
+            typeof msg === 'object' && 
+            'id' in msg
+          )
+          .map((msg: any): Status => ({
             id: Number(msg.id),
             user: "Admin",
             avatar: "/placeholder.svg",
             isViewed: false,
-            timestamp: new Date(msg.createdAt),
+            timestamp: new Date(msg.createdAt || Date.now()),
             content: msg.text,
             image: msg.imageUrl
           }));
@@ -56,13 +57,19 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
       const usersList = loadData<any[]>('users', []);
       if (Array.isArray(usersList)) {
         for (const user of usersList) {
-          if (user && typeof user === 'object' && user.id) {
+          if (user && typeof user === 'object' && 'id' in user) {
             const userStatusKey = `status_${user.id}`;
             const userStatuses = loadData<Status[]>(userStatusKey, []);
             if (Array.isArray(userStatuses) && userStatuses.length > 0) {
               // Only add valid status objects
-              const validUserStatuses = userStatuses.filter(status => 
-                status && typeof status === 'object' && 'id' in status
+              const validUserStatuses = userStatuses.filter((status): status is Status => 
+                status !== null && 
+                typeof status === 'object' && 
+                'id' in status &&
+                'user' in status &&
+                'avatar' in status &&
+                'isViewed' in status &&
+                'timestamp' in status
               );
               processedStatuses = [...processedStatuses, ...validUserStatuses];
             }
