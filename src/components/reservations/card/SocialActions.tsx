@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageCircle, Share2 } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 import { useSocialInteractions } from '@/hooks/useSocialInteractions';
 
 interface SocialActionsProps {

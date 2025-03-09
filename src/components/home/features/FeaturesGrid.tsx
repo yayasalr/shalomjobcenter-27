@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 import { Shield, Home, Medal, MapPin, Clock, CheckCircle } from 'lucide-react';
 import { FeatureCard } from './FeatureCard';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';

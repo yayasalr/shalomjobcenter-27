@@ -1,7 +1,7 @@
 
 import { Star } from "lucide-react";
 import { Listing } from "@/types/listing";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage } from "@/hooks/language";
 
 interface ListingCardContentProps {
   listing: Listing;

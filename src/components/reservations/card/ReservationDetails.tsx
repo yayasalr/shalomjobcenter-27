@@ -2,7 +2,7 @@
 import React from 'react';
 import { Reservation } from '@/hooks/reservations';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 
 interface ReservationDetailsProps {
   reservation: Reservation;

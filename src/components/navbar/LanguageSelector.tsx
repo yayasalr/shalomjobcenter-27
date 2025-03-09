@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 import { Globe } from 'lucide-react';
 import {
   DropdownMenu,

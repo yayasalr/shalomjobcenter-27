@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Reservation } from '@/hooks/reservations';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 
 interface ReservationStatusProps {
   status: Reservation['status'];

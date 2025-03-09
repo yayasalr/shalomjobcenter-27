@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { LOME_NEIGHBORHOODS } from '@/hooks/useListings';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 
 export const HeroSection = () => {
   const navigate = useNavigate();

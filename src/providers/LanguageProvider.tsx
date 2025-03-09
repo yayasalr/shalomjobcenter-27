@@ -1,6 +1,6 @@
 
 import React, { ReactNode } from 'react';
-import { LanguageContext, useLanguageProvider } from '@/hooks/useLanguage';
+import { LanguageContext, useLanguageProvider } from '@/hooks/language';
 
 interface LanguageProviderProps {
   children: ReactNode;

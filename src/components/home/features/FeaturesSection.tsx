@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 import { SectionHeader } from './SectionHeader';
 import { FeaturesGrid } from './FeaturesGrid';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';

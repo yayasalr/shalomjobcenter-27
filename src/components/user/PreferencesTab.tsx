@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Check, Sun, Bell, Globe, Layout } from 'lucide-react';
 import { toast } from 'sonner';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useSiteSettings } from '@/hooks/settings';
+import { useLanguage } from '@/hooks/language';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from '@/components/ui/separator';
@@ -17,7 +16,6 @@ export const PreferencesTab: React.FC = () => {
   const { t, language, setLanguage } = useLanguage();
   const { getItem, setItem } = useLocalStorage();
   
-  // Get stored preferences or use defaults
   const [selectedColor, setSelectedColor] = useState(() => 
     getItem('user_accent_color', 'purple')
   );
@@ -26,7 +24,6 @@ export const PreferencesTab: React.FC = () => {
     getItem('user_layout', 'default')
   );
   
-  // Initialize notification preferences from localStorage
   const [notificationPrefs, setNotificationPrefs] = useState(() => {
     return getItem('user_notification_preferences', {
       email: true,
@@ -36,7 +33,6 @@ export const PreferencesTab: React.FC = () => {
     });
   });
 
-  // Apply the selected accent color to the document
   useEffect(() => {
     const applyAccentColor = () => {
       const colors: Record<string, string> = {
@@ -52,10 +48,8 @@ export const PreferencesTab: React.FC = () => {
       document.documentElement.style.setProperty('--accent-color', colorValue);
       document.documentElement.style.setProperty('--primary-color', colorValue);
       
-      // Store selected color
       setItem('user_accent_color', selectedColor);
       
-      // Apply to button elements too
       document.querySelectorAll('.btn-primary').forEach(el => {
         (el as HTMLElement).style.backgroundColor = colorValue;
       });
@@ -64,18 +58,14 @@ export const PreferencesTab: React.FC = () => {
     applyAccentColor();
   }, [selectedColor, setItem]);
   
-  // Apply layout preference
   useEffect(() => {
     const applyLayout = () => {
       const body = document.body;
       
-      // Remove previous layout classes
       body.classList.remove('layout-default', 'layout-compact');
       
-      // Add selected layout class
       body.classList.add(`layout-${selectedLayout}`);
       
-      // Apply specific styles based on layout
       if (selectedLayout === 'compact') {
         document.documentElement.style.setProperty('--content-spacing', '0.75rem');
         document.documentElement.style.setProperty('--card-padding', '1rem');
@@ -84,7 +74,6 @@ export const PreferencesTab: React.FC = () => {
         document.documentElement.style.setProperty('--card-padding', '1.5rem');
       }
       
-      // Store selected layout
       setItem('user_layout', selectedLayout);
     };
     
@@ -110,12 +99,10 @@ export const PreferencesTab: React.FC = () => {
   };
 
   const savePreferences = () => {
-    // Save all preferences at once
     setItem('user_accent_color', selectedColor);
     setItem('user_layout', selectedLayout);
     setItem('user_notification_preferences', notificationPrefs);
     
-    // Update global settings
     updateSettings({ 
       primaryColor: document.documentElement.style.getPropertyValue('--accent-color') || '#8B5CF6'
     });

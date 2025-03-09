@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Building, BriefcaseBusiness, CheckCircle } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 
 export const JobsFeatures = () => {
   const { t } = useLanguage();

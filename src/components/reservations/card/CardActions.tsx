@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from '@/hooks/language';
 import { Reservation } from '@/hooks/reservations';
 import { Calendar, MoreHorizontal, Download, FileText } from 'lucide-react';
 import { 
