@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Mail, Phone, MapPin, Calendar } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, User } from 'lucide-react';
 import { User as UserType } from '@/hooks/useAuth';
 import { ImageUploader } from '@/components/shared/ImageUploader';
 import { toast } from 'sonner';
@@ -67,17 +66,14 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
     <Card className="border-0 shadow-md overflow-hidden">
       <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="mx-auto relative mb-4 group">
-          <Avatar className="h-36 w-36 mx-auto border-4 border-white shadow-md">
-            <AvatarImage 
+          <div className="h-36 w-36 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md">
+            <img 
               key={avatarKey}
               src={avatar} 
               alt={user?.name || "Utilisateur"}
-              className="user-avatar-display object-cover w-full h-full"
+              className="user-avatar-display"
             />
-            <AvatarFallback className="bg-blue-100 text-blue-700 text-3xl">
-              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-            </AvatarFallback>
-          </Avatar>
+          </div>
           <div className="absolute -bottom-2 right-1/3 bg-white rounded-full p-1 shadow-sm">
             <ImageUploader
               currentImage={avatar}
