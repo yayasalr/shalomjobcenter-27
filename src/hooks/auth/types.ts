@@ -25,6 +25,7 @@ export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
+  twoFactorCode?: string; // Added to support 2FA
 }
 
 // Registration Data Type
@@ -56,13 +57,17 @@ export interface AuthContextType {
     mutateAsync: (userData: LoginCredentials) => Promise<User | void>;
     isPending: boolean;
   };
-  register: (userData: RegisterData) => Promise<User | void>;
+  register: {
+    mutateAsync: (userData: RegisterData) => Promise<User | void>;
+    isPending: boolean;
+  };
   logout: () => void;
   updateUserProfile: (updatedData: Partial<User>) => User | undefined;
   updateUserAvatar: (avatarUrl: string) => User | undefined;
   registerLoading: boolean;
   
   // Security features
+  refreshSession?: () => void;
   checkAccountLocked: (email: string) => { locked: boolean; remainingMinutes: number };
   updateLoginAttempts: (email: string, increment?: boolean) => { count: number; timestamp: number };
   checkDeviceTrusted: (userId: string) => boolean;

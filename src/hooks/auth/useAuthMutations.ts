@@ -13,81 +13,84 @@ export const useAuthMutations = (
 ) => {
   const { login } = useLoginMutation(user, setUser);
   const navigate = useNavigate();
-  const [registerLoading, setRegisterLoading] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const { getItem, setItem, removeItem } = useLocalStorage();
 
-  const register = async (userData: RegisterData): Promise<User | void> => {
-    setRegisterLoading(true);
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const salt = Math.random().toString(36).substring(2);
-      const hashedPassword = hashPassword(userData.password, salt);
-      
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        email: userData.email,
-        name: userData.name || userData.email.split('@')[0],
-        role: userData.email.includes('admin') ? 'admin' : 'user',
-        isAdmin: userData.email.includes('admin'),
-        lastLogin: new Date().toISOString(),
-        loginCount: 1,
-        securityLevel: 'standard',
-        // Use avatar if provided, otherwise generate initials
-        avatar: userData.avatar || null
-      };
-      
-      // Store the user in localStorage
-      localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(newUser));
-      
-      // Store credentials (for demo purposes only - don't do this in production!)
-      localStorage.setItem(`user_credentials_${newUser.id}`, JSON.stringify({
-        email: userData.email,
-        passwordHash: hashedPassword,
-        salt
-      }));
-      
-      // Generate a trusted device token
-      generateTrustedDeviceToken(newUser.id);
-      
-      // Log the registration
-      logSecurityEvent('user_registered', newUser.id, {
-        email: newUser.email,
-        isAdmin: newUser.isAdmin,
-      });
-      
-      // Update state
-      setUser(newUser);
-      
-      // Save user preferences with defaults
-      setItem('user_accent_color', 'purple');
-      setItem('user_layout', 'default');
-      setItem('user_notification_preferences', {
-        email: true,
-        push: true, 
-        reservation: true,
-        promotional: false
-      });
-      
-      // Save avatar if provided
-      if (userData.avatar) {
-        localStorage.setItem('userAvatar', userData.avatar);
+  const register = {
+    mutateAsync: async (userData: RegisterData): Promise<User | void> => {
+      setIsPending(true);
+      try {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        const salt = Math.random().toString(36).substring(2);
+        const hashedPassword = hashPassword(userData.password, salt);
+        
+        const newUser: User = {
+          id: `user-${Date.now()}`,
+          email: userData.email,
+          name: userData.name || userData.email.split('@')[0],
+          role: userData.email.includes('admin') ? 'admin' : 'user',
+          isAdmin: userData.email.includes('admin'),
+          lastLogin: new Date().toISOString(),
+          loginCount: 1,
+          securityLevel: 'standard',
+          // Use avatar if provided, otherwise generate initials
+          avatar: userData.avatar || null
+        };
+        
+        // Store the user in localStorage
+        localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(newUser));
+        
+        // Store credentials (for demo purposes only - don't do this in production!)
+        localStorage.setItem(`user_credentials_${newUser.id}`, JSON.stringify({
+          email: userData.email,
+          passwordHash: hashedPassword,
+          salt
+        }));
+        
+        // Generate a trusted device token
+        generateTrustedDeviceToken(newUser.id);
+        
+        // Log the registration
+        logSecurityEvent('user_registered', newUser.id, {
+          email: newUser.email,
+          isAdmin: newUser.isAdmin,
+        });
+        
+        // Update state
+        setUser(newUser);
+        
+        // Save user preferences with defaults
+        setItem('user_accent_color', 'purple');
+        setItem('user_layout', 'default');
+        setItem('user_notification_preferences', {
+          email: true,
+          push: true, 
+          reservation: true,
+          promotional: false
+        });
+        
+        // Save avatar if provided
+        if (userData.avatar) {
+          localStorage.setItem('userAvatar', userData.avatar);
+        }
+        
+        toast.success("Compte créé avec succès!");
+        
+        // Redirect to home or admin based on role
+        navigate(newUser.isAdmin ? "/admin" : "/");
+        
+        return newUser;
+      } catch (error) {
+        console.error("Error during registration:", error);
+        toast.error("Erreur lors de la création du compte");
+        return;
+      } finally {
+        setIsPending(false);
       }
-      
-      toast.success("Compte créé avec succès!");
-      
-      // Redirect to home or admin based on role
-      navigate(newUser.isAdmin ? "/admin" : "/");
-      
-      return newUser;
-    } catch (error) {
-      console.error("Error during registration:", error);
-      toast.error("Erreur lors de la création du compte");
-      return;
-    } finally {
-      setRegisterLoading(false);
-    }
+    },
+    isPending
   };
 
   const logout = () => {
@@ -169,6 +172,6 @@ export const useAuthMutations = (
     logout,
     updateUserProfile,
     updateUserAvatar,
-    registerLoading,
+    registerLoading: isPending,
   };
 };

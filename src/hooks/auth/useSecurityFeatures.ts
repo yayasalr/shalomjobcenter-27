@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -117,7 +118,7 @@ export const useSecurityFeatures = (user: User | null) => {
     return true;
   };
 
-  // Mock session refresh with security checks
+  // Session refresh function with security checks
   const refreshSession = () => {
     console.log("Refreshing user session");
     // In a real application, this would validate JWT tokens, etc.

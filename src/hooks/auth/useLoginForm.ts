@@ -65,12 +65,10 @@ export function useLoginForm() {
       
       // Simulate 2FA validation
       try {
-        // Use spread with formData and add twoFactorCode as a separate parameter
-        // or modify the LoginCredentials interface to include it
+        // Add twoFactorCode to the credentials
         const result = await login.mutateAsync({
-          email: formData.email,
-          password: formData.password,
-          twoFactorCode: twoFactorCode
+          ...formData,
+          twoFactorCode
         });
         
         // Log successful 2FA login

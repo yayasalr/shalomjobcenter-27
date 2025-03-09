@@ -15,16 +15,13 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false 
 }) => {
-  const { user, isLoading, isAuthenticated, isAdmin, refreshSession, logout } = useAuth();
+  const { user, isLoading, isAuthenticated, isAdmin } = useAuth();
   const location = useLocation();
   const { getItem, setItem } = useLocalStorage();
 
   useEffect(() => {
     // Enhanced session validation
-    if (isAuthenticated) {
-      // Add a constant refresh rate for tokens to ensure they're valid
-      refreshSession();
-      
+    if (isAuthenticated && user) {
       // Verify session integrity using fingerprinting
       const currentFingerprint = `${navigator.userAgent}-${navigator.language}-${screen.width}x${screen.height}`;
       const storedFingerprint = getItem<string>(`fingerprint_${user?.id}`, '');
@@ -43,13 +40,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
           path: location.pathname
         });
         setItem('security_logs', securityLogs);
-        
-        // Force logout on suspicious activity for sensitive routes
-        if (requireAdmin || location.pathname.includes('/profile')) {
-          toast.error("Session de sécurité invalide. Reconnexion requise.");
-          logout();
-          // Remove the incorrect return statement from the useEffect
-        }
       }
     }
     
@@ -87,7 +77,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         setItem('security_incidents', securityIncidents);
       }
     }
-  }, [location.pathname, isAuthenticated, requireAdmin, user, refreshSession, logout, getItem, setItem, isAdmin]);
+  }, [location.pathname, isAuthenticated, requireAdmin, user, getItem, setItem, isAdmin]);
 
   // If loading, show loading state
   if (isLoading) {

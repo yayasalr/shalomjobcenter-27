@@ -1,3 +1,4 @@
+
 import { useState, useEffect, createContext, useContext } from "react";
 import { User, AuthContextType } from "./types";
 import { LocalStorageKeys } from "./authUtils";
@@ -45,6 +46,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdmin = !!user?.isAdmin;
   const isLoading = loading;
 
+  // Default implementations for required interface methods
+  const checkDeviceTrusted = (userId: string) => {
+    // Implementation of device trust verification
+    const trustedDevices = JSON.parse(localStorage.getItem(`trusted_devices_${userId}`) || '[]');
+    const currentDeviceId = localStorage.getItem('current_device_id');
+    return trustedDevices.includes(currentDeviceId);
+  };
+
+  const handleSecurityAlert = (type: string, details: any) => {
+    // Basic implementation to log security alerts
+    console.warn(`Security Alert [${type}]:`, details);
+    const securityAlerts = JSON.parse(localStorage.getItem('security_alerts') || '[]');
+    securityAlerts.push({
+      type,
+      details,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('security_alerts', JSON.stringify(securityAlerts));
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -53,7 +74,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       isAuthenticated,
       isAdmin,
       ...authMutations,
-      ...securityFeatures
+      ...securityFeatures,
+      checkDeviceTrusted,
+      handleSecurityAlert
     }}>
       {children}
     </AuthContext.Provider>
