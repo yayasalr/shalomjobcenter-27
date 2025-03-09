@@ -2,9 +2,11 @@
 import React from 'react';
 import { Briefcase, Home } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '@/hooks/language';
 
 export const CategoryFiltersSimplified = () => {
   const location = useLocation();
+  const { t } = useLanguage();
   
   return (
     <div className="w-full border-b">
@@ -21,7 +23,7 @@ export const CategoryFiltersSimplified = () => {
             }`}>
               <Briefcase className="h-6 w-6" />
             </div>
-            <span>Offres d'emploi</span>
+            <span>{t('jobs')}</span>
           </Link>
           
           <Link
@@ -39,7 +41,7 @@ export const CategoryFiltersSimplified = () => {
             }`}>
               <Home className="h-6 w-6" />
             </div>
-            <span>Logements</span>
+            <span>{t('listings')}</span>
           </Link>
         </div>
       </div>

@@ -3,12 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/hooks/language';
 
 interface JobsEmptyStateProps {
   onResetFilters: () => void;
 }
 
 export const JobsEmptyState = ({ onResetFilters }: JobsEmptyStateProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div className="bg-white rounded-xl shadow-sm p-12 text-center">
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">

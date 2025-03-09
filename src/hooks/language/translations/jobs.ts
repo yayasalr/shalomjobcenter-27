@@ -42,5 +42,42 @@ export const jobsTranslations: TranslationDictionary = {
   },
   "benefits_desc": {
     fr: "Nombreux avantages sociaux, formation continue et perspectives d'évolution."
+  },
+  // Filtres emplois
+  "all_jobs": {
+    fr: "Tous les emplois"
+  },
+  "reset_filters": {
+    fr: "Réinitialiser les filtres"
+  },
+  "no_jobs_found": {
+    fr: "Aucune offre trouvée"
+  },
+  "no_jobs_matching": {
+    fr: "Aucune offre ne correspond à vos critères de recherche."
+  },
+  "view_housing": {
+    fr: "Voir les logements"
+  },
+  "filter_by_housing": {
+    fr: "Voir uniquement les logements"
+  },
+  "contract_type": {
+    fr: "Type de contrat"
+  },
+  "domain": {
+    fr: "Domaine"
+  },
+  "all_domains": {
+    fr: "Tous les domaines"
+  },
+  "residential_security": {
+    fr: "Sécurité résidentielle"
+  },
+  "bodyguard": {
+    fr: "Garde du corps"
+  },
+  "housing_offer": {
+    fr: "Offre de logement"
   }
 };

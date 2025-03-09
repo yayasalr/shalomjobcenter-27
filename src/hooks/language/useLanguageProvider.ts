@@ -37,13 +37,13 @@ export const useLanguageProvider = () => {
   const [language, setLanguageState] = useState<SupportedLanguage>('fr');
   
   // État pour stocker les traductions basées sur la route actuelle
-  const [translations, setTranslations] = useState(defaultTranslations);
+  const [translations, setTranslations] = useState<TranslationDictionary>({ ...defaultTranslations });
 
   // Mettre à jour les traductions basées sur la route actuelle
   useEffect(() => {
     const updateTranslationsForRoute = () => {
       const routeTranslations = getRouteTranslations(window.location.pathname);
-      setTranslations(routeTranslations);
+      setTranslations({ ...routeTranslations });
     };
 
     // Mettre à jour les traductions au chargement initial
@@ -85,6 +85,9 @@ export const useLanguageProvider = () => {
 
   // Fonction pour traduire un texte
   const t = (key: string): string => {
+    // Si la clé est undefined ou null, renvoyer une chaîne vide
+    if (!key) return '';
+    
     const translation = getTranslation(key, 'fr', translations);
     // Si la traduction est la même que la clé, c'est que la traduction n'existe pas
     if (translation === key) {
