@@ -6,7 +6,7 @@ export interface Status {
   isViewed: boolean;
   timestamp: Date;
   content?: string;
-  image?: string; // Make image optional
+  image?: string; // Image is optional
 }
 
 export interface StatusViewerProps {

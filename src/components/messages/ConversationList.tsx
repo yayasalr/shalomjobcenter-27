@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, MessageCircle, Phone, Image } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -164,8 +165,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
       )}
       
       <AllUsersDialog
-        open={showAllUsers}
         onOpenChange={setShowAllUsers}
+        open={showAllUsers}
         onSelectUser={(user) => {
           console.log("Selected user for new conversation:", user);
           setShowAllUsers(false);

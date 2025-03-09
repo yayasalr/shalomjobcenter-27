@@ -16,21 +16,22 @@ interface User {
   role?: string;
 }
 
-interface AllUsersDialogProps {
+export interface AllUsersDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onSelectUser: (user: User) => void;
 }
 
-export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ onSelectUser }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChange, onSelectUser }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isOpen) {
+    if (open) {
       loadUsers();
     }
-  }, [isOpen]);
+  }, [open]);
 
   const loadUsers = () => {
     setLoading(true);
@@ -67,12 +68,12 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ onSelectUser }) 
 
   const handleSelectUser = (user: User) => {
     onSelectUser(user);
-    setIsOpen(false);
+    onOpenChange(false);
     toast.success(`Conversation avec ${user.name} ouverte`);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2">
           <UserPlus className="h-4 w-4" />

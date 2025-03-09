@@ -24,7 +24,7 @@ export const useMessages = (userId: string | undefined) => {
     conversations,
     setConversations,
     selectedConversation,
-    setSelectedConversation,
+    setSelectedConversation, 
     updateConversationWithMessage
   );
 
@@ -36,9 +36,9 @@ export const useMessages = (userId: string | undefined) => {
     isUserOnline
   } = useConversationManager(
     conversations,
-    setConversations,
     selectedConversation,
-    setSelectedConversation
+    setSelectedConversation,
+    markConversationAsRead
   );
 
   return {

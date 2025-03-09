@@ -32,7 +32,8 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
         avatar: "/placeholder.svg",
         isViewed: false,
         timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-        content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible sur le portail."
+        content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible sur le portail.",
+        image: "/placeholder.svg"
       },
       {
         id: 1002,
@@ -48,7 +49,8 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({
         avatar: "/placeholder.svg",
         isViewed: false,
         timestamp: new Date(Date.now() - 1000 * 60 * 180), // 3 hours ago
-        content: "Rappel: Réunion importante demain à 9h."
+        content: "Rappel: Réunion importante demain à 9h.",
+        image: "/placeholder.svg"
       },
       {
         id: 1004,

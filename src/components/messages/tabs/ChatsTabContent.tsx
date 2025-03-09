@@ -35,7 +35,7 @@ const ChatsTabContent: React.FC<ChatsTabContentProps> = ({
               isSelected={selectedConversation?.id === conversation.id}
               unreadCount={getUnreadCount(conversation)}
               onClick={() => handleSelectConversation(conversation)}
-              isOnline={onlineUsers[conversation.id]}
+              isOnline={onlineUsers[conversation.with.id]}
             />
           ))
         )}
