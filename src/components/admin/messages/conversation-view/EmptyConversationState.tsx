@@ -9,12 +9,12 @@ export const EmptyConversationState: React.FC = () => {
         <div className="flex justify-center mb-4">
           <MessageSquare className="h-16 w-16 text-[#00a884] opacity-70" />
         </div>
-        <h3 className="text-xl font-medium text-gray-700 mb-3">Sélectionnez une conversation</h3>
+        <h3 className="text-xl font-medium text-gray-700 mb-3">Messages WhatsApp</h3>
         <p className="text-gray-500 mb-4">
-          Choisissez une conversation dans la liste pour commencer à échanger des messages en temps réel avec vos utilisateurs.
+          Sélectionnez une conversation dans la liste pour commencer à échanger des messages en temps réel avec vos utilisateurs.
         </p>
         <div className="text-sm text-gray-400 border-t border-gray-200 pt-4 mt-4">
-          <p>Si vous ne voyez pas de messages, attendez que des utilisateurs vous contactent ou rafraîchissez la page.</p>
+          <p>Toutes les conversations sont chiffrées de bout en bout, comme sur WhatsApp.</p>
         </div>
       </div>
     </div>

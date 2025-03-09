@@ -1,82 +1,41 @@
 
-@media (max-width: 768px) {
-  .whatsapp-container {
-    border-radius: 0;
-    height: calc(100vh - 70px);
-  }
-  
-  .conversation-list-container {
-    display: block;
-  }
-  
-  .conversation-view-container {
-    display: none;
-  }
-  
-  .conversation-list-container.hidden {
-    display: none;
-  }
-  
-  .conversation-view-container.visible {
-    display: block;
-  }
-  
-  .whatsapp-message {
-    max-width: 85%;
-  }
-  
-  .whatsapp-input {
-    max-height: 80px;
-  }
-  
-  /* Ensure touch targets are large enough */
-  .whatsapp-send-button,
-  .touch-manipulation {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  .whatsapp-conversation-item {
-    padding: 0.875rem 1rem;
-  }
-}
-
+/* Mobile specific styles */
 @media (max-width: 640px) {
-  .whatsapp-header {
-    padding: 0.5rem;
+  .whatsapp-container {
+    height: calc(100vh - 115px);
+    border-radius: 0;
   }
   
   .whatsapp-message-area {
-    padding: 0.5rem 0;
+    background-attachment: fixed;
   }
   
-  .whatsapp-user-info {
-    max-width: 120px;
-  }
-  
-  .whatsapp-input-area {
-    padding: 0.375rem;
-  }
-  
-  .whatsapp-input {
-    margin: 0 0.375rem;
-    padding: 0.625rem 0.875rem;
+  .whatsapp-message {
+    max-width: 80%;
   }
 }
 
-/* Larger font sizes for accessibility */
-.font-size-large {
-  --font-size-factor: 1.25;
+/* Show/hide conversation list and view on mobile */
+@media (max-width: 768px) {
+  .conversation-list.mobile-hidden {
+    display: none;
+  }
+  
+  .conversation-view.mobile-visible {
+    display: block;
+  }
 }
 
-.font-size-larger {
-  --font-size-factor: 1.5;
+/* Tablet specific styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .whatsapp-container {
+    height: calc(100vh - 135px);
+  }
 }
 
-/* Ensure high contrast has good readability */
-.high-contrast.font-size-large,
-.high-contrast.font-size-larger {
-  --whatsapp-bubble-me: #005740;
-  --whatsapp-bubble-other: #000000;
-  --whatsapp-header: #000000;
+/* Desktop specific styles */
+@media (min-width: 1025px) {
+  .whatsapp-container {
+    height: calc(100vh - 175px);
+  }
 }

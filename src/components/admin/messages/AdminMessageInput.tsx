@@ -129,6 +129,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
               sendMessage();
             }
           }}
+          data-placeholder="Saisissez votre message..."
           suppressContentEditableWarning={true}
         ></div>
         

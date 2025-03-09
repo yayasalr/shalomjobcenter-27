@@ -1,70 +1,64 @@
 
-.status-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: calc(0.75rem * var(--font-size-factor));
-}
-
-.status-indicator .indicator-dot {
+.whatsapp-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  margin-right: 4px;
+  display: inline-block;
 }
 
-.status-indicator .indicator-dot.online {
+.whatsapp-status-text {
+  font-size: 12px;
+}
+
+.whatsapp-online .whatsapp-status-dot {
   background-color: var(--whatsapp-online);
 }
 
-.status-indicator .indicator-dot.offline {
+.whatsapp-online .whatsapp-status-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.whatsapp-offline .whatsapp-status-dot {
   background-color: var(--whatsapp-offline);
 }
 
-.status-indicator .status-text {
-  color: inherit;
+.whatsapp-offline .whatsapp-status-text {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.status-badge {
-  display: inline-flex;
+.conversation-list-status-indicator {
+  display: flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: calc(0.75rem * var(--font-size-factor));
-  gap: 4px;
+  font-size: 12px;
 }
 
-.status-badge.online {
-  background-color: rgba(37, 211, 102, 0.1);
-  color: var(--whatsapp-online);
+.conversation-list-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
 }
 
-.status-badge.offline {
-  background-color: rgba(142, 142, 142, 0.1);
-  color: var(--whatsapp-offline);
+.conversation-list-online .conversation-list-status-dot {
+  background-color: var(--whatsapp-online);
 }
 
-.status-tooltip {
-  max-width: 200px;
+.conversation-list-offline .conversation-list-status-dot {
+  background-color: var(--whatsapp-offline);
 }
 
-html[data-theme="dark"] .status-badge.online {
-  background-color: rgba(37, 211, 102, 0.15);
-}
-
-html[data-theme="dark"] .status-badge.offline {
-  background-color: rgba(142, 142, 142, 0.15);
-}
-
-.high-contrast .status-indicator .indicator-dot.online {
-  background-color: #00ff9d;
-}
-
-.high-contrast .status-badge.online {
-  border: 1px solid #00ff9d;
-  color: #00ff9d;
-}
-
-.high-contrast .status-badge.offline {
-  border: 1px solid white;
+/* Badge for unread count */
+.whatsapp-unread-badge {
+  background-color: var(--whatsapp-green);
   color: white;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: auto;
 }
