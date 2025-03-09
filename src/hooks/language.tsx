@@ -52,7 +52,7 @@ export const useLanguageProvider = () => {
       
       // Hero section
       'discover_home': 'Découvrez votre chez-vous',
-      'premium_housing_desc': 'Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.',
+      'hero_housing_desc': 'Logements premium dans les meilleurs quartiers de Lomé pour une expérience de vie supérieure.',
       'verified_housing': 'Logements vérifiés',
       'secure_payments': 'Paiements sécurisés',
       'local_support': 'Support local',
