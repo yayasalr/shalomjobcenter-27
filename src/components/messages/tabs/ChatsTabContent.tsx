@@ -5,7 +5,7 @@ import { Conversation } from '../types';
 import WhatsAppConversationItem from '../WhatsAppConversationItem';
 import { AlertCircle } from 'lucide-react';
 
-interface ChatsTabContentProps {
+export interface ChatsTabContentProps {
   filteredConversations: Conversation[];
   selectedConversation: Conversation | null;
   handleSelectConversation: (conversation: Conversation) => void;

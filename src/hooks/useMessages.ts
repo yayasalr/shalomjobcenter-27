@@ -51,6 +51,7 @@ export const useMessages = (userId: string | undefined) => {
     handleSendMessage,
     handleSelectConversation,
     getUnreadCount,
-    isUserOnline
+    isUserOnline,
+    updateConversationWithMessage
   };
 };

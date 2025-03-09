@@ -10,7 +10,7 @@ export interface Status {
 }
 
 export interface StatusViewerProps {
-  status: Status;
+  status: Status | null;
   onClose: () => void;
 }
 
