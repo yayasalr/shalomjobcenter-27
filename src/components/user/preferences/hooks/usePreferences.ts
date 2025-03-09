@@ -13,7 +13,7 @@ export interface UserPreferences {
     reservation: boolean;
     promotional: boolean;
   };
-  language: "fr" | "en";
+  language: "fr"; // Modifié pour n'accepter que "fr"
   region: string;
 }
 
@@ -30,7 +30,7 @@ export const usePreferences = () => {
       reservation: true,
       promotional: false
     }),
-    language: getItem('user_language', 'fr') as "fr" | "en",
+    language: "fr", // Toujours définir sur "fr"
     region: getItem('user_region', 'TG')
   });
 
@@ -50,7 +50,7 @@ export const usePreferences = () => {
     // Update settings in context if needed
     updateSettings({ 
       primaryColor: document.documentElement.style.getPropertyValue('--accent-color') || '#8B5CF6',
-      language: preferences.language
+      language: 'fr' // Toujours définir sur "fr"
     });
     
     toast.success("Préférences enregistrées avec succès");

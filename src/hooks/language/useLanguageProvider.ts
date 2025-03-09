@@ -31,7 +31,7 @@ export const useLanguageProvider = () => {
   }, []);
 
   return {
-    language: 'fr',
+    language: 'fr' as SupportedLanguage, // Assurez-vous de typer correctement
     setLanguage,
     t,
   };
