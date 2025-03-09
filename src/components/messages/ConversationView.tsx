@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef } from 'react';
 import { Conversation } from './types';
 import ConversationHeader from './ConversationHeader';
 import MessageInput from './MessageInput';
@@ -26,7 +26,7 @@ interface ConversationViewProps {
   updateConversationWithMessage: (conversationId: string, message: any) => void;
 }
 
-const ConversationView: React.FC<ConversationViewProps> = ({
+const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
   conversation,
   conversations,
   newMessage,
@@ -35,7 +35,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({
   isOnline,
   onBack,
   updateConversationWithMessage
-}) => {
+}, ref) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [showSearch, setShowSearch] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
@@ -139,7 +139,7 @@ const ConversationView: React.FC<ConversationViewProps> = ({
       )}
       
       {/* Zone de messages */}
-      <div className="message-area scrollbar-container">
+      <div ref={ref} className="message-area scrollbar-container">
         {displayMessages.map((message) => (
           <EnhancedMessageBubble 
             key={message.id}
@@ -195,6 +195,9 @@ const ConversationView: React.FC<ConversationViewProps> = ({
       </Dialog>
     </div>
   );
-};
+});
+
+// Add display name
+ConversationView.displayName = "ConversationView";
 
 export default ConversationView;
