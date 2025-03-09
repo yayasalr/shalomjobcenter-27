@@ -24,8 +24,7 @@ export const useMessages = (userId: string | undefined) => {
     conversations,
     setConversations,
     selectedConversation,
-    setSelectedConversation, 
-    updateConversationWithMessage
+    setSelectedConversation
   );
 
   const {
