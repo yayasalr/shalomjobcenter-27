@@ -1,6 +1,5 @@
 
-// This file is kept for backward compatibility
-// Import from the new structure
+// Ré-exporte depuis le nouveau système simplifié
 import { LanguageContext, useLanguageProvider, useLanguage } from './language';
 
 // Re-export everything
