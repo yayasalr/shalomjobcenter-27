@@ -29,5 +29,18 @@ export const jobsTranslations: TranslationDictionary = {
   },
   "benefits": {
     fr: "Avantages"
+  },
+  // Descriptions pour la section emplois
+  "premium_housing_desc": {
+    fr: "Des logements de qualité supérieure inclus avec nos offres d'emploi de sécurité."
+  },
+  "housing_included_desc": {
+    fr: "Hébergement de qualité fourni pour tous nos employés de sécurité."
+  },
+  "job_description_desc": {
+    fr: "Missions variées adaptées à vos compétences et à votre expérience."
+  },
+  "benefits_desc": {
+    fr: "Nombreux avantages sociaux, formation continue et perspectives d'évolution."
   }
 };

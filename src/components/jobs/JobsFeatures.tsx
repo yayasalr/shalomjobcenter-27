@@ -23,17 +23,17 @@ export const JobsFeatures = () => {
             {
               icon: <Building className="h-8 w-8" />,
               title: t('housing_included'),
-              description: t('housing_included')
+              description: t('housing_included_desc')
             },
             {
               icon: <BriefcaseBusiness className="h-8 w-8" />,
               title: t('job_description'),
-              description: t('job_description')
+              description: t('job_description_desc')
             },
             {
               icon: <CheckCircle className="h-8 w-8" />,
               title: t('benefits'),
-              description: t('benefits')
+              description: t('benefits_desc')
             }
           ].map((feature, index) => (
             <div 

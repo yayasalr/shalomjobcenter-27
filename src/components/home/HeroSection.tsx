@@ -84,7 +84,7 @@ export const HeroSection = () => {
                       onClick={() => navigate('/', { state: { searchTerm: neighborhood } })}
                     >
                       <MapPin className="h-3.5 w-3.5 mr-1 text-sholom-primary" />
-                      {neighborhood}
+                      {t(neighborhood)}
                     </Button>
                   ))}
                 </div>
