@@ -1,3 +1,4 @@
+
 import { SiteSettings } from '@/types/siteSettings';
 
 export const defaultSettings: SiteSettings = {
@@ -40,7 +41,6 @@ export const defaultSettings: SiteSettings = {
   fontFamily: 'Inter, sans-serif',
   borderRadius: 'medium',
   darkMode: false,
-  defaultLanguage: 'fr',
   defaultCurrency: 'XOF',
   dateFormat: 'dd/MM/yyyy',
   timeFormat: '24h',
