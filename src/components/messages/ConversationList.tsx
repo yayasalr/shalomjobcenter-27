@@ -1,19 +1,13 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Plus, MessageCircle, Phone, Image } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Conversation } from './types';
-import ConversationTabsNav from './ConversationTabsNav';
-import { Input } from '@/components/ui/input';
-import { Avatar } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { AllUsersDialog } from './AllUsersDialog';
 import { Status } from './tabs/status/types';
+import ConversationTabsNav from './ConversationTabsNav';
+import SearchInput from './SearchInput';
+import NewConversationButton from './NewConversationButton';
+import ChatsTabContent from './tabs/ChatsTabContent';
 import StatusTabContent from './tabs/StatusTabContent';
 import CallsTabContent from './tabs/CallsTabContent';
-import ChatsTabContent from './tabs/ChatsTabContent';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -70,7 +64,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
 
   const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
 
-  // Au chargement, définir les utilisateurs en ligne de façon aléatoire
   useEffect(() => {
     const mockOnlineStatus = () => {
       const online: Record<string, boolean> = {};
@@ -110,61 +103,28 @@ const ConversationList: React.FC<ConversationListProps> = ({
     setStatuses(currentStatuses => [newStatus, ...currentStatuses]);
   };
 
-  // Gérer la sélection d'un utilisateur pour une nouvelle conversation
   const handleSelectUser = (user: any) => {
     console.log("Selected user for new conversation:", user);
     
-    // Vérifier si une conversation avec cet utilisateur existe déjà
     const existingConversation = conversations.find(
       conv => conv.with.id === user.id
     );
     
     if (existingConversation) {
-      // Si elle existe, sélectionner cette conversation
       handleSelectConversation(existingConversation);
     } else {
-      // Sinon, créer une nouvelle conversation avec cet utilisateur
-      // (cette fonctionnalité serait implémentée dans un contexte réel)
       console.log("Créer une nouvelle conversation avec:", user);
     }
     
-    // Fermer la boîte de dialogue
     setShowAllUsers(false);
   };
 
   return (
     <div className="flex flex-col h-full">
-      <div className="p-2 border-b">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full">
-            <TabsTrigger value="chats" className="flex-1">
-              <MessageCircle className="h-4 w-4 mr-1" />
-              Chats
-            </TabsTrigger>
-            <TabsTrigger value="statuses" className="flex-1">
-              <Image className="h-4 w-4 mr-1" />
-              Status
-            </TabsTrigger>
-            <TabsTrigger value="calls" className="flex-1">
-              <Phone className="h-4 w-4 mr-1" />
-              Appels
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      <ConversationTabsNav activeTab={activeTab} setActiveTab={setActiveTab} />
       
       {activeTab === 'chats' && (
-        <div className="p-2 border-b">
-          <div className="relative">
-            <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Rechercher une conversation..."
-              className="pl-9"
-            />
-          </div>
-        </div>
+        <SearchInput searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       )}
       
       <div className="flex-1 overflow-hidden">
@@ -192,15 +152,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       </div>
       
       {activeTab === 'chats' && (
-        <div className="p-3 border-t">
-          <Button 
-            onClick={() => setShowAllUsers(true)}
-            className="w-full"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Nouvelle conversation
-          </Button>
-        </div>
+        <NewConversationButton onClick={() => setShowAllUsers(true)} />
       )}
       
       <AllUsersDialog

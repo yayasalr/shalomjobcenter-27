@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageCircle, Users, Phone } from 'lucide-react';
+import { MessageCircle, Phone, Image } from 'lucide-react';
 
 interface ConversationTabsNavProps {
   activeTab: string;
@@ -13,28 +13,24 @@ const ConversationTabsNav: React.FC<ConversationTabsNavProps> = ({
   setActiveTab
 }) => {
   return (
-    <TabsList className="grid grid-cols-3 whatsapp-tabs">
-      <TabsTrigger value="chats" className="whatsapp-tab">
-        <div className="flex flex-col items-center">
-          <MessageCircle className="h-5 w-5 mb-1" />
-          <span>CHATS</span>
-        </div>
-      </TabsTrigger>
-      
-      <TabsTrigger value="status" className="whatsapp-tab">
-        <div className="flex flex-col items-center">
-          <Users className="h-5 w-5 mb-1" />
-          <span>STATUS</span>
-        </div>
-      </TabsTrigger>
-      
-      <TabsTrigger value="calls" className="whatsapp-tab">
-        <div className="flex flex-col items-center">
-          <Phone className="h-5 w-5 mb-1" />
-          <span>CALLS</span>
-        </div>
-      </TabsTrigger>
-    </TabsList>
+    <div className="p-2 border-b">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="chats" className="flex-1">
+            <MessageCircle className="h-4 w-4 mr-1" />
+            Chats
+          </TabsTrigger>
+          <TabsTrigger value="statuses" className="flex-1">
+            <Image className="h-4 w-4 mr-1" />
+            Status
+          </TabsTrigger>
+          <TabsTrigger value="calls" className="flex-1">
+            <Phone className="h-4 w-4 mr-1" />
+            Appels
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+    </div>
   );
 };
 
