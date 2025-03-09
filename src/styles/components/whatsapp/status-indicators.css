@@ -1,93 +1,71 @@
 
-/* Indicateurs en ligne */
-.whatsapp-online {
-  color: var(--whatsapp-online);
+/* Status indicators styling */
+
+/* Status view progress animation */
+@keyframes status-progress {
+  from { width: 0; }
+  to { width: 100%; }
 }
 
-.whatsapp-offline {
-  color: var(--whatsapp-offline);
-}
-
-.whatsapp-status-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 4px;
+/* Online indicator for users */
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #25D366;
+  border: 2px solid white;
   border-radius: 50%;
 }
 
-.whatsapp-online .whatsapp-status-dot {
-  background-color: var(--whatsapp-online);
+/* Status ring indicators */
+.status-ring {
+  position: relative;
 }
 
-.whatsapp-offline .whatsapp-status-dot {
-  background-color: var(--whatsapp-offline);
+.status-ring::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 2px solid #00A884;
 }
 
-.whatsapp-status-text {
-  font-size: 12px;
+.status-ring-viewed::after {
+  border-color: #bdbdbd;
 }
 
-/* Indicateurs de lecture de message */
-.whatsapp-message-status {
+/* Pulsing effect for active status */
+.status-active {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 168, 132, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 168, 132, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 168, 132, 0);
+  }
+}
+
+/* WhatsApp message ticks */
+.whatsapp-tick {
   display: inline-flex;
-  align-items: center;
   margin-left: 4px;
 }
 
-.whatsapp-tick-single {
-  color: var(--whatsapp-tick-delivered);
+.whatsapp-read-tick {
+  color: #53bdeb;
 }
 
-.whatsapp-tick-double {
-  color: var(--whatsapp-tick-delivered);
-}
-
-.whatsapp-tick-read {
-  color: var(--whatsapp-tick-read);
-}
-
-/* Indicateur de saisie */
-.whatsapp-typing-indicator {
-  display: flex;
-  align-items: center;
-  padding: 2px 6px;
-  background-color: var(--whatsapp-bubble-other);
-  border-radius: 8px;
-  width: fit-content;
-  margin: 4px 0;
-}
-
-.whatsapp-typing-dots {
-  display: flex;
-}
-
-.whatsapp-typing-dot {
-  width: 6px;
-  height: 6px;
-  margin: 0 1px;
-  background-color: var(--whatsapp-icon-color);
-  border-radius: 50%;
-  animation: typingAnimation 1.5s infinite ease-in-out;
-}
-
-.whatsapp-typing-dot:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.whatsapp-typing-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.whatsapp-typing-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes typingAnimation {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
+.whatsapp-single-tick {
+  color: #a8a8a8;
 }

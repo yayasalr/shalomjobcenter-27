@@ -27,38 +27,39 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
   const [showTextInput, setShowTextInput] = useState(false);
   const [statuses, setStatuses] = useState<Status[]>(initialStatuses);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [viewingStatus, setViewingStatus] = useState<Status | null>(null);
   
-  // Gérer la création de statut
+  // Handling status creation
   const handleCreateStatus = (type: 'photo' | 'text') => {
     if (type === 'photo') {
-      // Afficher l'uploader d'image au lieu du toast
+      // Show image uploader instead of toast
       setShowTextInput(false);
     } else {
-      // Afficher le champ de texte pour le statut
+      // Show the text field for status
       setShowTextInput(true);
       setSelectedImage(null);
     }
   };
   
-  // Gérer l'envoi d'une image de statut
+  // Handle status image upload
   const handleImageUpload = (file: File) => {
     setIsUploading(true);
     
-    // Créer une URL pour l'image
+    // Create URL for the image
     const imageUrl = URL.createObjectURL(file);
     setSelectedImage(imageUrl);
     
-    // Simuler un téléchargement
+    // Simulate upload
     setTimeout(() => {
       setIsUploading(false);
     }, 1000);
   };
   
-  // Publier le statut avec image
+  // Publish status with image
   const publishImageStatus = () => {
     if (!selectedImage) return;
     
-    // Ajouter le nouveau statut à la liste
+    // Add the new status to the list
     const newStatus: Status = {
       id: Date.now(),
       user: "Vous",
@@ -71,15 +72,15 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
     setStatuses([newStatus, ...statuses]);
     setSelectedImage(null);
     
-    toast.success("Statut photo publié avec succès");
+    toast.success("Photo status published successfully");
   };
   
-  // Gérer l'envoi d'un statut texte
+  // Handle text status submission
   const handleTextStatusSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!textStatus.trim()) return;
     
-    // Ajouter le nouveau statut à la liste
+    // Add the new status to the list
     const newStatus: Status = {
       id: Date.now(),
       user: "Vous",
@@ -93,19 +94,88 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
     setTextStatus('');
     setShowTextInput(false);
     
-    toast.success("Statut texte publié avec succès");
+    toast.success("Text status published successfully");
   };
   
-  // Annuler la publication
+  // Cancel publication
   const cancelPublication = () => {
     setShowTextInput(false);
     setTextStatus('');
     setSelectedImage(null);
   };
+  
+  // View a status
+  const handleViewStatus = (status: Status) => {
+    // Mark status as viewed
+    const updatedStatuses = statuses.map(s => 
+      s.id === status.id ? {...s, isViewed: true} : s
+    );
+    setStatuses(updatedStatuses);
+    setViewingStatus(status);
+    
+    // Auto-close the status after 5 seconds
+    setTimeout(() => {
+      setViewingStatus(null);
+    }, 5000);
+  };
 
   return (
     <div className="flex flex-col h-full">
-      {/* Section pour créer un statut */}
+      {/* Status viewer overlay */}
+      {viewingStatus && (
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+          <div className="relative w-full max-w-lg">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="absolute top-4 right-4 text-white"
+              onClick={() => setViewingStatus(null)}
+            >
+              <X className="h-6 w-6" />
+            </Button>
+            
+            <div className="flex items-center mb-4 px-4">
+              <div className="h-10 w-10 rounded-full mr-2 overflow-hidden border-2 border-white">
+                <img 
+                  src={viewingStatus.avatar} 
+                  alt={viewingStatus.user} 
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-white font-medium">{viewingStatus.user}</p>
+                <p className="text-gray-300 text-xs">
+                  {viewingStatus.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </p>
+              </div>
+            </div>
+            
+            {viewingStatus.content && (
+              <div className="p-6 text-white text-center text-xl bg-gradient-to-r from-green-500 to-blue-500 min-h-[300px] flex items-center justify-center">
+                {viewingStatus.content}
+              </div>
+            )}
+            
+            {viewingStatus.image && (
+              <div className="min-h-[300px] flex items-center justify-center bg-black">
+                <img 
+                  src={viewingStatus.image} 
+                  alt="Status" 
+                  className="max-h-[80vh] max-w-full"
+                />
+              </div>
+            )}
+            
+            <div className="absolute bottom-0 w-full px-4 pb-4">
+              <div className="w-full bg-gray-700 h-1 rounded-full overflow-hidden mb-4">
+                <div className="bg-white h-full animate-[status-progress_5s_linear]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Section for creating a status */}
       <div className="p-3 bg-white border-b">
         <div className="flex items-center mb-3">
           <div className="relative">
@@ -114,12 +184,12 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
             </div>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium">Mon statut</p>
-            <p className="text-xs text-gray-500">Appuyez pour ajouter un statut</p>
+            <p className="text-sm font-medium">My status</p>
+            <p className="text-xs text-gray-500">Tap to add status update</p>
           </div>
         </div>
         
-        {/* Interface de publication d'image */}
+        {/* Image publication interface */}
         {selectedImage && (
           <div className="mt-3 flex flex-col space-y-3">
             <div className="relative rounded-lg overflow-hidden bg-gray-100">
@@ -143,27 +213,27 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
                 onClick={publishImageStatus}
               >
                 <Send className="h-4 w-4 mr-1" />
-                Publier
+                Publish
               </Button>
               <Button 
                 variant="outline" 
                 className="flex-1"
                 onClick={cancelPublication}
               >
-                Annuler
+                Cancel
               </Button>
             </div>
           </div>
         )}
         
-        {/* Formulaire de statut texte */}
+        {/* Text status form */}
         {showTextInput ? (
           <form onSubmit={handleTextStatusSubmit} className="mt-3">
             <div className="flex flex-col space-y-2">
               <Textarea
                 value={textStatus}
                 onChange={(e) => setTextStatus(e.target.value)}
-                placeholder="Écrivez votre statut ici..."
+                placeholder="Type your status here..."
                 className="min-h-[100px] border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <div className="flex space-x-2">
@@ -172,7 +242,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
                   className="flex-1 bg-green-500 hover:bg-green-600 text-white"
                 >
                   <Send className="h-4 w-4 mr-1" />
-                  Publier
+                  Publish
                 </Button>
                 <Button 
                   type="button" 
@@ -180,7 +250,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
                   className="flex-1"
                   onClick={cancelPublication}
                 >
-                  Annuler
+                  Cancel
                 </Button>
               </div>
             </div>
@@ -204,19 +274,19 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
                 onClick={() => handleCreateStatus('text')}
               >
                 <Edit className="h-4 w-4 mr-1" />
-                Texte
+                Text
               </Button>
             </div>
           )
         )}
         
-        {/* Afficher l'uploader d'image uniquement lorsque nécessaire */}
+        {/* Show image uploader only when needed */}
         {!showTextInput && !selectedImage && (
           <div className="mt-3">
             <ImageUploader
               onImageUpload={handleImageUpload}
               isUploading={isUploading}
-              label="Ajouter une photo pour votre statut"
+              label="Add a photo for your status"
               className="w-full"
               buttonVariant="outline"
               buttonSize="default"
@@ -225,15 +295,19 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
         )}
       </div>
       
-      {/* Liste des status */}
+      {/* Status list */}
       <ScrollArea className="flex-1">
         <div className="p-3">
-          <h3 className="text-xs font-medium text-gray-500 mb-2">Récents</h3>
+          <h3 className="text-xs font-medium text-gray-500 mb-2">Recent</h3>
           
           {statuses.length > 0 ? (
             <div className="space-y-3">
               {statuses.map((status) => (
-                <div key={status.id} className="flex items-center">
+                <div 
+                  key={status.id} 
+                  className="flex items-center cursor-pointer"
+                  onClick={() => handleViewStatus(status)}
+                >
                   <div className={`h-12 w-12 rounded-full border-2 ${status.isViewed ? 'border-gray-300' : 'border-green-500'} p-0.5`}>
                     <img 
                       src={status.avatar} 
@@ -264,7 +338,7 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
             <div className="flex flex-col items-center justify-center py-8">
               <ImageIcon className="h-12 w-12 text-gray-400 mb-2" />
               <p className="text-gray-500 text-center">
-                Aucun statut récent.<br />Les statuts disparaissent après 24 heures.
+                No recent status.<br />Status updates disappear after 24 hours.
               </p>
             </div>
           )}
