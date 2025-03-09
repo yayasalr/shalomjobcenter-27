@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Plus, Camera, Image, Edit, ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { ImageUploader } from '@/components/shared/ImageUploader';
 
 interface Status {
   id: number;
@@ -18,12 +19,40 @@ interface StatusTabContentProps {
 }
 
 const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [textStatus, setTextStatus] = useState('');
+  const [showTextInput, setShowTextInput] = useState(false);
+  
+  // Gérer la création de statut
   const handleCreateStatus = (type: 'photo' | 'text') => {
     if (type === 'photo') {
-      toast.info("Fonctionnalité de partage de photo à venir");
+      // Afficher l'uploader d'image au lieu du toast
+      setShowTextInput(false);
     } else {
-      toast.info("Fonctionnalité de statut texte à venir");
+      // Afficher le champ de texte pour le statut
+      setShowTextInput(true);
     }
+  };
+  
+  // Gérer l'envoi d'une image de statut
+  const handleImageUpload = (file: File) => {
+    setIsUploading(true);
+    
+    // Simuler un téléchargement
+    setTimeout(() => {
+      toast.success("Statut photo publié avec succès");
+      setIsUploading(false);
+    }, 1500);
+  };
+  
+  // Gérer l'envoi d'un statut texte
+  const handleTextStatusSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!textStatus.trim()) return;
+    
+    toast.success("Statut texte publié avec succès");
+    setTextStatus('');
+    setShowTextInput(false);
   };
 
   return (
@@ -42,26 +71,70 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses }) => {
           </div>
         </div>
         
-        <div className="flex space-x-2 mt-3">
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="flex-1 bg-green-50 border-green-100 hover:bg-green-100 text-green-600"
-            onClick={() => handleCreateStatus('photo')}
-          >
-            <Camera className="h-4 w-4 mr-1" />
-            Photo
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            className="flex-1 bg-blue-50 border-blue-100 hover:bg-blue-100 text-blue-600"
-            onClick={() => handleCreateStatus('text')}
-          >
-            <Edit className="h-4 w-4 mr-1" />
-            Texte
-          </Button>
-        </div>
+        {showTextInput ? (
+          <form onSubmit={handleTextStatusSubmit} className="mt-3">
+            <div className="flex flex-col space-y-2">
+              <input
+                type="text"
+                value={textStatus}
+                onChange={(e) => setTextStatus(e.target.value)}
+                placeholder="Écrivez votre statut ici..."
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <div className="flex space-x-2">
+                <Button 
+                  type="submit" 
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+                >
+                  Publier
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="flex-1"
+                  onClick={() => setShowTextInput(false)}
+                >
+                  Annuler
+                </Button>
+              </div>
+            </div>
+          </form>
+        ) : (
+          <div className="flex space-x-2 mt-3">
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="flex-1 bg-green-50 border-green-100 hover:bg-green-100 text-green-600"
+              onClick={() => handleCreateStatus('photo')}
+            >
+              <Camera className="h-4 w-4 mr-1" />
+              Photo
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="flex-1 bg-blue-50 border-blue-100 hover:bg-blue-100 text-blue-600"
+              onClick={() => handleCreateStatus('text')}
+            >
+              <Edit className="h-4 w-4 mr-1" />
+              Texte
+            </Button>
+          </div>
+        )}
+        
+        {/* Afficher l'uploader d'image uniquement lorsque nécessaire */}
+        {!showTextInput && (
+          <div className="mt-3">
+            <ImageUploader
+              onImageUpload={handleImageUpload}
+              isUploading={isUploading}
+              label="Ajouter une photo pour votre statut"
+              className="w-full"
+              buttonVariant="outline"
+              buttonSize="default"
+            />
+          </div>
+        )}
       </div>
       
       {/* Liste des status */}

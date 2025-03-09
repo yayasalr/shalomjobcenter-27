@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Conversation } from './types';
 import { ImageUploader } from '@/components/shared/ImageUploader';
@@ -34,13 +34,49 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   
   // Simulation aléatoire de l'état en ligne
-  const [onlineUsers] = useState<Record<string, boolean>>(() => {
+  const [onlineUsers, setOnlineUsers] = useState<Record<string, boolean>>({});
+  
+  // Simuler des statuts aléatoires
+  const [statuses, setStatuses] = useState<any[]>([]);
+  
+  // Simuler un historique d'appels aléatoire
+  const [calls, setCalls] = useState<any[]>([]);
+  
+  // Initialiser les données de démonstration au chargement
+  useEffect(() => {
+    // Générer des utilisateurs en ligne aléatoires
     const online: Record<string, boolean> = {};
     conversations.forEach(conv => {
       online[conv.id] = Math.random() > 0.5;
     });
-    return online;
-  });
+    setOnlineUsers(online);
+    
+    // Générer des statuts aléatoires basés sur les conversations
+    const randomStatuses = conversations
+      .filter(() => Math.random() > 0.6) // Prendre un sous-ensemble aléatoire
+      .map((conv, index) => ({
+        id: index + 1,
+        user: conv.with.name,
+        avatar: conv.with.avatar || '/placeholder.svg',
+        isViewed: Math.random() > 0.5,
+        timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000) // Dans les dernières 24h
+      }));
+    setStatuses(randomStatuses);
+    
+    // Générer un historique d'appels aléatoire basé sur les conversations
+    const randomCalls = conversations
+      .filter(() => Math.random() > 0.4) // Prendre un sous-ensemble aléatoire
+      .map((conv, index) => ({
+        id: index + 1,
+        user: conv.with.name,
+        avatar: conv.with.avatar || '/placeholder.svg',
+        type: Math.random() > 0.5 ? 'incoming' : 'outgoing' as const,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Dans la dernière semaine
+        missed: Math.random() > 0.7
+      }));
+    setCalls(randomCalls);
+    
+  }, [conversations]);
   
   const filteredConversations = conversations.filter(
     conversation => conversation.with.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -55,20 +91,6 @@ const ConversationList: React.FC<ConversationListProps> = ({
       setIsUploading(false);
     }, 1500);
   };
-
-  // Mock statuses for the demo
-  const statuses = [
-    { id: 1, user: 'John Doe', avatar: '/placeholder.svg', isViewed: false, timestamp: new Date() },
-    { id: 2, user: 'Jane Smith', avatar: '/placeholder.svg', isViewed: true, timestamp: new Date() },
-    { id: 3, user: 'Bob Johnson', avatar: '/placeholder.svg', isViewed: false, timestamp: new Date() }
-  ];
-
-  // Mock call history for the demo - fixed typing issue with explicit typing for 'incoming' | 'outgoing'
-  const calls = [
-    { id: 1, user: 'John Doe', avatar: '/placeholder.svg', type: 'incoming' as const, timestamp: new Date(), missed: false },
-    { id: 2, user: 'Jane Smith', avatar: '/placeholder.svg', type: 'outgoing' as const, timestamp: new Date(), missed: true },
-    { id: 3, user: 'Bob Johnson', avatar: '/placeholder.svg', type: 'incoming' as const, timestamp: new Date(), missed: true }
-  ];
 
   return (
     <div className="border-r h-full flex flex-col bg-white md:rounded-l-lg shadow-sm">
