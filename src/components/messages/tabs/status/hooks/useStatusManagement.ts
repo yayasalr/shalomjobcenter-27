@@ -12,23 +12,51 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
   
   // Load statuses from local storage
   useEffect(() => {
-    const storedStatuses = loadData<Status[]>('user-statuses', []);
-    
-    if (storedStatuses && Array.isArray(storedStatuses) && storedStatuses.length > 0) {
-      // Filter out expired statuses (older than 24 hours)
-      const validStatuses = filterExpiredStatuses(storedStatuses);
+    try {
+      const storedData = loadData<any>('user-statuses', []);
+      let processedStatuses: Status[] = [];
       
-      setStatuses(validStatuses);
-      
-      // Save back the filtered list if any were removed
-      if (validStatuses.length !== storedStatuses.length) {
-        saveData('user-statuses', validStatuses);
+      // Handle different data formats that might come from local storage
+      if (Array.isArray(storedData)) {
+        // Check if it's a flat array of Status objects
+        if (storedData.length === 0 || (storedData.length > 0 && 
+            typeof storedData[0] === 'object' && storedData[0] !== null && 
+            'id' in storedData[0])) {
+          processedStatuses = storedData as Status[];
+        } 
+        // Check if it's a nested array and flatten it
+        else if (storedData.length > 0 && Array.isArray(storedData[0])) {
+          const flattened = storedData.flat();
+          if (flattened.length > 0 && typeof flattened[0] === 'object' && 
+              flattened[0] !== null && 'id' in flattened[0]) {
+            processedStatuses = flattened as Status[];
+          }
+        }
       }
-    } else if (initialStatuses && initialStatuses.length > 0) {
-      setStatuses(initialStatuses);
-    } else {
-      // Add default statuses if none provided
-      generateDefaultStatuses();
+      
+      if (processedStatuses.length > 0) {
+        // Filter out expired statuses (older than 24 hours)
+        const validStatuses = filterExpiredStatuses(processedStatuses);
+        
+        setStatuses(validStatuses);
+        
+        // Save back the filtered list if any were removed
+        if (validStatuses.length !== processedStatuses.length) {
+          saveData('user-statuses', validStatuses);
+        }
+      } else if (initialStatuses && initialStatuses.length > 0) {
+        setStatuses(initialStatuses);
+      } else {
+        // Add default statuses if none provided
+        generateDefaultStatuses();
+      }
+    } catch (error) {
+      console.error('Error processing status data:', error);
+      if (initialStatuses && initialStatuses.length > 0) {
+        setStatuses(initialStatuses);
+      } else {
+        generateDefaultStatuses();
+      }
     }
   }, [initialStatuses]); // Dependency array
   
