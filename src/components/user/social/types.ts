@@ -1,10 +1,14 @@
 
-import { ElementType } from 'react';
+import { LucideIcon } from 'lucide-react';
 
 export interface SocialAccount {
   id: string;
   name: string;
-  icon: ElementType;
+  icon: LucideIcon;
   connected: boolean;
   email: string | null;
+  url?: string;
+  username?: string;
+  lastSync?: Date;
+  accessLevel?: 'read' | 'read-write' | 'full';
 }
