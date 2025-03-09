@@ -3,13 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Send } from 'lucide-react';
-
-interface TextStatusFormProps {
-  textStatus: string;
-  setTextStatus: (text: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onCancel: () => void;
-}
+import { TextStatusFormProps } from './types';
 
 const TextStatusForm: React.FC<TextStatusFormProps> = ({ 
   textStatus, 

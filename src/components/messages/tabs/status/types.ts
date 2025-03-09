@@ -24,18 +24,14 @@ export interface StatusCreatorProps {
 }
 
 export interface TextStatusFormProps {
-  onSubmit: (content: string) => void;
-  onCancel: () => void;
-}
-
-export interface ImageStatusPreviewProps {
-  image: string;
-  onSubmit: () => void;
+  textStatus: string;
+  setTextStatus: (text: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
 
 export interface StatusTabContentProps {
   statuses: Status[];
-  onViewStatus: (status: Status) => void;
-  onStatusCreated: (status: Status) => void;
+  onViewStatus?: (status: Status) => void;
+  onStatusCreated?: (status: Status) => void;
 }
