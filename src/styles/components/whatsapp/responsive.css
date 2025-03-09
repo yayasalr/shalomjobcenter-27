@@ -11,17 +11,47 @@
   }
   
   .whatsapp-message {
-    max-width: 80%;
+    max-width: 85%;
+  }
+  
+  .whatsapp-input {
+    font-size: 14px;
+  }
+  
+  .whatsapp-header {
+    padding: 8px 12px;
+  }
+  
+  .whatsapp-user-name {
+    font-size: 15px;
+  }
+  
+  .whatsapp-user-status {
+    font-size: 12px;
   }
 }
 
 /* Show/hide conversation list and view on mobile */
 @media (max-width: 768px) {
-  .conversation-list.mobile-hidden {
+  .conversation-list-container {
+    display: block;
+    width: 100%;
+  }
+  
+  .conversation-view-container {
+    display: none;
+    width: 100%;
+  }
+  
+  .conversation-list-container.hidden {
     display: none;
   }
   
-  .conversation-view.mobile-visible {
+  .conversation-view-container.active {
+    display: block;
+  }
+  
+  .back-button {
     display: block;
   }
 }
@@ -37,5 +67,9 @@
 @media (min-width: 1025px) {
   .whatsapp-container {
     height: calc(100vh - 175px);
+  }
+  
+  .back-button {
+    display: none;
   }
 }

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Message } from '@/components/messages/types';
-import { Avatar } from '@/components/ui/avatar';
 import { Check, CheckCheck, Image, Mic, Play } from 'lucide-react';
 
 interface MessageBubbleProps {
@@ -49,19 +48,17 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
   const messageType = getMessageType(message.content);
 
   return (
-    <div className={`flex ${isAdmin ? 'justify-end' : 'justify-start'} mb-4 px-2`}>
-      {!isAdmin && (
-        <Avatar className="h-10 w-10 mr-2 mt-1 flex-shrink-0">
-          <img src={senderAvatar || "/placeholder.svg"} alt={senderName} />
-        </Avatar>
-      )}
-      
-      <div className={`whatsapp-message max-w-[75%] ${isAdmin ? 'whatsapp-user-message' : 'whatsapp-other-message'}`}>
+    <div className={`flex ${isAdmin ? 'justify-end' : 'justify-start'} mb-1`}>
+      <div 
+        className={`whatsapp-message ${
+          isAdmin ? 'whatsapp-user-message' : 'whatsapp-other-message'
+        } max-w-[75%]`}
+      >
         {isAdmin && <div className="whatsapp-tail-out"></div>}
         {!isAdmin && <div className="whatsapp-tail-in"></div>}
         
         {messageType === 'text' && (
-          <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
+          <div className="whitespace-pre-wrap break-words">{message.content}</div>
         )}
         
         {messageType === 'image' && (
@@ -91,21 +88,16 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
         <div className="whatsapp-message-time">
           {formatTime(new Date(message.timestamp))}
           {isAdmin && (
-            <span className="whatsapp-tick">
-              {message.read ? 
-                <CheckCheck size={14} className="whatsapp-read-tick" /> : 
-                <Check size={14} className="whatsapp-single-tick" />
-              }
+            <span className="ml-1 inline-flex">
+              {message.read ? (
+                <CheckCheck className="h-3.5 w-3.5 text-[#53bdeb]" />
+              ) : (
+                <Check className="h-3.5 w-3.5 text-gray-400" />
+              )}
             </span>
           )}
         </div>
       </div>
-      
-      {isAdmin && (
-        <Avatar className="h-10 w-10 ml-2 mt-1 flex-shrink-0">
-          <img src="/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png" alt="Admin" />
-        </Avatar>
-      )}
     </div>
   );
 };

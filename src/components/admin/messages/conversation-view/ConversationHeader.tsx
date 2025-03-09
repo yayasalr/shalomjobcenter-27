@@ -39,10 +39,7 @@ export const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         <div className="whatsapp-user-info">
           <div className="whatsapp-user-name">{conversation.with.name}</div>
           <div className={`whatsapp-user-status ${isOnline ? 'whatsapp-online' : 'whatsapp-offline'}`}>
-            <span className="whatsapp-status-dot"></span>
-            <span className="whatsapp-status-text">
-              {isOnline ? 'En ligne' : 'Hors ligne'}
-            </span>
+            {isOnline ? 'En ligne' : 'Hors ligne'}
           </div>
         </div>
       </div>

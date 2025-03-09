@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Send, Loader2, Paperclip, Smile, Mic } from 'lucide-react';
+import { Smile, Paperclip, Mic, Send, MoreVertical } from 'lucide-react';
 import { QuickResponses } from './QuickResponses';
 import { MessagePreview } from './MessagePreview';
 import { Conversation } from '@/components/messages/types';
@@ -51,24 +51,33 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
     if (inputRef.current) {
       // S'assurer que le contenu reflète toujours newMessage
       if (inputRef.current.textContent !== newMessage) {
-        const selection = window.getSelection();
-        const range = selection?.getRangeAt(0);
-        
-        // Sauvegarder la position du curseur avant de modifier le contenu
-        const previousPosition = range?.startOffset || 0;
-        
         // Mettre à jour le contenu
         inputRef.current.textContent = newMessage;
         
         // Restaurer la position du curseur seulement si on vient de taper du texte
         if (selectionPosition !== null) {
           const newRange = document.createRange();
-          newRange.setStart(inputRef.current.firstChild || inputRef.current, 
-                           Math.min(selectionPosition, newMessage.length));
-          newRange.collapse(true);
+          const selection = window.getSelection();
           
-          selection?.removeAllRanges();
-          selection?.addRange(newRange);
+          try {
+            if (inputRef.current.firstChild) {
+              newRange.setStart(inputRef.current.firstChild, 
+                              Math.min(selectionPosition, newMessage.length));
+              newRange.collapse(true);
+              
+              selection?.removeAllRanges();
+              selection?.addRange(newRange);
+            } else if (newMessage === '') {
+              // Le nœud est vide, placer simplement le curseur au début
+              newRange.setStart(inputRef.current, 0);
+              newRange.collapse(true);
+              
+              selection?.removeAllRanges();
+              selection?.addRange(newRange);
+            }
+          } catch (e) {
+            console.error("Erreur lors du positionnement du curseur:", e);
+          }
           
           // Réinitialiser pour éviter de repositionner lors d'autres rendus
           setSelectionPosition(null);
@@ -93,58 +102,55 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
 
   return (
     <>
-      <div className="whatsapp-input-area">
-        <QuickResponses
-          responses={quickResponses}
-          onSelectResponse={onQuickResponseSelect}
-          onAddResponse={onAddQuickResponse}
-          onRemoveResponse={onRemoveQuickResponse}
-        />
-        
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="whatsapp-emoji-button"
-        >
-          <Smile className="h-5 w-5" />
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="whatsapp-attach-button"
-        >
-          <Paperclip className="h-5 w-5" />
-        </Button>
-        
-        <div 
-          ref={inputRef}
-          contentEditable 
-          className="whatsapp-input" 
-          dir="ltr" // Force left-to-right text direction
-          onInput={handleInput}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              sendMessage();
-            }
-          }}
-          data-placeholder="Saisissez votre message..."
-          suppressContentEditableWarning={true}
-        ></div>
-        
-        <Button 
-          onClick={sendMessage} 
-          disabled={isSending || !newMessage.trim()}
-          className="whatsapp-send-button"
-          size="icon"
-        >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            newMessage.trim() ? <Send className="h-5 w-5" /> : <Mic className="h-5 w-5" />
-          )}
-        </Button>
+      <div className="flex items-center p-2 bg-[#f0f2f5]">
+        <div className="flex items-center gap-2 w-full bg-white rounded-3xl px-4 py-2">
+          <QuickResponses
+            responses={quickResponses}
+            onSelectResponse={onQuickResponseSelect}
+            onAddResponse={onAddQuickResponse}
+            onRemoveResponse={onRemoveQuickResponse}
+          />
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-[#8696a0] hover:bg-transparent"
+          >
+            <Smile className="h-6 w-6" />
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-[#8696a0] hover:bg-transparent"
+          >
+            <Paperclip className="h-6 w-6" />
+          </Button>
+          
+          <div 
+            ref={inputRef}
+            contentEditable 
+            className="flex-1 outline-none min-h-[24px] max-h-[100px] overflow-y-auto px-2 break-words"
+            onInput={handleInput}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
+            data-placeholder="Saisissez votre message..."
+            suppressContentEditableWarning={true}
+          ></div>
+          
+          <Button 
+            onClick={sendMessage} 
+            disabled={isSending || !newMessage.trim()}
+            className="rounded-full bg-transparent hover:bg-transparent p-0 text-[#8696a0]"
+            size="icon"
+          >
+            {newMessage.trim() ? <Send className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+          </Button>
+        </div>
       </div>
       
       {/* Modal de prévisualisation du message */}

@@ -1,34 +1,27 @@
 
 :root {
-  /* WhatsApp color variables */
+  /* Couleurs primaires de WhatsApp */
   --whatsapp-green: #00a884;
-  --whatsapp-light-green: #dcf8c6;
-  --whatsapp-background: #f0f2f5;
   --whatsapp-header: #008069;
-  --whatsapp-chat-background: #efeae2;
+  --whatsapp-dark-header: #1f2c34;
+  
+  /* Couleurs des bulles de message */
   --whatsapp-bubble-me: #d9fdd3;
   --whatsapp-bubble-other: #ffffff;
+  
+  /* Couleurs d'arrière-plan */
+  --whatsapp-chat-background: #efeae2;
+  --whatsapp-dark-background: #111b21;
+  
+  /* Autres couleurs */
   --whatsapp-icon-color: #54656f;
-  --whatsapp-online: #25d366;
-  --whatsapp-offline: #8e8e8e;
-  
-  /* Dark mode WhatsApp colors */
-  --whatsapp-dark-chat-background: #0b141a;
-  --whatsapp-dark-header: #1f2c34;
-  --whatsapp-dark-bubble-me: #005c4b;
-  --whatsapp-dark-bubble-other: #1f2c34;
-  --whatsapp-dark-icon-color: #8696a0;
-  
-  /* Accessibility variables */
-  --font-size-factor: 1; /* Will be adjusted for accessibility */
-  --contrast-factor: 1; /* Will be adjusted for high contrast mode */
+  --whatsapp-divider: #e9edef;
+  --whatsapp-online: #00a884;
+  --whatsapp-offline: #8696a0;
 }
 
-.high-contrast {
-  --whatsapp-green: #00d4a0;
-  --whatsapp-light-green: #00ff9d;
-  --whatsapp-bubble-me: #00804d;
-  --whatsapp-bubble-other: #ffffff;
-  --whatsapp-icon-color: #ffffff;
-  --contrast-factor: 1.5;
+html[data-theme="dark"] {
+  --whatsapp-chat-background: #0b141a;
+  --whatsapp-bubble-me: #005c4b;
+  --whatsapp-bubble-other: #1f2c34;
 }
