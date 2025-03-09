@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useTestimonials } from './useTestimonials';
 import { TestimonialsList } from './TestimonialsList';
 import { TestimonialFormDialog } from './TestimonialFormDialog';
-import { useAuth } from '@/hooks/auth/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { ScrollAnimation } from '@/components/ui/scroll-animation';
 
 export const TestimonialsSection = () => {
