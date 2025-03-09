@@ -27,10 +27,26 @@ export const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4">Nos Services</h3>
             <ul className="space-y-3">
-              <li><Link to="/services/gardiennage" className="text-gray-300 hover:text-white transition-colors">Gardiennage</Link></li>
-              <li><Link to="/services/protection" className="text-gray-300 hover:text-white transition-colors">Protection rapprochée</Link></li>
-              <li><Link to="/services/conseil" className="text-gray-300 hover:text-white transition-colors">Conseil en sécurité</Link></li>
-              <li><Link to="/services/installation" className="text-gray-300 hover:text-white transition-colors">Installation de systèmes</Link></li>
+              <li>
+                <a href="/about#gardiennage" className="text-gray-300 hover:text-white transition-colors">
+                  Gardiennage
+                </a>
+              </li>
+              <li>
+                <a href="/about#protection" className="text-gray-300 hover:text-white transition-colors">
+                  Protection rapprochée
+                </a>
+              </li>
+              <li>
+                <a href="/about#conseil" className="text-gray-300 hover:text-white transition-colors">
+                  Conseil en sécurité
+                </a>
+              </li>
+              <li>
+                <a href="/about#installation" className="text-gray-300 hover:text-white transition-colors">
+                  Installation de systèmes
+                </a>
+              </li>
             </ul>
           </div>
           
@@ -40,8 +56,16 @@ export const Footer = () => {
               <li><Link to="/about" className="text-gray-300 hover:text-white transition-colors">À propos</Link></li>
               <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link></li>
               <li><Link to="/faq" className="text-gray-300 hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link to="/terms" className="text-gray-300 hover:text-white transition-colors">Conditions d'utilisation</Link></li>
-              <li><Link to="/privacy" className="text-gray-300 hover:text-white transition-colors">Politique de confidentialité</Link></li>
+              <li>
+                <Link to="/terms" className="text-blue-300 hover:text-blue-200 transition-colors underline">
+                  Conditions d'utilisation
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-blue-300 hover:text-blue-200 transition-colors underline">
+                  Politique de confidentialité
+                </Link>
+              </li>
             </ul>
           </div>
           
@@ -88,9 +112,13 @@ export const Footer = () => {
             &copy; {new Date().getFullYear()} Shalom Security. Tous droits réservés.
           </p>
           <div className="flex gap-4">
-            <Link to="/terms" className="text-gray-400 text-sm hover:text-white transition-colors">Conditions d'utilisation</Link>
+            <Link to="/terms" className="text-blue-300 text-sm hover:text-blue-200 transition-colors underline">
+              Conditions d'utilisation
+            </Link>
             <span className="text-gray-600">|</span>
-            <Link to="/privacy" className="text-gray-400 text-sm hover:text-white transition-colors">Politique de confidentialité</Link>
+            <Link to="/privacy" className="text-blue-300 text-sm hover:text-blue-200 transition-colors underline">
+              Politique de confidentialité
+            </Link>
             <span className="text-gray-600">|</span>
             <Link to="/faq" className="text-gray-400 text-sm hover:text-white transition-colors">FAQ</Link>
           </div>
