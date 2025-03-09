@@ -18,15 +18,17 @@ const MessageArea: React.FC<MessageAreaProps> = ({ conversation }) => {
   }, [conversation.messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
-      {conversation.messages.map((message) => (
-        <MessageBubble 
-          key={message.id}
-          message={message}
-          isUser={message.sender === 'admin'}
-        />
-      ))}
-      <div ref={messagesEndRef} />
+    <div className="flex-1 overflow-y-auto p-4 scrollbar-container" style={{ backgroundColor: 'var(--whatsapp-chat-background)' }}>
+      <div className="container mx-auto max-w-4xl">
+        {conversation.messages.map((message) => (
+          <MessageBubble 
+            key={message.id}
+            message={message}
+            isUser={message.sender === 'admin'}
+          />
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 };

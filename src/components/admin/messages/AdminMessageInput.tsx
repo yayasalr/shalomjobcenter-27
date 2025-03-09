@@ -47,17 +47,28 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
     }
   };
 
-  // Fix cursor position and focus input on mount
+  // Fix cursor position and focus input on mount and when newMessage changes
   useEffect(() => {
     if (inputRef.current) {
       // Focus the input
       inputRef.current.focus();
       
+      // Clear existing content and set it properly to fix cursor position
+      const content = newMessage;
+      inputRef.current.innerHTML = '';
+      
+      // Create and append text node
+      if (content) {
+        const textNode = document.createTextNode(content);
+        inputRef.current.appendChild(textNode);
+      }
+      
       // Place cursor at the end
       const range = document.createRange();
       const sel = window.getSelection();
-      if (inputRef.current.lastChild) {
-        range.setStartAfter(inputRef.current.lastChild);
+      if (inputRef.current.childNodes.length > 0) {
+        const lastChild = inputRef.current.childNodes[inputRef.current.childNodes.length - 1];
+        range.setStartAfter(lastChild);
       } else {
         range.setStart(inputRef.current, 0);
       }
@@ -68,7 +79,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         sel.addRange(range);
       }
     }
-  }, []);
+  }, [newMessage]);
 
   const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
     // Update message content
@@ -115,7 +126,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
             padding: '10px 12px', 
             borderRadius: '20px'
           }}
-        >{newMessage}</div>
+        ></div>
         
         <Button 
           variant="ghost" 

@@ -17,7 +17,10 @@
 @import './styles/components/logo.css';
 @import './styles/components/misc.css';
 @import './styles/components/badges.css';
+@import './styles/components/messages.css';
 @import './styles/components/admin-messages.css';
+@import './styles/components/whatsapp/variables.css';
+@import './styles/components/whatsapp/messages.css';
 @import './styles/components/notifications/index.css';
 
 /* Theme-specific styles */

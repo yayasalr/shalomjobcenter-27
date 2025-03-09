@@ -8,6 +8,7 @@
   box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
   line-height: 1.4;
   word-wrap: break-word;
+  max-width: 70%;
 }
 
 .whatsapp-user-message {
@@ -55,29 +56,6 @@
   transform: rotate(90deg);
 }
 
-/* Message Image and Audio Styling */
-.message-image-container {
-  position: relative;
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.message-image {
-  width: 100%;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 6px;
-}
-
-.message-audio-container {
-  min-width: 200px;
-}
-
-.audio-waveform {
-  height: 25px;
-  position: relative;
-}
-
 /* Read/Delivered indicators */
 .whatsapp-tick {
   margin-left: 4px;
@@ -110,23 +88,6 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Message Reactions (emojis) */
-.message-reaction {
-  position: absolute;
-  bottom: -10px;
-  left: 10px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 2px 5px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  font-size: 12px;
-}
-
-.message-reactions-container {
-  display: flex;
-  gap: 2px;
-}
-
 /* Dark mode overrides */
 html[data-theme="dark"] .scrollbar-container::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.2);
@@ -134,9 +95,4 @@ html[data-theme="dark"] .scrollbar-container::-webkit-scrollbar-thumb {
 
 html[data-theme="dark"] .scrollbar-container:hover::-webkit-scrollbar-thumb {
   background-color: rgba(255, 255, 255, 0.3);
-}
-
-html[data-theme="dark"] .message-reaction {
-  background-color: var(--whatsapp-dark-background);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }

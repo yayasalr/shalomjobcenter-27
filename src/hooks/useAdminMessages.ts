@@ -51,7 +51,7 @@ export const useAdminMessages = () => {
     // Configurer un intervalle pour vérifier périodiquement les nouveaux messages (plus fréquent)
     const interval = setInterval(() => {
       loadAndRefreshConversations();
-    }, 5000); // Vérifier toutes les 5 secondes pour une mise à jour plus réactive
+    }, 3000); // Vérifier toutes les 3 secondes pour une mise à jour plus réactive
     
     // Écouter l'événement personnalisé pour les mises à jour de messages admin
     const handleAdminMessagesUpdated = () => {

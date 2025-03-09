@@ -33,11 +33,22 @@ const MessageInput: React.FC<MessageInputProps> = ({
       // Focus the input
       inputRef.current.focus();
       
+      // Clear existing content and set it properly to fix cursor position
+      const content = value;
+      inputRef.current.innerHTML = '';
+      
+      // Create and append text node
+      if (content) {
+        const textNode = document.createTextNode(content);
+        inputRef.current.appendChild(textNode);
+      }
+      
       // Place cursor at the end
       const range = document.createRange();
       const sel = window.getSelection();
-      if (inputRef.current.lastChild) {
-        range.setStartAfter(inputRef.current.lastChild);
+      if (inputRef.current.childNodes.length > 0) {
+        const lastChild = inputRef.current.childNodes[inputRef.current.childNodes.length - 1];
+        range.setStartAfter(lastChild);
       } else {
         range.setStart(inputRef.current, 0);
       }
@@ -64,7 +75,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         onKeyDown={handleKeyDown}
         data-placeholder={placeholder}
         suppressContentEditableWarning={true}
-      >{value}</div>
+      ></div>
       
       <Button 
         onClick={onSend}

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
-import { updateUserConversation, markConversationAsRead } from '@/utils/adminMessageUtils';
+import { updateUserConversation, markConversationAsRead, saveAdminConversations } from '@/utils/adminMessageUtils';
 import { toast } from 'sonner';
 
 export const useAdminConversationActions = (
@@ -50,6 +50,11 @@ export const useAdminConversationActions = (
     // Mettre à jour l'état
     setConversations(updatedConversations);
     setSelectedConversation(updatedSelectedConversation);
+    
+    // Persister dans localStorage
+    saveAdminConversations(updatedConversations);
+    
+    // Vider le champ de message
     setNewMessage('');
     
     // Mettre à jour la conversation de l'utilisateur dans localStorage
@@ -96,6 +101,9 @@ export const useAdminConversationActions = (
       // Mettre à jour l'état
       setConversations(updatedConversations);
       setSelectedConversation(updatedConversation);
+      
+      // Persister dans localStorage
+      saveAdminConversations(updatedConversations);
       
       // Mettre à jour la conversation de l'utilisateur dans localStorage
       const userId = conversation.with.id;

@@ -13,15 +13,28 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isUser }) => {
   };
 
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-1`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 relative`}>
       <div 
-        className={`message-bubble ${
-          isUser ? 'message-bubble-user' : 'message-bubble-other'
+        className={`whatsapp-message ${
+          isUser ? 'whatsapp-user-message' : 'whatsapp-other-message'
         }`}
       >
+        {isUser && <div className="whatsapp-tail-out"></div>}
+        {!isUser && <div className="whatsapp-tail-in"></div>}
+        
         <div className="whitespace-pre-wrap break-words">{message.content}</div>
-        <div className="message-time">
+        
+        <div className="whatsapp-message-time">
           {formatTime(new Date(message.timestamp))}
+          {message.sender === 'user' && (
+            <span className="whatsapp-tick ml-1">
+              {message.read ? (
+                <span className="whatsapp-read-tick">✓✓</span>
+              ) : (
+                <span className="whatsapp-single-tick">✓</span>
+              )}
+            </span>
+          )}
         </div>
       </div>
     </div>
