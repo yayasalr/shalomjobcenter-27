@@ -16,36 +16,38 @@ const Profile = () => {
   const [userAvatar, setUserAvatar] = useState<string | undefined>(user?.avatar);
   const isMobile = useIsMobile();
   
-  // Charger l'avatar depuis le localStorage au chargement initial du composant seulement
+  // Load avatar from localStorage on initial component load
   useEffect(() => {
     const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
       setUserAvatar(storedAvatar);
-      // Mettre à jour l'avatar dans useAuth seulement au chargement initial
-      if (updateUserAvatar && user && user.avatar !== storedAvatar) {
+      // Update avatar in Auth context to ensure it's available throughout the app
+      if (updateUserAvatar) {
         updateUserAvatar(storedAvatar);
       }
     }
-  }, []);  // Dépendances vides pour s'exécuter une seule fois
+  }, []);  // Empty dependencies array for initial load only
   
   const handleAvatarChange = (avatarUrl: string) => {
     setUserAvatar(avatarUrl);
     if (updateUserAvatar) {
       updateUserAvatar(avatarUrl);
     }
+    // Ensure avatar is persisted in localStorage for refresh
+    localStorage.setItem('userAvatar', avatarUrl);
   };
   
-  // Création d'un objet utilisateur mis à jour pour les composants enfants
+  // Create an updated user object for child components
   const updatedUser = user ? { ...user, avatar: userAvatar || user.avatar } : null;
   
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 md:py-24">
+      <div className="container mx-auto px-4 py-8 md:py-12">
         <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8 mt-4 md:mt-8">Mon profil</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
-          {/* Sidebar sur mobile en haut, sur desktop à gauche */}
+          {/* Sidebar on mobile at top, on desktop at left */}
           <div className={`${isMobile ? 'order-1' : 'lg:col-span-1'}`}>
             <ProfileSidebar 
               user={updatedUser}

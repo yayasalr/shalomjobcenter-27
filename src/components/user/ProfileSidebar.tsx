@@ -22,6 +22,7 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
   useEffect(() => {
     if (user?.avatar && user.avatar !== avatar) {
       setAvatar(user.avatar);
+      setAvatarKey(Date.now()); // Force refresh when avatar changes
     }
   }, [user?.avatar]);
 
@@ -41,6 +42,9 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
           setIsUploading(false);
           setAvatarKey(Date.now()); // Générer une nouvelle clé pour forcer le rechargement
           
+          // Save to localStorage to persist across refreshes
+          localStorage.setItem('userAvatar', previewUrl);
+          
           // Notifier le composant parent du changement d'avatar
           if (onAvatarChange) {
             onAvatarChange(previewUrl);
@@ -59,15 +63,12 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
         <div className="mx-auto relative mb-4 group">
           <Avatar className="h-24 w-24 mx-auto border-4 border-white shadow-md">
             <AvatarImage 
-              key={avatarKey} // Forcer le rechargement de l'image
+              key={avatarKey}
               src={avatar} 
               alt={user?.name || "Utilisateur"}
-              onError={(e) => {
-                // Si l'image échoue à charger, utiliser AvatarFallback
-                e.currentTarget.style.display = 'none';
-              }}
+              className="object-cover"
             />
-            <AvatarFallback className="bg-sholom-primary/10 text-sholom-primary text-xl">
+            <AvatarFallback className="bg-primary/10 text-primary text-xl">
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </AvatarFallback>
           </Avatar>

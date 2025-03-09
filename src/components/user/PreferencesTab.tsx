@@ -54,6 +54,11 @@ export const PreferencesTab: React.FC = () => {
       
       // Store selected color
       setItem('user_accent_color', selectedColor);
+      
+      // Apply to button elements too
+      document.querySelectorAll('.btn-primary').forEach(el => {
+        (el as HTMLElement).style.backgroundColor = colorValue;
+      });
     };
     
     applyAccentColor();
@@ -162,24 +167,29 @@ export const PreferencesTab: React.FC = () => {
           
           <div className="space-y-2">
             <div className="font-medium mb-2">Couleur d'accent</div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {[
-                { name: 'purple', color: '#8B5CF6' },
-                { name: 'blue', color: '#3B82F6' },
-                { name: 'green', color: '#10B981' },
-                { name: 'orange', color: '#F97316' }, 
-                { name: 'red', color: '#EF4444' },
-                { name: 'teal', color: '#14B8A6' }
+                { name: 'purple', color: '#8B5CF6', label: 'Violet' },
+                { name: 'blue', color: '#3B82F6', label: 'Bleu' },
+                { name: 'green', color: '#10B981', label: 'Vert' },
+                { name: 'orange', color: '#F97316', label: 'Orange' }, 
+                { name: 'red', color: '#EF4444', label: 'Rouge' },
+                { name: 'teal', color: '#14B8A6', label: 'Turquoise' }
               ].map((colorObj) => (
                 <button
                   key={colorObj.name}
-                  className={`w-8 h-8 rounded-full transition-all transform ${
-                    selectedColor === colorObj.name ? 'ring-2 ring-offset-2 ring-black scale-110' : 'hover:scale-105'
+                  className={`w-10 h-10 rounded-full transition-all flex items-center justify-center transform ${
+                    selectedColor === colorObj.name ? 'ring-4 ring-offset-2 ring-black scale-110' : 'hover:scale-105'
                   }`}
                   style={{ backgroundColor: colorObj.color }}
                   onClick={() => handleColorChange(colorObj.name)}
-                  aria-label={`Thème ${colorObj.name}`}
-                />
+                  aria-label={`Thème ${colorObj.label}`}
+                  title={colorObj.label}
+                >
+                  {selectedColor === colorObj.name && (
+                    <Check className="text-white h-5 w-5" />
+                  )}
+                </button>
               ))}
             </div>
           </div>

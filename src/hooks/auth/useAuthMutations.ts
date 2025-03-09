@@ -60,7 +60,7 @@ export const useAuthMutations = (
       // Update state
       setUser(newUser);
       
-      // Save user preferences
+      // Save user preferences with defaults
       setItem('user_accent_color', 'purple');
       setItem('user_layout', 'default');
       setItem('user_notification_preferences', {
@@ -69,6 +69,11 @@ export const useAuthMutations = (
         reservation: true,
         promotional: false
       });
+      
+      // Save avatar if provided
+      if (userData.avatar) {
+        localStorage.setItem('userAvatar', userData.avatar);
+      }
       
       toast.success("Compte créé avec succès!");
       
@@ -148,7 +153,7 @@ export const useAuthMutations = (
     }
     
     try {
-      // Also store the avatar separately to ensure it's preserved
+      // Also store the avatar separately to ensure it's preserved on refresh
       localStorage.setItem('userAvatar', avatarUrl);
       
       return updateUserProfile({ avatar: avatarUrl });
