@@ -4,6 +4,7 @@ import { Conversation } from '@/components/messages/types';
 import AdminMessageInput from '../AdminMessageInput';
 import ConversationHeader from '@/components/messages/ConversationHeader';
 import MessageBubble from '@/components/messages/MessageBubble';
+import EmptyConversationState from '../EmptyConversationState';
 
 interface EnhancedConversationViewProps {
   conversation: Conversation | null;
@@ -59,25 +60,18 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
   }, [conversation?.messages]);
 
   if (!conversation) {
-    return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
-        <div className="text-center p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune conversation sélectionnée</h3>
-          <p className="text-gray-500">Sélectionnez une conversation pour commencer à discuter</p>
-        </div>
-      </div>
-    );
+    return <EmptyConversationState />;
   }
 
   return (
-    <div className="col-span-2 flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-gray-100">
       <ConversationHeader 
         conversation={conversation}
         isOnline={isOnline}
         onBack={handleBackClick}
       />
       
-      <div className="message-area flex-1 overflow-y-auto p-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
         {conversation.messages.map((message) => (
           <MessageBubble 
             key={message.id}

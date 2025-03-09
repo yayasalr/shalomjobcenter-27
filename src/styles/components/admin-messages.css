@@ -114,7 +114,58 @@
   @apply mb-2;
 }
 
+/* WhatsApp-style content editable input */
+[contenteditable][data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+[contenteditable]:focus {
+  outline: none;
+}
+
 /* Admin message input styling */
 .admin-message-input {
   @apply flex items-center;
+}
+
+/* Make sure message bubbles display correctly */
+.message-bubble {
+  @apply mb-2 max-w-[75%] rounded-lg p-3 shadow-sm;
+}
+
+.outgoing-message {
+  @apply ml-auto bg-blue-100;
+  border-top-right-radius: 0;
+}
+
+.incoming-message {
+  @apply mr-auto bg-white;
+  border-top-left-radius: 0;
+}
+
+/* Basic responsive styling */
+.conversation-item {
+  @apply flex items-start p-3 border-b cursor-pointer hover:bg-gray-100;
+}
+
+.conversation-avatar {
+  @apply mr-3 relative;
+}
+
+.conversation-content {
+  @apply flex-1 min-w-0;
+}
+
+.conversation-name {
+  @apply font-medium truncate;
+}
+
+.conversation-preview {
+  @apply text-sm text-gray-600 truncate;
+}
+
+.conversation-time {
+  @apply text-xs text-gray-500;
 }

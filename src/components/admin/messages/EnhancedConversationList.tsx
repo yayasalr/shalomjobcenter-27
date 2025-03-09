@@ -3,10 +3,8 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { SearchX, Search, Users, UserPlus, Filter, Star, StarOff, X } from 'lucide-react';
+import { Search, X, Plus, Users } from 'lucide-react';
 import { Conversation } from '@/components/messages/types';
-import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -29,6 +27,7 @@ interface EnhancedConversationListProps {
   setAdvancedSearchQuery: (query: string) => void;
   searchResults: any[];
   performAdvancedSearch: (query: string) => any[];
+  handleCreateNewConversation?: () => void;
 }
 
 export const EnhancedConversationList: React.FC<EnhancedConversationListProps> = ({
@@ -48,7 +47,8 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
   advancedSearchQuery,
   setAdvancedSearchQuery,
   searchResults,
-  performAdvancedSearch
+  performAdvancedSearch,
+  handleCreateNewConversation
 }) => {
   const [activeTab, setActiveTab] = useState('CHATS');
   
@@ -92,41 +92,39 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
   };
 
   return (
-    <div className="whatsapp-conversation-list md:col-span-1 border-r h-full flex flex-col">
-      {/* En-tête avec search */}
-      <div className="whatsapp-header p-2">
+    <div className="flex flex-col h-full bg-gray-100 border-r">
+      {/* En-tête de la liste */}
+      <div className="p-2 bg-white">
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <Avatar className="h-10 w-10 bg-white text-whatsapp-header">
-              <img 
-                src="/lovable-uploads/dbf22855-389b-4512-820a-abe3f147a780.png" 
-                alt="Admin" 
-                className="h-full w-full object-cover"
-              />
-            </Avatar>
-          </div>
-          
-          <div className="flex items-center gap-6">
-            <Button variant="ghost" size="icon" className="p-0 text-white hover:bg-[#00705c]">
-              <Users className="h-5 w-5 whatsapp-header-icon" />
-            </Button>
-            <Button variant="ghost" size="icon" className="p-0 text-white hover:bg-[#00705c]">
-              <UserPlus className="h-5 w-5 whatsapp-header-icon" />
-            </Button>
-            <Button variant="ghost" size="icon" className="p-0 text-white hover:bg-[#00705c]">
-              <Filter className="h-5 w-5 whatsapp-header-icon" />
-            </Button>
-          </div>
+          <h2 className="text-xl font-bold">Messages</h2>
+          <Button variant="ghost" size="icon">
+            <Users className="h-5 w-5" />
+          </Button>
         </div>
       </div>
       
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full h-10 bg-gray-50 grid grid-cols-3">
+          <TabsTrigger value="CHATS" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+            Chats
+          </TabsTrigger>
+          <TabsTrigger value="STATUS" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+            Status
+          </TabsTrigger>
+          <TabsTrigger value="APPELS" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none">
+            Appels
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+      
       {/* Barre de recherche */}
-      <div className="p-2 bg-[#f0f2f5]">
-        <div className="flex items-center bg-white rounded-md overflow-hidden">
-          <Search className="h-5 w-5 ml-3 text-gray-500" />
+      <div className="p-2 bg-gray-50">
+        <div className="flex items-center bg-white rounded-md overflow-hidden border">
+          <Search className="h-4 w-4 ml-3 text-gray-500" />
           <Input
             type="text"
-            placeholder="Rechercher ou démarrer une nouvelle discussion"
+            placeholder="Rechercher une conversation..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -144,51 +142,26 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
         </div>
       </div>
       
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full rounded-none h-12 bg-[#f0f2f5] p-0 gap-0">
-          <TabsTrigger 
-            value="CHATS" 
-            className="flex-1 h-full rounded-none data-[state=active]:text-[#00a884] data-[state=active]:border-b-2 data-[state=active]:border-[#00a884] data-[state=active]:bg-transparent font-semibold data-[state=active]:shadow-none"
-          >
-            CHATS
-          </TabsTrigger>
-          <TabsTrigger 
-            value="STATUT" 
-            className="flex-1 h-full rounded-none data-[state=active]:text-[#00a884] data-[state=active]:border-b-2 data-[state=active]:border-[#00a884] data-[state=active]:bg-transparent font-semibold data-[state=active]:shadow-none"
-          >
-            STATUT
-          </TabsTrigger>
-          <TabsTrigger 
-            value="APPELS" 
-            className="flex-1 h-full rounded-none data-[state=active]:text-[#00a884] data-[state=active]:border-b-2 data-[state=active]:border-[#00a884] data-[state=active]:bg-transparent font-semibold data-[state=active]:shadow-none"
-          >
-            APPELS
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-      
-      {/* Liste des discussions */}
+      {/* Liste des conversations */}
       <ScrollArea className="flex-1">
-        <div className="space-y-0 py-0">
-          {filteredConversations.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              {searchQuery ? "Aucune conversation trouvée" : "Aucune conversation"}
-            </div>
-          ) : (
-            filteredConversations.map((conversation) => {
-              const unreadCount = getUnreadCount(conversation);
-              const isSelected = selectedConversation?.id === conversation.id;
-              const isOnline = onlineUsers[conversation.with.id] || false;
-              const isImportant = markedImportant[conversation.id];
-              
-              return (
-                <div
-                  key={conversation.id}
-                  className={`whatsapp-conversation-item ${isSelected ? 'active' : ''}`}
-                  onClick={() => handleSelectConversation(conversation)}
-                >
-                  <div className="whatsapp-conversation-avatar">
+        {filteredConversations.length === 0 ? (
+          <div className="p-4 text-center text-gray-500">
+            <p>Aucune conversation trouvée. Utilisez le bouton "Nouvelle conversation" ci-dessous pour en démarrer une.</p>
+          </div>
+        ) : (
+          filteredConversations.map((conversation) => {
+            const unreadCount = getUnreadCount(conversation);
+            const isSelected = selectedConversation?.id === conversation.id;
+            const isOnline = onlineUsers[conversation.with.id] || false;
+            
+            return (
+              <div
+                key={conversation.id}
+                className={`p-3 hover:bg-gray-100 cursor-pointer border-b ${isSelected ? 'bg-blue-50' : ''}`}
+                onClick={() => handleSelectConversation(conversation)}
+              >
+                <div className="flex items-start">
+                  <div className="relative mr-3">
                     <Avatar className="h-12 w-12">
                       <img 
                         src={conversation.with.avatar || '/placeholder.svg'} 
@@ -196,47 +169,60 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
                         className="h-full w-full object-cover"
                       />
                     </Avatar>
-                    {isOnline && <div className="online-indicator"></div>}
+                    {isOnline && (
+                      <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
+                    )}
                   </div>
                   
-                  <div className="whatsapp-conversation-content">
-                    <div className="whatsapp-conversation-header">
-                      <span className="whatsapp-conversation-name">
-                        {conversation.with.name}
-                      </span>
-                      <span className="whatsapp-conversation-time">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium truncate">{conversation.with.name}</h3>
+                      <span className="text-xs text-gray-500">
                         {formatTime(new Date(conversation.lastMessage.timestamp))}
                       </span>
                     </div>
                     
-                    <div className="whatsapp-conversation-message">
-                      <p className="whatsapp-conversation-excerpt">
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-sm text-gray-600 truncate">
                         {conversation.lastMessage.content.length > 40
                           ? conversation.lastMessage.content.substring(0, 40) + "..."
                           : conversation.lastMessage.content}
                       </p>
                       
-                      <div className="flex items-center gap-1">
-                        {isImportant && (
-                          <Star className="h-4 w-4 text-[#00a884]" />
-                        )}
-                        
-                        {unreadCount > 0 && (
-                          <Badge 
-                            className="h-5 w-5 flex items-center justify-center p-0 rounded-full bg-[#00a884] hover:bg-[#00a884]"
-                          >
-                            {unreadCount}
-                          </Badge>
-                        )}
-                      </div>
+                      {unreadCount > 0 && (
+                        <Badge className="ml-2 h-5 w-5 p-0 flex items-center justify-center rounded-full bg-blue-500">
+                          {unreadCount}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>
-              );
-            })
-          )}
-        </div>
+              </div>
+            );
+          })
+        )}
       </ScrollArea>
+      
+      {/* Bouton pour ajouter une nouvelle conversation */}
+      <div className="p-3 border-t bg-gray-50">
+        <Button 
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+          onClick={handleCreateNewConversation}
+        >
+          <Plus className="h-4 w-4 mr-2" /> Nouvelle conversation
+        </Button>
+      </div>
+      
+      {/* Alternative bottom button for mobile */}
+      <div className="md:hidden p-3 border-t bg-white">
+        <Button 
+          variant="ghost"
+          className="w-full flex items-center justify-center"
+          onClick={handleCreateNewConversation}
+        >
+          <Users className="h-4 w-4 mr-2" /> Nouvelle conversation
+        </Button>
+      </div>
     </div>
   );
 };
