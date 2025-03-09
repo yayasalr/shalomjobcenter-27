@@ -54,5 +54,5 @@ export const featuresTranslations: TranslationDictionary = {
   },
   "satisfaction_guarantee_desc": {
     fr: "Nous nous engageons à assurer votre satisfaction ou nous vous proposons des solutions alternatives."
-  },
+  }
 };

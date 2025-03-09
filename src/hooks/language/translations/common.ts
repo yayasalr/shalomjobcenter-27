@@ -170,5 +170,26 @@ export const commonTranslations: TranslationDictionary = {
   },
   "no_applications_matching": {
     fr: "Aucune candidature ne correspond à vos critères de recherche."
+  },
+  "discover_home": {
+    fr: "Découvrez votre chez-vous à Lomé"
+  },
+  "premium_housing": {
+    fr: "Logements de qualité supérieure"
+  },
+  "find_housing": {
+    fr: "Trouver un logement"
+  },
+  "job_offers": {
+    fr: "Offres d'emploi"
+  },
+  "popular_neighborhoods": {
+    fr: "Quartiers populaires"
+  },
+  "total": {
+    fr: "Total"
+  },
+  "loading": {
+    fr: "Chargement..."
   }
 };

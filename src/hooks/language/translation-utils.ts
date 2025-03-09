@@ -10,7 +10,8 @@ export const getTranslation = (
   if (!translations[key]) {
     // Pour le développement, loggons les traductions manquantes
     console.log(`Traduction manquante pour la clé: ${key}`);
-    return key;
+    // Transformer la clé en texte lisible
+    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
   
   return translations[key][language] || key;

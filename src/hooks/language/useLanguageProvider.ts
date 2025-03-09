@@ -20,14 +20,16 @@ export const useLanguageProvider = () => {
     setItem('userLanguage', 'fr');
   }, []);
 
-  // Fonction de traduction simplifiée
+  // Fonction de traduction améliorée
   const t = (key: string): string => {
     if (!key) return '';
     
     const translation = getTranslation(key, 'fr', translations);
     
+    // Si la traduction est exactement la même que la clé, c'est qu'elle n'a pas été trouvée
     if (translation === key) {
       console.log(`Clé de traduction manquante: ${key}`);
+      // Transformer la clé en texte lisible
       return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
     
