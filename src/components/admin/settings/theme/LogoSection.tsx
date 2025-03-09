@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ImageIcon, Loader2, AlertCircle } from "lucide-react";
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 interface LogoSectionProps {
   logoUrl: string;
@@ -24,24 +25,49 @@ export const LogoSection = ({
   
   useEffect(() => {
     try {
+      // Réinitialiser l'état d'erreur au début
+      setLogoError(false);
+      
       // Vérifier si le logo est stocké séparément
       if (settings.logo === 'stored_separately') {
         const storedLogo = localStorage.getItem('site_logo');
-        setPreviewUrl(storedLogo || "");
+        if (storedLogo) {
+          console.log("Logo chargé depuis le stockage séparé");
+          setPreviewUrl(storedLogo);
+        } else {
+          console.log("Aucun logo trouvé dans le stockage séparé");
+          setPreviewUrl(logoUrl || "");
+        }
       } else {
-        setPreviewUrl(settings.logo || "");
+        console.log("Utilisation du logo depuis les paramètres");
+        setPreviewUrl(settings.logo || logoUrl || "");
       }
-      
-      setLogoError(false);
     } catch (error) {
       console.error("Erreur lors du chargement du logo:", error);
       setLogoError(true);
+      toast.error("Erreur lors du chargement du logo");
     }
   }, [settings.logo, logoUrl]);
   
   const handleLogoError = () => {
     console.error("Erreur lors du chargement de l'aperçu du logo");
     setLogoError(true);
+    toast.error("Impossible d'afficher le logo. Veuillez essayer de le télécharger à nouveau.");
+  };
+  
+  const handleRetryLoad = () => {
+    setLogoError(false);
+    
+    // Force reload by setting a temporary empty value
+    setPreviewUrl("");
+    setTimeout(() => {
+      if (settings.logo === 'stored_separately') {
+        const storedLogo = localStorage.getItem('site_logo');
+        setPreviewUrl(storedLogo || logoUrl || "");
+      } else {
+        setPreviewUrl(settings.logo || logoUrl || "");
+      }
+    }, 100);
   };
   
   return (
@@ -86,6 +112,14 @@ export const LogoSection = ({
               <AlertDescription>
                 Erreur lors du chargement du logo. Veuillez essayer de télécharger à nouveau.
               </AlertDescription>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="ml-auto" 
+                onClick={handleRetryLoad}
+              >
+                Réessayer
+              </Button>
             </Alert>
           )}
           

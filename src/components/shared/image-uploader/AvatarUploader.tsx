@@ -20,13 +20,13 @@ export const AvatarUploader: React.FC<AvatarUploaderProps> = ({
   isUploading,
   label,
   className = '',
-  previewClassName = 'h-24 w-24',
+  previewClassName = 'h-32 w-32', // Taille augmentée pour une meilleure visibilité
   onImageRemove
 }) => {
   return (
     <div className={`relative ${className}`}>
       <div 
-        className={`relative rounded-full overflow-hidden cursor-pointer ${previewClassName}`}
+        className={`relative rounded-full overflow-hidden cursor-pointer border-2 border-primary/30 shadow-md ${previewClassName}`}
         onClick={handleFileSelect}
       >
         {previewUrl ? (
@@ -37,13 +37,13 @@ export const AvatarUploader: React.FC<AvatarUploaderProps> = ({
           />
         ) : (
           <div className="h-full w-full flex items-center justify-center bg-gray-200 text-gray-400">
-            <Camera className="h-8 w-8" />
+            <Camera className="h-12 w-12" /> {/* Icône plus grande */}
           </div>
         )}
         
         {isUploading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-            <Loader2 className="h-8 w-8 animate-spin text-white" />
+            <Loader2 className="h-12 w-12 animate-spin text-white" /> {/* Loader plus grand */}
           </div>
         )}
       </div>
@@ -51,18 +51,18 @@ export const AvatarUploader: React.FC<AvatarUploaderProps> = ({
       {previewUrl && onImageRemove && (
         <button
           type="button"
-          className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full"
+          className="absolute top-0 right-0 p-2 bg-red-500 text-white rounded-full shadow-md"
           onClick={handleRemove}
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" /> {/* Bouton plus grand */}
         </button>
       )}
       
       <div 
-        className="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full cursor-pointer hover:bg-primary/90 transition-colors"
+        className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer hover:bg-primary/90 transition-colors shadow-md"
         onClick={handleFileSelect}
       >
-        <Camera className="h-4 w-4" />
+        <Camera className="h-6 w-6" /> {/* Bouton plus grand */}
       </div>
     </div>
   );

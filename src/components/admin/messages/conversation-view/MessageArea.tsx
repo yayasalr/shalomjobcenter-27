@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Message } from '@/components/messages/types';
 import { MessageBubble } from './MessageBubble';
 
@@ -14,9 +14,18 @@ export const MessageArea: React.FC<MessageAreaProps> = ({
   senderAvatar,
   senderName
 }) => {
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      endOfMessagesRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
   return (
-    <div className="whatsapp-message-area">
-      <div className="space-y-1 px-4">
+    <div className="whatsapp-message-area flex-1 overflow-y-auto">
+      <div className="space-y-2 px-4 py-2">
         {messages.map((message) => (
           <MessageBubble 
             key={message.id}
@@ -25,6 +34,7 @@ export const MessageArea: React.FC<MessageAreaProps> = ({
             senderName={senderName}
           />
         ))}
+        <div ref={endOfMessagesRef} />
       </div>
     </div>
   );

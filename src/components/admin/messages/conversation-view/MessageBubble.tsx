@@ -1,8 +1,10 @@
 
 import React from 'react';
 import { Message } from '@/components/messages/types';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Check, Image } from 'lucide-react';
+import { Avatar } from '@/components/ui/avatar';
+import { formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { Check, CheckCheck } from 'lucide-react';
 
 interface MessageBubbleProps {
   message: Message;
@@ -10,78 +12,45 @@ interface MessageBubbleProps {
   senderName: string;
 }
 
-export const MessageBubble: React.FC<MessageBubbleProps> = ({
-  message,
+export const MessageBubble: React.FC<MessageBubbleProps> = ({ 
+  message, 
   senderAvatar,
-  senderName
+  senderName 
 }) => {
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-  };
-
-  const renderMessageStatus = (message: Message) => {
-    if (message.sender !== 'admin') return null;
-    
-    if (message.read) {
-      return (
-        <span className="whatsapp-tick whatsapp-read-tick">
-          <Check className="h-3 w-3 inline" />
-          <Check className="h-3 w-3 inline -ml-1" />
-        </span>
-      );
-    } else {
-      return (
-        <span className="whatsapp-tick whatsapp-single-tick">
-          <Check className="h-3 w-3 inline" />
-        </span>
-      );
-    }
-  };
+  const isAdmin = message.sender === 'admin';
+  const formattedTime = formatDistanceToNow(new Date(message.timestamp), { 
+    addSuffix: true,
+    locale: fr
+  });
 
   return (
-    <div 
-      key={message.id}
-      className={`flex ${message.sender === 'admin' ? 'justify-end' : 'justify-start'}`}
-    >
-      {message.sender !== 'admin' && (
-        <Avatar className="h-8 w-8 mr-2 mt-1 flex-shrink-0">
-          <AvatarImage src={senderAvatar} />
-          <AvatarFallback>
-            {senderName.charAt(0)}
-          </AvatarFallback>
+    <div className={`flex items-start gap-2 mb-4 ${isAdmin ? 'justify-end' : 'justify-start'}`}>
+      {!isAdmin && (
+        <Avatar className="h-10 w-10 border">
+          <img src={senderAvatar || "/placeholder.svg"} alt={senderName} />
         </Avatar>
       )}
-      <div 
-        className={`whatsapp-message max-w-[75%] sm:max-w-[70%] ${
-          message.sender === 'admin' 
-            ? 'whatsapp-user-message' 
-            : 'whatsapp-other-message'
-        }`}
-      >
-        {message.sender === 'admin' && <div className="whatsapp-tail-out"></div>}
-        {message.sender !== 'admin' && <div className="whatsapp-tail-in"></div>}
-        
-        {message.content.startsWith('image-message:') ? (
-          <div className="message-image-container">
-            <img 
-              src={message.content.replace('image-message:', '').trim()} 
-              alt="Message Image" 
-              className="message-image rounded-md max-w-full" 
-            />
-            <Image className="image-icon absolute bottom-2 right-2 text-white h-4 w-4" />
-          </div>
-        ) : (
-          <p className="whitespace-pre-wrap break-words">{message.content}</p>
+      
+      <div className={`max-w-[75%] ${isAdmin ? 'bg-blue-500 text-white' : 'bg-white border'} rounded-lg p-3 shadow-sm`}>
+        {!isAdmin && (
+          <div className="font-medium text-xs text-gray-600 mb-1">{senderName}</div>
         )}
         
-        <div className="whatsapp-message-time">
-          {formatTime(new Date(message.timestamp))}
-          {renderMessageStatus(message)}
-          {!message.read && message.sender !== 'admin' && (
-            <span className="ml-1 font-medium text-gray-600">• Non lu</span>
+        <div className="text-sm whitespace-pre-wrap break-words">{message.content}</div>
+        
+        <div className={`text-xs mt-1 flex items-center gap-1 justify-end ${isAdmin ? 'text-blue-100' : 'text-gray-400'}`}>
+          <span>{formattedTime}</span>
+          {isAdmin && (
+            <span>{message.read ? <CheckCheck size={14} /> : <Check size={14} />}</span>
           )}
         </div>
       </div>
+      
+      {isAdmin && (
+        <Avatar className="h-10 w-10 border">
+          <img src="/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png" alt="Admin" />
+        </Avatar>
+      )}
     </div>
   );
 };
