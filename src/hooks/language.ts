@@ -98,6 +98,11 @@ export const useLanguageProvider = () => {
       'testimonial_description': 'Votre avis nous aide à améliorer notre service et aide d\'autres utilisateurs à faire leur choix.',
       'share_your_experience': 'Partagez votre expérience avec notre plateforme...',
       'publish_testimonial': 'Publier mon témoignage',
+      
+      // Reservations
+      'save_as_pdf': 'Enregistrer en PDF',
+      'add_to_calendar': 'Ajouter au calendrier',
+      'add_to_google': 'Ajouter à Google'
     };
     
     // Return the translation or the key if not found
