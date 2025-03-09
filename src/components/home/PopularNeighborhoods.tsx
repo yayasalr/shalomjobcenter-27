@@ -27,7 +27,7 @@ export const PopularNeighborhoods = ({ setSearchTerm }: PopularNeighborhoodsProp
               onClick={() => setSearchTerm(neighborhood)}
             >
               <MapPin className="mr-2 h-4 w-4 text-sholom-primary" />
-              {neighborhood}
+              {t(neighborhood)}
             </Button>
           ))}
         </div>

@@ -33,6 +33,9 @@ export const commonTranslations: TranslationDictionary = {
   "edit": {
     fr: "Modifier"
   },
+  "career": {
+    fr: "carrière"
+  },
   
   // Navigation
   "home": {

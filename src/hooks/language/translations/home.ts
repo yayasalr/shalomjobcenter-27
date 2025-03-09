@@ -180,5 +180,14 @@ export const homeTranslations: TranslationDictionary = {
   },
   "about_shalom": {
     fr: "À propos de Shalom"
+  },
+  "luxury_housing_lome": {
+    fr: "Logement de luxe à Lomé"
+  },
+  "luxury_villa": {
+    fr: "Villa de luxe"
+  },
+  "per_month": {
+    fr: "par mois"
   }
 };

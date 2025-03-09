@@ -23,7 +23,7 @@ const getRouteTranslations = (pathname: string): TranslationDictionary => {
   } else if (pathname.includes('/profile') || pathname.includes('/user/') || pathname.includes('/profil')) {
     return { ...commonTranslations, ...profileTranslations };
   } else if (pathname === '/' || pathname.includes('/home') || pathname.includes('/accueil') || pathname.includes('/index')) {
-    return { ...commonTranslations, ...homeTranslations };
+    return { ...commonTranslations, ...homeTranslations, ...jobsTranslations };
   }
   
   // Route par défaut: charger toutes les traductions

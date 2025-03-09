@@ -80,7 +80,7 @@ export const jobsTranslations: TranslationDictionary = {
   "housing_offer": {
     fr: "Offre de logement"
   },
-  // Nouveaux ajouts pour la page d'accueil
+  // Nouveaux ajouts
   "discover_home": {
     fr: "Découvrez votre chez-vous à Lomé"
   },
@@ -146,5 +146,26 @@ export const jobsTranslations: TranslationDictionary = {
   },
   "listings": {
     fr: "Logements"
+  },
+  "find_your_career": {
+    fr: "Trouvez votre carrière à Lomé"
+  },
+  "professional_opportunities": {
+    fr: "Des opportunités professionnelles dans la sécurité et des logements exclusifs pour nos employés dans toute la ville de Lomé."
+  },
+  "filter_offers": {
+    fr: "Filtrer les offres"
+  },
+  "stable_careers": {
+    fr: "Carrières stables"
+  },
+  "continuous_training": {
+    fr: "Formations continues"
+  },
+  "premium_security_agent": {
+    fr: "Agent de sécurité premium"
+  },
+  "starting_today": {
+    fr: "Dès aujourd'hui"
   }
 };
