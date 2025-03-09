@@ -2,10 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import { X, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { StatusViewerProps } from './types';
+import { StatusViewerProps, StatusViewer as StatusViewerType } from './types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { formatTimeElapsed } from './utils/statusUtils';
 import useLocalStorage from '@/hooks/useLocalStorage';
+
+interface CurrentUser {
+  id: string;
+  name: string;
+  avatar?: string;
+}
 
 const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
   const [progress, setProgress] = useState(0);
@@ -36,17 +42,21 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
     
     // Record view if not already viewed
     if (status) {
-      const viewedStatuses = loadData('viewed-statuses', {});
+      const viewedStatuses = loadData<Record<number, boolean>>('viewed-statuses', {});
       
       if (!viewedStatuses[status.id]) {
         // Record the viewer
-        const currentUser = loadData('currentUser', { id: 'user-1', name: 'Utilisateur', avatar: '/placeholder.svg' });
+        const currentUser = loadData<CurrentUser>('currentUser', { 
+          id: 'user-1', 
+          name: 'Utilisateur', 
+          avatar: '/placeholder.svg' 
+        });
         
         // Get existing viewers
-        const statusViewers = loadData(`status-viewers-${status.id}`, []);
+        const statusViewers = loadData<StatusViewerType[]>(`status-viewers-${status.id}`, []);
         
         // Add current user to viewers if not already there
-        if (!statusViewers.some((viewer: any) => viewer.id === currentUser.id)) {
+        if (!statusViewers.some((viewer) => viewer.id === currentUser.id)) {
           const updatedViewers = [
             ...statusViewers,
             {
@@ -75,7 +85,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
   if (!status) return null;
 
   // Load viewers
-  const viewers = loadData(`status-viewers-${status.id}`, []);
+  const viewers = loadData<StatusViewerType[]>(`status-viewers-${status.id}`, []);
   const viewCount = viewers.length;
 
   const toggleViewers = (e: React.MouseEvent) => {
@@ -139,7 +149,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({ status, onClose }) => {
             <h3 className="text-white font-medium mb-2 text-sm">Vu par ({viewCount})</h3>
             {viewers.length > 0 ? (
               <div className="space-y-2">
-                {viewers.map((viewer: any) => (
+                {viewers.map((viewer) => (
                   <div key={viewer.id} className="flex items-center">
                     <Avatar className="h-8 w-8 mr-2">
                       <AvatarImage src={viewer.avatar} />

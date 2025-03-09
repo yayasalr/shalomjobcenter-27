@@ -7,6 +7,12 @@ import { StatusCreatorProps } from './types';
 import TextStatusForm from './TextStatusForm';
 import useLocalStorage from '@/hooks/useLocalStorage';
 
+interface CurrentUser {
+  id?: string;
+  name?: string;
+  avatar?: string;
+}
+
 const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
   const [creating, setCreating] = useState<'text' | 'image' | null>(null);
   const [textStatus, setTextStatus] = useState('');
@@ -19,7 +25,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
     if (!textStatus.trim()) return;
     
     // Create a new status
-    const currentUser = loadData('currentUser', { name: 'Moi', avatar: '/placeholder.svg' });
+    const currentUser = loadData<CurrentUser>('currentUser', { name: 'Moi', avatar: '/placeholder.svg' });
     
     const newStatus = {
       id: Date.now(),
@@ -52,7 +58,7 @@ const StatusCreator: React.FC<StatusCreatorProps> = ({ onStatusCreated }) => {
     if (!image) return;
     
     // Create a new status with image
-    const currentUser = loadData('currentUser', { name: 'Moi', avatar: '/placeholder.svg' });
+    const currentUser = loadData<CurrentUser>('currentUser', { name: 'Moi', avatar: '/placeholder.svg' });
     
     const newStatus = {
       id: Date.now(),
