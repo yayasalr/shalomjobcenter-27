@@ -1,8 +1,7 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import useLocalStorage from "./useLocalStorage";
-import useAuth from "./useAuth";
+import { useAuth } from "./useAuth";
 
 export interface SocialInteraction {
   id: string;

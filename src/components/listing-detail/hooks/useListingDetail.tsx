@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useListings } from "@/hooks/useListings";
 import { useSiteSettings } from "@/hooks/settings/useSiteSettings";
 import { useReviews } from "@/hooks/useReviews";
 import { useReservations } from "@/hooks/reservations";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 // Import our utility functions

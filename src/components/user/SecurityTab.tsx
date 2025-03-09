@@ -1,6 +1,6 @@
 
 import React from 'react';
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { PasswordSection } from './security/PasswordSection';
 import { TwoFactorSection } from './security/TwoFactorSection';
 import { DevicesSection } from './security/DevicesSection';

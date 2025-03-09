@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { NavbarDesktopMenu } from "./NavbarDesktopMenu";
 import { NavbarLogo } from "./NavbarLogo";
 import { NavbarMobileMenu } from "./NavbarMobileMenu";
 import { NavbarUserMenu } from "./NavbarUserMenu";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

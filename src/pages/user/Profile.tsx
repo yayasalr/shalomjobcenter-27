@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { ProfileSidebar } from '@/components/user/ProfileSidebar';
 import { PersonalInfoTab } from '@/components/user/PersonalInfoTab';
 import { SecurityTab } from '@/components/user/SecurityTab';

@@ -1,6 +1,6 @@
 
 import { useRef } from "react";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import SecurityAlert from "./SecurityAlert";
 import StandardLoginForm from "./StandardLoginForm";
 import TwoFactorForm from "./TwoFactorForm";

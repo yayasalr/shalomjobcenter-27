@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Card } from '@/components/ui/card';
-import useAuth from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { useMessages } from '@/hooks/useMessages';
 import { ThemeToggle } from '@/components/messages/ThemeToggle';
 import { AccessibilityMenu } from '@/components/messages/AccessibilityMenu';
