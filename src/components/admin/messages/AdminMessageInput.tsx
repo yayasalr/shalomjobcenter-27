@@ -2,7 +2,7 @@
 import React from 'react';
 import { Conversation } from '@/components/messages/types';
 import { Button } from '@/components/ui/button';
-import { Send, Plus } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { QuickResponseSelector } from './QuickResponseSelector';
 
 interface AdminMessageInputProps {
@@ -15,10 +15,6 @@ interface AdminMessageInputProps {
   onQuickResponseSelect: (text: string) => void;
   onAddQuickResponse: (text: string) => void;
   onRemoveQuickResponse: (index: number) => void;
-  isPreviewMode: boolean;
-  previewMessage: () => void;
-  sendFromPreview: () => void;
-  cancelPreview: () => void;
 }
 
 const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
@@ -30,11 +26,7 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
   quickResponses,
   onQuickResponseSelect,
   onAddQuickResponse,
-  onRemoveQuickResponse,
-  isPreviewMode,
-  previewMessage,
-  sendFromPreview,
-  cancelPreview
+  onRemoveQuickResponse
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -47,14 +39,12 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
 
   return (
     <div className="p-3 bg-white border-t">
-      <div className="mb-2">
-        <QuickResponseSelector 
-          responses={quickResponses}
-          onSelect={onQuickResponseSelect}
-          onAdd={onAddQuickResponse}
-          onRemove={onRemoveQuickResponse}
-        />
-      </div>
+      <QuickResponseSelector 
+        responses={quickResponses}
+        onSelect={onQuickResponseSelect}
+        onAdd={onAddQuickResponse}
+        onRemove={onRemoveQuickResponse}
+      />
       
       <div className="flex">
         <div
@@ -68,22 +58,9 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         <Button 
           onClick={handleSendMessage}
           disabled={!newMessage.trim() || isSending}
-          className="rounded-l-none bg-blue-500 hover:bg-blue-600"
+          className="rounded-l-none"
         >
           <Send className="h-5 w-5" />
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="ml-2"
-          onClick={() => {
-            const response = prompt("Ajouter une réponse rapide:");
-            if (response && response.trim()) {
-              onAddQuickResponse(response.trim());
-            }
-          }}
-        >
-          <Plus className="h-5 w-5" />
         </Button>
       </div>
     </div>

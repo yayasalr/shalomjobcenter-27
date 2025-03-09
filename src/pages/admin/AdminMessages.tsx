@@ -13,9 +13,6 @@ import { EnhancedConversationList } from '@/components/admin/messages/EnhancedCo
 import { EnhancedConversationView } from '@/components/admin/messages/EnhancedConversationView';
 import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
 import { Conversation, Message } from '@/components/messages/types';
-import { ThemeToggle } from '@/components/messages/ThemeToggle';
-import { AccessibilityMenu } from '@/components/messages/AccessibilityMenu';
-import { OfflineIndicator } from '@/components/messages/OfflineIndicator';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -34,7 +31,7 @@ const AdminMessages: React.FC = () => {
     sendingMessage
   } = useAdminMessages();
   
-  // Utiliser les fonctionnalités avancées de messagerie
+  // Utiliser les fonctionnalités simplifiées de messagerie
   const {
     onlineUsers,
     advancedSearchQuery,
@@ -47,11 +44,7 @@ const AdminMessages: React.FC = () => {
     addQuickResponse,
     removeQuickResponse,
     markedImportant,
-    toggleImportant,
-    isPreviewMode,
-    previewMessage,
-    sendFromPreview,
-    cancelPreview
+    toggleImportant
   } = useAdvancedMessaging(
     conversations,
     selectedConversation,
@@ -66,7 +59,7 @@ const AdminMessages: React.FC = () => {
   // Type for search results
   type SearchResult = { conversation: Conversation; message: Message };
   
-  // Recherche avancée - résultats
+  // Recherche simple - résultats
   const searchResults: SearchResult[] = advancedSearchQuery 
     ? (performAdvancedSearch(advancedSearchQuery) as unknown as SearchResult[])
     : [];
@@ -85,11 +78,6 @@ const AdminMessages: React.FC = () => {
               <Badge variant="outline" className="ml-2 bg-blue-100 text-blue-800">
                 {totalUnreadCount} non lus
               </Badge>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <AccessibilityMenu />
-              <ThemeToggle />
             </div>
           </div>
           
@@ -113,7 +101,7 @@ const AdminMessages: React.FC = () => {
               <Card>
                 <CardContent className="p-6 h-[calc(100vh-280px)]">
                   <div className="grid grid-cols-1 md:grid-cols-3 h-full gap-4">
-                    {/* Liste des conversations améliorée */}
+                    {/* Liste des conversations simplifiée */}
                     <EnhancedConversationList
                       conversations={conversations}
                       selectedConversation={selectedConversation}
@@ -134,7 +122,7 @@ const AdminMessages: React.FC = () => {
                       performAdvancedSearch={performAdvancedSearch as any}
                     />
                     
-                    {/* Vue de conversation améliorée */}
+                    {/* Vue de conversation simplifiée */}
                     <EnhancedConversationView
                       conversation={selectedConversation}
                       newMessage={newMessage}
@@ -146,10 +134,10 @@ const AdminMessages: React.FC = () => {
                       onQuickResponseSelect={applyQuickResponse}
                       onAddQuickResponse={addQuickResponse}
                       onRemoveQuickResponse={removeQuickResponse}
-                      isPreviewMode={isPreviewMode}
-                      previewMessage={previewMessage}
-                      sendFromPreview={sendFromPreview}
-                      cancelPreview={cancelPreview}
+                      isPreviewMode={false}
+                      previewMessage={() => {}}
+                      sendFromPreview={() => {}}
+                      cancelPreview={() => {}}
                     />
                   </div>
                 </CardContent>
@@ -166,9 +154,6 @@ const AdminMessages: React.FC = () => {
           </Tabs>
         </main>
       </div>
-      
-      {/* Offline indicator */}
-      <OfflineIndicator />
     </div>
   );
 };

@@ -18,22 +18,19 @@ export const useAdvancedMessaging = (
     return online;
   });
   
-  // Recherche avancée
+  // Recherche simple
   const [advancedSearchQuery, setAdvancedSearchQuery] = useState('');
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false);
   
   // Réponses rapides pour l'administrateur
   const [quickResponses, setQuickResponses] = useState<string[]>([
     "Bonjour, comment puis-je vous aider ?",
-    "Merci pour votre message, je vais m'en occuper.",
-    "Je vous recontacte dès que possible."
+    "Merci pour votre message",
+    "Je vous recontacte dès que possible"
   ]);
   
-  // Conversations importantes - change from string[] to Record<string, boolean>
+  // Conversations importantes
   const [markedImportant, setMarkedImportant] = useState<Record<string, boolean>>({});
-  
-  // Mode de prévisualisation avant envoi
-  const [isPreviewMode, setIsPreviewMode] = useState(false);
   
   // Ajouter une réponse rapide
   const addQuickResponse = (text: string) => {
@@ -54,7 +51,7 @@ export const useAdvancedMessaging = (
     setNewMessage(text);
   };
   
-  // Marquer une conversation comme importante - updated to use Record<string, boolean>
+  // Marquer une conversation comme importante
   const toggleImportant = (conversationId: string) => {
     setMarkedImportant(prev => {
       const updated = { ...prev };
@@ -69,7 +66,7 @@ export const useAdvancedMessaging = (
     });
   };
   
-  // Fonction de recherche avancée
+  // Fonction de recherche simple
   const performAdvancedSearch = (query: string) => {
     if (!query.trim()) return [];
     
@@ -90,23 +87,6 @@ export const useAdvancedMessaging = (
     });
   };
   
-  // Prévisualiser le message avant envoi
-  const previewMessage = () => {
-    if (!newMessage.trim()) return;
-    setIsPreviewMode(true);
-  };
-  
-  // Envoyer depuis la prévisualisation
-  const sendFromPreview = () => {
-    setIsPreviewMode(false);
-    handleSendMessage();
-  };
-  
-  // Annuler la prévisualisation
-  const cancelPreview = () => {
-    setIsPreviewMode(false);
-  };
-  
   return {
     onlineUsers,
     advancedSearchQuery,
@@ -120,9 +100,9 @@ export const useAdvancedMessaging = (
     removeQuickResponse,
     markedImportant,
     toggleImportant,
-    isPreviewMode,
-    previewMessage,
-    sendFromPreview,
-    cancelPreview
+    isPreviewMode: false,
+    previewMessage: () => {},
+    sendFromPreview: () => {},
+    cancelPreview: () => {}
   };
 };
