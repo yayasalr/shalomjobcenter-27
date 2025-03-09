@@ -2,12 +2,15 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Check, Clock, X } from 'lucide-react';
+import { useLanguage } from '@/hooks/language';
 
 interface StatusBadgeProps {
   status: 'approved' | 'pending' | 'rejected';
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+  const { t } = useLanguage();
+  
   return (
     <Badge
       className={`${
@@ -21,17 +24,17 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
       {status === 'approved' ? (
         <>
           <Check className="mr-1 h-3.5 w-3.5" />
-          Acceptée
+          {t('approved') || 'Acceptée'}
         </>
       ) : status === 'pending' ? (
         <>
           <Clock className="mr-1 h-3.5 w-3.5" />
-          En attente
+          {t('pending') || 'En attente'}
         </>
       ) : (
         <>
           <X className="mr-1 h-3.5 w-3.5" />
-          Refusée
+          {t('rejected') || 'Refusée'}
         </>
       )}
     </Badge>

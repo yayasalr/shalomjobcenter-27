@@ -4,6 +4,7 @@ import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { useLanguage } from '@/hooks/language';
 
 interface TestimonialFormDialogProps {
   isOpen: boolean;
@@ -24,13 +25,15 @@ export const TestimonialFormDialog = ({
   setNewTestimonial,
   onSubmit
 }: TestimonialFormDialogProps) => {
+  const { t } = useLanguage();
+  
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Partagez votre expérience</DialogTitle>
+          <DialogTitle>{t('share_experience')}</DialogTitle>
           <DialogDescription>
-            Votre avis nous aide à améliorer notre service et aide d'autres utilisateurs à faire leur choix.
+            {t('testimonial_description') || 'Votre avis nous aide à améliorer notre service et aide d\'autres utilisateurs à faire leur choix.'}
           </DialogDescription>
         </DialogHeader>
         
@@ -55,7 +58,7 @@ export const TestimonialFormDialog = ({
           </div>
           
           <Textarea
-            placeholder="Partagez votre expérience avec notre plateforme..."
+            placeholder={t('share_your_experience') || "Partagez votre expérience avec notre plateforme..."}
             value={newTestimonial}
             onChange={(e) => setNewTestimonial(e.target.value)}
             className="min-h-[120px]"
@@ -68,14 +71,14 @@ export const TestimonialFormDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
           >
-            Annuler
+            {t('cancel')}
           </Button>
           <Button
             type="button"
             className="bg-airbnb-red hover:bg-airbnb-red/90"
             onClick={onSubmit}
           >
-            Publier mon témoignage
+            {t('publish_testimonial') || 'Publier mon témoignage'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -2,28 +2,14 @@
 import { TranslationDictionary } from '../types';
 
 export const listingsTranslations: TranslationDictionary = {
-  // Types de logements
-  "luxury_housing": {
-    fr: "Logement de luxe à Lomé"
-  },
-  "luxury_villa": {
-    fr: "Villa de luxe"
-  },
-  
-  // Détails des logements
-  "price": {
-    fr: "Prix"
-  },
-  "bedrooms": {
-    fr: "Chambres"
-  },
-  "bathrooms": {
-    fr: "Salles de bain"
+  // Détails du logement
+  "listing_details": {
+    fr: "Détails du logement"
   },
   "location": {
     fr: "Emplacement"
   },
-  "amenities": {
+  "equipment": {
     fr: "Équipements"
   },
   "description": {
@@ -32,59 +18,22 @@ export const listingsTranslations: TranslationDictionary = {
   "reviews": {
     fr: "Avis"
   },
-  "book_now": {
-    fr: "Réserver maintenant"
+  "listing_not_found": {
+    fr: "Logement non trouvé"
   },
-  "view_details": {
-    fr: "Voir les détails"
+  "listing_not_exist": {
+    fr: "Le logement que vous recherchez n'existe pas ou a été supprimé."
   },
-  "per_month": {
-    fr: "par mois"
+  "back_to_home": {
+    fr: "Retour à l'accueil"
   },
-  "stay_at": {
-    fr: "Séjour chez"
+  "publish_testimonial": {
+    fr: "Publier mon témoignage"
   },
-  "today": {
-    fr: "Aujourd'hui"
+  "share_your_experience": {
+    fr: "Partagez votre expérience avec notre plateforme..."
   },
-  
-  // Réservations
-  "confirmed": {
-    fr: "Confirmée"
-  },
-  "pending": {
-    fr: "En attente"
-  },
-  "cancelled": {
-    fr: "Annulée"
-  },
-  "unknown": {
-    fr: "Inconnu"
-  },
-  "arrival": {
-    fr: "Arrivée"
-  },
-  "departure": {
-    fr: "Départ"
-  },
-  "travelers": {
-    fr: "Voyageurs"
-  },
-  "reserved_on": {
-    fr: "Réservé le"
-  },
-  "total": {
-    fr: "Total"
-  },
-  
-  // Interactions sociales
-  "like": {
-    fr: "J'aime"
-  },
-  "comment": {
-    fr: "Commenter"
-  },
-  "share": {
-    fr: "Partager"
+  "testimonial_description": {
+    fr: "Votre avis nous aide à améliorer notre service et aide d'autres utilisateurs à faire leur choix."
   }
 };

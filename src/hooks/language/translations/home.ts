@@ -21,6 +21,9 @@ export const homeTranslations: TranslationDictionary = {
   "popular_neighborhoods": {
     fr: "Quartiers populaires"
   },
+  "add_housing": {
+    fr: "Ajoutez un logement"
+  },
   
   // Quartiers de Lomé
   "Tokoin": {
@@ -128,5 +131,25 @@ export const homeTranslations: TranslationDictionary = {
   },
   "share_experience": {
     fr: "Partagez votre expérience"
+  },
+  
+  // Statuts et chargements
+  "loading": {
+    fr: "Chargement..."
+  },
+  "loading_applications": {
+    fr: "Chargement des candidatures..."
+  },
+  "no_applications_found": {
+    fr: "Aucune candidature trouvée"
+  },
+  "no_applications_matching": {
+    fr: "Il n'y a pas de candidatures correspondant à vos critères."
+  },
+  "approved": {
+    fr: "Acceptée"
+  },
+  "rejected": {
+    fr: "Refusée"
   }
 };
