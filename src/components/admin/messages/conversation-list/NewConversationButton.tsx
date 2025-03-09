@@ -12,23 +12,12 @@ export const NewConversationButton: React.FC<NewConversationButtonProps> = ({
 }) => {
   return (
     <>
-      <div className="p-3 border-t bg-gray-50">
+      <div className="p-3 bg-gray-50 border-t">
         <Button 
           className="w-full bg-blue-500 hover:bg-blue-600 text-white"
           onClick={handleCreateNewConversation}
         >
           <Plus className="h-4 w-4 mr-2" /> Nouvelle conversation
-        </Button>
-      </div>
-      
-      {/* Alternative bottom button for mobile */}
-      <div className="md:hidden p-3 border-t bg-white">
-        <Button 
-          variant="ghost"
-          className="w-full flex items-center justify-center"
-          onClick={handleCreateNewConversation}
-        >
-          <Users className="h-4 w-4 mr-2" /> Nouvelle conversation
         </Button>
       </div>
     </>

@@ -15,20 +15,20 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   return (
     <div className="p-2 bg-gray-50">
-      <div className="flex items-center bg-white rounded-md overflow-hidden border">
-        <Search className="h-4 w-4 ml-3 text-gray-500" />
+      <div className="relative">
+        <Search className="h-4 w-4 absolute left-3 top-3 text-gray-500" />
         <Input
           type="text"
           placeholder="Rechercher une conversation..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="pl-9 pr-9 bg-white"
         />
         {searchQuery && (
           <Button 
             variant="ghost" 
             size="icon" 
-            className="h-8 w-8 mr-1"
+            className="h-8 w-8 absolute right-1 top-1"
             onClick={() => setSearchQuery('')}
           >
             <X className="h-4 w-4" />

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopbar } from '@/components/admin/AdminTopbar';
@@ -7,6 +8,8 @@ import { EnhancedConversationView } from '@/components/admin/messages/conversati
 import { useAdvancedMessaging } from '@/hooks/messages/useAdvancedMessaging';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { UsersList } from '@/components/admin/messages/UsersList';
+import { WhatsAppEmptyState } from '@/components/admin/messages/WhatsAppEmptyState';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -25,6 +28,7 @@ const AdminMessages: React.FC = () => {
   } = useAdminMessages();
   
   const [showNewConversationOption, setShowNewConversationOption] = useState(false);
+  const [showUsersList, setShowUsersList] = useState(false);
   
   const {
     onlineUsers,
@@ -54,7 +58,13 @@ const AdminMessages: React.FC = () => {
     : [];
     
   const handleCreateNewConversation = () => {
-    setShowNewConversationOption(true);
+    setShowUsersList(true);
+  };
+
+  const handleSelectUser = (userId: string, userName: string) => {
+    console.log(`Selected user: ${userName} (${userId})`);
+    setShowUsersList(false);
+    // Ici on ajouterait la logique pour créer une nouvelle conversation avec cet utilisateur
   };
 
   return (
@@ -89,40 +99,43 @@ const AdminMessages: React.FC = () => {
               />
               
               <div className="col-span-2">
-                <EnhancedConversationView
-                  conversation={selectedConversation}
-                  newMessage={newMessage}
-                  setNewMessage={setNewMessage}
-                  handleSendMessage={handleSendMessage}
-                  isSending={sendingMessage}
-                  isOnline={selectedConversation ? typedOnlineUsers[selectedConversation.with.id] || false : false}
-                  quickResponses={quickResponses}
-                  onQuickResponseSelect={applyQuickResponse}
-                  onAddQuickResponse={addQuickResponse}
-                  onRemoveQuickResponse={removeQuickResponse}
-                  isPreviewMode={false}
-                  previewMessage={() => {}}
-                  sendFromPreview={() => {}}
-                  cancelPreview={() => {}}
-                />
+                {selectedConversation ? (
+                  <EnhancedConversationView
+                    conversation={selectedConversation}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
+                    handleSendMessage={handleSendMessage}
+                    isSending={sendingMessage}
+                    isOnline={selectedConversation ? typedOnlineUsers[selectedConversation.with.id] || false : false}
+                    quickResponses={quickResponses}
+                    onQuickResponseSelect={applyQuickResponse}
+                    onAddQuickResponse={addQuickResponse}
+                    onRemoveQuickResponse={removeQuickResponse}
+                    isPreviewMode={false}
+                    previewMessage={() => {}}
+                    sendFromPreview={() => {}}
+                    cancelPreview={() => {}}
+                  />
+                ) : (
+                  <WhatsAppEmptyState />
+                )}
               </div>
             </div>
           </div>
         </main>
       </div>
       
-      {showNewConversationOption && (
+      {showUsersList && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-lg max-w-md w-full">
             <h3 className="text-lg font-bold mb-4">Nouvelle conversation</h3>
             <p className="mb-4">Sélectionnez un utilisateur pour commencer une nouvelle conversation.</p>
             
+            <UsersList onSelectUser={handleSelectUser} onClose={() => setShowUsersList(false)} />
+            
             <div className="mt-4 flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowNewConversationOption(false)}>
+              <Button variant="outline" onClick={() => setShowUsersList(false)}>
                 Annuler
-              </Button>
-              <Button className="bg-blue-500 hover:bg-blue-600">
-                <Plus className="h-4 w-4 mr-2" /> Créer
               </Button>
             </div>
           </div>

@@ -6,6 +6,8 @@ import TabsNavigation from './conversation-list/TabsNavigation';
 import SearchBar from './conversation-list/SearchBar';
 import ConversationList from './conversation-list/ConversationList';
 import NewConversationButton from './conversation-list/NewConversationButton';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Image, Phone } from 'lucide-react';
 
 interface EnhancedConversationListProps {
   conversations: Conversation[];
@@ -75,29 +77,57 @@ export const EnhancedConversationList: React.FC<EnhancedConversationListProps> =
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-100 border-r">
+    <div className="flex flex-col h-full bg-gray-50 border-r">
       {/* Header Component */}
       <Header title="Messages" />
       
       {/* Tabs Component */}
       <TabsNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* Search Bar Component */}
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      {activeTab === 'CHATS' && (
+        <>
+          {/* Search Bar Component */}
+          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          
+          {/* Conversation List Component */}
+          <ConversationList 
+            conversations={conversations}
+            selectedConversation={selectedConversation}
+            handleSelectConversation={handleSelectConversation}
+            getUnreadCount={getUnreadCount}
+            onlineUsers={onlineUsers}
+            searchQuery={searchQuery}
+            formatTime={formatTime}
+          />
+          
+          {/* New Conversation Button Component */}
+          <NewConversationButton handleCreateNewConversation={handleCreateNewConversation} />
+        </>
+      )}
       
-      {/* Conversation List Component */}
-      <ConversationList 
-        conversations={conversations}
-        selectedConversation={selectedConversation}
-        handleSelectConversation={handleSelectConversation}
-        getUnreadCount={getUnreadCount}
-        onlineUsers={onlineUsers}
-        searchQuery={searchQuery}
-        formatTime={formatTime}
-      />
+      {activeTab === 'STATUS' && (
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <div className="bg-gray-200 rounded-full p-3 mb-3">
+            <Image className="h-8 w-8 text-gray-600" />
+          </div>
+          <h3 className="text-lg font-medium mb-1">Status</h3>
+          <p className="text-gray-500 text-center max-w-xs">
+            Partagez des mises à jour sous forme de texte, photo ou vidéo qui disparaissent après 24 heures.
+          </p>
+        </div>
+      )}
       
-      {/* New Conversation Button Component */}
-      <NewConversationButton handleCreateNewConversation={handleCreateNewConversation} />
+      {activeTab === 'APPELS' && (
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <div className="bg-gray-200 rounded-full p-3 mb-3">
+            <Phone className="h-8 w-8 text-gray-600" />
+          </div>
+          <h3 className="text-lg font-medium mb-1">Appels</h3>
+          <p className="text-gray-500 text-center max-w-xs">
+            Passez des appels audio et vidéo avec vos contacts.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
