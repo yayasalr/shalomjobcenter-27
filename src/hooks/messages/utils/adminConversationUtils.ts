@@ -99,4 +99,13 @@ export const updateAdminConversation = (
   
   // Log pour le debug
   console.log(`Message de l'utilisateur ${userId} mis à jour côté admin`, messagesToAdd);
+  
+  // Déclencher un événement pour indiquer que les données ont changé
+  // Cela permet aux autres onglets ou fenêtres de détecter les changements
+  try {
+    const event = new CustomEvent('admin-messages-updated', { detail: { userId } });
+    window.dispatchEvent(event);
+  } catch (error) {
+    console.error("Erreur lors de la diffusion de l'événement:", error);
+  }
 }

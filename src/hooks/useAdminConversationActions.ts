@@ -14,7 +14,7 @@ export const useAdminConversationActions = (
 ) => {
   const [sendingMessage, setSendingMessage] = useState(false);
 
-  // Send a message as admin with added delay
+  // Send a message as admin with reduced delay for better responsiveness
   const handleSendMessage = () => {
     if (!newMessage.trim() || !selectedConversation) return;
     setSendingMessage(true);
@@ -22,7 +22,7 @@ export const useAdminConversationActions = (
     // Show a loading notification to indicate message is being sent
     const sendingToast = toast.loading("Envoi du message en cours...");
     
-    // Add a small delay to simulate network latency (1-3 seconds)
+    // Add a smaller delay to simulate network latency (0.5-1.5 seconds)
     setTimeout(() => {
       try {
         // Create the new message
@@ -62,6 +62,14 @@ export const useAdminConversationActions = (
         const userId = selectedConversation.with.id;
         updateUserConversation(userId, updatedSelectedConversation);
 
+        // Déclencher un événement custom pour notifier d'autres fenêtres ou onglets
+        try {
+          const event = new CustomEvent('admin-messages-updated', { detail: { userId } });
+          window.dispatchEvent(event);
+        } catch (error) {
+          console.error("Erreur lors de la diffusion de l'événement:", error);
+        }
+
         toast.dismiss(sendingToast);
         toast.success("Message envoyé avec succès");
       } catch (error) {
@@ -71,7 +79,7 @@ export const useAdminConversationActions = (
       } finally {
         setSendingMessage(false);
       }
-    }, Math.random() * 2000 + 1000); // 1-3 second delay
+    }, Math.random() * 1000 + 500); // 0.5-1.5 second delay (plus rapide qu'avant)
   };
 
   // Select a conversation and mark its messages as read
@@ -94,6 +102,14 @@ export const useAdminConversationActions = (
       // Also update the user's conversation in localStorage to mark these as read
       const userId = conversation.with.id;
       updateUserConversation(userId, updatedConversation);
+      
+      // Déclencher un événement pour notifier d'autres fenêtres ou onglets
+      try {
+        const event = new CustomEvent('admin-messages-updated', { detail: { userId } });
+        window.dispatchEvent(event);
+      } catch (error) {
+        console.error("Erreur lors de la diffusion de l'événement:", error);
+      }
     } catch (error) {
       console.error("Erreur lors de la sélection de conversation:", error);
       // Fallback to just selecting without marking as read

@@ -14,6 +14,7 @@ export const useAdminMessages = () => {
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'unread' | 'important'>('all');
+  const [sendingMessage, setSendingMessage] = useState(false);
   
   // Charger les conversations depuis le localStorage
   useEffect(() => {
@@ -40,7 +41,7 @@ export const useAdminMessages = () => {
     // Configurer un intervalle pour vérifier périodiquement les nouveaux messages
     const interval = setInterval(() => {
       loadAndRefreshConversations();
-    }, 3000); // Vérifier toutes les 3 secondes (au lieu de 10)
+    }, 2000); // Vérifier toutes les 2 secondes (plus fréquent pour être plus réactif)
     
     // Ajouter un écouteur d'événements pour les mises à jour de localStorage
     const handleStorageChange = (e: StorageEvent) => {
@@ -49,18 +50,25 @@ export const useAdminMessages = () => {
       }
     };
     
+    // Écouter l'événement personnalisé pour les mises à jour de messages admin
+    const handleAdminMessagesUpdated = () => {
+      loadAndRefreshConversations();
+    };
+    
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('admin-messages-updated', handleAdminMessagesUpdated);
     
     return () => {
       clearInterval(interval);
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('admin-messages-updated', handleAdminMessagesUpdated);
     };
   }, [selectedConversation]);
 
   const { 
     handleSendMessage, 
     handleSelectConversation,
-    sendingMessage 
+    sendingMessage: sendingMsg 
   } = useAdminConversationActions(
     conversations,
     setConversations,
@@ -69,6 +77,11 @@ export const useAdminMessages = () => {
     newMessage,
     setNewMessage
   );
+
+  // Mettre à jour l'état d'envoi
+  useEffect(() => {
+    setSendingMessage(sendingMsg);
+  }, [sendingMsg]);
 
   // Compter le total des messages non lus
   const totalUnreadCount = getTotalUnreadCount(conversations);
