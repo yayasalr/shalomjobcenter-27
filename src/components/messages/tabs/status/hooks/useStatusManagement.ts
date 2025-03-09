@@ -38,8 +38,8 @@ const useStatusManagement = (initialStatuses: Status[] = []) => {
       if (Array.isArray(adminStatusMessages) && adminStatusMessages.length > 0) {
         // Convert admin status messages to user status format
         const adminStatuses: Status[] = adminStatusMessages
-          .filter(msg => msg && typeof msg === 'object' && 'id' in msg)
-          .map(msg => ({
+          .filter((msg: any) => msg && typeof msg === 'object' && 'id' in msg)
+          .map((msg: any) => ({
             id: Number(msg.id),
             user: "Admin",
             avatar: "/placeholder.svg",
