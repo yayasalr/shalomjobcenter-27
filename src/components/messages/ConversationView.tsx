@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, forwardRef, useCallback } from 'react';
 import { Conversation } from './types';
 import ConversationHeader from './ConversationHeader';
 import MessageInput from './MessageInput';
@@ -81,12 +81,35 @@ const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
     loadReactionsFromStorage();
   }, [loadReactionsFromStorage]);
 
-  // Scroll to bottom when new messages arrive
-  useEffect(() => {
+  // Fonction de scroll automatique (memoized)
+  const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [conversation.messages]);
+  }, []);
+
+  // Scroll to bottom when new messages arrive or when conversation changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation.messages, scrollToBottom, conversation.id]);
+
+  // Auto-scroll when sending a new message
+  useEffect(() => {
+    const messageInputField = document.querySelector('.message-input');
+    
+    // Add event listener to input field to auto-scroll when user starts typing
+    const handleFocus = () => {
+      setTimeout(scrollToBottom, 100);
+    };
+    
+    if (messageInputField) {
+      messageInputField.addEventListener('focus', handleFocus);
+      
+      return () => {
+        messageInputField.removeEventListener('focus', handleFocus);
+      };
+    }
+  }, [scrollToBottom]);
 
   // Appliquer la recherche lors du changement de query
   useEffect(() => {
@@ -167,7 +190,11 @@ const ConversationView = forwardRef<HTMLDivElement, ConversationViewProps>(({
       <MessageInput
         value={newMessage}
         onChange={setNewMessage}
-        onSend={handleSendMessage}
+        onSend={() => {
+          handleSendMessage();
+          // Assurer que le scroll vers le bas se produit après l'envoi du message
+          setTimeout(scrollToBottom, 100);
+        }}
         placeholder="Écrivez un message..."
       />
       

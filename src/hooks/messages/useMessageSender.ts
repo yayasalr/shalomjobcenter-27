@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Conversation, Message } from '@/components/messages/types';
 import { toast } from 'sonner';
 import { updateAdminConversation } from './utils/adminConversationUtils';
@@ -12,9 +12,13 @@ export const useMessageSender = (
   setSelectedConversation: React.Dispatch<React.SetStateAction<Conversation | null>>
 ) => {
   const [newMessage, setNewMessage] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedConversation || !userId) return;
+  const handleSendMessage = useCallback(() => {
+    if (!newMessage.trim() || !selectedConversation || !userId || isSending) return;
+    
+    // Prévenir l'envoi de messages multiples
+    setIsSending(true);
     
     const timestamp = new Date();
     
@@ -46,78 +50,87 @@ export const useMessageSender = (
     setConversations(updatedConversations);
     setSelectedConversation(updatedSelectedConversation);
     
-    // Sauvegarder dans localStorage
-    localStorage.setItem(`conversations_${userId}`, JSON.stringify(updatedConversations));
+    // Vider le champ de message immédiatement
+    setNewMessage('');
     
-    // Si c'est une conversation avec l'admin, mettre à jour sa version aussi
-    if (selectedConversation.with.id === 'admin') {
-      // Récupérer les informations de l'utilisateur actuel
-      const currentUser = JSON.parse(localStorage.getItem('users') || '[]')
-        .find((u: any) => u.id === userId);
+    // Sauvegarder dans localStorage
+    try {
+      localStorage.setItem(`conversations_${userId}`, JSON.stringify(updatedConversations));
       
-      // Mettre à jour immédiatement la conversation admin
-      updateAdminConversation(
-        userId,
-        updatedMessage,
-        null, // Pas de réponse automatique
-        currentUser || { name: 'Utilisateur inconnu', email: '', avatar: '/placeholder.svg' }
-      );
-      
-      // Ajouter une notification pour indiquer que le message a été envoyé à l'admin
-      toast.success("Message envoyé à l'administrateur", {
-        description: "L'administrateur recevra votre message instantanément."
-      });
-    } else {
-      // Pour les autres utilisateurs, simuler une réponse après un délai
-      setTimeout(() => {
-        const autoReply: Message = {
-          id: `reply-${Date.now()}`,
-          content: `Ceci est une réponse automatique de ${selectedConversation.with.name}. Votre message a bien été reçu.`,
-          timestamp: new Date(),
-          read: false,
-          sender: 'other',
-        };
+      // Si c'est une conversation avec l'admin, mettre à jour sa version aussi
+      if (selectedConversation.with.id === 'admin') {
+        // Récupérer les informations de l'utilisateur actuel
+        const currentUser = JSON.parse(localStorage.getItem('users') || '[]')
+          .find((u: any) => u.id === userId);
         
-        // Mettre à jour la conversation avec la réponse
-        const conversationWithReply = {
-          ...updatedSelectedConversation,
-          messages: [...updatedSelectedConversation.messages, autoReply],
-          lastMessage: {
-            content: autoReply.content,
-            timestamp: autoReply.timestamp,
-            read: false,
-            sender: 'other' as const,
-          },
-        };
-        
-        const newUpdatedConversations = updatedConversations.map(conv => 
-          conv.id === selectedConversation.id ? conversationWithReply : conv
+        // Mettre à jour immédiatement la conversation admin
+        updateAdminConversation(
+          userId,
+          updatedMessage,
+          null, // Pas de réponse automatique
+          currentUser || { name: 'Utilisateur inconnu', email: '', avatar: '/placeholder.svg' }
         );
         
-        setConversations(newUpdatedConversations);
+        // Ajouter une notification pour indiquer que le message a été envoyé à l'admin
+        toast.success("Message envoyé à l'administrateur", {
+          description: "L'administrateur recevra votre message instantanément."
+        });
+      } else {
+        // Pour les autres utilisateurs, simuler une réponse après un délai
+        setTimeout(() => {
+          const autoReply: Message = {
+            id: `reply-${Date.now()}`,
+            content: `Ceci est une réponse automatique de ${selectedConversation.with.name}. Votre message a bien été reçu.`,
+            timestamp: new Date(),
+            read: false,
+            sender: 'other',
+          };
+          
+          // Mettre à jour la conversation avec la réponse
+          const conversationWithReply = {
+            ...updatedSelectedConversation,
+            messages: [...updatedSelectedConversation.messages, autoReply],
+            lastMessage: {
+              content: autoReply.content,
+              timestamp: autoReply.timestamp,
+              read: false,
+              sender: 'other' as const,
+            },
+          };
+          
+          const newUpdatedConversations = updatedConversations.map(conv => 
+            conv.id === selectedConversation.id ? conversationWithReply : conv
+          );
+          
+          setConversations(newUpdatedConversations);
+          
+          // Si la conversation est toujours sélectionnée, mettre à jour
+          if (updatedSelectedConversation.id === selectedConversation.id) {
+            setSelectedConversation(conversationWithReply);
+          }
+          
+          // Sauvegarder dans localStorage
+          localStorage.setItem(`conversations_${userId}`, JSON.stringify(newUpdatedConversations));
+          
+          // Notification de nouvelle réponse
+          toast.info(`Nouvelle réponse de ${selectedConversation.with.name}`);
+        }, 3000); // Réponse après 3 secondes
         
-        // Si la conversation est toujours sélectionnée, mettre à jour
-        if (updatedSelectedConversation.id === selectedConversation.id) {
-          setSelectedConversation(conversationWithReply);
-        }
-        
-        // Sauvegarder dans localStorage
-        localStorage.setItem(`conversations_${userId}`, JSON.stringify(newUpdatedConversations));
-        
-        // Notification de nouvelle réponse
-        toast.info(`Nouvelle réponse de ${selectedConversation.with.name}`);
-      }, 3000); // Réponse après 3 secondes
-      
-      toast.success("Message envoyé");
+        toast.success("Message envoyé");
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'envoi du message:", error);
+      toast.error("Une erreur est survenue lors de l'envoi du message");
+    } finally {
+      // Autoriser l'envoi de nouveaux messages
+      setIsSending(false);
     }
-    
-    // Réinitialiser le champ de message
-    setNewMessage('');
-  };
+  }, [newMessage, selectedConversation, userId, conversations, setConversations, setSelectedConversation, isSending]);
 
   return {
     newMessage,
     setNewMessage,
-    handleSendMessage
+    handleSendMessage,
+    isSending
   };
 };

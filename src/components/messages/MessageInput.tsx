@@ -27,6 +27,18 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  // Reset input field after sending
+  useEffect(() => {
+    if (!value && inputRef.current) {
+      // Focus après l'envoi du message
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 100);
+    }
+  }, [value]);
+
   // Fix cursor position and focus input on mount
   useEffect(() => {
     if (inputRef.current) {
@@ -69,13 +81,26 @@ const MessageInput: React.FC<MessageInputProps> = ({
         onKeyDown={handleKeyDown}
         data-placeholder={placeholder}
         suppressContentEditableWarning={true}
+        role="textbox"
+        aria-multiline="true"
+        aria-label={placeholder}
       ></div>
       
       <Button 
-        onClick={onSend}
+        onClick={() => {
+          if (value.trim()) {
+            onSend();
+            // Réinitialiser manuellement l'input après l'envoi
+            if (inputRef.current) {
+              inputRef.current.innerHTML = '';
+              inputRef.current.focus();
+            }
+          }
+        }}
         disabled={!value.trim()}
         className="rounded-full bg-blue-500 hover:bg-blue-600"
         size="icon"
+        aria-label="Envoyer le message"
       >
         <Send className="h-5 w-5" />
       </Button>
