@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { Plus, Camera, Edit, ImageIcon, Send, X } from 'lucide-react';
+import { Plus, Camera, Edit, ImageIcon, Send, X, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageUploader } from '@/components/shared/ImageUploader';
 import { Textarea } from '@/components/ui/textarea';
+import { Avatar } from '@/components/ui/avatar';
 
 interface Status {
   id: number;
@@ -118,6 +119,42 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
       setViewingStatus(null);
     }, 5000);
   };
+
+  // When in admin view, auto-load additional example statuses
+  useEffect(() => {
+    if (window.location.pathname.includes('/admin')) {
+      // Add some example statuses for admin view if none exist
+      if (statuses.length === 0) {
+        const adminExampleStatuses: Status[] = [
+          {
+            id: 1001,
+            user: "Marie Dupont",
+            avatar: "/placeholder.svg",
+            isViewed: false,
+            timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+            content: "Bonjour à tous! Notre nouvelle politique de sécurité est maintenant disponible sur le portail."
+          },
+          {
+            id: 1002,
+            user: "Jean Martin",
+            avatar: "/placeholder.svg",
+            isViewed: true,
+            timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
+            image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
+          },
+          {
+            id: 1003,
+            user: "Sophie Bernard",
+            avatar: "/placeholder.svg",
+            isViewed: false,
+            timestamp: new Date(Date.now() - 1000 * 60 * 180), // 3 hours ago
+            content: "Rappel: Réunion importante demain à 9h."
+          }
+        ];
+        setStatuses(adminExampleStatuses);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-full">
@@ -305,15 +342,17 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
               {statuses.map((status) => (
                 <div 
                   key={status.id} 
-                  className="flex items-center cursor-pointer"
+                  className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded-md"
                   onClick={() => handleViewStatus(status)}
                 >
-                  <div className={`h-12 w-12 rounded-full border-2 ${status.isViewed ? 'border-gray-300' : 'border-green-500'} p-0.5`}>
-                    <img 
-                      src={status.avatar} 
-                      alt={status.user} 
-                      className="h-full w-full rounded-full object-cover"
-                    />
+                  <div className={`h-12 w-12 rounded-full border-2 ${status.isViewed ? 'border-gray-300' : 'border-green-500'} p-0.5 status-ring ${status.isViewed ? 'status-ring-viewed' : 'status-active'}`}>
+                    <Avatar>
+                      <img 
+                        src={status.avatar} 
+                        alt={status.user} 
+                        className="h-full w-full rounded-full object-cover"
+                      />
+                    </Avatar>
                   </div>
                   <div className="ml-3 flex-1">
                     <p className="text-sm font-medium">{status.user}</p>
@@ -331,6 +370,17 @@ const StatusTabContent: React.FC<StatusTabContentProps> = ({ statuses: initialSt
                       <img src={status.image} alt="Status" className="h-full w-full object-cover" />
                     </div>
                   )}
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="ml-2 text-gray-500 hover:text-green-600"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewStatus(status);
+                    }}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
             </div>
