@@ -1,25 +1,20 @@
 
-import React from 'react';
-import { Message } from './types';
-import { MoreHorizontal, Star, StarOff, Share, Bookmark } from 'lucide-react';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import React, { useState } from 'react';
+import MessageBubble from './MessageBubble';
 import MessageReactionMenu from './MessageReactionMenu';
+import { MoreVertical, Star, StarOff, Share, Forward } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { Reaction } from '@/hooks/messages/useMessageReactions';
 
-interface EnhancedMessageBubbleProps {
-  message: Message;
+export interface EnhancedMessageBubbleProps {
+  message: any;
   isUser: boolean;
   conversationId: string;
   conversationName: string;
   messageReactions: Reaction[];
   onAddReaction: (messageId: string, emoji: string) => void;
+  onRemoveReaction: (messageId: string, emoji: string) => void;
   onToggleFavorite: () => void;
   isFavorite: boolean;
   onShare: () => void;
@@ -33,101 +28,79 @@ const EnhancedMessageBubble: React.FC<EnhancedMessageBubbleProps> = ({
   conversationName,
   messageReactions,
   onAddReaction,
+  onRemoveReaction,
   onToggleFavorite,
   isFavorite,
   onShare,
   onForward
 }) => {
-  const formattedDate = new Date(message.timestamp).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-  
-  const bubbleClass = isUser 
-    ? "message-bubble message-bubble-user"
-    : "message-bubble message-bubble-other";
-  
+  const [showActions, setShowActions] = useState(false);
+
   return (
-    <div className={`group relative mb-4 ${isUser ? 'ml-auto' : 'mr-auto'}`}>
-      <div className={bubbleClass}>
-        <div className="message-content">{message.content}</div>
-        <div className="message-time flex items-center justify-end text-xs text-gray-500">
-          {formattedDate}
-          {message.sender === 'user' && (
-            <span className="ml-1">
-              {message.read ? (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <span className="whatsapp-read-tick">✓✓</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Lu</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <span className="whatsapp-single-tick">✓</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Envoyé</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </span>
-          )}
-        </div>
-      </div>
-      
-      {/* Menu de réactions */}
-      <div className={`absolute bottom-0 ${isUser ? 'left-0 -translate-x-full -ml-2' : 'right-0 translate-x-full mr-2'}`}>
-        <MessageReactionMenu 
-          messageId={message.id} 
-          existingReactions={messageReactions}
-          onAddReaction={onAddReaction} 
+    <div 
+      className="group relative"
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => setShowActions(false)}
+    >
+      <div className="flex items-start gap-2">
+        <MessageBubble 
+          message={message} 
+          isUser={isUser} 
         />
+        
+        {showActions && (
+          <div className="absolute right-0 top-0">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100">
+                  <MoreVertical className="h-4 w-4 text-gray-500" />
+                  <span className="sr-only">Actions</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-40 p-0" align="end">
+                <div className="p-1">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={onToggleFavorite}
+                  >
+                    {isFavorite ? 
+                      <><StarOff className="mr-2 h-4 w-4 text-yellow-500" /> Enlever favori</> : 
+                      <><Star className="mr-2 h-4 w-4" /> Ajouter favori</>
+                    }
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={onShare}
+                  >
+                    <Share className="mr-2 h-4 w-4" /> Partager
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={onForward}
+                  >
+                    <Forward className="mr-2 h-4 w-4" /> Transférer
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
       </div>
       
-      {/* Menu d'actions sur le message */}
-      <div className={`absolute top-0 opacity-0 group-hover:opacity-100 transition-opacity ${isUser ? 'left-0 -translate-x-full -ml-2' : 'right-0 translate-x-full mr-2'}`}>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="p-1 rounded-full hover:bg-gray-200">
-              <MoreHorizontal className="h-4 w-4" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align={isUser ? "start" : "end"}>
-            <DropdownMenuItem onClick={onToggleFavorite}>
-              {isFavorite ? (
-                <>
-                  <StarOff className="mr-2 h-4 w-4" />
-                  <span>Retirer des favoris</span>
-                </>
-              ) : (
-                <>
-                  <Star className="mr-2 h-4 w-4" />
-                  <span>Ajouter aux favoris</span>
-                </>
-              )}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onShare}>
-              <Share className="mr-2 h-4 w-4" />
-              <span>Partager</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onForward}>
-              <Bookmark className="mr-2 h-4 w-4" />
-              <span>Transférer</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(message.content)}>
-              Copier le texte
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {/* Reactions section below the message */}
+      <div className="ml-2 mt-1">
+        <MessageReactionMenu 
+          messageId={message.id}
+          existingReactions={messageReactions}
+          onAddReaction={onAddReaction}
+          onRemoveReaction={onRemoveReaction}
+        />
       </div>
     </div>
   );

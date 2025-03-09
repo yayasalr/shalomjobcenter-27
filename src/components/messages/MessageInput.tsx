@@ -1,7 +1,11 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Send } from 'lucide-react';
+import { Send, Smile } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+// Common emojis for the simple picker
+const COMMON_EMOJIS = ['😊', '😂', '👍', '❤️', '🙏', '😍', '🎉', '👋', '🔥', '✨', '🤔', '👏', '😢', '🙄', '😎', '👀'];
 
 interface MessageInputProps {
   value: string;
@@ -17,6 +21,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   placeholder = "Écrivez un message..."
 }) => {
   const inputRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -27,10 +32,73 @@ const MessageInput: React.FC<MessageInputProps> = ({
     }
   };
 
+  // Insert emoji at cursor position or at the end
+  const insertEmoji = (emoji: string) => {
+    if (!inputRef.current) return;
+    
+    // Get selection
+    const selection = window.getSelection();
+    
+    if (selection && selection.rangeCount > 0) {
+      // If there's a selection, replace it with the emoji
+      const range = selection.getRangeAt(0);
+      
+      if (range.commonAncestorContainer.parentNode === inputRef.current ||
+          range.commonAncestorContainer === inputRef.current) {
+        // Selection is inside our input
+        range.deleteContents();
+        range.insertNode(document.createTextNode(emoji));
+        
+        // Move cursor after emoji
+        range.setStartAfter(range.endContainer);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        // Update value
+        onChange(inputRef.current.textContent || '');
+        
+        // Close popover
+        setOpen(false);
+        
+        // Focus back on input
+        inputRef.current.focus();
+      } else {
+        // Selection is outside our input, so add to the end
+        appendEmoji(emoji);
+      }
+    } else {
+      // No selection, add to the end
+      appendEmoji(emoji);
+    }
+  };
+  
+  // Append emoji to the end of the message
+  const appendEmoji = (emoji: string) => {
+    const newValue = value + emoji;
+    onChange(newValue);
+    setOpen(false);
+    
+    // Focus back on input and set cursor at end
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        
+        // Move cursor to end
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(inputRef.current);
+        range.collapse(false);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+      }
+    }, 10);
+  };
+
   // Reset input field after sending
   useEffect(() => {
     if (!value && inputRef.current) {
-      // Focus après l'envoi du message
+      // Focus after sending the message
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
@@ -73,6 +141,34 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
   return (
     <div className="message-input-area">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-gray-100"
+            aria-label="Ajouter un emoji"
+          >
+            <Smile className="h-5 w-5 text-gray-500" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent side="top" className="w-64 p-2" align="start">
+          <div className="grid grid-cols-4 gap-2">
+            {COMMON_EMOJIS.map((emoji) => (
+              <Button
+                key={emoji}
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 p-0 hover:bg-gray-100"
+                onClick={() => insertEmoji(emoji)}
+              >
+                <span className="text-xl">{emoji}</span>
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+      
       <div
         ref={inputRef}
         className="message-input"
@@ -90,7 +186,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
         onClick={() => {
           if (value.trim()) {
             onSend();
-            // Réinitialiser manuellement l'input après l'envoi
+            // Reset input manually after sending
             if (inputRef.current) {
               inputRef.current.innerHTML = '';
               inputRef.current.focus();

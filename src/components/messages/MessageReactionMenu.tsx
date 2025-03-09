@@ -11,17 +11,30 @@ interface MessageReactionMenuProps {
   messageId: string;
   existingReactions: Reaction[];
   onAddReaction: (messageId: string, emoji: string) => void;
+  onRemoveReaction: (messageId: string, emoji: string) => void;
 }
 
 const MessageReactionMenu: React.FC<MessageReactionMenuProps> = ({
   messageId,
   existingReactions,
-  onAddReaction
+  onAddReaction,
+  onRemoveReaction
 }) => {
   const [open, setOpen] = useState(false);
   
-  const handleAddReaction = (emoji: string) => {
-    onAddReaction(messageId, emoji);
+  const handleReactionClick = (emoji: string) => {
+    // Check if user already reacted with this emoji
+    const existingReaction = existingReactions.find(
+      r => r.emoji === emoji && r.userId === 'current-user' // Assuming current user ID
+    );
+    
+    if (existingReaction) {
+      // Remove the reaction
+      onRemoveReaction(messageId, emoji);
+    } else {
+      // Add the reaction
+      onAddReaction(messageId, emoji);
+    }
     setOpen(false);
   };
   
@@ -40,7 +53,7 @@ const MessageReactionMenu: React.FC<MessageReactionMenuProps> = ({
             variant="ghost" 
             size="sm" 
             className="h-6 px-1 rounded-full bg-gray-100 hover:bg-gray-200"
-            onClick={() => handleAddReaction(emoji)}
+            onClick={() => handleReactionClick(emoji)}
           >
             <span>{emoji}</span>
             {count > 1 && <span className="ml-1 text-xs">{count}</span>}
@@ -48,7 +61,7 @@ const MessageReactionMenu: React.FC<MessageReactionMenuProps> = ({
         ))}
       </div>
       
-      {/* Menu des réactions */}
+      {/* Reactions menu */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button 
@@ -68,7 +81,7 @@ const MessageReactionMenu: React.FC<MessageReactionMenuProps> = ({
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0"
-                onClick={() => handleAddReaction(emoji)}
+                onClick={() => handleReactionClick(emoji)}
               >
                 <span className="text-lg">{emoji}</span>
               </Button>
