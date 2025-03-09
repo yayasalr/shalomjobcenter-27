@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Conversation } from '@/components/messages/types';
 
@@ -32,6 +33,9 @@ export const useAdvancedMessaging = (
   // Conversations importantes
   const [markedImportant, setMarkedImportant] = useState<Record<string, boolean>>({});
   
+  // Message preview mode (new functionality)
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
+  
   // Ajouter une réponse rapide
   const addQuickResponse = (text: string) => {
     if (text && !quickResponses.includes(text)) {
@@ -64,6 +68,20 @@ export const useAdvancedMessaging = (
       
       return updated;
     });
+  };
+  
+  // Preview message functions
+  const previewMessage = () => {
+    setIsPreviewMode(true);
+  };
+  
+  const sendFromPreview = () => {
+    handleSendMessage();
+    setIsPreviewMode(false);
+  };
+  
+  const cancelPreview = () => {
+    setIsPreviewMode(false);
   };
   
   // Fonction de recherche simple
@@ -100,9 +118,9 @@ export const useAdvancedMessaging = (
     removeQuickResponse,
     markedImportant,
     toggleImportant,
-    isPreviewMode: false,
-    previewMessage: () => {},
-    sendFromPreview: () => {},
-    cancelPreview: () => {}
+    isPreviewMode,
+    previewMessage,
+    sendFromPreview,
+    cancelPreview
   };
 };

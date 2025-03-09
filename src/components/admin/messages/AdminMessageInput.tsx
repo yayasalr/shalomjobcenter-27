@@ -15,6 +15,11 @@ interface AdminMessageInputProps {
   onQuickResponseSelect: (text: string) => void;
   onAddQuickResponse: (text: string) => void;
   onRemoveQuickResponse: (index: number) => void;
+  // Add the missing properties
+  isPreviewMode: boolean;
+  previewMessage: () => void;
+  sendFromPreview: () => void;
+  cancelPreview: () => void;
 }
 
 const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
@@ -26,7 +31,12 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
   quickResponses,
   onQuickResponseSelect,
   onAddQuickResponse,
-  onRemoveQuickResponse
+  onRemoveQuickResponse,
+  // Add the missing properties to the destructuring
+  isPreviewMode,
+  previewMessage,
+  sendFromPreview,
+  cancelPreview
 }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -63,6 +73,8 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
           <Send className="h-5 w-5" />
         </Button>
       </div>
+
+      {/* For future implementation: message preview UI could be added here */}
     </div>
   );
 };
