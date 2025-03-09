@@ -3,7 +3,7 @@ import { TranslationDictionary } from '../types';
 import { commonTranslations } from './common';
 import { homeTranslations } from './home';
 import { listingsTranslations } from './listings';
-import { jobsTranslations } from './jobs';
+import { jobsTranslations } from './jobs/index';
 import { profileTranslations } from './profile';
 
 // Fonction pour fusionner toutes les traductions
