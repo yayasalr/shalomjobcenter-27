@@ -1,9 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Conversation } from '@/components/messages/types';
 import AdminMessageInput from '../AdminMessageInput';
 import ConversationHeader from '@/components/messages/ConversationHeader';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import MessageBubble from '@/components/messages/MessageBubble';
 
 interface EnhancedConversationViewProps {
@@ -39,6 +38,8 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
   sendFromPreview,
   cancelPreview
 }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   // Handler pour le bouton retour sur mobile
   const handleBackClick = () => {
     const conversationList = document.querySelector('.grid-cols-1.md\\:grid-cols-3 > div:first-child');
@@ -50,14 +51,12 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
     }
   };
   
+  // Scroll to bottom when new messages arrive
   useEffect(() => {
-    // Simulated websocket connection for message updates
-    const intervalId = setInterval(() => {
-      window.dispatchEvent(new CustomEvent('admin-messages-updated'));
-    }, 3000);
-    
-    return () => clearInterval(intervalId);
-  }, []);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation?.messages]);
 
   if (!conversation) {
     return (
@@ -78,17 +77,16 @@ export const EnhancedConversationView: React.FC<EnhancedConversationViewProps> =
         onBack={handleBackClick}
       />
       
-      <ScrollArea className="flex-1 p-4 bg-gray-50">
-        <div className="space-y-2">
-          {conversation.messages.map((message) => (
-            <MessageBubble 
-              key={message.id}
-              message={message}
-              isUser={message.sender === 'admin'}
-            />
-          ))}
-        </div>
-      </ScrollArea>
+      <div className="message-area flex-1 overflow-y-auto p-4 bg-gray-50">
+        {conversation.messages.map((message) => (
+          <MessageBubble 
+            key={message.id}
+            message={message}
+            isUser={message.sender === 'admin'}
+          />
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
       
       <AdminMessageInput
         newMessage={newMessage}

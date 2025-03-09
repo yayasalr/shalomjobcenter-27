@@ -4,5 +4,4 @@
 @import './theme/colors.css';
 @import './theme/buttons.css';
 @import './theme/typography.css';
-@import './components/whatsapp/index.css';
 @import './components/admin-messages.css';

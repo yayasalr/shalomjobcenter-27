@@ -108,3 +108,13 @@
     justify-content: center;
   }
 }
+
+/* Quick response selector styling */
+.quick-response-selector {
+  @apply mb-2;
+}
+
+/* Admin message input styling */
+.admin-message-input {
+  @apply flex items-center;
+}

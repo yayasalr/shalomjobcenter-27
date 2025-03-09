@@ -56,25 +56,37 @@ const AdminMessageInput: React.FC<AdminMessageInputProps> = ({
         onRemove={onRemoveQuickResponse}
       />
       
-      <div className="flex">
+      <div className="message-input-area">
         <div
-          className="flex-1 min-h-[40px] max-h-[120px] overflow-y-auto p-2 border rounded-l-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="message-input"
           contentEditable
           onInput={(e) => setNewMessage(e.currentTarget.textContent || '')}
           onKeyDown={handleKeyDown}
+          data-placeholder="Écrivez un message..."
           dangerouslySetInnerHTML={{__html: newMessage}}
         />
         
         <Button 
           onClick={handleSendMessage}
           disabled={!newMessage.trim() || isSending}
-          className="rounded-l-none"
+          className="rounded-full bg-blue-500 hover:bg-blue-600"
+          size="icon"
         >
           <Send className="h-5 w-5" />
         </Button>
       </div>
 
-      {/* For future implementation: message preview UI could be added here */}
+      {isPreviewMode && (
+        <div className="preview-mode bg-gray-100 p-3 mt-2 rounded-md">
+          <div className="preview-content mb-2 p-2 bg-white rounded shadow-sm">
+            {newMessage}
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={sendFromPreview}>Envoyer</Button>
+            <Button size="sm" variant="outline" onClick={cancelPreview}>Annuler</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
