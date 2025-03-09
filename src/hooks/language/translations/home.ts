@@ -38,6 +38,18 @@ export const homeTranslations: TranslationDictionary = {
   "Adidogomé": {
     fr: "Adidogomé"
   },
+  "Agoè": {
+    fr: "Agoè"
+  },
+  "Kodjoviakopé": {
+    fr: "Kodjoviakopé"
+  },
+  "Nyékonakpoè": {
+    fr: "Nyékonakpoè"
+  },
+  "Baguida": {
+    fr: "Baguida"
+  },
   
   // Section des caractéristiques
   "features_title": {
