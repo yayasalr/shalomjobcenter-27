@@ -14,7 +14,7 @@ export const JobsFeatures = () => {
             {t('security_jobs')}
           </h2>
           <p className="text-sholom-muted text-lg max-w-2xl mx-auto">
-            {t('premium_housing')}
+            {t('premium_housing_desc')}
           </p>
         </div>
         
