@@ -1,7 +1,6 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import ImageInput from './ImageInput';
-import { EmojiSelector, ImagePreview, EditableInput, SendButton } from './input';
+import { EmojiSelector, ImagePreview, EditableInput, SendButton, ImageInput } from './input';
 
 interface MessageInputProps {
   value: string;
@@ -138,7 +137,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
           setOpen={setEmojiPickerOpen}
         />
         
-        {/* Image attachment button */}
+        {/* Image upload component */}
         <ImageInput 
           onImageSelect={onImageSelect}
           selectedImage={selectedImage}
