@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MoreVertical, UserPlus, Camera, Phone } from 'lucide-react';
+import { MoreVertical, UserPlus, Camera, Phone, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -10,11 +10,19 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ title }) => {
   const handleUserPlus = () => {
-    toast.info("Ajouter un utilisateur");
+    toast.info("Ajouter un utilisateur à la conversation");
   };
 
   const handleCamera = () => {
-    toast.info("Prendre une photo");
+    toast.info("Prendre une photo ou envoyer une image");
+  };
+
+  const handlePhone = () => {
+    toast.info("Démarrer un appel vocal");
+  };
+
+  const handleVideo = () => {
+    toast.info("Démarrer un appel vidéo");
   };
 
   const handleMore = () => {
@@ -32,6 +40,22 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
           onClick={handleCamera}
         >
           <Camera className="h-5 w-5" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-500"
+          onClick={handlePhone}
+        >
+          <Phone className="h-5 w-5" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="text-gray-500"
+          onClick={handleVideo}
+        >
+          <Video className="h-5 w-5" />
         </Button>
         <Button 
           variant="ghost" 

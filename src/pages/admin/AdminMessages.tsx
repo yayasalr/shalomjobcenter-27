@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { UsersList } from '@/components/admin/messages/UsersList';
 import { WhatsAppEmptyState } from '@/components/admin/messages/WhatsAppEmptyState';
+import { toast } from 'sonner';
 
 const AdminMessages: React.FC = () => {
   const {
@@ -24,7 +25,8 @@ const AdminMessages: React.FC = () => {
     handleSendMessage,
     handleSelectConversation,
     getUnreadCount,
-    sendingMessage
+    sendingMessage,
+    refreshConversations
   } = useAdminMessages();
   
   const [showNewConversationOption, setShowNewConversationOption] = useState(false);
@@ -51,7 +53,15 @@ const AdminMessages: React.FC = () => {
     setNewMessage
   );
   
-  const typedOnlineUsers: Record<string, boolean> = onlineUsers as Record<string, boolean>;
+  // Simulation des utilisateurs en ligne
+  const mockOnlineUsers = {
+    'user1': true,
+    'user2': false,
+    'user3': true,
+    'host1': true
+  };
+  
+  const typedOnlineUsers: Record<string, boolean> = {...onlineUsers, ...mockOnlineUsers};
   
   const searchResults: any[] = advancedSearchQuery 
     ? (performAdvancedSearch(advancedSearchQuery) as unknown as any[])
@@ -64,7 +74,92 @@ const AdminMessages: React.FC = () => {
   const handleSelectUser = (userId: string, userName: string) => {
     console.log(`Selected user: ${userName} (${userId})`);
     setShowUsersList(false);
-    // Ici on ajouterait la logique pour créer une nouvelle conversation avec cet utilisateur
+    
+    // Récupérer les utilisateurs
+    const storedUsers = localStorage.getItem('users');
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
+    
+    // Trouver l'utilisateur sélectionné
+    const selectedUser = users.find((u: any) => u.id === userId);
+    
+    if (!selectedUser) {
+      toast.error("Utilisateur non trouvé");
+      return;
+    }
+    
+    // Créer une nouvelle conversation
+    const existingConv = conversations.find(conv => conv.with.id === userId);
+    
+    if (existingConv) {
+      // Si la conversation existe déjà, la sélectionner
+      handleSelectConversation(existingConv);
+      toast.info(`Conversation avec ${userName} reprise`);
+    } else {
+      // Sinon, créer une nouvelle conversation
+      const newConversation = {
+        id: `admin-${userId}-${Date.now()}`,
+        with: {
+          id: userId,
+          name: userName,
+          email: selectedUser.email || '',
+          avatar: selectedUser.avatar || '/placeholder.svg',
+          role: selectedUser.role || 'user',
+        },
+        lastMessage: {
+          content: "Nouvelle conversation",
+          timestamp: new Date(),
+          read: true,
+          sender: 'admin' as const,
+        },
+        messages: [
+          {
+            id: `welcome-${Date.now()}`,
+            content: `Bienvenue ${userName}! Comment puis-je vous aider ?`,
+            timestamp: new Date(),
+            read: true,
+            sender: 'admin',
+          }
+        ],
+      };
+      
+      // Mettre à jour le localStorage
+      const key = `conversations_${userId}`;
+      const userConversation = {
+        id: `user-admin-${Date.now()}`,
+        with: {
+          id: 'admin',
+          name: 'Administrateur',
+          avatar: '/placeholder.svg',
+          role: 'admin',
+        },
+        lastMessage: {
+          content: `Bienvenue ${userName}! Comment puis-je vous aider ?`,
+          timestamp: new Date(),
+          read: false,
+          sender: 'admin',
+        },
+        messages: [
+          {
+            id: `welcome-${Date.now()}`,
+            content: `Bienvenue ${userName}! Comment puis-je vous aider ?`,
+            timestamp: new Date(),
+            read: false,
+            sender: 'admin',
+          }
+        ],
+      };
+      
+      const existingConvs = localStorage.getItem(key);
+      const userConversations = existingConvs ? JSON.parse(existingConvs) : [];
+      userConversations.push(userConversation);
+      localStorage.setItem(key, JSON.stringify(userConversations));
+      
+      // Actualiser les conversations et sélectionner la nouvelle
+      refreshConversations();
+      
+      // Notifier l'utilisateur
+      toast.success(`Nouvelle conversation avec ${userName} créée`);
+    }
   };
 
   return (

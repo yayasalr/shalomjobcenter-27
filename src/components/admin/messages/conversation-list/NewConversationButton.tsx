@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface NewConversationButtonProps {
@@ -17,7 +17,7 @@ export const NewConversationButton: React.FC<NewConversationButtonProps> = ({
           className="w-full bg-green-500 hover:bg-green-600 text-white"
           onClick={handleCreateNewConversation}
         >
-          <Plus className="h-4 w-4 mr-2" /> Nouvelle conversation
+          <MessageSquare className="h-4 w-4 mr-2" /> Nouvelle conversation
         </Button>
       </div>
     </>
