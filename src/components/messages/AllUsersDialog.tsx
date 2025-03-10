@@ -7,6 +7,7 @@ import { Search, Plus, X, UserPlus } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
+import { ADMIN_USER } from './types';
 
 interface User {
   id: string;
@@ -36,34 +37,21 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
   const loadUsers = () => {
     setLoading(true);
     try {
-      // Charger tous les utilisateurs depuis localStorage
-      const storedUsers = localStorage.getItem('users');
-      if (storedUsers) {
-        const parsedUsers = JSON.parse(storedUsers);
-        setUsers(parsedUsers);
-      } else {
-        // Ajouter des utilisateurs de démo si aucun n'existe
-        const demoUsers = [
-          { id: 'admin', name: 'Administrateur', avatar: '/placeholder.svg', role: 'admin' },
-          { id: 'user1', name: 'Jean Dupont', avatar: '/placeholder.svg', role: 'user' },
-          { id: 'user2', name: 'Marie Martin', avatar: '/placeholder.svg', role: 'user' },
-          { id: 'user3', name: 'Pierre Durand', avatar: '/placeholder.svg', role: 'user' },
-          { id: 'host1', name: 'Sophie Leroy', avatar: '/placeholder.svg', role: 'host' }
-        ];
-        localStorage.setItem('users', JSON.stringify(demoUsers));
-        setUsers(demoUsers);
-      }
+      // Ne garder que l'administrateur comme contact
+      const adminUser = {
+        id: ADMIN_USER.id,
+        name: ADMIN_USER.name,
+        avatar: ADMIN_USER.avatar,
+        role: ADMIN_USER.role
+      };
+      
+      setUsers([adminUser]);
     } catch (error) {
       console.error("Erreur lors du chargement des utilisateurs:", error);
       toast.error("Impossible de charger la liste des utilisateurs");
       
-      // Ajouter des utilisateurs de secours en cas d'erreur
-      const fallbackUsers = [
-        { id: 'admin', name: 'Administrateur', avatar: '/placeholder.svg', role: 'admin' },
-        { id: 'user1', name: 'Jean Dupont', avatar: '/placeholder.svg', role: 'user' },
-        { id: 'user2', name: 'Marie Martin', avatar: '/placeholder.svg', role: 'user' },
-      ];
-      setUsers(fallbackUsers);
+      // Ajouter l'admin en secours en cas d'erreur
+      setUsers([ADMIN_USER]);
     } finally {
       setLoading(false);
     }
@@ -84,12 +72,12 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Tous les utilisateurs</DialogTitle>
+          <DialogTitle>Contactez l'administrateur</DialogTitle>
         </DialogHeader>
         
         <div className="relative mb-2">
           <Input
-            placeholder="Rechercher un utilisateur..."
+            placeholder="Rechercher..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -110,19 +98,19 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
         <ScrollArea className="h-[300px]">
           {loading ? (
             <div className="flex items-center justify-center h-full">
-              <p>Chargement des utilisateurs...</p>
+              <p>Chargement...</p>
             </div>
           ) : (
             <div className="space-y-2">
               {filteredUsers.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-gray-500">Aucun utilisateur trouvé</p>
+                  <p className="text-gray-500">Aucun administrateur trouvé</p>
                 </div>
               ) : (
                 filteredUsers.map(user => (
                   <div
                     key={user.id}
-                    className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+                    className="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer card-reveal"
                     onClick={() => handleSelectUser(user)}
                   >
                     <Avatar className="h-10 w-10 mr-3">
@@ -135,7 +123,7 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
                         <p className="text-sm text-gray-500">{user.email}</p>
                       )}
                     </div>
-                    <Button size="sm" variant="ghost" className="ml-2">
+                    <Button size="sm" variant="ghost" className="ml-2 hover-lift">
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>

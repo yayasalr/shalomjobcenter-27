@@ -63,3 +63,56 @@
     transform: translateY(0);
   }
 }
+
+/* Avatar animations */
+.avatar-highlight {
+  position: relative;
+}
+
+.avatar-highlight::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: linear-gradient(45deg, #3498db, #1abc9c) border-box;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateGradient 4s linear infinite;
+}
+
+@keyframes rotateGradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Message input focus effect */
+.input-focus-animation {
+  transition: all 0.2s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.input-focus-animation:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* List item hover animation */
+.list-item-hover {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.list-item-hover:hover {
+  transform: translateX(5px);
+  background-color: rgba(59, 130, 246, 0.05);
+}

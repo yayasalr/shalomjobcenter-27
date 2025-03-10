@@ -26,19 +26,16 @@ export const UsersList: React.FC<UsersListProps> = ({ onSelectUser, onClose }) =
     // Simuler le chargement des utilisateurs
     setLoading(true);
     
-    // Dans un cas réel, ceci viendrait d'une API
+    // Récupérer les utilisateurs dans le localStorage
+    const mockUsers: User[] = [
+      { id: 'user1', name: 'Jean Dupont', avatar: '/placeholder.svg', email: 'jean@example.com' },
+      { id: 'user2', name: 'Marie Martin', avatar: '/placeholder.svg', email: 'marie@example.com' },
+    ];
+    
     setTimeout(() => {
-      const mockUsers: User[] = [
-        { id: 'user1', name: 'Jean Dupont', avatar: '/placeholder.svg', email: 'jean@example.com' },
-        { id: 'user2', name: 'Marie Martin', avatar: '/placeholder.svg', email: 'marie@example.com' },
-        { id: 'user3', name: 'Pierre Dubois', avatar: '/placeholder.svg', email: 'pierre@example.com' },
-        { id: 'user4', name: 'Sophie Leroy', avatar: '/placeholder.svg', email: 'sophie@example.com' },
-        { id: 'user5', name: 'Thomas Bernard', avatar: '/placeholder.svg', email: 'thomas@example.com' },
-      ];
-      
       setUsers(mockUsers);
       setLoading(false);
-    }, 1000);
+    }, 800);
   }, []);
   
   const filteredUsers = users.filter(user => 

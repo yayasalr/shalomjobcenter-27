@@ -85,7 +85,7 @@ const Messages = () => {
         <Card className="h-[calc(80vh-6rem)] sm:h-[calc(80vh-8rem)] overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 h-full">
             {/* Conversation List - Hide on mobile when viewing a conversation */}
-            <div className={`${showMobileConversation && isMobile ? 'hidden' : 'block'} md:block border-r border-gray-200`}>
+            <div className={`${isMobile && showMobileConversation ? 'hidden' : 'block'} md:block border-r border-gray-200`}>
               <ConversationList 
                 conversations={conversations}
                 selectedConversation={selectedConversation}
@@ -97,8 +97,8 @@ const Messages = () => {
             </div>
             
             {/* Conversation View - Show on mobile only when a conversation is selected */}
-            {selectedConversation ? (
-              <div className={`col-span-2 ${!showMobileConversation && isMobile ? 'hidden' : 'block'} md:block`}>
+            <div className={`col-span-2 ${isMobile && !showMobileConversation ? 'hidden' : 'block'} md:block`}>
+              {selectedConversation ? (
                 <EnhancedConversationView 
                   conversation={selectedConversation}
                   conversations={conversations}
@@ -111,12 +111,10 @@ const Messages = () => {
                   onBack={handleMobileBack}
                   updateConversationWithMessage={updateConversationWithMessage}
                 />
-              </div>
-            ) : (
-              <div className={`col-span-2 ${isMobile ? 'hidden' : 'block'} md:block`}>
+              ) : (
                 <EmptyConversation />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </Card>
       </div>
