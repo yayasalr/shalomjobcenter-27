@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import CryptoJS from "crypto-js";
 import { User, LoginCredentials } from "../types";
 import { LocalStorageKeys, validatePasswordStrength, isValidEmail } from "../authUtils";
 import { useSecurityFeatures } from "../useSecurityFeatures";

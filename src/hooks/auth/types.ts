@@ -3,6 +3,7 @@ export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
+  twoFactorCode?: string;
 }
 
 export interface RegisterData {
@@ -11,6 +12,8 @@ export interface RegisterData {
   name: string;
   confirmPassword?: string;
   termsAccepted?: boolean;
+  acceptTerms?: boolean;
+  avatar?: string;
 }
 
 export interface User {
