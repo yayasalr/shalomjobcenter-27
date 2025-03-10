@@ -1,3 +1,4 @@
+
 import { MOCK_JOBS } from "@/data/mockJobs";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Job, ApplicationStatus } from "@/types/job";

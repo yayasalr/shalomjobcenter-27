@@ -2,21 +2,25 @@
 import { useState, useEffect } from 'react';
 import { getDomainImage } from '../../utils/jobUtils';
 import { Job } from '@/types/job';
+import { toast } from 'sonner';
 
 export const useGallery = (job: Job) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [hasError, setHasError] = useState(false);
+  const [loadAttempts, setLoadAttempts] = useState<Record<number, number>>({});
   
-  // Vérifier et filtrer les images au chargement
+  // Verify and filter images on load
   useEffect(() => {
     const validateImages = () => {
-      // Récupérer image principale + images additionnelles 
+      setIsLoading(true);
+      
+      // Get main image + additional images 
       let allImages: string[] = [];
       
-      // Ajouter l'image principale si elle existe
+      // Add main image if it exists
       if (job.image) {
         if (
           (typeof job.image === 'string') && 
@@ -26,14 +30,14 @@ export const useGallery = (job: Job) => {
         }
       }
       
-      // Ajouter les images additionnelles
+      // Add additional images
       if (job.images && Array.isArray(job.images) && job.images.length > 0) {
         const validImages = job.images.filter(img => 
           (typeof img === 'string') && 
           (img.startsWith('http') || img.startsWith('data:image/'))
         );
         
-        // Éviter les doublons
+        // Avoid duplicates
         validImages.forEach(img => {
           if (!allImages.includes(img)) {
             allImages.push(img);
@@ -41,13 +45,16 @@ export const useGallery = (job: Job) => {
         });
       }
       
-      // Si aucune image valide, utiliser une image par défaut
+      // If no valid images, use a default image
       if (allImages.length === 0) {
-        allImages = [getDomainImage(job.domain)];
+        const defaultImage = getDomainImage(job.domain);
+        allImages = [defaultImage];
         setHasError(true);
+        toast.error("Impossible de charger les images de cette offre");
       }
       
       setGalleryImages(allImages);
+      setIsLoading(false);
     };
     
     validateImages();
@@ -76,13 +83,41 @@ export const useGallery = (job: Job) => {
   };
 
   const handleImageError = (index: number) => {
-    console.error(`Erreur de chargement d'image à l'index ${index}`);
+    // Track attempts to prevent infinite retries
+    const attempts = loadAttempts[index] || 0;
+    setLoadAttempts(prev => ({...prev, [index]: attempts + 1}));
     
-    // Remplacer l'image problématique par une image par défaut
-    const newGalleryImages = [...galleryImages];
-    newGalleryImages[index] = getDomainImage(job.domain);
-    setGalleryImages(newGalleryImages);
-    setHasError(true);
+    if (attempts > 2) {
+      console.error(`Échec définitif de chargement de l'image à l'index ${index}`);
+      // Replace with default image
+      const newGalleryImages = [...galleryImages];
+      newGalleryImages[index] = getDomainImage(job.domain);
+      setGalleryImages(newGalleryImages);
+      setHasError(true);
+      setIsLoading(false);
+      return;
+    }
+    
+    console.warn(`Tentative ${attempts + 1} de chargement d'image à l'index ${index}`);
+    
+    // Try with a different version of the same URL (cache busting)
+    const currentImage = galleryImages[index];
+    if (currentImage.startsWith('http')) {
+      const cacheBuster = `?t=${Date.now()}`;
+      const newUrl = currentImage.includes('?') 
+        ? `${currentImage}&cb=${Date.now()}` 
+        : `${currentImage}${cacheBuster}`;
+      
+      const newGalleryImages = [...galleryImages];
+      newGalleryImages[index] = newUrl;
+      setGalleryImages(newGalleryImages);
+    } else {
+      // If not an HTTP URL, just replace with default
+      const newGalleryImages = [...galleryImages];
+      newGalleryImages[index] = getDomainImage(job.domain);
+      setGalleryImages(newGalleryImages);
+      setHasError(true);
+    }
   };
 
   return {

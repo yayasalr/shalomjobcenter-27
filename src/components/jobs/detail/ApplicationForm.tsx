@@ -1,131 +1,144 @@
 
 import React, { useState } from 'react';
+import { Job } from '@/types/job';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
-import { Job } from '@/types/job';
-import { JobApplicationFormData } from '@/types/jobApplications';
-import { useJobs } from '@/hooks/useJobs';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { useJobsService } from '@/services/jobsService';
 
 interface ApplicationFormProps {
   job: Job;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 export const ApplicationForm: React.FC<ApplicationFormProps> = ({ job, onSuccess }) => {
-  const { applyForJob } = useJobs();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [coverLetter, setCoverLetter] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<Omit<JobApplicationFormData, 'jobId'>>({
-    name: '',
-    email: '',
-    phone: '',
-    coverLetter: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const { toast } = useToast();
+  const { submitApplication } = useJobsService();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.phone) {
-      toast.error("Veuillez remplir tous les champs obligatoires");
+    // Simple validation
+    if (!name || !email || !phone || !coverLetter) {
+      toast({
+        variant: "destructive",
+        title: "Veuillez remplir tous les champs",
+        description: "Tous les champs sont obligatoires pour soumettre votre candidature."
+      });
       return;
     }
     
+    setIsSubmitting(true);
+    
     try {
-      setIsSubmitting(true);
-      
-      console.log("Soumission de candidature pour:", job.id);
-      await applyForJob.mutateAsync({
+      await submitApplication({
         jobId: job.id,
-        ...formData
+        name,
+        email,
+        phone,
+        coverLetter
       });
       
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        coverLetter: '',
+      toast({
+        title: "Candidature envoyée !",
+        description: "Votre candidature a été soumise avec succès."
       });
       
-      toast.success("Votre candidature a été envoyée avec succès!");
+      // Reset form
+      setName('');
+      setEmail('');
+      setPhone('');
+      setCoverLetter('');
       
-      if (onSuccess) {
-        onSuccess();
-      }
+      // Notify parent
+      onSuccess();
+      
     } catch (error) {
-      console.error("Erreur lors de la soumission de la candidature:", error);
-      toast.error("Une erreur est survenue lors de l'envoi de votre candidature");
+      console.error("Erreur lors de la soumission:", error);
+      toast({
+        variant: "destructive",
+        title: "Erreur de soumission",
+        description: "Impossible de soumettre votre candidature. Veuillez réessayer."
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-sm">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">Postuler à cette offre</h3>
+    <div className="bg-white rounded-lg shadow-sm p-6">
+      <h3 className="text-lg font-semibold mb-4">Postuler à cette offre</h3>
       
-      <div>
-        <Label htmlFor="name">Nom complet <span className="text-red-500">*</span></Label>
-        <Input
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Votre nom complet"
-          required
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="votre.email@exemple.com"
-          required
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="phone">Numéro de téléphone <span className="text-red-500">*</span></Label>
-        <Input
-          id="phone"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder="+228 XX XX XX XX"
-          required
-        />
-      </div>
-      
-      <div>
-        <Label htmlFor="coverLetter">Lettre de motivation</Label>
-        <Textarea
-          id="coverLetter"
-          name="coverLetter"
-          value={formData.coverLetter || ''}
-          onChange={handleChange}
-          placeholder="Présentez-vous et expliquez pourquoi vous êtes intéressé par ce poste..."
-          className="min-h-[150px]"
-        />
-      </div>
-      
-      <Button 
-        type="submit" 
-        className="w-full bg-sholom-primary hover:bg-sholom-primary/90" 
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma candidature'}
-      </Button>
-    </form>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <Label htmlFor="name">Nom complet</Label>
+          <Input 
+            id="name" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            placeholder="Votre nom complet"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input 
+            id="email" 
+            type="email" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            placeholder="votre.email@exemple.com"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="phone">Téléphone</Label>
+          <Input 
+            id="phone" 
+            value={phone} 
+            onChange={(e) => setPhone(e.target.value)} 
+            placeholder="Votre numéro de téléphone"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="coverLetter">Lettre de motivation</Label>
+          <Textarea 
+            id="coverLetter" 
+            value={coverLetter} 
+            onChange={(e) => setCoverLetter(e.target.value)} 
+            placeholder="Présentez-vous et expliquez pourquoi vous êtes intéressé par ce poste..."
+            className="min-h-[150px]"
+            disabled={isSubmitting}
+          />
+        </div>
+        
+        <Button 
+          type="submit" 
+          className="w-full bg-sholom-primary hover:bg-sholom-primary/90"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Envoi en cours...
+            </>
+          ) : (
+            'Envoyer ma candidature'
+          )}
+        </Button>
+      </form>
+    </div>
   );
 };
