@@ -22,8 +22,24 @@ export const useJobsService = () => {
       return processStoredImages(job);
     });
     
-    console.log("Jobs chargés avec images traitées:", processedJobs);
+    console.log("Jobs chargés:", processedJobs);
     return processedJobs;
+  };
+
+  // Fonction pour purger complètement les jobs du localStorage
+  const purgeAllJobs = () => {
+    // Supprime les données de jobs du localStorage
+    localStorage.removeItem('jobs');
+    
+    // Recherche et supprime aussi les clés d'images associées
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('job_images_') || key.startsWith('job_featured_image_')) {
+        localStorage.removeItem(key);
+      }
+    });
+    
+    console.log("Toutes les données d'emplois ont été purgées du localStorage");
+    return [];
   };
 
   // Ajouter un nouveau job
@@ -176,6 +192,7 @@ export const useJobsService = () => {
     createJob,
     updateJobItem,
     deleteJobItem,
-    submitApplication
+    submitApplication,
+    purgeAllJobs
   };
 };

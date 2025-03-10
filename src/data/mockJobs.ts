@@ -1,5 +1,5 @@
 
 import { Job } from "@/types/job";
 
-// Empty mock data for jobs
+// Tableau vide pour les emplois
 export const MOCK_JOBS: Job[] = [];
