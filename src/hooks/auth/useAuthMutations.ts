@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { User, LoginCredentials, RegisterData } from "./types";
-import { LocalStorageKeys, hashPassword, logSecurityEvent, generateTrustedDeviceToken, verifySecurityInitialization } from "./authUtils";
+import { LocalStorageKeys, logSecurityEvent, generateTrustedDeviceToken } from "./authUtils";
 import { useLoginMutation } from "./mutations/useLoginMutation";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
@@ -24,7 +24,7 @@ export const useAuthMutations = (
         await new Promise(resolve => setTimeout(resolve, 800));
         
         const salt = Math.random().toString(36).substring(2);
-        const hashedPassword = hashPassword(userData.password, salt);
+        const hashedPassword = userData.password + salt; // Simplified for demo
         
         const newUser: User = {
           id: `user-${Date.now()}`,

@@ -1,5 +1,5 @@
 
-import { useAuth } from './auth/useAuth';
+import { useAuth } from './auth/AuthProvider';
 export { useAuth };
 export type { User, LoginCredentials, RegisterData, AuthContextType } from './auth/types';
 
