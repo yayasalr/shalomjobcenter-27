@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { loadReservations, saveReservations } from "../../useListingStorage";
 
 /**
- * Hook for adding a new reservation
+ * Hook pour ajouter une nouvelle réservation
  */
 export const useAddReservation = () => {
   const queryClient = useQueryClient();
@@ -33,4 +33,3 @@ export const useAddReservation = () => {
     }
   });
 };
-

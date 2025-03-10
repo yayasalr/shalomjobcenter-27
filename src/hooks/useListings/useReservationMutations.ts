@@ -4,12 +4,12 @@ import { loadReservations, saveReservations } from "../useListingStorage";
 import { toast } from "sonner";
 
 /**
- * Hook for reservation-related operations
+ * Hook pour les opérations liées aux réservations
  */
 export const useReservationMutations = () => {
   const queryClient = useQueryClient();
 
-  // Add new reservation
+  // Ajouter une nouvelle réservation
   const addReservation = useMutation({
     mutationFn: async (reservation: any) => {
       const currentReservations = loadReservations();
@@ -35,7 +35,7 @@ export const useReservationMutations = () => {
     }
   });
 
-  // Get all reservations
+  // Obtenir toutes les réservations
   const getReservations = () => {
     return loadReservations();
   };

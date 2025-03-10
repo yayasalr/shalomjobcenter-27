@@ -2,13 +2,20 @@
 import { Reservation } from "./types";
 import { loadReservations, saveReservations } from "./storage";
 
-// Fonction pour créer des réservations de démonstration si aucune n'existe
-export const createDemoReservationsIfEmpty = (): Reservation[] => {
+// Fonction pour vérifier si des réservations existent déjà
+export const createEmptyReservationsIfNeeded = (): Reservation[] => {
   const currentReservations = loadReservations();
   if (currentReservations.length === 0) {
-    const demoReservations: Reservation[] = [];
-    saveReservations(demoReservations);
-    return demoReservations;
+    // Retourner simplement un tableau vide au lieu de créer des exemples
+    const emptyReservations: Reservation[] = [];
+    saveReservations(emptyReservations);
+    return emptyReservations;
   }
   return currentReservations;
+};
+
+// Fonction pour purger toutes les réservations (utile pour le nettoyage)
+export const purgeAllReservations = (): void => {
+  saveReservations([]);
+  console.log("Toutes les réservations ont été supprimées");
 };

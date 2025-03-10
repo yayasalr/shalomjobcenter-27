@@ -2,8 +2,6 @@
 import { Job } from "@/types/job";
 import { Listing } from "@/types/listing";
 
-// Empty mock data for jobs
+// Tableaux vides - aucune donnée de démonstration
 export const MOCK_JOBS: Job[] = [];
-
-// Empty mock data for listings
 export const MOCK_LISTINGS: Listing[] = [];
