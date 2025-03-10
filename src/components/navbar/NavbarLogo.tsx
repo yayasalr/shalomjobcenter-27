@@ -43,7 +43,7 @@ export const NavbarLogo = () => {
         className="relative logo-container"
         style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
       >
-        <div className="h-12 sm:h-14 md:h-16 w-12 sm:w-14 md:w-16 flex items-center justify-center overflow-hidden rounded-full bg-black border-2 border-yellow-500">
+        <div className="h-10 sm:h-12 md:h-14 w-10 sm:w-12 md:w-14 flex items-center justify-center overflow-hidden rounded-full bg-black border-2 border-yellow-500">
           {!logoError ? (
             <img 
               src={currentLogo} 
@@ -59,7 +59,7 @@ export const NavbarLogo = () => {
           
           {(!logoLoaded || logoError) && (
             <div className="h-full w-full rounded-full bg-black border-2 border-yellow-500 flex items-center justify-center logo-fallback">
-              <span className="text-yellow-500 font-bold text-xl">
+              <span className="text-yellow-500 font-bold text-lg">
                 {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
               </span>
             </div>

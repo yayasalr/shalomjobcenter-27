@@ -86,7 +86,7 @@ export const LogoSection = ({
       <div className="flex flex-col gap-4 sm:flex-row">
         <Card className="w-full sm:w-1/3">
           <CardContent className="p-4 flex items-center justify-center">
-            <div className="w-36 h-36 mx-auto bg-black border-2 border-yellow-500 rounded-full flex items-center justify-center overflow-hidden logo-container" style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
+            <div className="w-32 h-32 mx-auto bg-black border-2 border-yellow-500 rounded-full flex items-center justify-center overflow-hidden logo-container" style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
               {logoUploading ? (
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />
