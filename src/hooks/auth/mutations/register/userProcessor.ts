@@ -1,7 +1,7 @@
 
 import { toast } from "sonner";
 import { User, RegisterData } from "../../types";
-import { LocalStorageKeys } from "../../authUtils";
+import { LocalStorageKeys } from "../../constants";
 
 /**
  * Create a new user and add it to localStorage

@@ -1,7 +1,7 @@
 
 import { User } from "../../types";
 import { toast } from "sonner";
-import { LocalStorageKeys } from "../../authUtils";
+import { LocalStorageKeys } from "../../constants";
 import { NavigateFunction } from "react-router-dom";
 
 /**

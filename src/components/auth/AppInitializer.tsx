@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { ensureAdminAccount } from '@/hooks/auth/authUtils';
+import { ensureAdminAccount } from '@/hooks/auth/adminUtils';
 
 export const AppInitializer = () => {
   useEffect(() => {

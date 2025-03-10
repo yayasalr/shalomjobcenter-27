@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { User } from "./types";
-import { LocalStorageKeys, SECURITY_CONSTANTS } from "./authUtils";
+import { LocalStorageKeys, SECURITY_CONSTANTS } from "./constants";
 
 // Constants for security
 const MAX_LOGIN_ATTEMPTS = 5;

@@ -6,7 +6,7 @@ import {
   isUsernameRegistered, 
   validatePasswordStrength,
   isValidEmail 
-} from "../../authUtils";
+} from "../../passwordUtils";
 
 /**
  * Validate registration data before creating account

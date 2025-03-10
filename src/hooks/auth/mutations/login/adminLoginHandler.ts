@@ -2,7 +2,7 @@
 import { User } from "../../types";
 import { toast } from "sonner";
 import CryptoJS from "crypto-js";
-import { LocalStorageKeys } from "../../authUtils";
+import { LocalStorageKeys } from "../../constants";
 import { NavigateFunction } from "react-router-dom";
 
 /**

@@ -1,6 +1,6 @@
 
 import { toast } from "sonner";
-import { isValidEmail } from "../../authUtils";
+import { isValidEmail } from "../../passwordUtils";
 
 /**
  * Validate login credentials before attempting authentication

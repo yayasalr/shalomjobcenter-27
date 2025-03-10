@@ -5,7 +5,7 @@ import { useLoginMutation } from "./mutations/useLoginMutation";
 import { useRegisterMutation } from "./mutations/useRegisterMutation";
 import { useLogoutMutation } from "./mutations/useLogoutMutation";
 import { AuthContextType, User, LoginCredentials, RegisterData } from "./types";
-import { LocalStorageKeys } from "./authUtils";
+import { LocalStorageKeys } from "./constants";
 import { useSecurityFeatures } from "./useSecurityFeatures";
 
 const initialContext: AuthContextType = {
