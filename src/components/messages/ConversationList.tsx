@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { Conversation } from './types';
 import { AllUsersDialog } from './AllUsersDialog';
@@ -8,6 +9,9 @@ import NewConversationButton from './NewConversationButton';
 import ChatsTabContent from './tabs/ChatsTabContent';
 import StatusTabContent from './tabs/StatusTabContent';
 import CallsTabContent from './tabs/CallsTabContent';
+import { useAuth } from '@/hooks/useAuth';
+import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'sonner';
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -16,6 +20,8 @@ interface ConversationListProps {
   setSearchQuery: (query: string) => void;
   handleSelectConversation: (conversation: Conversation) => void;
   getUnreadCount: (conversation: Conversation) => number;
+  updateConversationWithMessage?: (conversationId: string, message: any) => void;
+  setConversations?: (conversations: Conversation[]) => void;
 }
 
 const ConversationList: React.FC<ConversationListProps> = ({
@@ -25,7 +31,10 @@ const ConversationList: React.FC<ConversationListProps> = ({
   setSearchQuery,
   handleSelectConversation,
   getUnreadCount,
+  updateConversationWithMessage,
+  setConversations
 }) => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<string>('chats');
   const [showAllUsers, setShowAllUsers] = useState<boolean>(false);
   
@@ -106,14 +115,55 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const handleSelectUser = (user: any) => {
     console.log("Selected user for new conversation:", user);
     
+    // Vérifier si une conversation existe déjà avec cet utilisateur
     const existingConversation = conversations.find(
       conv => conv.with.id === user.id
     );
     
     if (existingConversation) {
+      console.log("Conversation existante trouvée:", existingConversation);
       handleSelectConversation(existingConversation);
-    } else {
-      console.log("Créer une nouvelle conversation avec:", user);
+    } else if (user && user.id && setConversations) {
+      // Créer une nouvelle conversation
+      const newConversation: Conversation = {
+        id: `conv-${user.id}-${uuidv4()}`,
+        with: {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar || '/placeholder.svg',
+          role: user.role || 'user',
+        },
+        messages: [
+          {
+            id: `welcome-${Date.now()}`,
+            content: `Bonjour ! Comment puis-je vous aider aujourd'hui ?`,
+            timestamp: new Date(),
+            read: true,
+            sender: user.id === 'admin' ? 'admin' : 'other',
+          }
+        ],
+        lastMessage: {
+          content: `Bonjour ! Comment puis-je vous aider aujourd'hui ?`,
+          timestamp: new Date(),
+          read: true,
+          sender: user.id === 'admin' ? 'admin' : 'other',
+        }
+      };
+      
+      // Mettre à jour la liste des conversations
+      const updatedConversations = [...conversations, newConversation];
+      setConversations(updatedConversations);
+      
+      // Sauvegarder dans le localStorage si l'utilisateur est connecté
+      if (user) {
+        const key = `conversations_${user?.id}`;
+        localStorage.setItem(key, JSON.stringify(updatedConversations));
+      }
+      
+      // Sélectionner la nouvelle conversation
+      handleSelectConversation(newConversation);
+      
+      toast.success(`Nouvelle conversation avec ${user.name} créée`);
     }
     
     setShowAllUsers(false);
@@ -159,6 +209,8 @@ const ConversationList: React.FC<ConversationListProps> = ({
         onOpenChange={setShowAllUsers}
         open={showAllUsers}
         onSelectUser={handleSelectUser}
+        currentUserId={user?.id}
+        conversations={conversations}
       />
     </div>
   );

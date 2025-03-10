@@ -1,13 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Plus, X, UserPlus } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from 'sonner';
-import { ADMIN_USER } from './types';
+import { ADMIN_USER, Conversation } from './types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface User {
   id: string;
@@ -21,9 +22,17 @@ export interface AllUsersDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelectUser: (user: User) => void;
+  currentUserId?: string;
+  conversations: Conversation[];
 }
 
-export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChange, onSelectUser }) => {
+export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ 
+  open, 
+  onOpenChange, 
+  onSelectUser,
+  currentUserId,
+  conversations
+}) => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -37,7 +46,7 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
   const loadUsers = () => {
     setLoading(true);
     try {
-      // Ne garder que l'administrateur comme contact
+      // Pour les besoins de la démo, inclure l'administrateur comme contact principal
       const adminUser = {
         id: ADMIN_USER.id,
         name: ADMIN_USER.name,
@@ -45,7 +54,29 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
         role: ADMIN_USER.role
       };
       
-      setUsers([adminUser]);
+      // Ajouter également quelques utilisateurs simulés pour une meilleure expérience de démo
+      const mockUsers = [
+        {
+          id: 'user1',
+          name: 'Marie Dupont',
+          avatar: '/placeholder.svg',
+          role: 'user'
+        },
+        {
+          id: 'user2',
+          name: 'Thomas Martin',
+          avatar: '/placeholder.svg',
+          role: 'user'
+        },
+        {
+          id: 'user3',
+          name: 'Sophie Bernard',
+          avatar: '/placeholder.svg',
+          role: 'user'
+        }
+      ];
+      
+      setUsers([adminUser, ...mockUsers]);
     } catch (error) {
       console.error("Erreur lors du chargement des utilisateurs:", error);
       toast.error("Impossible de charger la liste des utilisateurs");
@@ -68,11 +99,16 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
     toast.success(`Conversation avec ${user.name} ouverte`);
   };
 
+  // Vérifier si une conversation existe déjà avec cet utilisateur
+  const conversationExists = (userId: string) => {
+    return conversations.some(conv => conv.with.id === userId);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Contactez l'administrateur</DialogTitle>
+          <DialogTitle>Sélectionner un contact</DialogTitle>
         </DialogHeader>
         
         <div className="relative mb-2">
@@ -104,7 +140,7 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
             <div className="space-y-2">
               {filteredUsers.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-gray-500">Aucun administrateur trouvé</p>
+                  <p className="text-gray-500">Aucun contact trouvé</p>
                 </div>
               ) : (
                 filteredUsers.map(user => (
@@ -124,7 +160,11 @@ export const AllUsersDialog: React.FC<AllUsersDialogProps> = ({ open, onOpenChan
                       )}
                     </div>
                     <Button size="sm" variant="ghost" className="ml-2 hover-lift">
-                      <Plus className="h-4 w-4" />
+                      {conversationExists(user.id) ? (
+                        <span className="text-xs text-gray-500">Existant</span>
+                      ) : (
+                        <Plus className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 ))

@@ -31,7 +31,9 @@ const Messages = () => {
     handleSelectConversation,
     getUnreadCount,
     onlineUsers,
-    updateConversationWithMessage
+    updateConversationWithMessage,
+    createNewConversation,
+    setConversations
   } = useMessages(user?.id);
 
   // Track window size to determine mobile view
@@ -93,6 +95,8 @@ const Messages = () => {
                 setSearchQuery={setSearchQuery}
                 handleSelectConversation={handleMobileSelectConversation}
                 getUnreadCount={getUnreadCount}
+                updateConversationWithMessage={updateConversationWithMessage}
+                setConversations={setConversations}
               />
             </div>
             
