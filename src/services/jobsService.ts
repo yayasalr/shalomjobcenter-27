@@ -1,4 +1,3 @@
-
 import { MOCK_JOBS } from "@/data/mockJobs";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Job, ApplicationStatus } from "@/types/job";
@@ -150,7 +149,6 @@ export const useJobsService = () => {
         applicantName: applicationData.name,
         email: applicationData.email,
         phone: applicationData.phone,
-        resume: applicationData.resume,
         coverLetter: applicationData.coverLetter,
         status: "pending" as ApplicationStatus,
         submittedAt: new Date().toISOString()

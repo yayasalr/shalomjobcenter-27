@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Job } from '@/types/job';
 import { Button } from '@/components/ui/button';
 import { formatPriceFCFA } from '../utils/jobUtils';
-import { JobPriceCard } from './JobPriceCard';
-import { JobInfoCards } from './JobInfoCards';
+import JobPriceCard from './JobPriceCard';
+import JobInfoCards from './JobInfoCards';
 import { ApplicationForm } from './ApplicationForm';
 import { Clock, MapPin, Building, Calendar } from 'lucide-react';
 

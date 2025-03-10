@@ -1,27 +1,27 @@
 
 import React from 'react';
 import { Briefcase, CalendarDays, Clock, Home } from 'lucide-react';
+import { Job } from '@/types/job';
 
 interface JobInfoCardsProps {
-  contract: string;
-  publishDate: string;
-  deadline: string;
-  isHousingOffer: boolean;
-  translateContract: (contract: string) => string;
+  job: Job;
 }
 
-const JobInfoCards = ({
-  contract,
-  publishDate,
-  deadline,
-  isHousingOffer,
-  translateContract
-}: JobInfoCardsProps) => {
+const JobInfoCards = ({ job }: JobInfoCardsProps) => {
+  const translateContract = (contract: string) => {
+    const translations: Record<string, string> = {
+      'full_time': 'Temps plein',
+      'part_time': 'Temps partiel',
+      'contract': 'Contractuel',
+    };
+    return translations[contract] || contract;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       <div className="bg-gray-50 rounded-lg p-4 flex items-start">
         <div className="bg-sholom-primary/10 p-2 rounded-full mr-3">
-          {isHousingOffer ? (
+          {job.isHousingOffer ? (
             <Home className="h-5 w-5 text-sholom-primary" />
           ) : (
             <Briefcase className="h-5 w-5 text-sholom-primary" />
@@ -30,7 +30,7 @@ const JobInfoCards = ({
         <div>
           <p className="text-sm text-gray-500">Type</p>
           <p className="font-medium">
-            {isHousingOffer ? 'Logement' : translateContract(contract)}
+            {job.isHousingOffer ? 'Logement' : translateContract(job.contract)}
           </p>
         </div>
       </div>
@@ -41,7 +41,7 @@ const JobInfoCards = ({
         <div>
           <p className="text-sm text-gray-500">Publiée le</p>
           <p className="font-medium">
-            {new Date(publishDate).toLocaleDateString('fr-FR')}
+            {new Date(job.publishDate).toLocaleDateString('fr-FR')}
           </p>
         </div>
       </div>
@@ -52,7 +52,7 @@ const JobInfoCards = ({
         <div>
           <p className="text-sm text-gray-500">Date limite</p>
           <p className="font-medium">
-            {new Date(deadline).toLocaleDateString('fr-FR')}
+            {new Date(job.deadline).toLocaleDateString('fr-FR')}
           </p>
         </div>
       </div>
