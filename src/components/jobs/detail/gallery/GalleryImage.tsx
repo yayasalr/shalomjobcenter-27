@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { getDomainImage } from '../../utils/jobUtils';
 
 interface GalleryImageProps {
   src: string;
@@ -9,6 +10,7 @@ interface GalleryImageProps {
   onLoad: () => void;
   onError: () => void;
   hasError: boolean;
+  domain?: string;
 }
 
 export const GalleryImage: React.FC<GalleryImageProps> = ({
@@ -19,7 +21,21 @@ export const GalleryImage: React.FC<GalleryImageProps> = ({
   onLoad,
   onError,
   hasError,
+  domain,
 }) => {
+  const [imgSrc, setImgSrc] = useState(src);
+
+  const handleError = () => {
+    if (domain) {
+      // Remplacer l'image par une image de secours spécifique au domaine
+      setImgSrc(getDomainImage(domain));
+    } else {
+      // Fallback général
+      setImgSrc("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800");
+    }
+    onError();
+  };
+
   return (
     <div className="relative h-full flex items-center justify-center bg-gray-100">
       {isLoading && (
@@ -29,11 +45,11 @@ export const GalleryImage: React.FC<GalleryImageProps> = ({
       )}
       
       <img
-        src={src}
+        src={imgSrc}
         alt={alt}
         className={`w-full h-full object-contain ${isFullScreen ? 'max-h-screen' : 'max-h-[600px]'}`}
         onLoad={onLoad}
-        onError={onError}
+        onError={handleError}
       />
       
       {hasError && (

@@ -21,6 +21,7 @@ export const JobGallery: React.FC<JobGalleryProps> = ({ job, className }) => {
     setIsLoading,
     galleryImages,
     hasError,
+    domain,
     handlePrevious,
     handleNext,
     toggleFullScreen,
@@ -47,6 +48,7 @@ export const JobGallery: React.FC<JobGalleryProps> = ({ job, className }) => {
         onLoad={handleImageLoad}
         onError={() => handleImageError(currentIndex)}
         hasError={hasError}
+        domain={domain}
       />
 
       {/* Navigation and Control Elements */}

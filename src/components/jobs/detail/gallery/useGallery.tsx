@@ -93,6 +93,7 @@ export const useGallery = (job: Job) => {
     setIsLoading,
     galleryImages,
     hasError,
+    domain: job.domain,
     handlePrevious,
     handleNext,
     toggleFullScreen,
