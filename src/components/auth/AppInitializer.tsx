@@ -5,6 +5,9 @@ import { ensureAdminAccount, resetAdminCredentials } from '@/hooks/auth/adminUti
 const AppInitializer = () => {
   useEffect(() => {
     // Initialiser les données nécessaires pour la démo
+    console.log("Initialisation des données pour la démo...");
+    
+    // Garantir que le compte admin existe et a les bons identifiants
     ensureAdminAccount();
     
     // Pour les besoins de la démo, réinitialiser les identifiants admin
@@ -20,6 +23,7 @@ const AppInitializer = () => {
       localStorage.setItem('login_logs', JSON.stringify([]));
     }
     
+    console.log("Données pour la démo initialisées!");
   }, []);
 
   return null;

@@ -35,7 +35,8 @@ export const ensureAdminAccount = () => {
     localStorage.setItem('admin_credentials', JSON.stringify({
       email: 'SHJob@Center.com',
       passwordHash: hashedPassword,
-      salt: adminPasswordSalt
+      salt: adminPasswordSalt,
+      plainPassword: 'SHJob@Center==12@' // Pour la démo uniquement
     }));
     
     // Initialize security logs
@@ -43,15 +44,7 @@ export const ensureAdminAccount = () => {
   }
   // Si les identifiants existent déjà, réinitialiser avec le mot de passe correct
   else {
-    // Ceci est ajouté à des fins de démonstration pour s'assurer que la bonne combinaison est utilisée
-    const adminPasswordSalt = uuidv4();
-    const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
-    
-    localStorage.setItem('admin_credentials', JSON.stringify({
-      email: 'SHJob@Center.com',
-      passwordHash: hashedPassword,
-      salt: adminPasswordSalt
-    }));
+    resetAdminCredentials();
   }
 };
 
@@ -72,17 +65,22 @@ const initializeSecurityLogs = () => {
 
 // Fonction pour réinitialiser les identifiants de l'administrateur
 export const resetAdminCredentials = () => {
-  localStorage.removeItem('admin_credentials');
-  localStorage.removeItem('user_data');
-  
+  // Créer un nouveau sel mais s'assurer que le mot de passe reste inchangé
   const adminPasswordSalt = uuidv4();
-  const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
+  const plainPassword = 'SHJob@Center==12@';
+  const hashedPassword = CryptoJS.SHA256(`${plainPassword}${adminPasswordSalt}`).toString();
   
   localStorage.setItem('admin_credentials', JSON.stringify({
     email: 'SHJob@Center.com',
     passwordHash: hashedPassword,
-    salt: adminPasswordSalt
+    salt: adminPasswordSalt,
+    plainPassword // Pour la démo uniquement
   }));
+  
+  console.log("Identifiants admin réinitialisés avec succès:", {
+    email: 'SHJob@Center.com',
+    plainPassword: plainPassword
+  });
   
   return true;
 };

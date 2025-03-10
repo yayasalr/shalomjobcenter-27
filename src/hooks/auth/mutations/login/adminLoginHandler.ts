@@ -24,16 +24,26 @@ export const handleAdminLogin = (
     const adminData = JSON.parse(adminCreds);
     // Check if this is the admin trying to log in
     if (userData.email.toLowerCase() === adminData.email.toLowerCase()) {
-      // Pour les besoins de la démo, nous acceptons aussi le mot de passe codé en dur
-      const hardcodedPassword = "SHJob@Center==12@";
-      const hashedInputPassword = CryptoJS.SHA256(`${userData.password}${adminData.salt}`).toString();
+      console.log("Tentative de connexion admin détectée avec:", {
+        email: userData.email,
+        passwordMatch: userData.password === adminData.plainPassword
+      });
       
-      if (hashedInputPassword !== adminData.passwordHash && userData.password !== hardcodedPassword) {
+      // Pour les besoins de la démo, nous acceptons le mot de passe codé en dur
+      const hashedInputPassword = CryptoJS.SHA256(`${userData.password}${adminData.salt}`).toString();
+      const plainPasswordMatch = userData.password === adminData.plainPassword;
+      const hashMatch = hashedInputPassword === adminData.passwordHash;
+      
+      // Accepter soit le hash correspondant, soit le mot de passe en clair pour faciliter la démo
+      if (!hashMatch && !plainPasswordMatch) {
         // Log détaillé pour le débogage (en production, ne jamais exposer les mots de passe!)
-        console.log("Tentative de connexion admin avec:", { 
+        console.log("Échec d'authentification admin:", { 
           inputPassword: userData.password,
+          expectedPlainPassword: adminData.plainPassword,
+          passwordMatch: plainPasswordMatch,
           expectedHash: adminData.passwordHash,
-          calculatedHash: hashedInputPassword
+          calculatedHash: hashedInputPassword,
+          hashMatch: hashMatch
         });
         
         // Admin email correct but password wrong
@@ -43,6 +53,8 @@ export const handleAdminLogin = (
         setIsPending(false);
         return true;
       }
+      
+      console.log("Connexion admin réussie!");
       
       // Admin login successful
       updateLoginAttempts(userData.email, false);
