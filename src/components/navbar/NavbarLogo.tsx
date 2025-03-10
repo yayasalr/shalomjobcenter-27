@@ -38,16 +38,17 @@ export const NavbarLogo = () => {
   return (
     <Link to="/" className="flex items-center gap-4 sm:gap-6 md:gap-8 mr-8">
       <motion.div 
-        whileHover={{ scale: 1.05, rotate: 5 }}
+        whileHover={{ scale: 1.05, rotate: 5, z: 10 }}
         whileTap={{ scale: 0.95 }}
         className="relative logo-container"
+        style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
       >
-        <div className="h-12 sm:h-14 md:h-16 w-auto flex items-center justify-center overflow-hidden">
+        <div className="h-12 sm:h-14 md:h-16 w-12 sm:w-14 md:w-16 flex items-center justify-center overflow-hidden rounded-full">
           {!logoError ? (
             <img 
               src={currentLogo} 
               alt={settings.siteName || "Logo"}
-              className={`logo w-auto h-full object-contain transition-all duration-300 ease-in-out ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`logo w-full h-full transition-all duration-300 ease-in-out ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLogoLoaded(true)}
               onError={() => {
                 console.error("Error loading logo:", currentLogo.substring(0, 30) + "...");
@@ -57,7 +58,7 @@ export const NavbarLogo = () => {
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <div className="h-full w-12 sm:w-14 md:w-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center logo-fallback">
+            <div className="h-full w-full rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center logo-fallback">
               <span className="text-white font-bold text-xl">
                 {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
               </span>

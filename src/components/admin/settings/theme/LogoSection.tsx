@@ -86,7 +86,7 @@ export const LogoSection = ({
       <div className="flex flex-col gap-4 sm:flex-row">
         <Card className="w-full sm:w-1/3">
           <CardContent className="p-4 flex items-center justify-center">
-            <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center overflow-hidden logo-container">
+            <div className="w-36 h-36 mx-auto bg-muted rounded-full flex items-center justify-center overflow-hidden logo-container" style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
               {logoUploading ? (
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -96,12 +96,12 @@ export const LogoSection = ({
                 <img 
                   src={previewUrl} 
                   alt="Logo du site" 
-                  className={`max-w-full max-h-[120px] object-contain logo ${logoLoaded ? '' : 'opacity-0'}`}
+                  className={`w-full h-full object-cover logo ${logoLoaded ? '' : 'opacity-0'}`}
                   onError={handleLogoError}
                   onLoad={() => setLogoLoaded(true)}
                 />
               ) : (
-                <div className="flex flex-col items-center gap-2 logo-fallback rounded-full h-20 w-20 bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2 logo-fallback rounded-full h-full w-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
                   <span className="text-white font-bold text-xl">
                     {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
                   </span>
