@@ -31,7 +31,7 @@ export const ensureAdminAccount = () => {
     // Create a default admin account if none exists
     const defaultAdmin = {
       id: 'admin-1',
-      email: 'admin@example.com',
+      email: 'SHJob@Center.com',
       name: 'Admin User',
       role: 'admin',
       isAdmin: true,
@@ -50,10 +50,10 @@ export const ensureAdminAccount = () => {
     // Note: In a real app, you would never store credentials in localStorage like this
     // This is only for demo purposes
     const adminPasswordSalt = uuidv4();
-    const hashedPassword = CryptoJS.SHA256(`admin123${adminPasswordSalt}`).toString();
+    const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
     
     localStorage.setItem('admin_credentials', JSON.stringify({
-      email: 'admin@example.com',
+      email: 'SHJob@Center.com',
       passwordHash: hashedPassword,
       salt: adminPasswordSalt
     }));
@@ -237,4 +237,50 @@ export const updateTrustedDevice = (userId: string) => {
   
   localStorage.setItem(`trusted_devices_${userId}`, JSON.stringify(updatedDevices));
   return true;
+};
+
+// Advanced password validator
+export const validatePasswordStrength = (password: string): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  
+  if (password.length < SECURITY_CONSTANTS.PASSWORD_MIN_LENGTH) {
+    errors.push(`Le mot de passe doit contenir au moins ${SECURITY_CONSTANTS.PASSWORD_MIN_LENGTH} caractères`);
+  }
+  
+  if (SECURITY_CONSTANTS.REQUIRE_MIXED_CASE && !/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
+    errors.push("Le mot de passe doit contenir au moins une lettre majuscule et une lettre minuscule");
+  }
+  
+  if (SECURITY_CONSTANTS.REQUIRE_NUMBERS && !/\d/.test(password)) {
+    errors.push("Le mot de passe doit contenir au moins un chiffre");
+  }
+  
+  if (SECURITY_CONSTANTS.REQUIRE_SYMBOLS && !/[^A-Za-z0-9]/.test(password)) {
+    errors.push("Le mot de passe doit contenir au moins un caractère spécial");
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+};
+
+// Check if email is already registered
+export const isEmailRegistered = (email: string): boolean => {
+  const allUsers = JSON.parse(localStorage.getItem('all_users') || '[]');
+  return allUsers.some((user: any) => user.email.toLowerCase() === email.toLowerCase());
+};
+
+// Check if username is already registered
+export const isUsernameRegistered = (username: string): boolean => {
+  const allUsers = JSON.parse(localStorage.getItem('all_users') || '[]');
+  return allUsers.some((user: any) => 
+    user.name && user.name.toLowerCase() === username.toLowerCase()
+  );
+};
+
+// Validate email format
+export const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };

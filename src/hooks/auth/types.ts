@@ -1,58 +1,37 @@
 
-// User Type
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'user' | 'moderator';
-  isAdmin: boolean;
-  lastLogin: string;
-  loginCount: number;
-  securityLevel: 'low' | 'standard' | 'high';
-  avatar?: string | null;
-  lockedUntil?: string | null;
-  requiresPasswordChange?: boolean;
-  twoFactorEnabled?: boolean;
-  verifiedEmail?: boolean;
-  created?: string;
-  company?: string;
-  phone?: string;
-  notifications?: NotificationPreferences;
-}
-
-// Login Credentials Type
 export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
-  twoFactorCode?: string; // This was already added but making sure it's here
 }
 
-// Registration Data Type
 export interface RegisterData {
   email: string;
   password: string;
-  name?: string;
-  acceptTerms: boolean;
-  avatar?: string;
+  name: string;
+  confirmPassword?: string;
+  termsAccepted?: boolean;
 }
 
-// Reset Password Data Type
-export interface ResetPasswordData {
+export interface User {
+  id: string;
   email: string;
-  token: string;
-  newPassword: string;
+  name: string;
+  role: string;
+  isAdmin: boolean;
+  avatar?: string;
+  created?: string;
+  lastLogin?: string;
+  loginCount?: number;
+  securityLevel?: 'standard' | 'high' | 'restricted';
+  passwordLastChanged?: string;
+  requiresPasswordChange?: boolean;
+  twoFactorEnabled?: boolean;
+  trustedDevices?: string[];
 }
 
-// Auth Context Type
 export interface AuthContextType {
   user: User | null;
-  loading: boolean;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  isLoading: boolean;
-  
-  // Mutations
   login: {
     mutateAsync: (userData: LoginCredentials) => Promise<User | void>;
     isPending: boolean;
@@ -62,22 +41,42 @@ export interface AuthContextType {
     isPending: boolean;
   };
   logout: () => void;
+  isLoading: boolean;
+  loading: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
   updateUserProfile: (updatedData: Partial<User>) => User | undefined;
   updateUserAvatar: (avatarUrl: string) => User | undefined;
   registerLoading: boolean;
-  
-  // Security features
-  refreshSession?: () => void;
+  refreshSession: () => void;
   checkAccountLocked: (email: string) => { locked: boolean; remainingMinutes: number };
   updateLoginAttempts: (email: string, increment?: boolean) => { count: number; timestamp: number };
   checkDeviceTrusted: (userId: string) => boolean;
   handleSecurityAlert: (type: string, details: any) => void;
 }
 
-// Notification Preferences Type
-export interface NotificationPreferences {
-  email: boolean;
-  push: boolean;
-  reservation: boolean;
-  promotional: boolean;
+export interface LoginAttempt {
+  count: number;
+  timestamp: number;
+  lockUntil?: number;
+}
+
+export interface SecurityLog {
+  id: string;
+  type: string;
+  userId: string | null;
+  timestamp: string;
+  userAgent: string;
+  ipAddress?: string;
+  details?: any;
+}
+
+export interface SecurityWarning {
+  id: string;
+  type: string;
+  level: 'info' | 'warning' | 'critical';
+  timestamp: string;
+  message: string;
+  details?: any;
+  resolved?: boolean;
 }

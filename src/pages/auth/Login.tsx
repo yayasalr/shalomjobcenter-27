@@ -7,6 +7,8 @@ import LoginForm from "@/components/auth/login/LoginForm";
 import LoginFooter from "@/components/auth/login/LoginFooter";
 import AccountLockedAlert from "@/components/auth/login/AccountLockedAlert";
 import ContactAdminDialog from "@/components/auth/login/ContactAdminDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const Login = () => {
   });
   const [securityInfo, setSecurityInfo] = useState<{locked: boolean; remainingMinutes: number} | null>(null);
   const [showContactAdminDialog, setShowContactAdminDialog] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
     // Si l'utilisateur est déjà connecté, le rediriger vers la page appropriée
@@ -39,6 +42,7 @@ const Login = () => {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setFormData({ ...formData, email: newEmail });
+    setLoginError(null);
     
     // Vérifier l'état de verrouillage du compte à chaque changement d'email
     if (newEmail && checkAccountLocked) {
@@ -47,6 +51,10 @@ const Login = () => {
     } else {
       setSecurityInfo(null);
     }
+  };
+
+  const handleLoginError = (error: Error) => {
+    setLoginError(error.message);
   };
 
   return (
@@ -61,9 +69,22 @@ const Login = () => {
           />
         )}
         
+        {loginError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4 mr-2" />
+            <AlertDescription>
+              {loginError === "Email non trouvé" ? "Email non reconnu" : 
+               loginError === "Mot de passe incorrect" ? "Mot de passe incorrect" : 
+               loginError}
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <LoginForm 
           securityInfo={securityInfo} 
-          onSetShowContactAdminDialog={setShowContactAdminDialog} 
+          onSetShowContactAdminDialog={setShowContactAdminDialog}
+          onEmailChange={handleEmailChange}
+          onLoginError={handleLoginError}
         />
         
         <LoginFooter />

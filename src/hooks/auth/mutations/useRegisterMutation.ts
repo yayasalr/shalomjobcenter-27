@@ -3,7 +3,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { User, RegisterData } from "../types";
-import { LocalStorageKeys } from "../authUtils";
+import { 
+  LocalStorageKeys, 
+  isEmailRegistered, 
+  isUsernameRegistered, 
+  validatePasswordStrength,
+  isValidEmail 
+} from "../authUtils";
 import { ADMIN_USER, WELCOME_BOT, Conversation, Message } from "@/components/messages/types";
 
 export const useRegisterMutation = (
@@ -107,13 +113,68 @@ export const useRegisterMutation = (
       setIsPending(true);
       return new Promise((resolve, reject) => {
         try {
+          // Enhanced validation
+          if (!data.email || !data.password || !data.name) {
+            toast.error("Tous les champs sont obligatoires");
+            reject(new Error("Champs incomplets"));
+            setIsPending(false);
+            return;
+          }
+          
+          // Validate email format
+          if (!isValidEmail(data.email)) {
+            toast.error("Format d'email invalide");
+            reject(new Error("Email invalide"));
+            setIsPending(false);
+            return;
+          }
+          
+          // Check for admin email reservation
+          const adminCreds = localStorage.getItem('admin_credentials');
+          if (adminCreds) {
+            try {
+              const adminData = JSON.parse(adminCreds);
+              if (data.email.toLowerCase() === adminData.email.toLowerCase()) {
+                toast.error("Cet email est réservé pour l'administration");
+                reject(new Error("Email réservé"));
+                setIsPending(false);
+                return;
+              }
+            } catch (e) {
+              console.error("Error parsing admin credentials", e);
+            }
+          }
+          
           // Check if the email is already in use
           const existingUsers = JSON.parse(localStorage.getItem('all_users') || '[]');
-          const emailExists = existingUsers.some((u: any) => u.email === data.email);
+          const emailExists = existingUsers.some((u: any) => 
+            u.email.toLowerCase() === data.email.toLowerCase()
+          );
           
           if (emailExists) {
             toast.error("Cet email est déjà utilisé");
             reject(new Error("Email déjà utilisé"));
+            setIsPending(false);
+            return;
+          }
+          
+          // Check if username is already in use
+          const usernameExists = existingUsers.some((u: any) => 
+            u.name && u.name.toLowerCase() === data.name.toLowerCase()
+          );
+          
+          if (usernameExists) {
+            toast.error("Ce nom d'utilisateur est déjà utilisé");
+            reject(new Error("Nom d'utilisateur déjà utilisé"));
+            setIsPending(false);
+            return;
+          }
+          
+          // Validate password strength
+          const passwordValidation = validatePasswordStrength(data.password);
+          if (!passwordValidation.valid) {
+            toast.error(passwordValidation.errors[0]);
+            reject(new Error("Mot de passe trop faible"));
             setIsPending(false);
             return;
           }
@@ -124,7 +185,7 @@ export const useRegisterMutation = (
               email: data.email,
               name: data.name || data.email.split('@')[0],
               role: 'user',
-              isAdmin: false, // Add the required isAdmin property
+              isAdmin: false,
               created: new Date().toISOString(),
               lastLogin: new Date().toISOString(),
               loginCount: 1,
