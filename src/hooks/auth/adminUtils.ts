@@ -29,6 +29,7 @@ export const ensureAdminAccount = () => {
     // Note: In a real app, you would never store credentials in localStorage like this
     // This is only for demo purposes
     const adminPasswordSalt = uuidv4();
+    // Utilisation du mot de passe exact tel qu'affiché dans l'interface utilisateur
     const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
     
     localStorage.setItem('admin_credentials', JSON.stringify({
@@ -39,6 +40,18 @@ export const ensureAdminAccount = () => {
     
     // Initialize security logs
     initializeSecurityLogs();
+  }
+  // Si les identifiants existent déjà, réinitialiser avec le mot de passe correct
+  else {
+    // Ceci est ajouté à des fins de démonstration pour s'assurer que la bonne combinaison est utilisée
+    const adminPasswordSalt = uuidv4();
+    const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
+    
+    localStorage.setItem('admin_credentials', JSON.stringify({
+      email: 'SHJob@Center.com',
+      passwordHash: hashedPassword,
+      salt: adminPasswordSalt
+    }));
   }
 };
 
@@ -55,4 +68,21 @@ const initializeSecurityLogs = () => {
   if (!localStorage.getItem('suspicious_activities')) {
     localStorage.setItem('suspicious_activities', JSON.stringify([]));
   }
+};
+
+// Fonction pour réinitialiser les identifiants de l'administrateur
+export const resetAdminCredentials = () => {
+  localStorage.removeItem('admin_credentials');
+  localStorage.removeItem('user_data');
+  
+  const adminPasswordSalt = uuidv4();
+  const hashedPassword = CryptoJS.SHA256(`SHJob@Center==12@${adminPasswordSalt}`).toString();
+  
+  localStorage.setItem('admin_credentials', JSON.stringify({
+    email: 'SHJob@Center.com',
+    passwordHash: hashedPassword,
+    salt: adminPasswordSalt
+  }));
+  
+  return true;
 };

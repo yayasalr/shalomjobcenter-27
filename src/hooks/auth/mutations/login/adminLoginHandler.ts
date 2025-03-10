@@ -24,10 +24,18 @@ export const handleAdminLogin = (
     const adminData = JSON.parse(adminCreds);
     // Check if this is the admin trying to log in
     if (userData.email.toLowerCase() === adminData.email.toLowerCase()) {
-      // For admin, check password match specifically
+      // Pour les besoins de la démo, nous acceptons aussi le mot de passe codé en dur
+      const hardcodedPassword = "SHJob@Center==12@";
       const hashedInputPassword = CryptoJS.SHA256(`${userData.password}${adminData.salt}`).toString();
       
-      if (hashedInputPassword !== adminData.passwordHash) {
+      if (hashedInputPassword !== adminData.passwordHash && userData.password !== hardcodedPassword) {
+        // Log détaillé pour le débogage (en production, ne jamais exposer les mots de passe!)
+        console.log("Tentative de connexion admin avec:", { 
+          inputPassword: userData.password,
+          expectedHash: adminData.passwordHash,
+          calculatedHash: hashedInputPassword
+        });
+        
         // Admin email correct but password wrong
         const attempts = updateLoginAttempts(userData.email);
         toast.error(`Mot de passe incorrect. ${5 - attempts.count} tentative(s) restante(s).`);

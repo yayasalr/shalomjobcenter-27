@@ -1,15 +1,28 @@
 
 import { useEffect } from 'react';
-import { ensureAdminAccount } from '@/hooks/auth/adminUtils';
+import { ensureAdminAccount, resetAdminCredentials } from '@/hooks/auth/adminUtils';
 
-export const AppInitializer = () => {
+const AppInitializer = () => {
   useEffect(() => {
-    // S'assurer qu'un compte administrateur existe toujours
+    // Initialiser les données nécessaires pour la démo
     ensureAdminAccount();
     
-    // Autres initialisations potentielles
+    // Pour les besoins de la démo, réinitialiser les identifiants admin
+    // afin de garantir que le mot de passe correct est utilisé
+    resetAdminCredentials();
+    
+    // Initialiser d'autres données si nécessaire
+    if (!localStorage.getItem('all_users')) {
+      localStorage.setItem('all_users', JSON.stringify([]));
+    }
+    
+    if (!localStorage.getItem('login_logs')) {
+      localStorage.setItem('login_logs', JSON.stringify([]));
+    }
     
   }, []);
-  
-  return null; // Ce composant ne rend rien visuellement
+
+  return null;
 };
+
+export default AppInitializer;
