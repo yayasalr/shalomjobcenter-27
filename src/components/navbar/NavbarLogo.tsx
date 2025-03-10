@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import "../../styles/components/logo.css";
 
 export const NavbarLogo = () => {
   const { settings } = useSiteSettings();
@@ -35,31 +36,30 @@ export const NavbarLogo = () => {
   }, [settings.logo]);
   
   return (
-    <Link to="/" className="flex items-center gap-8 sm:gap-12 md:gap-16 mr-8">
+    <Link to="/" className="flex items-center gap-4 sm:gap-6 md:gap-8 mr-8">
       <motion.div 
-        whileHover={{ scale: 1.05 }} 
+        whileHover={{ scale: 1.05, rotate: 5 }}
         whileTap={{ scale: 0.95 }}
-        className="relative"
+        className="relative logo-container"
       >
-        <div className="h-10 sm:h-12 md:h-14 w-auto flex items-center justify-center overflow-hidden">
+        <div className="h-12 sm:h-14 md:h-16 w-auto flex items-center justify-center overflow-hidden">
           {!logoError ? (
             <img 
               src={currentLogo} 
               alt={settings.siteName || "Logo"}
-              className="w-auto h-full object-contain"
+              className={`logo w-auto h-full object-contain transition-all duration-300 ease-in-out ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLogoLoaded(true)}
               onError={() => {
                 console.error("Error loading logo:", currentLogo.substring(0, 30) + "...");
                 setLogoError(true);
               }}
-              style={{ display: logoLoaded ? 'block' : 'none' }}
             />
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <div className="h-full w-10 sm:w-12 md:w-14 rounded-full bg-yellow-600 flex items-center justify-center">
+            <div className="h-full w-12 sm:w-14 md:w-16 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center logo-fallback">
               <span className="text-white font-bold text-xl">
-                {settings.siteName ? settings.siteName.substring(0, 2) : 'SJ'}
+                {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
               </span>
             </div>
           )}

@@ -7,6 +7,7 @@ import { ImageIcon, Loader2, AlertCircle } from "lucide-react";
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
+import "../../../../styles/components/logo.css";
 
 interface LogoSectionProps {
   logoUrl: string;
@@ -22,11 +23,13 @@ export const LogoSection = ({
   const { settings } = useSiteSettings();
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [logoError, setLogoError] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   
   useEffect(() => {
     try {
       // Réinitialiser l'état d'erreur au début
       setLogoError(false);
+      setLogoLoaded(false);
       
       // Vérifier si le logo est stocké séparément
       if (settings.logo === 'stored_separately') {
@@ -57,6 +60,7 @@ export const LogoSection = ({
   
   const handleRetryLoad = () => {
     setLogoError(false);
+    setLogoLoaded(false);
     
     // Force reload by setting a temporary empty value
     setPreviewUrl("");
@@ -82,7 +86,7 @@ export const LogoSection = ({
       <div className="flex flex-col gap-4 sm:flex-row">
         <Card className="w-full sm:w-1/3">
           <CardContent className="p-4 flex items-center justify-center">
-            <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center overflow-hidden">
+            <div className="w-full aspect-video bg-muted rounded-md flex items-center justify-center overflow-hidden logo-container">
               {logoUploading ? (
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -92,13 +96,15 @@ export const LogoSection = ({
                 <img 
                   src={previewUrl} 
                   alt="Logo du site" 
-                  className="max-w-full max-h-[120px] object-contain" 
+                  className={`max-w-full max-h-[120px] object-contain logo ${logoLoaded ? '' : 'opacity-0'}`}
                   onError={handleLogoError}
+                  onLoad={() => setLogoLoaded(true)}
                 />
               ) : (
-                <div className="flex flex-col items-center gap-2">
-                  <ImageIcon className="h-8 w-8 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">Pas de logo</span>
+                <div className="flex flex-col items-center gap-2 logo-fallback rounded-full h-20 w-20 bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">
+                    {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
+                  </span>
                 </div>
               )}
             </div>
