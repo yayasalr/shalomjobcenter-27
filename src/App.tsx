@@ -5,7 +5,7 @@ import { Toaster as SonnerToaster } from 'sonner';
 import { SidebarProvider } from './components/ui/sidebar';
 import { AnimatePresence } from 'framer-motion';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { AppInitializer } from './components/auth/AppInitializer';
+import AppInitializer from './components/auth/AppInitializer';
 import { OfflineIndicator } from './components/messages/OfflineIndicator';
 
 import './index.css';
