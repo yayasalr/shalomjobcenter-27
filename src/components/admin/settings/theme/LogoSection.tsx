@@ -27,35 +27,35 @@ export const LogoSection = ({
   
   useEffect(() => {
     try {
-      // Réinitialiser l'état d'erreur au début
+      // Reset error state at the beginning
       setLogoError(false);
       setLogoLoaded(false);
       
-      // Vérifier si le logo est stocké séparément
+      // Check if the logo is stored separately
       if (settings.logo === 'stored_separately') {
         const storedLogo = localStorage.getItem('site_logo');
         if (storedLogo) {
-          console.log("Logo chargé depuis le stockage séparé");
+          console.log("Logo loaded from separate storage");
           setPreviewUrl(storedLogo);
         } else {
-          console.log("Aucun logo trouvé dans le stockage séparé");
-          setPreviewUrl(logoUrl || "");
+          console.log("No logo found in separate storage");
+          setPreviewUrl(logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
         }
       } else {
-        console.log("Utilisation du logo depuis les paramètres");
-        setPreviewUrl(settings.logo || logoUrl || "");
+        console.log("Using logo from settings");
+        setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
       }
     } catch (error) {
-      console.error("Erreur lors du chargement du logo:", error);
+      console.error("Error loading logo:", error);
       setLogoError(true);
-      toast.error("Erreur lors du chargement du logo");
+      toast.error("Error loading logo");
     }
   }, [settings.logo, logoUrl]);
   
   const handleLogoError = () => {
-    console.error("Erreur lors du chargement de l'aperçu du logo");
+    console.error("Error loading logo preview");
     setLogoError(true);
-    toast.error("Impossible d'afficher le logo. Veuillez essayer de le télécharger à nouveau.");
+    toast.error("Unable to display logo. Please try uploading again.");
   };
   
   const handleRetryLoad = () => {
@@ -67,9 +67,9 @@ export const LogoSection = ({
     setTimeout(() => {
       if (settings.logo === 'stored_separately') {
         const storedLogo = localStorage.getItem('site_logo');
-        setPreviewUrl(storedLogo || logoUrl || "");
+        setPreviewUrl(storedLogo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
       } else {
-        setPreviewUrl(settings.logo || logoUrl || "");
+        setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
       }
     }, 100);
   };
@@ -86,11 +86,11 @@ export const LogoSection = ({
       <div className="flex flex-col gap-4 sm:flex-row">
         <Card className="w-full sm:w-1/3">
           <CardContent className="p-4 flex items-center justify-center">
-            <div className="w-36 h-36 mx-auto bg-muted rounded-full flex items-center justify-center overflow-hidden logo-container" style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
+            <div className="w-36 h-36 mx-auto bg-black border-2 border-yellow-500 rounded-full flex items-center justify-center overflow-hidden logo-container" style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}>
               {logoUploading ? (
                 <div className="flex flex-col items-center gap-2">
-                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">Chargement...</span>
+                  <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />
+                  <span className="text-xs text-yellow-500">Chargement...</span>
                 </div>
               ) : previewUrl && !logoError ? (
                 <img 
@@ -101,8 +101,8 @@ export const LogoSection = ({
                   onLoad={() => setLogoLoaded(true)}
                 />
               ) : (
-                <div className="flex flex-col items-center gap-2 logo-fallback rounded-full h-full w-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">
+                <div className="flex flex-col items-center gap-2 logo-fallback rounded-full h-full w-full bg-black border-2 border-yellow-500 flex items-center justify-center">
+                  <span className="text-yellow-500 font-bold text-xl">
                     {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
                   </span>
                 </div>

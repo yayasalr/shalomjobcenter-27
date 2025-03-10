@@ -18,9 +18,9 @@ export const NavbarLogo = () => {
       
       if (settings.logo === 'stored_separately') {
         const storedLogo = localStorage.getItem('site_logo');
-        logoSrc = storedLogo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
+        logoSrc = storedLogo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
       } else {
-        logoSrc = settings.logo || "/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png";
+        logoSrc = settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
       }
       
       console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
@@ -30,8 +30,8 @@ export const NavbarLogo = () => {
     } catch (error) {
       console.error("Erreur lors de l'initialisation du logo:", error);
       setLogoError(true);
-      // Utiliser un logo par défaut en cas d'erreur
-      setCurrentLogo("/lovable-uploads/94c4ec86-49e9-498e-8fd3-ecdc693ca9fd.png");
+      // Use default logo in case of error - updated to the new logo
+      setCurrentLogo("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     }
   }, [settings.logo]);
   
@@ -43,7 +43,7 @@ export const NavbarLogo = () => {
         className="relative logo-container"
         style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
       >
-        <div className="h-12 sm:h-14 md:h-16 w-12 sm:w-14 md:w-16 flex items-center justify-center overflow-hidden rounded-full">
+        <div className="h-12 sm:h-14 md:h-16 w-12 sm:w-14 md:w-16 flex items-center justify-center overflow-hidden rounded-full bg-black border-2 border-yellow-500">
           {!logoError ? (
             <img 
               src={currentLogo} 
@@ -58,8 +58,8 @@ export const NavbarLogo = () => {
           ) : null}
           
           {(!logoLoaded || logoError) && (
-            <div className="h-full w-full rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center logo-fallback">
-              <span className="text-white font-bold text-xl">
+            <div className="h-full w-full rounded-full bg-black border-2 border-yellow-500 flex items-center justify-center logo-fallback">
+              <span className="text-yellow-500 font-bold text-xl">
                 {settings.siteName ? settings.siteName.substring(0, 2).toUpperCase() : 'SJ'}
               </span>
             </div>

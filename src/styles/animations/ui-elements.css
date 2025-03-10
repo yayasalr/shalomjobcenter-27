@@ -80,7 +80,7 @@
   bottom: -4px;
   border-radius: 50%;
   border: 2px solid transparent;
-  background: linear-gradient(45deg, #3498db, #1abc9c) border-box;
+  background: linear-gradient(45deg, #FFD700, #FFA500) border-box; /* Gold gradient */
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
@@ -90,8 +90,8 @@
 }
 
 .logo-3d-effect:hover {
-  transform: translateZ(20px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: translateZ(20px) rotateY(10deg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes rotateGradient {
@@ -103,14 +103,18 @@
   }
 }
 
-/* 3D rotate effect for logo */
+/* Enhanced 3D rotate effect for logo */
 .logo-rotate-3d {
   transition: transform 0.5s ease;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
 .logo-rotate-3d:hover {
-  transform: rotateY(20deg) rotateX(10deg) translateZ(10px);
+  transform: rotateY(20deg) rotateX(10deg) translateZ(15px);
+  box-shadow: 
+    -10px -10px 20px rgba(255, 215, 0, 0.1),
+    10px 10px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Message input focus effect */

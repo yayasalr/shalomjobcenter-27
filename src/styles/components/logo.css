@@ -4,18 +4,18 @@
   height: 100%;
   width: 100%;
   padding: 0;
-  will-change: filter;
+  will-change: transform;
   transition: all 300ms ease-in-out;
-  object-fit: cover; /* Changed from contain to cover to fill the container */
-  border-radius: 50%; /* Logo rond */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Increased shadow for 3D effect */
-  border: none; /* Pas de bordure */
-  background: transparent; /* Fond transparent */
+  object-fit: cover; /* Ensures the logo fills the container */
+  border-radius: 50%; /* Circular shape */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  border: 2px solid #FFD700; /* Gold border like in the reference image */
+  background: #000; /* Black background like the reference image */
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 1.5em rgba(79, 70, 229, 0.7)); /* Ombre colorée au survol */
-  transform: scale(1.05) rotate(5deg) translateZ(10px); /* Added Z translation for 3D effect */
+  filter: drop-shadow(0 0 1.5em rgba(255, 215, 0, 0.7)); /* Gold shadow on hover */
+  transform: scale(1.05) rotate(5deg) translateZ(10px); /* 3D rotation effect */
 }
 
 .logo-container {
@@ -33,7 +33,7 @@
   right: -5%;
   bottom: -5%;
   border-radius: 50%;
-  background: linear-gradient(45deg, rgba(255,255,255,0), rgba(255,255,255,0.8), rgba(255,255,255,0));
+  background: linear-gradient(45deg, rgba(255,215,0,0.1), rgba(255,215,0,0.8), rgba(255,215,0,0.1));
   z-index: -1;
   opacity: 0;
   transition: opacity 300ms ease-in-out;
@@ -47,8 +47,11 @@
 .logo-fallback {
   animation: pulse 2s infinite ease-in-out;
   transition: all 300ms ease-in-out;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow for 3D effect */
-  transform-style: preserve-3d; /* For 3D effect */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform-style: preserve-3d;
+  background: #000 !important; /* Black background */
+  border: 2px solid #FFD700; /* Gold border */
+  color: #FFD700 !important; /* Gold text */
 }
 
 @keyframes pulse {
@@ -57,7 +60,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   50% {
-    transform: scale(1.05) translateZ(10px); /* Added Z translation for 3D effect */
+    transform: scale(1.05) translateZ(10px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   }
   100% {
@@ -75,6 +78,7 @@
   }
 }
 
+/* Rest of the existing styles */
 .site-name {
   font-family: 'Playfair Display', serif;
   letter-spacing: 0.5px;
