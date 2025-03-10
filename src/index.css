@@ -1,4 +1,3 @@
-
 /* Base styles and variables */
 @import './styles/base.css';
 
@@ -8,7 +7,7 @@
 @import './styles/layout/variables.css';
 
 /* Animation-related styles */
-@import './styles/animations.css';
+@import './styles/animations/index.css';
 @import './styles/animations/transitions.css';
 
 /* Component-specific styles */
