@@ -6,29 +6,23 @@ import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
 
 export function useAdminSettings() {
-  const { settings, updateSettings, resetSettings, exportSettings, importSettings } = useSiteSettings();
+  const { settings, updateSettings, resetSettings } = useSiteSettings();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState("general");
-  const [logoUrl, setLogoUrl] = useState<string>(settings.logo === 'stored_separately' ? localStorage.getItem('site_logo') || "/placeholder.svg" : settings.logo || "/placeholder.svg");
+  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
   const [logoUploading, setLogoUploading] = useState(false);
-  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon === 'stored_separately' ? localStorage.getItem('site_favicon') || "/favicon.ico" : settings.favicon || "/favicon.ico");
+  const [faviconUrl, setFaviconUrl] = useState<string>(settings.favicon || "/favicon.ico");
   const [faviconUploading, setFaviconUploading] = useState(false);
   const navigate = useNavigate();
   
   // Synchronize local state with settings when they change
   useEffect(() => {
     if (settings.logo) {
-      const logoSrc = settings.logo === 'stored_separately' 
-        ? localStorage.getItem('site_logo') || "/placeholder.svg" 
-        : settings.logo;
-      setLogoUrl(logoSrc);
+      setLogoUrl(settings.logo);
     }
     
     if (settings.favicon) {
-      const faviconSrc = settings.favicon === 'stored_separately' 
-        ? localStorage.getItem('site_favicon') || "/favicon.ico" 
-        : settings.favicon;
-      setFaviconUrl(faviconSrc);
+      setFaviconUrl(settings.favicon);
     }
   }, [settings.logo, settings.favicon]);
 
@@ -47,9 +41,11 @@ export function useAdminSettings() {
         // Update locally for UI
         setLogoUrl(result);
         
-        // Store in settings and explicitly in localStorage
+        // Store in settings
         updateSettings({ logo: result });
-        localStorage.setItem('site_logo', result);
+        
+        // Also share with sessionStorage for cross-tab access
+        sessionStorage.setItem('shared_site_logo', result);
         
         // Then simulate the server upload for persistent storage
         setTimeout(() => {
@@ -77,9 +73,11 @@ export function useAdminSettings() {
         // Update locally for UI
         setFaviconUrl(result);
         
-        // Store in settings and explicitly in localStorage
+        // Store in settings
         updateSettings({ favicon: result });
-        localStorage.setItem('site_favicon', result);
+        
+        // Also share with sessionStorage for cross-tab access
+        sessionStorage.setItem('shared_site_favicon', result);
         
         // Then simulate the server upload
         setTimeout(() => {
@@ -103,11 +101,13 @@ export function useAdminSettings() {
     if (!files || files.length === 0) return;
 
     const file = files[0];
-    const success = await importSettings(file);
-
-    if (success) {
+    try {
+      const text = await file.text();
+      const importedSettings = JSON.parse(text);
+      updateSettings(importedSettings);
       toast.success("Paramètres importés avec succès");
-    } else {
+    } catch (error) {
+      console.error("Erreur lors de l'importation:", error);
       toast.error("Échec de l'importation des paramètres");
     }
 
@@ -115,16 +115,32 @@ export function useAdminSettings() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  }, [importSettings]);
+  }, [updateSettings]);
 
   const handleSettingsExport = useCallback(() => {
-    const success = exportSettings();
-    if (success) {
+    try {
+      const settingsJson = JSON.stringify(settings, null, 2);
+      const blob = new Blob([settingsJson], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'shalom-job-center-settings.json';
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
       toast.success("Paramètres exportés avec succès");
-    } else {
+      return true;
+    } catch (error) {
+      console.error("Erreur lors de l'exportation:", error);
       toast.error("Échec de l'exportation des paramètres");
+      return false;
     }
-  }, [exportSettings]);
+  }, [settings]);
 
   const handleThemeColorChange = useCallback((type: 'primaryColor' | 'secondaryColor', color: string) => {
     updateSettings({ [type]: color });
@@ -157,7 +173,7 @@ export function useAdminSettings() {
     resetSettings();
     
     // Synchronize local state with reset settings
-    const defaultLogo = "/placeholder.svg";
+    const defaultLogo = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
     const defaultFavicon = "/favicon.ico";
     setLogoUrl(defaultLogo);
     setFaviconUrl(defaultFavicon);

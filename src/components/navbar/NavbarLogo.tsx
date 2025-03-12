@@ -14,14 +14,8 @@ export const NavbarLogo = () => {
   // Update currentLogo when settings.logo changes or on component mount
   useEffect(() => {
     try {
-      let logoSrc = "";
-      
-      if (settings.logo === 'stored_separately') {
-        const storedLogo = localStorage.getItem('site_logo');
-        logoSrc = storedLogo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
-      } else {
-        logoSrc = settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
-      }
+      // Toujours utiliser le logo des paramètres, ou le logo par défaut si non disponible
+      const logoSrc = settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
       
       console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
       setCurrentLogo(logoSrc);
@@ -30,7 +24,7 @@ export const NavbarLogo = () => {
     } catch (error) {
       console.error("Erreur lors de l'initialisation du logo:", error);
       setLogoError(true);
-      // Use default logo in case of error - updated to the new logo
+      // Use default logo in case of error
       setCurrentLogo("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     }
   }, [settings.logo]);

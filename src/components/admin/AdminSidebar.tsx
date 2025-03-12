@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -25,10 +24,20 @@ export const AdminSidebar = () => {
   const { settings } = useSiteSettings();
   const location = useLocation();
   const { expanded } = useSidebar();
+  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
 
   const isCurrentPath = (path: string) => {
     return location.pathname === path;
   };
+  
+  useEffect(() => {
+    const sharedLogo = sessionStorage.getItem('shared_site_logo');
+    if (sharedLogo) {
+      setLogoUrl(sharedLogo);
+    } else if (settings.logo) {
+      setLogoUrl(settings.logo);
+    }
+  }, [settings.logo]);
 
   return (
     <div className={`border-r bg-gray-100/40 lg:block ${expanded ? "block" : "hidden"}`}>
@@ -39,11 +48,15 @@ export const AdminSidebar = () => {
             className="flex items-center gap-2 font-semibold"
           >
             <motion.img 
-              src={settings.logo || "/placeholder.svg"} 
+              src={logoUrl} 
               className="h-6 w-auto" 
               alt={settings.siteName}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              onError={(e) => {
+                console.error("Erreur de chargement du logo dans l'admin sidebar");
+                e.currentTarget.src = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+              }}
             />
             <span style={{ color: settings.primaryColor }}>Admin</span>
           </Link>

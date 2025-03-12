@@ -1,10 +1,21 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 export const JobsFooter = () => {
   const { settings } = useSiteSettings();
+  const [logoUrl, setLogoUrl] = useState<string>(settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+  
+  // Vérifier s'il y a un logo partagé dans sessionStorage
+  useEffect(() => {
+    const sharedLogo = sessionStorage.getItem('shared_site_logo');
+    if (sharedLogo) {
+      setLogoUrl(sharedLogo);
+    } else if (settings.logo) {
+      setLogoUrl(settings.logo);
+    }
+  }, [settings.logo]);
   
   return (
     <footer className="bg-sholom-dark text-white py-16">
@@ -13,11 +24,12 @@ export const JobsFooter = () => {
           {/* Logo et informations de l'entreprise */}
           <div className="space-y-4">
             <img 
-              src={settings.logo || "/placeholder.svg"} 
+              src={logoUrl} 
               alt={settings.siteName} 
               className="h-12 w-auto bg-white p-2 rounded"
               onError={(e) => {
-                e.currentTarget.src = "/placeholder.svg";
+                console.error("Erreur de chargement du logo dans le footer");
+                e.currentTarget.src = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
               }}
             />
             <h3 className="text-xl font-bold">{settings.siteName}</h3>

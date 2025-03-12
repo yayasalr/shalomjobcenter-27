@@ -1,46 +1,62 @@
 
+import { useEffect } from 'react';
 import { SiteSettings } from '@/types/siteSettings';
 
 export const useSettingsUI = (settings: SiteSettings) => {
+  // Fonction pour changer les informations de l'entreprise
   const handleCompanyInfoChange = (field: keyof SiteSettings['companyInfo'], value: string) => {
-    return {
-      companyInfo: {
-        ...settings.companyInfo,
-        [field]: value,
-      },
-    };
+    // Cette fonction peut être implémentée si nécessaire
+    console.log('Company info changed:', field, value);
   };
-
+  
+  // Appliquer les paramètres à la page
   const applySettingsToDOM = () => {
-    // Apply custom CSS variables to the document root
-    document.documentElement.style.setProperty('--primary-color', settings.primaryColor);
-    document.documentElement.style.setProperty('--secondary-color', settings.secondaryColor);
-    
-    // Récupérer le favicon réel si nécessaire
-    let faviconSrc = settings.favicon;
-    if (faviconSrc === 'stored_separately') {
-      const storedFavicon = localStorage.getItem('site_favicon');
-      if (storedFavicon) {
-        faviconSrc = storedFavicon;
-      } else {
-        faviconSrc = '/favicon.ico'; // Fallback
+    try {
+      // Appliquer la couleur primaire
+      if (settings.primaryColor) {
+        document.documentElement.style.setProperty('--primary', settings.primaryColor);
+        
+        // Mettre à jour la balise meta theme-color
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute('content', settings.primaryColor);
+        }
       }
-    }
-    
-    // Set the favicon dynamically
-    if (faviconSrc) {
-      const faviconLink = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-      if (faviconLink) {
-        faviconLink.href = faviconSrc;
-      } else {
-        const newFaviconLink = document.createElement('link');
-        newFaviconLink.rel = 'icon';
-        newFaviconLink.href = faviconSrc;
-        document.head.appendChild(newFaviconLink);
+      
+      // Appliquer la couleur secondaire
+      if (settings.secondaryColor) {
+        document.documentElement.style.setProperty('--secondary', settings.secondaryColor);
       }
+      
+      // Appliquer la favicon
+      if (settings.favicon) {
+        const faviconLink = document.querySelector('link[rel="icon"]');
+        if (faviconLink) {
+          faviconLink.setAttribute('href', settings.favicon);
+        } else {
+          const newFaviconLink = document.createElement('link');
+          newFaviconLink.rel = 'icon';
+          newFaviconLink.href = settings.favicon;
+          document.head.appendChild(newFaviconLink);
+        }
+      }
+      
+      // Mettre à jour le titre du site
+      if (settings.siteName) {
+        document.title = settings.siteName;
+      }
+      
+      console.log('Paramètres appliqués au DOM avec succès');
+    } catch (error) {
+      console.error('Erreur lors de l\'application des paramètres au DOM:', error);
     }
   };
-
+  
+  // Appliquer les paramètres au chargement
+  useEffect(() => {
+    applySettingsToDOM();
+  }, [settings]);
+  
   return {
     handleCompanyInfoChange,
     applySettingsToDOM

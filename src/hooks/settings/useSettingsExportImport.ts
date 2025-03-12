@@ -1,66 +1,68 @@
 
 import { SiteSettings } from '@/types/siteSettings';
+import { toast } from 'sonner';
 
-export const useSettingsExportImport = (settings: SiteSettings, updateSettings: (newSettings: Partial<SiteSettings>) => void) => {
-  const exportSettings = () => {
+export const useSettingsExportImport = (
+  settings: SiteSettings,
+  updateSettings: (newSettings: Partial<SiteSettings>) => void
+) => {
+  // Exporter les paramètres
+  const exportSettings = (): boolean => {
     try {
-      // Récupérer les images stockées séparément pour l'export
-      let exportSettings = { ...settings };
+      const settingsJson = JSON.stringify(settings, null, 2);
+      const blob = new Blob([settingsJson], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
       
-      const storedLogo = localStorage.getItem('site_logo');
-      if (storedLogo && settings.logo === 'stored_separately') {
-        exportSettings.logo = storedLogo;
-      }
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'shalom-job-center-settings.json';
+      document.body.appendChild(a);
+      a.click();
       
-      const storedFavicon = localStorage.getItem('site_favicon');
-      if (storedFavicon && settings.favicon === 'stored_separately') {
-        exportSettings.favicon = storedFavicon;
-      }
+      // Cleanup
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       
-      const dataStr = JSON.stringify(exportSettings, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = 'site-settings.json';
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
-      
+      console.log("Paramètres exportés avec succès");
       return true;
     } catch (error) {
-      console.error("Error exporting settings:", error);
+      console.error("Erreur lors de l'exportation des paramètres:", error);
       return false;
     }
   };
-
-  const importSettings = async (file: File) => {
+  
+  // Importer les paramètres
+  const importSettings = async (file: File): Promise<boolean> => {
     try {
       const text = await file.text();
-      const newSettings = JSON.parse(text);
+      const importedSettings = JSON.parse(text);
       
-      // Simple validation to ensure it's a settings file
-      if (!newSettings.primaryColor && !newSettings.companyInfo) {
-        throw new Error("Invalid settings file");
+      // Validation de base des paramètres importés
+      if (typeof importedSettings !== 'object') {
+        toast.error("Format de fichier invalide");
+        return false;
       }
       
-      // Gérer les images importées
-      if (newSettings.logo && newSettings.logo.startsWith('data:')) {
-        localStorage.setItem('site_logo', newSettings.logo);
+      // Appliquer les paramètres importés
+      updateSettings(importedSettings);
+      
+      // Mettre à jour également le sessionStorage pour partage
+      if (importedSettings.logo) {
+        sessionStorage.setItem('shared_site_logo', importedSettings.logo);
       }
       
-      if (newSettings.favicon && newSettings.favicon.startsWith('data:')) {
-        localStorage.setItem('site_favicon', newSettings.favicon);
+      if (importedSettings.favicon) {
+        sessionStorage.setItem('shared_site_favicon', importedSettings.favicon);
       }
       
-      updateSettings(newSettings);
+      console.log("Paramètres importés avec succès");
       return true;
     } catch (error) {
-      console.error("Error importing settings:", error);
+      console.error("Erreur lors de l'importation des paramètres:", error);
       return false;
     }
   };
-
+  
   return {
     exportSettings,
     importSettings

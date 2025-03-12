@@ -31,20 +31,8 @@ export const LogoSection = ({
       setLogoError(false);
       setLogoLoaded(false);
       
-      // Check if the logo is stored separately
-      if (settings.logo === 'stored_separately') {
-        const storedLogo = localStorage.getItem('site_logo');
-        if (storedLogo) {
-          console.log("Logo loaded from separate storage");
-          setPreviewUrl(storedLogo);
-        } else {
-          console.log("No logo found in separate storage");
-          setPreviewUrl(logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
-        }
-      } else {
-        console.log("Using logo from settings");
-        setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
-      }
+      // Utiliser toujours le logo des paramètres ou le logo par défaut
+      setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     } catch (error) {
       console.error("Error loading logo:", error);
       setLogoError(true);
@@ -65,12 +53,7 @@ export const LogoSection = ({
     // Force reload by setting a temporary empty value
     setPreviewUrl("");
     setTimeout(() => {
-      if (settings.logo === 'stored_separately') {
-        const storedLogo = localStorage.getItem('site_logo');
-        setPreviewUrl(storedLogo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
-      } else {
-        setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
-      }
+      setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     }, 100);
   };
   

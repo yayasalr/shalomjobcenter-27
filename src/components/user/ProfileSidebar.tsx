@@ -23,6 +23,13 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
       setAvatar(user.avatar);
       setAvatarKey(Date.now()); // Force refresh when avatar changes
     }
+    
+    // Vérifier s'il y a un avatar partagé dans sessionStorage
+    const sharedAvatar = sessionStorage.getItem('shared_user_avatar');
+    if (sharedAvatar) {
+      setAvatar(sharedAvatar);
+      setAvatarKey(Date.now());
+    }
   }, [user?.avatar]);
 
   const handleImageUpload = (file: File) => {
@@ -49,6 +56,9 @@ export const ProfileSidebar: React.FC<ProfileSidebarProps> = ({ user, onAvatarCh
           
           // Save to localStorage to persist across refreshes
           localStorage.setItem('userAvatar', previewUrl);
+          
+          // Save to sessionStorage for sharing across tabs
+          sessionStorage.setItem('shared_user_avatar', previewUrl);
           
           // Notifier le composant parent du changement d'avatar
           if (onAvatarChange) {
