@@ -20,14 +20,13 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Configuration optimisée pour le déploiement production
   base: "/",
   build: {
     outDir: "dist",
     sourcemap: false,
-    minify: "esbuild", // Changed from 'terser' to 'esbuild' for better compatibility
-    target: "es2015", // Assure la compatibilité avec les navigateurs modernes
-    chunkSizeWarningLimit: 1000, // Augmente la limite d'avertissement pour les gros chunks
+    minify: "esbuild", // Using esbuild for minification
+    target: "es2015",
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
