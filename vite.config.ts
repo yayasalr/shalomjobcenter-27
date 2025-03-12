@@ -20,4 +20,22 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Add base config for production deployment
+  base: "/",
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    minify: "terser",
+    // Add cache busting
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
+  }
 }));
