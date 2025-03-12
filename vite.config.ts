@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist",
     sourcemap: false,
-    minify: "terser",
+    minify: "esbuild", // Changed from 'terser' to 'esbuild' for better compatibility
     target: "es2015", // Assure la compatibilité avec les navigateurs modernes
     chunkSizeWarningLimit: 1000, // Augmente la limite d'avertissement pour les gros chunks
     rollupOptions: {
