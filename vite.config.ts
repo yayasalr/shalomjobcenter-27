@@ -20,17 +20,19 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Add base config for production deployment
+  // Configuration optimisée pour le déploiement production
   base: "/",
   build: {
     outDir: "dist",
     sourcemap: false,
     minify: "terser",
-    // Add cache busting
+    target: "es2015", // Assure la compatibilité avec les navigateurs modernes
+    chunkSizeWarningLimit: 1000, // Augmente la limite d'avertissement pour les gros chunks
     rollupOptions: {
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select']
         },
         entryFileNames: 'assets/[name].[hash].js',
         chunkFileNames: 'assets/[name].[hash].js',

@@ -1,11 +1,38 @@
 
-# Netlify configuration file
+# Configuration Netlify optimisée
 
 [build]
   publish = "dist"
   command = "npm run build"
 
+# Ces en-têtes sont importants pour la sécurité et les performances
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
+
+# Configuration essentielle pour le routage SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = true
+
+# En-têtes de sécurité recommandés
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.gpteng.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.lovable.app https://*.netlify.app;"

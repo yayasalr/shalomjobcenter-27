@@ -1,3 +1,3 @@
 
-# Redirects for Netlify SPA
-/* /index.html 200
+# Redirection pour SPA Netlify (règle de secours si netlify.toml ne fonctionne pas)
+/*    /index.html   200
