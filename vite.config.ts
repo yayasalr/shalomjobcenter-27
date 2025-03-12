@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist",
     sourcemap: false,
-    minify: "esbuild", // Using esbuild for minification
+    minify: true, // Let Vite choose the best minifier
     target: "es2015",
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
@@ -40,3 +40,4 @@ export default defineConfig(({ mode }) => ({
     }
   }
 }));
+
