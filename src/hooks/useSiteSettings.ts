@@ -1,3 +1,3 @@
 
 // Re-export le hook useSiteSettings depuis le nouvel emplacement
-export { useSiteSettings } from './settings';
+export { useSiteSettings, SiteSettingsProvider } from './settings';
