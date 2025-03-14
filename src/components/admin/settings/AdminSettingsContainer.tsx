@@ -1,87 +1,68 @@
 
-import React, { useState, useEffect } from 'react';
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
-import { AdminTopbar } from '@/components/admin/AdminTopbar';
-import { Toast } from '@/components/ui/toast';
-import { CheckCircle, ChevronLeft } from "lucide-react";
-import { useSettingsActions } from './hooks/useSettingsActions';
-import { Button } from '@/components/ui/button';
-import { SidebarProvider } from "@/components/ui/sidebar";
+import React, { useState } from 'react';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
+import { AdminSettingsHeader } from './AdminSettingsHeader';
+import { AdminSettingsMobile } from './AdminSettingsMobile';
+import { AdminSettingsDesktop } from './AdminSettingsDesktop';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
-// Import tab components
-import { SettingsTabs } from './SettingsTabs';
-import { SettingsHeader } from './SettingsHeader';
+export const AdminSettingsContainer: React.FC = () => {
+  const { settings, updateSettings, resetSettings, loading, error } = useSiteSettings();
+  const [showMobileContent, setShowMobileContent] = useState(false);
 
-export const AdminSettingsContainer = () => {
-  const {
-    settings,
-    isSaving,
-    showSuccessToast,
-    handleSaveSettings
-  } = useSettingsActions();
-  
-  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
-  const [showTabsContent, setShowTabsContent] = useState(true);
-  
-  // Observer la largeur de l'écran
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setShowTabsContent(true);
-      }
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
+  // Gérer l'état de chargement
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+        <p className="ml-3 text-lg text-gray-600">Chargement des paramètres...</p>
+      </div>
+    );
+  }
+
+  // Gérer l'état d'erreur
+  if (error) {
+    return (
+      <div className="w-full min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 max-w-md w-full">
+          <p className="font-bold">Erreur</p>
+          <p>{error}</p>
+        </div>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700"
+        >
+          Réessayer
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <SidebarProvider>
-      <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr] overflow-x-hidden">
-        <AdminSidebar />
-        <div className="flex flex-col">
-          <AdminTopbar />
-          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 overflow-x-hidden">
-            {isMobileView && !showTabsContent && (
-              <div className="mb-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="px-2"
-                  onClick={() => setShowTabsContent(true)}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Retour aux paramètres
-                </Button>
-              </div>
-            )}
-            
-            <SettingsHeader 
-              isSaving={isSaving} 
-              handleSaveSettings={handleSaveSettings} 
-            />
-            
-            <div className="overflow-x-auto">
-              <SettingsTabs 
-                settings={settings} 
-                isMobileView={isMobileView}
-                showTabsContent={showTabsContent}
-                setShowTabsContent={setShowTabsContent}
-              />
-            </div>
-            
-            {showSuccessToast && (
-              <Toast>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  Paramètres enregistrés avec succès
-                </div>
-              </Toast>
-            )}
-          </main>
+    <div className="min-h-screen bg-gray-50">
+      <AdminSettingsHeader 
+        settings={settings}
+        resetSettings={resetSettings}
+        isMobileView={false}
+        showMobileContent={showMobileContent}
+        setShowMobileContent={setShowMobileContent}
+      />
+      
+      <div className="container mx-auto px-4 pb-12">
+        {/* Version mobile */}
+        <div className="md:hidden">
+          <AdminSettingsMobile 
+            settings={settings}
+            showMobileContent={showMobileContent}
+            setShowMobileContent={setShowMobileContent}
+          />
+        </div>
+        
+        {/* Version desktop */}
+        <div className="hidden md:block">
+          <AdminSettingsDesktop settings={settings} />
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
