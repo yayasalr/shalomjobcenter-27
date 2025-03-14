@@ -1,14 +1,14 @@
 
 import { createContext, useContext, ReactNode } from 'react';
 import { SiteSettings } from '@/types/siteSettings';
-import { useSiteSettings as useSettings } from './useSiteSettings';
+import { useSiteSettingsCloud } from '../useSiteSettingsCloud';
 
 // Contexte pour les paramètres du site
-const SiteSettingsContext = createContext<ReturnType<typeof useSettings>>({} as ReturnType<typeof useSettings>);
+const SiteSettingsContext = createContext<ReturnType<typeof useSiteSettingsCloud>>({} as ReturnType<typeof useSiteSettingsCloud>);
 
 // Provider pour les paramètres du site
 export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
-  const settingsValue = useSettings();
+  const settingsValue = useSiteSettingsCloud();
 
   return (
     <SiteSettingsContext.Provider value={settingsValue}>
@@ -21,7 +21,7 @@ export const SiteSettingsProvider = ({ children }: { children: ReactNode }) => {
 export const useSiteSettings = () => {
   const context = useContext(SiteSettingsContext);
   if (context === undefined) {
-    throw new Error('useSiteSettings doit être utilisé à l\'intérieur d\'un SiteSettingsProvider');
+    throw new Error("useSiteSettings doit être utilisé à l'intérieur d'un SiteSettingsProvider");
   }
   return context;
 };
