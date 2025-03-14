@@ -1,3 +1,3 @@
 
-// Re-export the refactored settings hooks from their new location
+// Re-export le hook useSiteSettings depuis le nouvel emplacement
 export { useSiteSettings } from './settings';

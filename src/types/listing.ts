@@ -2,16 +2,17 @@
 export interface Listing {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   price: number;
   location: string;
-  image: string;
-  images?: string[];
+  neighborhood: string;
+  mapLocation: string;
   rating: number;
   dates: string;
+  image: string;
+  images: string[];
   host: {
     name: string;
     image: string;
   };
-  mapLocation?: string; // Ajout du champ pour l'URL de la carte
 }
