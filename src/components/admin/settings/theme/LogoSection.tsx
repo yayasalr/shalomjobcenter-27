@@ -31,14 +31,49 @@ export const LogoSection = ({
       setLogoError(false);
       setLogoLoaded(false);
       
-      // Utiliser toujours le logo des paramètres ou le logo par défaut
-      setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+      // Vérifier d'abord dans sessionStorage pour une valeur partagée
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      
+      // Ordre de priorité: logo partagé > paramètres > logoUrl > logo par défaut
+      const logoSource = sharedLogo || 
+                        settings.logo || 
+                        logoUrl || 
+                        "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+      
+      setPreviewUrl(logoSource);
+      
+      // Si c'est une data URL, vérifier si elle est toujours valide
+      if (logoSource.startsWith('data:')) {
+        const img = new Image();
+        img.src = logoSource;
+        img.onerror = () => {
+          console.warn("Logo data URL corrupted, using default logo");
+          setPreviewUrl("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+        };
+      }
     } catch (error) {
       console.error("Error loading logo:", error);
       setLogoError(true);
       toast.error("Error loading logo");
     }
   }, [settings.logo, logoUrl]);
+  
+  // Écouter les événements de storage pour les changements de logo
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      if (sharedLogo) {
+        setPreviewUrl(sharedLogo);
+        setLogoLoaded(false);
+        setLogoError(false);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
   
   const handleLogoError = () => {
     console.error("Error loading logo preview");
@@ -53,7 +88,11 @@ export const LogoSection = ({
     // Force reload by setting a temporary empty value
     setPreviewUrl("");
     setTimeout(() => {
-      setPreviewUrl(settings.logo || logoUrl || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      setPreviewUrl(sharedLogo || 
+                   settings.logo || 
+                   logoUrl || 
+                   "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     }, 100);
   };
   

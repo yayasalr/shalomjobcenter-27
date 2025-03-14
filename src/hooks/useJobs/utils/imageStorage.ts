@@ -30,7 +30,12 @@ export const saveJobImages = (jobId: string, images: string[]): void => {
         localStorage.setItem(`job_featured_image_${jobId}`, validImages[0]);
       }
       
-      // Ne plus sauvegarder dans "latest" pour éviter les conflits entre offres
+      // Partager des indicateurs de mise à jour
+      sessionStorage.setItem('job_images_updated', Date.now().toString());
+      sessionStorage.setItem(`job_images_${jobId}_updated`, Date.now().toString());
+      
+      // Déclencher un événement storage pour informer les autres onglets
+      window.dispatchEvent(new Event('storage'));
     }
   } catch (error) {
     console.error(`Erreur lors de la sauvegarde des images pour l'offre ${jobId}:`, error);
@@ -48,6 +53,13 @@ export const clearJobImages = (jobId: string): void => {
     localStorage.removeItem(key);
     localStorage.removeItem(`job_featured_image_${jobId}`);
     console.log(`Images supprimées pour l'offre ${jobId}`);
+    
+    // Partager un indicateur de mise à jour
+    sessionStorage.setItem('job_images_updated', Date.now().toString());
+    sessionStorage.setItem(`job_images_${jobId}_updated`, 'deleted');
+    
+    // Déclencher un événement storage pour informer les autres onglets
+    window.dispatchEvent(new Event('storage'));
   } catch (error) {
     console.error(`Erreur lors de la suppression des images pour l'offre ${jobId}:`, error);
   }
@@ -70,8 +82,54 @@ export const purgeAllJobImages = (): void => {
       localStorage.removeItem(key);
     });
     
+    // Partager un indicateur de purge
+    sessionStorage.setItem('job_images_purged', Date.now().toString());
+    
+    // Déclencher un événement storage
+    window.dispatchEvent(new Event('storage'));
+    
     console.log(`${keysToRemove.length} entrées d'images d'offres supprimées du localStorage`);
   } catch (error) {
     console.error('Erreur lors de la suppression de toutes les images:', error);
+  }
+};
+
+/**
+ * Récupère les images d'une offre d'emploi
+ */
+export const getJobImages = (jobId: string): string[] => {
+  if (!jobId) return [];
+  
+  try {
+    const key = `job_images_${jobId}`;
+    const imagesStr = localStorage.getItem(key);
+    
+    if (!imagesStr) return [];
+    
+    try {
+      const images = JSON.parse(imagesStr);
+      return Array.isArray(images) ? images : [];
+    } catch (e) {
+      console.error(`Erreur de parsing pour ${key}:`, e);
+      return [];
+    }
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des images pour l'offre ${jobId}:`, error);
+    return [];
+  }
+};
+
+/**
+ * Récupère l'image principale d'une offre d'emploi
+ */
+export const getJobFeaturedImage = (jobId: string): string => {
+  if (!jobId) return '';
+  
+  try {
+    const key = `job_featured_image_${jobId}`;
+    return localStorage.getItem(key) || '';
+  } catch (error) {
+    console.error(`Erreur lors de la récupération de l'image principale pour l'offre ${jobId}:`, error);
+    return '';
   }
 };

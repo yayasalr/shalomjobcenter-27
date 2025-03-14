@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { SiteSettings } from '@/types/siteSettings';
@@ -17,14 +16,44 @@ export function useAdminSettings() {
   
   // Synchronize local state with settings when they change
   useEffect(() => {
-    if (settings.logo) {
+    // Vérifier d'abord dans sessionStorage
+    const sharedLogo = sessionStorage.getItem('shared_site_logo');
+    const sharedFavicon = sessionStorage.getItem('shared_site_favicon');
+    
+    if (sharedLogo) {
+      setLogoUrl(sharedLogo);
+    } else if (settings.logo) {
       setLogoUrl(settings.logo);
     }
     
-    if (settings.favicon) {
+    if (sharedFavicon) {
+      setFaviconUrl(sharedFavicon);
+    } else if (settings.favicon) {
       setFaviconUrl(settings.favicon);
     }
   }, [settings.logo, settings.favicon]);
+  
+  // Écouter les événements de stockage pour les mises à jour
+  useEffect(() => {
+    const handleStorageChange = () => {
+      // Vérifier les valeurs partagées
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      const sharedFavicon = sessionStorage.getItem('shared_site_favicon');
+      
+      if (sharedLogo) {
+        setLogoUrl(sharedLogo);
+      }
+      
+      if (sharedFavicon) {
+        setFaviconUrl(sharedFavicon);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const handleLogoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -44,8 +73,14 @@ export function useAdminSettings() {
         // Store in settings
         updateSettings({ logo: result });
         
-        // Also share with sessionStorage for cross-tab access
+        // Partager avec sessionStorage pour un accès cross-tab
         sessionStorage.setItem('shared_site_logo', result);
+        
+        // Sauvegarder dans localStorage pour une persistance à long terme
+        localStorage.setItem('site_logo', result);
+        
+        // Déclencher un événement storage pour informer les autres onglets
+        window.dispatchEvent(new Event('storage'));
         
         // Then simulate the server upload for persistent storage
         setTimeout(() => {
@@ -76,8 +111,14 @@ export function useAdminSettings() {
         // Store in settings
         updateSettings({ favicon: result });
         
-        // Also share with sessionStorage for cross-tab access
+        // Partager avec sessionStorage pour un accès cross-tab
         sessionStorage.setItem('shared_site_favicon', result);
+        
+        // Sauvegarder dans localStorage pour une persistance à long terme
+        localStorage.setItem('site_favicon', result);
+        
+        // Déclencher un événement storage pour informer les autres onglets
+        window.dispatchEvent(new Event('storage'));
         
         // Then simulate the server upload
         setTimeout(() => {
@@ -104,7 +145,24 @@ export function useAdminSettings() {
     try {
       const text = await file.text();
       const importedSettings = JSON.parse(text);
+      
+      // Mettre à jour les paramètres
       updateSettings(importedSettings);
+      
+      // Partager logo et favicon si présents
+      if (importedSettings.logo) {
+        sessionStorage.setItem('shared_site_logo', importedSettings.logo);
+        localStorage.setItem('site_logo', importedSettings.logo);
+      }
+      
+      if (importedSettings.favicon) {
+        sessionStorage.setItem('shared_site_favicon', importedSettings.favicon);
+        localStorage.setItem('site_favicon', importedSettings.favicon);
+      }
+      
+      // Déclencher un événement storage
+      window.dispatchEvent(new Event('storage'));
+      
       toast.success("Paramètres importés avec succès");
     } catch (error) {
       console.error("Erreur lors de l'importation:", error);
@@ -177,6 +235,13 @@ export function useAdminSettings() {
     const defaultFavicon = "/favicon.ico";
     setLogoUrl(defaultLogo);
     setFaviconUrl(defaultFavicon);
+    
+    // Partager les valeurs réinitialisées
+    sessionStorage.setItem('shared_site_logo', defaultLogo);
+    sessionStorage.setItem('shared_site_favicon', defaultFavicon);
+    
+    // Déclencher un événement storage
+    window.dispatchEvent(new Event('storage'));
     
     toast.success("Paramètres réinitialisés avec succès");
   }, [resetSettings]);

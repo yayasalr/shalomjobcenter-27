@@ -20,6 +20,12 @@ export const useSettingsUI = (settings: SiteSettings) => {
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
           metaThemeColor.setAttribute('content', settings.primaryColor);
+        } else {
+          // Créer la balise meta si elle n'existe pas
+          const newMetaThemeColor = document.createElement('meta');
+          newMetaThemeColor.name = 'theme-color';
+          newMetaThemeColor.content = settings.primaryColor;
+          document.head.appendChild(newMetaThemeColor);
         }
       }
       
@@ -29,14 +35,22 @@ export const useSettingsUI = (settings: SiteSettings) => {
       }
       
       // Appliquer la favicon
-      if (settings.favicon) {
+      let faviconUrl = settings.favicon;
+      
+      // Vérifier si la favicon existe dans sessionStorage (partagée)
+      const sharedFavicon = sessionStorage.getItem('shared_site_favicon');
+      if (sharedFavicon) {
+        faviconUrl = sharedFavicon;
+      }
+      
+      if (faviconUrl) {
         const faviconLink = document.querySelector('link[rel="icon"]');
         if (faviconLink) {
-          faviconLink.setAttribute('href', settings.favicon);
+          faviconLink.setAttribute('href', faviconUrl);
         } else {
           const newFaviconLink = document.createElement('link');
           newFaviconLink.rel = 'icon';
-          newFaviconLink.href = settings.favicon;
+          newFaviconLink.href = faviconUrl;
           document.head.appendChild(newFaviconLink);
         }
       }
@@ -52,10 +66,23 @@ export const useSettingsUI = (settings: SiteSettings) => {
     }
   };
   
-  // Appliquer les paramètres au chargement
+  // Appliquer les paramètres au chargement et à chaque changement
   useEffect(() => {
     applySettingsToDOM();
   }, [settings]);
+  
+  // Écouter les événements de storage pour synchroniser les changements entre onglets
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log("Événement de stockage détecté, rafraîchissement des paramètres UI");
+      applySettingsToDOM();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
   
   return {
     handleCompanyInfoChange,

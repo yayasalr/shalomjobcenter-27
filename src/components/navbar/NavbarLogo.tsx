@@ -14,8 +14,13 @@ export const NavbarLogo = () => {
   // Update currentLogo when settings.logo changes or on component mount
   useEffect(() => {
     try {
-      // Toujours utiliser le logo des paramètres, ou le logo par défaut si non disponible
-      const logoSrc = settings.logo || "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+      // Vérifier d'abord dans sessionStorage pour une valeur partagée
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      
+      // Ordre de priorité: logo partagé > paramètres > logo par défaut
+      const logoSrc = sharedLogo || 
+                      settings.logo || 
+                      "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
       
       console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
       setCurrentLogo(logoSrc);
@@ -28,6 +33,23 @@ export const NavbarLogo = () => {
       setCurrentLogo("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
     }
   }, [settings.logo]);
+  
+  // Écouter les événements de storage pour les changements de logo
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      if (sharedLogo) {
+        setCurrentLogo(sharedLogo);
+        setLogoLoaded(false);
+        setLogoError(false);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
   
   return (
     <Link to="/" className="flex items-center gap-4 sm:gap-6 md:gap-8 mr-8">
