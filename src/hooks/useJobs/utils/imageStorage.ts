@@ -29,13 +29,6 @@ export const saveJobImages = (jobId: string, images: string[]): void => {
       if (validImages[0]) {
         localStorage.setItem(`job_featured_image_${jobId}`, validImages[0]);
       }
-      
-      // Partager des indicateurs de mise à jour
-      sessionStorage.setItem('job_images_updated', Date.now().toString());
-      sessionStorage.setItem(`job_images_${jobId}_updated`, Date.now().toString());
-      
-      // Déclencher un événement storage pour informer les autres onglets
-      window.dispatchEvent(new Event('storage'));
     }
   } catch (error) {
     console.error(`Erreur lors de la sauvegarde des images pour l'offre ${jobId}:`, error);
@@ -53,13 +46,6 @@ export const clearJobImages = (jobId: string): void => {
     localStorage.removeItem(key);
     localStorage.removeItem(`job_featured_image_${jobId}`);
     console.log(`Images supprimées pour l'offre ${jobId}`);
-    
-    // Partager un indicateur de mise à jour
-    sessionStorage.setItem('job_images_updated', Date.now().toString());
-    sessionStorage.setItem(`job_images_${jobId}_updated`, 'deleted');
-    
-    // Déclencher un événement storage pour informer les autres onglets
-    window.dispatchEvent(new Event('storage'));
   } catch (error) {
     console.error(`Erreur lors de la suppression des images pour l'offre ${jobId}:`, error);
   }
@@ -81,12 +67,6 @@ export const purgeAllJobImages = (): void => {
     keysToRemove.forEach(key => {
       localStorage.removeItem(key);
     });
-    
-    // Partager un indicateur de purge
-    sessionStorage.setItem('job_images_purged', Date.now().toString());
-    
-    // Déclencher un événement storage
-    window.dispatchEvent(new Event('storage'));
     
     console.log(`${keysToRemove.length} entrées d'images d'offres supprimées du localStorage`);
   } catch (error) {

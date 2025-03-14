@@ -25,74 +25,41 @@ export const LogoSection = ({
   const [logoError, setLogoError] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
   
+  // Logo par défaut hébergé sur le serveur
+  const DEFAULT_LOGO = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+  
   useEffect(() => {
     try {
-      // Reset error state at the beginning
+      // Reset error state
       setLogoError(false);
       setLogoLoaded(false);
       
-      // Vérifier d'abord dans sessionStorage pour une valeur partagée
-      const sharedLogo = sessionStorage.getItem('shared_site_logo');
-      
-      // Ordre de priorité: logo partagé > paramètres > logoUrl > logo par défaut
-      const logoSource = sharedLogo || 
-                        settings.logo || 
-                        logoUrl || 
-                        "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+      // Ordre de priorité: paramètres > logoUrl > logo par défaut
+      const logoSource = settings.logo || logoUrl || DEFAULT_LOGO;
       
       setPreviewUrl(logoSource);
-      
-      // Si c'est une data URL, vérifier si elle est toujours valide
-      if (logoSource.startsWith('data:')) {
-        const img = new Image();
-        img.src = logoSource;
-        img.onerror = () => {
-          console.warn("Logo data URL corrupted, using default logo");
-          setPreviewUrl("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
-        };
-      }
     } catch (error) {
       console.error("Error loading logo:", error);
       setLogoError(true);
-      toast.error("Error loading logo");
+      setPreviewUrl(DEFAULT_LOGO);
+      toast.error("Erreur lors du chargement du logo");
     }
   }, [settings.logo, logoUrl]);
-  
-  // Écouter les événements de storage pour les changements de logo
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const sharedLogo = sessionStorage.getItem('shared_site_logo');
-      if (sharedLogo) {
-        setPreviewUrl(sharedLogo);
-        setLogoLoaded(false);
-        setLogoError(false);
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
   
   const handleLogoError = () => {
     console.error("Error loading logo preview");
     setLogoError(true);
-    toast.error("Unable to display logo. Please try uploading again.");
+    toast.error("Impossible d'afficher le logo. Veuillez réessayer.");
   };
   
   const handleRetryLoad = () => {
     setLogoError(false);
     setLogoLoaded(false);
     
-    // Force reload by setting a temporary empty value
+    // Force reload
     setPreviewUrl("");
     setTimeout(() => {
-      const sharedLogo = sessionStorage.getItem('shared_site_logo');
-      setPreviewUrl(sharedLogo || 
-                   settings.logo || 
-                   logoUrl || 
-                   "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+      setPreviewUrl(settings.logo || logoUrl || DEFAULT_LOGO);
     }, 100);
   };
   

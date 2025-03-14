@@ -5,7 +5,7 @@ import { loadListings } from "../useListingStorage";
 import { processStoredImages } from "./listingImageUtils";
 
 /**
- * Hook for querying listings data
+ * Hook pour interroger les données des annonces
  */
 export const useListingQueries = () => {
   const { data: listings = [], isLoading, error } = useQuery({
@@ -15,7 +15,7 @@ export const useListingQueries = () => {
         const currentListings = loadListings();
         console.log("Chargement des listings:", currentListings.length);
         
-        // Process listings and retrieve any stored images
+        // Traiter les annonces et récupérer les images stockées
         const verifiedListings = currentListings.map(listing => {
           if (!listing.images) listing.images = [];
           if (!listing.id) listing.id = Math.random().toString(36).substr(2, 9);
@@ -28,7 +28,7 @@ export const useListingQueries = () => {
         console.error("Erreur critique lors du chargement des listings:", loadError);
         
         try {
-          // Try to recover from backup
+          // Essayer de récupérer à partir d'une sauvegarde
           const backupKey = localStorage.getItem('listings_last_backup');
           if (backupKey) {
             const backupListings = JSON.parse(backupKey);
@@ -42,8 +42,7 @@ export const useListingQueries = () => {
         return [];
       }
     },
-    staleTime: 0,
-    gcTime: 0,
+    // Rafraîchir les données à chaque montage et focus de fenêtre
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });

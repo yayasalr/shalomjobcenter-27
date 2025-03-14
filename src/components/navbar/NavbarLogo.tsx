@@ -11,45 +11,25 @@ export const NavbarLogo = () => {
   const [logoError, setLogoError] = useState(false);
   const [currentLogo, setCurrentLogo] = useState<string>("");
   
-  // Update currentLogo when settings.logo changes or on component mount
+  // Utiliser un logo par défaut hébergé sur le serveur
+  const DEFAULT_LOGO = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
+  
+  // Mettre à jour le logo quand les paramètres changent
   useEffect(() => {
     try {
-      // Vérifier d'abord dans sessionStorage pour une valeur partagée
-      const sharedLogo = sessionStorage.getItem('shared_site_logo');
+      // Utiliser le logo des paramètres ou le logo par défaut
+      const logoSrc = settings.logo || DEFAULT_LOGO;
       
-      // Ordre de priorité: logo partagé > paramètres > logo par défaut
-      const logoSrc = sharedLogo || 
-                      settings.logo || 
-                      "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
-      
-      console.log("Logo source actualisé:", logoSrc.substring(0, 30) + "...");
+      console.log("Logo source:", logoSrc);
       setCurrentLogo(logoSrc);
       setLogoLoaded(false);
       setLogoError(false);
     } catch (error) {
       console.error("Erreur lors de l'initialisation du logo:", error);
       setLogoError(true);
-      // Use default logo in case of error
-      setCurrentLogo("/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png");
+      setCurrentLogo(DEFAULT_LOGO);
     }
   }, [settings.logo]);
-  
-  // Écouter les événements de storage pour les changements de logo
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const sharedLogo = sessionStorage.getItem('shared_site_logo');
-      if (sharedLogo) {
-        setCurrentLogo(sharedLogo);
-        setLogoLoaded(false);
-        setLogoError(false);
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
   
   return (
     <Link to="/" className="flex items-center gap-4 sm:gap-6 md:gap-8 mr-8">
@@ -67,7 +47,7 @@ export const NavbarLogo = () => {
               className={`logo w-full h-full transition-all duration-300 ease-in-out ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLogoLoaded(true)}
               onError={() => {
-                console.error("Error loading logo:", currentLogo.substring(0, 30) + "...");
+                console.error("Error loading logo:", currentLogo);
                 setLogoError(true);
               }}
             />

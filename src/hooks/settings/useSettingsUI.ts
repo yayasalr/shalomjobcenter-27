@@ -5,7 +5,6 @@ import { SiteSettings } from '@/types/siteSettings';
 export const useSettingsUI = (settings: SiteSettings) => {
   // Fonction pour changer les informations de l'entreprise
   const handleCompanyInfoChange = (field: keyof SiteSettings['companyInfo'], value: string) => {
-    // Cette fonction peut être implémentée si nécessaire
     console.log('Company info changed:', field, value);
   };
   
@@ -35,22 +34,14 @@ export const useSettingsUI = (settings: SiteSettings) => {
       }
       
       // Appliquer la favicon
-      let faviconUrl = settings.favicon;
-      
-      // Vérifier si la favicon existe dans sessionStorage (partagée)
-      const sharedFavicon = sessionStorage.getItem('shared_site_favicon');
-      if (sharedFavicon) {
-        faviconUrl = sharedFavicon;
-      }
-      
-      if (faviconUrl) {
+      if (settings.favicon) {
         const faviconLink = document.querySelector('link[rel="icon"]');
         if (faviconLink) {
-          faviconLink.setAttribute('href', faviconUrl);
+          faviconLink.setAttribute('href', settings.favicon);
         } else {
           const newFaviconLink = document.createElement('link');
           newFaviconLink.rel = 'icon';
-          newFaviconLink.href = faviconUrl;
+          newFaviconLink.href = settings.favicon;
           document.head.appendChild(newFaviconLink);
         }
       }
@@ -70,19 +61,6 @@ export const useSettingsUI = (settings: SiteSettings) => {
   useEffect(() => {
     applySettingsToDOM();
   }, [settings]);
-  
-  // Écouter les événements de storage pour synchroniser les changements entre onglets
-  useEffect(() => {
-    const handleStorageChange = () => {
-      console.log("Événement de stockage détecté, rafraîchissement des paramètres UI");
-      applySettingsToDOM();
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
   
   return {
     handleCompanyInfoChange,
