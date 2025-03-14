@@ -7,7 +7,7 @@ export const useSettingsStorage = () => {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings as SiteSettings);
   const [initialized, setInitialized] = useState(false);
 
-  // Charger les paramètres au démarrage
+  // Charger les paramètres au démarrage depuis localStorage
   useEffect(() => {
     try {
       // Récupérer les paramètres de localStorage
@@ -17,7 +17,7 @@ export const useSettingsStorage = () => {
       // S'assurer que le mode sombre est toujours désactivé
       parsedSettings.darkMode = false;
       
-      // Utiliser un logo hébergé sur le serveur
+      // Utiliser un logo hébergé sur le serveur si non défini
       if (!parsedSettings.logo) {
         parsedSettings.logo = "/lovable-uploads/840dfb44-1c4f-4475-9321-7f361be73327.png";
       }
@@ -29,9 +29,9 @@ export const useSettingsStorage = () => {
       
       setSettings(parsedSettings as SiteSettings);
       setInitialized(true);
-      console.log("Paramètres chargés avec succès", parsedSettings);
+      console.log("Paramètres chargés avec succès depuis localStorage", parsedSettings);
     } catch (error) {
-      console.error("Erreur lors du chargement des paramètres:", error);
+      console.error("Erreur lors du chargement des paramètres depuis localStorage:", error);
       setSettings({...defaultSettings, darkMode: false} as SiteSettings);
       setInitialized(true);
     }
@@ -48,9 +48,9 @@ export const useSettingsStorage = () => {
       // Sauvegarder dans localStorage
       localStorage.setItem('siteSettings', JSON.stringify(settingsToStore));
       
-      console.log("Paramètres sauvegardés avec succès");
+      console.log("Paramètres sauvegardés avec succès dans localStorage");
     } catch (error) {
-      console.error("Erreur lors de la sauvegarde des paramètres:", error);
+      console.error("Erreur lors de la sauvegarde des paramètres dans localStorage:", error);
     }
   }, [settings, initialized]);
 
@@ -62,14 +62,14 @@ export const useSettingsStorage = () => {
         ...newSettings,
         darkMode: false
       };
-      console.log("Paramètres mis à jour:", updatedSettings);
+      console.log("Paramètres mis à jour dans localStorage:", updatedSettings);
       return updatedSettings;
     });
   };
 
   const resetSettings = () => {
     setSettings({...defaultSettings, darkMode: false} as SiteSettings);
-    console.log("Paramètres réinitialisés");
+    console.log("Paramètres réinitialisés dans localStorage");
   };
 
   return {

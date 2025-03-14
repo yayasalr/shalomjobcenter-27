@@ -3,12 +3,7 @@ import { useEffect } from 'react';
 import { SiteSettings } from '@/types/siteSettings';
 
 export const useSettingsUI = (settings: SiteSettings) => {
-  // Fonction pour changer les informations de l'entreprise
-  const handleCompanyInfoChange = (field: keyof SiteSettings['companyInfo'], value: string) => {
-    console.log('Company info changed:', field, value);
-  };
-  
-  // Appliquer les paramètres à la page
+  // Appliquer les paramètres visuels (couleurs, favicon, etc.)
   const applySettingsToDOM = () => {
     try {
       // Appliquer la couleur primaire
@@ -63,7 +58,6 @@ export const useSettingsUI = (settings: SiteSettings) => {
   }, [settings]);
   
   return {
-    handleCompanyInfoChange,
     applySettingsToDOM
   };
 };

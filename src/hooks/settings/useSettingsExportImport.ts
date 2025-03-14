@@ -1,66 +1,66 @@
 
 import { SiteSettings } from '@/types/siteSettings';
+import { validateSettings } from '@/utils/siteSettings/validateSettings';
 import { toast } from 'sonner';
 
 export const useSettingsExportImport = (
   settings: SiteSettings,
-  updateSettings: (newSettings: Partial<SiteSettings>) => void
+  updateSettings: (newSettings: Partial<SiteSettings>) => Promise<void>
 ) => {
   // Exporter les paramètres
-  const exportSettings = (): boolean => {
+  const exportSettings = () => {
     try {
-      const settingsJson = JSON.stringify(settings, null, 2);
-      const blob = new Blob([settingsJson], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+      const dataStr = JSON.stringify(settings, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
       
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'shalom-job-center-settings.json';
-      document.body.appendChild(a);
-      a.click();
+      const exportFileDefaultName = `site-settings-${new Date().toISOString().slice(0, 10)}.json`;
       
-      // Cleanup
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
       
-      console.log("Paramètres exportés avec succès");
+      toast.success('Paramètres exportés avec succès');
       return true;
-    } catch (error) {
-      console.error("Erreur lors de l'exportation des paramètres:", error);
+    } catch (err) {
+      console.error('Erreur lors de l\'exportation des paramètres:', err);
+      toast.error('Erreur lors de l\'exportation des paramètres');
       return false;
     }
   };
-  
+
   // Importer les paramètres
   const importSettings = async (file: File): Promise<boolean> => {
-    try {
-      const text = await file.text();
-      const importedSettings = JSON.parse(text);
+    return new Promise((resolve) => {
+      const reader = new FileReader();
       
-      // Validation de base des paramètres importés
-      if (typeof importedSettings !== 'object') {
-        toast.error("Format de fichier invalide");
-        return false;
-      }
+      reader.onload = async (e) => {
+        try {
+          const content = e.target?.result as string;
+          const importedSettings = JSON.parse(content);
+          
+          // Valider les paramètres importés
+          const validatedSettings = validateSettings(importedSettings);
+          
+          // Mettre à jour les paramètres
+          await updateSettings(validatedSettings);
+          
+          toast.success('Paramètres importés avec succès');
+          resolve(true);
+        } catch (err) {
+          console.error('Erreur lors de l\'importation des paramètres:', err);
+          toast.error('Erreur lors de l\'importation des paramètres');
+          resolve(false);
+        }
+      };
       
-      // Appliquer les paramètres importés
-      updateSettings(importedSettings);
+      reader.onerror = () => {
+        toast.error('Erreur lors de la lecture du fichier');
+        resolve(false);
+      };
       
-      // Mettre à jour également le sessionStorage pour partage
-      if (importedSettings.logo) {
-        sessionStorage.setItem('shared_site_logo', importedSettings.logo);
-      }
-      
-      if (importedSettings.favicon) {
-        sessionStorage.setItem('shared_site_favicon', importedSettings.favicon);
-      }
-      
-      console.log("Paramètres importés avec succès");
-      return true;
-    } catch (error) {
-      console.error("Erreur lors de l'importation des paramètres:", error);
-      return false;
-    }
+      reader.readAsText(file);
+    });
   };
   
   return {
